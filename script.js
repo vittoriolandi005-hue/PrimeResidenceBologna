@@ -5,42 +5,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!loader) return;
 
+  // =====================================================
+  // INTRO / SCROLL TO ENTER
+  // =====================================================
+
   let progress = 0;
   let targetProgress = 0;
   let introFinished = false;
 
-  // 10% più veloce rispetto alla versione precedente
   const SCROLL_DISTANCE = 900;
-
-  // Fluidità del movimento
   const EASE = 0.085;
 
   let animationFrame = null;
-
-
-  // =========================
-  // AGGIORNA ANIMAZIONE
-  // =========================
 
   function animateIntro() {
 
     if (introFinished) return;
 
-    // Avvicina gradualmente il movimento al punto desiderato
     progress += (targetProgress - progress) * EASE;
 
-    // Evita micro-movimenti alla fine
     if (Math.abs(targetProgress - progress) < 0.0005) {
       progress = targetProgress;
     }
 
     progress = Math.max(0, Math.min(1, progress));
 
-    // Movimento fluido della schermata
     loader.style.transform =
       `translate3d(0, ${-progress * 100}%, 0)`;
 
-    // Scomparsa graduale della scritta
     if (scrollEnter) {
 
       scrollEnter.style.opacity =
@@ -50,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
         `translate3d(-50%, ${progress * 25}px, 0)`;
     }
 
-    // Fine intro
     if (progress >= 0.999) {
       finishIntro();
       return;
@@ -61,10 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  // =========================
-  // AVVIA ANIMAZIONE
-  // =========================
-
   function startAnimation() {
 
     if (animationFrame) return;
@@ -73,10 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
       requestAnimationFrame(animateIntro);
   }
 
-
-  // =========================
-  // FINE INTRO
-  // =========================
 
   function finishIntro() {
 
@@ -91,19 +74,23 @@ document.addEventListener("DOMContentLoaded", () => {
       "translate3d(0, -100%, 0)";
 
     document.body.classList.remove("intro-active");
-
     document.body.style.overflow = "";
 
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);
       animationFrame = null;
     }
+
+    // Avvia le animazioni della pagina
+    requestAnimationFrame(() => {
+      updatePremiumScroll();
+    });
   }
 
 
-  // =========================
-  // MOUSE WHEEL
-  // =========================
+  // =====================================================
+  // MOUSE WHEEL INTRO
+  // =====================================================
 
   window.addEventListener(
     "wheel",
@@ -113,7 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       event.preventDefault();
 
-      // Aumenta progressivamente il target
       targetProgress +=
         event.deltaY / SCROLL_DISTANCE;
 
@@ -127,9 +113,9 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
 
-  // =========================
-  // TOUCH
-  // =========================
+  // =====================================================
+  // TOUCH INTRO
+  // =====================================================
 
   let touchStart = 0;
 
@@ -179,9 +165,9 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
 
-  // =========================
-  // TASTIERA
-  // =========================
+  // =====================================================
+  // KEYBOARD INTRO
+  // =====================================================
 
   window.addEventListener(
     "keydown",
@@ -224,14 +210,14 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
 
-  // =========================
-  // NAVBAR
-  // =========================
+  // =====================================================
+  // NAVBAR PREMIUM
+  // =====================================================
 
   const navbar =
     document.querySelector(".navbar");
 
-  window.addEventListener("scroll", () => {
+  function updateNavbar() {
 
     if (!navbar) return;
 
@@ -240,13 +226,102 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       navbar.classList.remove("scrolled");
     }
+  }
 
-  });
+
+  // =====================================================
+  // PREMIUM PARALLAX
+  // =====================================================
+
+  const parallaxImages =
+    document.querySelectorAll(
+      ".hero-image, .experience-image, .residence-image img, .bologna-image img"
+    );
+
+  let ticking = false;
+
+  function updateParallax() {
+
+    const viewportHeight =
+      window.innerHeight;
+
+    parallaxImages.forEach((image) => {
+
+      const rect =
+        image.getBoundingClientRect();
+
+      // Ignora immagini molto lontane dalla viewport
+      if (
+        rect.bottom < -100 ||
+        rect.top > viewportHeight + 100
+      ) {
+        return;
+      }
+
+      const center =
+        rect.top + rect.height / 2;
+
+      const distance =
+        (center - viewportHeight / 2) /
+        viewportHeight;
+
+      const movement =
+        distance * -18;
+
+      image.style.transform =
+        `translate3d(0, ${movement}px, 0)`;
+    });
+  }
 
 
-  // =========================
+  function updatePremiumScroll() {
+
+    updateNavbar();
+    updateParallax();
+
+    ticking = false;
+  }
+
+
+  window.addEventListener(
+    "scroll",
+    () => {
+
+      if (!ticking) {
+
+        window.requestAnimationFrame(
+          updatePremiumScroll
+        );
+
+        ticking = true;
+      }
+
+    },
+    { passive: true }
+  );
+
+
+  window.addEventListener(
+    "resize",
+    () => {
+
+      if (!ticking) {
+
+        window.requestAnimationFrame(
+          updatePremiumScroll
+        );
+
+        ticking = true;
+      }
+
+    },
+    { passive: true }
+  );
+
+
+  // =====================================================
   // REVEAL ANIMATIONS
-  // =========================
+  // =====================================================
 
   const revealElements =
     document.querySelectorAll(".reveal");
@@ -261,7 +336,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             entry.target.classList.add("visible");
 
-            revealObserver.unobserve(entry.target);
+            revealObserver.unobserve(
+              entry.target
+            );
 
           }
 
@@ -269,68 +346,143 @@ document.addEventListener("DOMContentLoaded", () => {
 
       },
       {
-        threshold: 0.15
+        threshold: 0.12,
+        rootMargin: "0px 0px -5% 0px"
       }
     );
+
 
   revealElements.forEach((element) => {
     revealObserver.observe(element);
   });
 
 
-  // =========================
+  // =====================================================
+  // RESIDENCE CARDS - PREMIUM REVEAL
+  // =====================================================
+
+  const residenceCards =
+    document.querySelectorAll(".residence-card");
+
+  const residenceObserver =
+    new IntersectionObserver(
+      (entries) => {
+
+        entries.forEach((entry) => {
+
+          if (entry.isIntersecting) {
+
+            entry.target.classList.add(
+              "residence-visible"
+            );
+
+            residenceObserver.unobserve(
+              entry.target
+            );
+
+          }
+
+        });
+
+      },
+      {
+        threshold: 0.18
+      }
+    );
+
+
+  residenceCards.forEach((card) => {
+    residenceObserver.observe(card);
+  });
+
+
+  // =====================================================
   // MOBILE MENU
-  // =========================
+  // =====================================================
 
   const menuButton =
-    document.querySelector(".menu-toggle");
+    document.querySelector(".menu-button");
 
   const mobileMenu =
     document.querySelector(".mobile-menu");
 
+
   if (menuButton && mobileMenu) {
 
-    menuButton.addEventListener("click", () => {
+    menuButton.addEventListener(
+      "click",
+      () => {
 
-      mobileMenu.classList.toggle("open");
+        mobileMenu.classList.toggle("open");
 
-    });
+        document.body.classList.toggle(
+          "menu-open"
+        );
 
+      }
+    );
+
+
+    // Chiudi menu quando si clicca un link
+    mobileMenu
+      .querySelectorAll("a")
+      .forEach((link) => {
+
+        link.addEventListener(
+          "click",
+          () => {
+
+            mobileMenu.classList.remove(
+              "open"
+            );
+
+            document.body.classList.remove(
+              "menu-open"
+            );
+
+          }
+        );
+
+      });
   }
 
 
-  // =========================
-  // SMOOTH LINKS
-  // =========================
+  // =====================================================
+  // SMOOTH ANCHOR LINKS
+  // =====================================================
 
   document
     .querySelectorAll('a[href^="#"]')
     .forEach((link) => {
 
-      link.addEventListener("click", function(event) {
+      link.addEventListener(
+        "click",
+        function(event) {
 
-        const targetId =
-          this.getAttribute("href");
+          const targetId =
+            this.getAttribute("href");
 
-        const target =
-          document.querySelector(targetId);
+          const target =
+            document.querySelector(targetId);
 
-        if (!target) return;
+          if (!target) return;
 
-        event.preventDefault();
+          event.preventDefault();
 
-        target.scrollIntoView({
-          behavior: "smooth"
-        });
+          target.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
 
-      });
+        }
+      );
 
     });
 
 
-  // =========================
+  // =====================================================
   // YEAR
-  // =========================
+  // =====================================================
 
   const year =
     document.querySelector("#year");
@@ -339,5 +491,14 @@ document.addEventListener("DOMContentLoaded", () => {
     year.textContent =
       new Date().getFullYear();
   }
+
+
+  // =====================================================
+  // INITIAL UPDATE
+  // =====================================================
+
+  window.requestAnimationFrame(() => {
+    updatePremiumScroll();
+  });
 
 });
