@@ -42,7 +42,6 @@
 
     /* =====================================================
        LOADER — SCROLL UP TO DISCOVER
-       FRECCIA SEMPRE VISIBILE
     ====================================================== */
 
     .loader-scroll-hint{
@@ -82,8 +81,6 @@
       flex-shrink:0
     }
 
-    /* ASTA CENTRALE SEMPRE VISIBILE */
-
     .loader-scroll-arrow-shaft{
       position:absolute;
       left:50%;
@@ -93,8 +90,6 @@
       background:#b69b67;
       transform:translateX(-50%)
     }
-
-    /* PUNTA SINISTRA */
 
     .loader-scroll-arrow::before{
       content:"";
@@ -108,8 +103,6 @@
       transform:rotate(135deg)
     }
 
-    /* PUNTA DESTRA */
-
     .loader-scroll-arrow::after{
       content:"";
       position:absolute;
@@ -121,8 +114,6 @@
       transform-origin:right center;
       transform:rotate(-135deg)
     }
-
-    /* LUCE CHE SALE LUNGO L'ASTA */
 
     .loader-scroll-glow{
       position:absolute;
@@ -147,28 +138,50 @@
     }
 
     @keyframes loaderGlowUp{
-      0%{
-        bottom:3px;
-        opacity:0
-      }
-      15%{
-        opacity:1
-      }
-      72%{
-        opacity:1
-      }
-      100%{
-        bottom:42px;
-        opacity:0
-      }
+      0%{bottom:3px;opacity:0}
+      15%{opacity:1}
+      72%{opacity:1}
+      100%{bottom:42px;opacity:0}
     }
 
-    .loader{
-      cursor:grab
+    .loader{cursor:grab}
+    .loader.mouse-dragging{cursor:grabbing}
+
+    /* =====================================================
+       NAVIGATION PAGE TRANSITION
+    ====================================================== */
+
+    .page-swipe-transition{
+      position:fixed;
+      inset:0;
+      z-index:9998;
+      background:#171614;
+      transform:translate3d(0,-101%,0);
+      pointer-events:none;
+      visibility:hidden;
+      will-change:transform;
     }
 
-    .loader.mouse-dragging{
-      cursor:grabbing
+    .page-swipe-transition.enter{
+      visibility:visible;
+      pointer-events:auto;
+      animation:pageSwipeEnter .72s cubic-bezier(.76,0,.24,1) forwards
+    }
+
+    .page-swipe-transition.leave{
+      visibility:visible;
+      pointer-events:auto;
+      animation:pageSwipeLeave .72s cubic-bezier(.76,0,.24,1) forwards
+    }
+
+    @keyframes pageSwipeEnter{
+      from{transform:translate3d(0,-101%,0)}
+      to{transform:translate3d(0,0,0)}
+    }
+
+    @keyframes pageSwipeLeave{
+      from{transform:translate3d(0,0,0)}
+      to{transform:translate3d(0,101%,0)}
     }
 
     @media(max-width:700px){
@@ -198,30 +211,18 @@
       }
 
       @keyframes loaderGlowUp{
-        0%{
-          bottom:3px;
-          opacity:0
-        }
-        15%{
-          opacity:1
-        }
-        72%{
-          opacity:1
-        }
-        100%{
-          bottom:36px;
-          opacity:0
-        }
+        0%{bottom:3px;opacity:0}
+        15%{opacity:1}
+        72%{opacity:1}
+        100%{bottom:36px;opacity:0}
       }
 
     }
 
     @media(max-height:600px){
-
       .loader-scroll-hint{
         top:calc(50% + 95px)
       }
-
     }
 
   </style>
@@ -233,7 +234,7 @@
 
 
   <!-- =====================================================
-       LOADER
+       INTRO LOADER
   ====================================================== -->
 
   <div class="loader">
@@ -276,6 +277,17 @@
 
 
   <!-- =====================================================
+       PAGE TRANSITION
+  ====================================================== -->
+
+  <div
+    class="page-swipe-transition"
+    id="pageSwipeTransition"
+    aria-hidden="true"
+  ></div>
+
+
+  <!-- =====================================================
        NAVIGATION
   ====================================================== -->
 
@@ -301,15 +313,24 @@
 
       <nav class="desktop-nav">
 
-        <a href="#residences">
+        <a
+          href="#residences"
+          class="nav-swipe-link"
+        >
           Residences
         </a>
 
-        <a href="#experience">
+        <a
+          href="#experience"
+          class="nav-swipe-link"
+        >
           Experience
         </a>
 
-        <a href="#bologna">
+        <a
+          href="#bologna"
+          class="nav-swipe-link"
+        >
           Bologna
         </a>
 
@@ -327,10 +348,8 @@
         class="menu-toggle"
         aria-label="Open menu"
       >
-
         <span></span>
         <span></span>
-
       </button>
 
     </div>
@@ -511,6 +530,7 @@
 
       <div class="container">
 
+
         <div class="section-heading reveal">
 
           <div>
@@ -518,7 +538,6 @@
             <p class="section-kicker">
               OUR RESIDENCES
             </p>
-
 
             <h2>
 
@@ -620,9 +639,7 @@
 
                   Discover residence
 
-                  <span>
-                    →
-                  </span>
+                  <span>→</span>
 
                 </a>
 
@@ -634,9 +651,7 @@
 
                   Book now
 
-                  <span>
-                    →
-                  </span>
+                  <span>→</span>
 
                 </a>
 
@@ -720,9 +735,7 @@
 
                   Discover residence
 
-                  <span>
-                    →
-                  </span>
+                  <span>→</span>
 
                 </a>
 
@@ -734,9 +747,7 @@
 
                   Book now
 
-                  <span>
-                    →
-                  </span>
+                  <span>→</span>
 
                 </a>
 
@@ -1144,7 +1155,7 @@
 
 
   <!-- =====================================================
-       PRIME RESIDENCE ASSISTANT
+       PRIME ASSISTANT
   ====================================================== -->
 
   <div
@@ -1166,7 +1177,6 @@
 
         <span class="assistant-prompt-dot"></span>
 
-
         <span class="assistant-prompt-content">
 
           <span class="assistant-prompt-label">
@@ -1182,7 +1192,6 @@
           </small>
 
         </span>
-
 
         <span class="assistant-prompt-arrow">
           →
@@ -1230,7 +1239,6 @@
 
           <span class="assistant-status-dot"></span>
 
-
           <div>
 
             <span class="assistant-name">
@@ -1269,10 +1277,8 @@
           </span>
 
           <p>
-
             Welcome to Prime Residence Bologna.
             What would you like to know about us?
-
           </p>
 
         </div>
@@ -1405,7 +1411,6 @@
 
 
   <script src="script.js"></script>
-
 
 </body>
 
