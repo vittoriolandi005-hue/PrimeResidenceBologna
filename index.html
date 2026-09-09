@@ -157,11 +157,15 @@
 
 
   <!-- =====================================================
-       HERO
+       MAIN
   ====================================================== -->
 
   <main>
 
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
 
     <section class="hero">
 
@@ -1043,16 +1047,80 @@
 
   <!-- =====================================================
        PRIME RESIDENCE ASSISTANT
-       HOME: NO AUTOMATIC BANNER
+       HOME
   ====================================================== -->
 
   <div
     class="prime-assistant"
     data-assistant-page="home"
+    data-assistant-residence="Prime Residence Bologna"
   >
 
 
-    <!-- CHAT LAUNCHER -->
+    <!-- ===================================================
+         AUTOMATIC HOME BANNER
+    ==================================================== -->
+
+    <div
+      class="prime-assistant-prompt"
+      aria-hidden="true"
+    >
+
+
+      <button
+        class="assistant-prompt-main"
+        type="button"
+        aria-label="Ask about Prime Residence Bologna"
+      >
+
+
+        <span class="assistant-prompt-dot"></span>
+
+
+        <span class="assistant-prompt-content">
+
+
+          <span class="assistant-prompt-label">
+            PRIME ASSISTANT
+          </span>
+
+
+          <strong>
+            What would you like to know about Prime Residence Bologna?
+          </strong>
+
+
+          <small>
+            Discover our residences, the experience and how to plan your stay.
+          </small>
+
+
+        </span>
+
+
+        <span class="assistant-prompt-arrow">
+          →
+        </span>
+
+
+      </button>
+
+
+      <button
+        class="assistant-prompt-close"
+        type="button"
+        aria-label="Close assistant suggestion"
+      >
+        ×
+      </button>
+
+
+    </div>
+
+
+    <!-- ===================================================
+         CHAT LAUNCHER
+    ==================================================== -->
 
     <button
       class="prime-assistant-launcher"
@@ -1061,16 +1129,21 @@
       aria-expanded="false"
     >
 
+
       <span class="assistant-launcher-dot"></span>
+
 
       <span class="assistant-launcher-text">
         PRIME ASSISTANT
       </span>
 
+
     </button>
 
 
-    <!-- CHAT WINDOW -->
+    <!-- ===================================================
+         CHAT WINDOW
+    ==================================================== -->
 
     <section
       class="prime-assistant-window"
@@ -1092,13 +1165,16 @@
 
           <div>
 
+
             <span class="assistant-name">
               PRIME ASSISTANT
             </span>
 
+
             <span class="assistant-status">
-              VIRTUAL CONCIERGE
+              PRIME RESIDENCE BOLOGNA
             </span>
+
 
           </div>
 
@@ -1137,7 +1213,7 @@
           <p>
 
             Welcome to Prime Residence Bologna.
-            How can I help with your stay?
+            What would you like to know about us?
 
           </p>
 
@@ -1151,6 +1227,15 @@
       <!-- QUICK QUESTIONS -->
 
       <div class="prime-assistant-suggestions">
+
+
+        <button
+          type="button"
+          class="assistant-suggestion"
+          data-question="about-prime"
+        >
+          WHAT IS PRIME?
+        </button>
 
 
         <button
@@ -1212,7 +1297,7 @@
           id="primeAssistantInput"
           class="prime-assistant-input"
           type="text"
-          placeholder="Ask about your stay..."
+          placeholder="Ask about Prime Residence Bologna..."
           maxlength="250"
         >
 
