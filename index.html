@@ -19,11 +19,7 @@
     content="Prime Residence Bologna offers refined apartments for short stays in Bologna, Italy."
   >
 
-
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
-  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
 
   <link
     rel="preconnect"
@@ -45,210 +41,185 @@
   <style>
 
     /* =====================================================
-       LOADER — SCROLL TO DISCOVER
-       Solo indicazione visiva
-       NON modifica la logica JS dello scroll
+       LOADER — SCROLL UP TO DISCOVER
+       FRECCIA SEMPRE VISIBILE
     ====================================================== */
 
-    .loader-scroll-hint {
-      position: absolute;
-      left: 50%;
-      top: calc(50% + 125px);
-      z-index: 2;
-
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 15px;
-
-      width: max-content;
-
-      color: #b69b67;
-      text-align: center;
-
-      transform: translateX(-50%);
-
-      pointer-events: none;
+    .loader-scroll-hint{
+      position:absolute;
+      left:50%;
+      top:calc(50% + 125px);
+      z-index:2;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:16px;
+      width:max-content;
+      color:#b69b67;
+      text-align:center;
+      transform:translateX(-50%);
+      pointer-events:none
     }
 
-
-    .loader-scroll-text {
-      display: block;
-
-      font-size: 8px;
-      font-weight: 600;
-      line-height: 1;
-
-      letter-spacing: 0.32em;
-      text-transform: uppercase;
-      white-space: nowrap;
-
-      opacity: 0.9;
+    .loader-scroll-text{
+      display:block;
+      color:#b69b67;
+      font-size:8px;
+      font-weight:600;
+      line-height:1;
+      letter-spacing:.32em;
+      text-transform:uppercase;
+      white-space:nowrap;
+      opacity:.9
     }
 
-
-    /* =====================================================
-       OPEN ARROW
-    ====================================================== */
-
-    .loader-scroll-arrow {
-      position: relative;
-
-      display: block;
-
-      width: 26px;
-      height: 18px;
-
-      opacity: 0.95;
-
-      animation:
-        loaderArrowMove 1.8s ease-in-out infinite;
+    .loader-scroll-arrow{
+      position:relative;
+      display:block;
+      width:38px;
+      height:58px;
+      flex-shrink:0
     }
 
+    /* ASTA CENTRALE SEMPRE VISIBILE */
 
-    .loader-scroll-arrow::before,
-    .loader-scroll-arrow::after {
-      content: "";
+    .loader-scroll-arrow-shaft{
+      position:absolute;
+      left:50%;
+      top:0;
+      width:1px;
+      height:55px;
+      background:#b69b67;
+      transform:translateX(-50%)
+    }
 
-      position: absolute;
-      top: 8px;
+    /* PUNTA SINISTRA */
 
-      width: 16px;
-      height: 1px;
+    .loader-scroll-arrow::before{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:0;
+      width:20px;
+      height:1px;
+      background:#b69b67;
+      transform-origin:left center;
+      transform:rotate(135deg)
+    }
 
-      background: #b69b67;
+    /* PUNTA DESTRA */
 
+    .loader-scroll-arrow::after{
+      content:"";
+      position:absolute;
+      right:50%;
+      top:0;
+      width:20px;
+      height:1px;
+      background:#b69b67;
+      transform-origin:right center;
+      transform:rotate(-135deg)
+    }
+
+    /* LUCE CHE SALE LUNGO L'ASTA */
+
+    .loader-scroll-glow{
+      position:absolute;
+      left:50%;
+      bottom:3px;
+      width:2px;
+      height:13px;
+      border-radius:20px;
+      background:linear-gradient(
+        to top,
+        rgba(182,155,103,0),
+        rgba(245,225,181,1),
+        rgba(182,155,103,0)
+      );
       box-shadow:
-        0 0 5px rgba(182, 155, 103, 0.25);
-
-      transform-origin: center;
+        0 0 5px rgba(182,155,103,.95),
+        0 0 10px rgba(182,155,103,.6),
+        0 0 18px rgba(182,155,103,.28);
+      transform:translateX(-50%);
+      animation:loaderGlowUp 1.65s ease-in-out infinite;
+      pointer-events:none
     }
 
-
-    .loader-scroll-arrow::before {
-      left: 0;
-
-      transform:
-        rotate(-32deg);
+    @keyframes loaderGlowUp{
+      0%{
+        bottom:3px;
+        opacity:0
+      }
+      15%{
+        opacity:1
+      }
+      72%{
+        opacity:1
+      }
+      100%{
+        bottom:42px;
+        opacity:0
+      }
     }
 
-
-    .loader-scroll-arrow::after {
-      right: 0;
-
-      transform:
-        rotate(32deg);
+    .loader{
+      cursor:grab
     }
 
-
-    /* =====================================================
-       LIGHT GLOW
-       MOVIMENTO DAL BASSO VERSO L'ALTO
-    ====================================================== */
-
-    .loader-scroll-glow {
-      position: absolute;
-      left: 50%;
-      bottom: -10px;
-
-      width: 5px;
-      height: 5px;
-
-      border-radius: 50%;
-
-      background: #b69b67;
-
-      box-shadow:
-        0 0 7px rgba(182, 155, 103, 0.7),
-        0 0 14px rgba(182, 155, 103, 0.35);
-
-      transform:
-        translateX(-50%);
-
-      animation:
-        loaderGlowUp 1.8s ease-in-out infinite;
+    .loader.mouse-dragging{
+      cursor:grabbing
     }
 
+    @media(max-width:700px){
 
-    @keyframes loaderArrowMove {
-
-      0% {
-        transform: translateY(5px);
-        opacity: 0.45;
+      .loader-scroll-hint{
+        top:calc(50% + 108px);
+        gap:14px
       }
 
-      45% {
-        opacity: 1;
+      .loader-scroll-text{
+        font-size:7px;
+        letter-spacing:.28em
       }
 
-      100% {
-        transform: translateY(-5px);
-        opacity: 0.45;
+      .loader-scroll-arrow{
+        width:34px;
+        height:52px
       }
 
-    }
-
-
-    @keyframes loaderGlowUp {
-
-      0% {
-        transform:
-          translate(-50%, 12px);
-
-        opacity: 0;
+      .loader-scroll-arrow-shaft{
+        height:49px
       }
-
-      20% {
-        opacity: 0.9;
-      }
-
-      70% {
-        opacity: 0.9;
-      }
-
-      100% {
-        transform:
-          translate(-50%, -22px);
-
-        opacity: 0;
-      }
-
-    }
-
-
-    @media (max-width: 700px) {
-
-      .loader-scroll-hint {
-        top: calc(50% + 108px);
-        gap: 13px;
-      }
-
-
-      .loader-scroll-text {
-        font-size: 7px;
-        letter-spacing: 0.28em;
-      }
-
-
-      .loader-scroll-arrow {
-        width: 24px;
-        height: 17px;
-      }
-
 
       .loader-scroll-arrow::before,
-      .loader-scroll-arrow::after {
-        width: 15px;
+      .loader-scroll-arrow::after{
+        width:18px
+      }
+
+      @keyframes loaderGlowUp{
+        0%{
+          bottom:3px;
+          opacity:0
+        }
+        15%{
+          opacity:1
+        }
+        72%{
+          opacity:1
+        }
+        100%{
+          bottom:36px;
+          opacity:0
+        }
       }
 
     }
 
+    @media(max-height:600px){
 
-    @media (max-height: 600px) {
-
-      .loader-scroll-hint {
-        top: calc(50% + 95px);
+      .loader-scroll-hint{
+        top:calc(50% + 95px)
       }
 
     }
@@ -288,11 +259,12 @@
     >
 
       <span class="loader-scroll-text">
-        SCROLL TO DISCOVER
+        SCROLL UP TO DISCOVER
       </span>
 
-
       <span class="loader-scroll-arrow">
+
+        <span class="loader-scroll-arrow-shaft"></span>
 
         <span class="loader-scroll-glow"></span>
 
@@ -310,7 +282,6 @@
   <header class="navbar">
 
     <div class="nav-container">
-
 
       <a
         href="index.html"
@@ -362,7 +333,6 @@
 
       </button>
 
-
     </div>
 
 
@@ -402,12 +372,10 @@
 
     <section class="hero">
 
-
       <div class="hero-overlay"></div>
 
 
       <div class="hero-content reveal">
-
 
         <p class="eyebrow">
           PRIME RESIDENCE BOLOGNA
@@ -436,14 +404,12 @@
 
         <div class="hero-buttons">
 
-
           <a
             href="booking.html"
             class="btn btn-primary"
           >
             Book your stay
           </a>
-
 
           <a
             href="#residences"
@@ -452,9 +418,7 @@
             Explore residences
           </a>
 
-
         </div>
-
 
       </div>
 
@@ -469,7 +433,6 @@
 
       </div>
 
-
     </section>
 
 
@@ -479,9 +442,7 @@
 
     <section class="intro section">
 
-
       <div class="container intro-grid">
-
 
         <div class="intro-label reveal">
 
@@ -497,7 +458,6 @@
 
 
         <div class="intro-content reveal">
-
 
           <p class="section-kicker">
             MORE THAN A STAY
@@ -533,12 +493,9 @@
 
           </p>
 
-
         </div>
 
-
       </div>
-
 
     </section>
 
@@ -552,15 +509,11 @@
       id="residences"
     >
 
-
       <div class="container">
-
 
         <div class="section-heading reveal">
 
-
           <div>
-
 
             <p class="section-kicker">
               OUR RESIDENCES
@@ -577,7 +530,6 @@
 
             </h2>
 
-
           </div>
 
 
@@ -589,25 +541,20 @@
 
           </p>
 
-
         </div>
 
 
         <div class="residences-grid">
 
 
-          <!-- =================================================
-               GASTONE ROSSI
-          ================================================== -->
+          <!-- GASTONE ROSSI -->
 
           <article class="residence-card reveal">
-
 
             <a
               href="gastone-rossi-12.html"
               class="residence-image"
             >
-
 
               <div class="photo-placeholder">
 
@@ -617,30 +564,24 @@
 
               </div>
 
-
               <div class="residence-number">
                 01
               </div>
-
 
             </a>
 
 
             <div class="residence-info">
 
-
               <div>
-
 
                 <p class="residence-location">
                   BOLOGNA · ITALY
                 </p>
 
-
                 <h3>
                   Gastone Rossi 12
                 </h3>
-
 
                 <p>
 
@@ -649,7 +590,6 @@
                   living spaces.
 
                 </p>
-
 
               </div>
 
@@ -672,7 +612,6 @@
 
 
               <div class="residence-actions">
-
 
                 <a
                   href="gastone-rossi-12.html"
@@ -701,28 +640,21 @@
 
                 </a>
 
-
               </div>
 
-
             </div>
-
 
           </article>
 
 
-          <!-- =================================================
-               BARONTINI
-          ================================================== -->
+          <!-- BARONTINI -->
 
           <article class="residence-card reveal">
-
 
             <a
               href="barontini-8.html"
               class="residence-image"
             >
-
 
               <div class="photo-placeholder">
 
@@ -732,30 +664,24 @@
 
               </div>
 
-
               <div class="residence-number">
                 02
               </div>
-
 
             </a>
 
 
             <div class="residence-info">
 
-
               <div>
-
 
                 <p class="residence-location">
                   BOLOGNA · ITALY
                 </p>
 
-
                 <h3>
                   Barontini 8
                 </h3>
-
 
                 <p>
 
@@ -764,7 +690,6 @@
                   enjoying the comfort of a private home.
 
                 </p>
-
 
               </div>
 
@@ -787,7 +712,6 @@
 
 
               <div class="residence-actions">
-
 
                 <a
                   href="barontini-8.html"
@@ -816,21 +740,15 @@
 
                 </a>
 
-
               </div>
-
 
             </div>
 
-
           </article>
-
 
         </div>
 
-
       </div>
-
 
     </section>
 
@@ -844,15 +762,11 @@
       id="experience"
     >
 
-
       <div class="container">
-
 
         <div class="experience-grid">
 
-
           <div class="experience-image reveal">
-
 
             <div class="photo-placeholder large">
 
@@ -862,12 +776,10 @@
 
             </div>
 
-
           </div>
 
 
           <div class="experience-content reveal">
-
 
             <p class="section-kicker">
               PRIME RESIDENCE
@@ -895,7 +807,6 @@
 
 
             <div class="experience-list">
-
 
               <div>
 
@@ -947,18 +858,13 @@
 
               </div>
 
-
             </div>
-
 
           </div>
 
-
         </div>
 
-
       </div>
-
 
     </section>
 
@@ -972,9 +878,7 @@
       id="bologna"
     >
 
-
       <div class="bologna-background">
-
 
         <div class="photo-placeholder full">
 
@@ -984,7 +888,6 @@
 
         </div>
 
-
       </div>
 
 
@@ -992,7 +895,6 @@
 
 
       <div class="container bologna-content reveal">
-
 
         <p class="section-kicker">
           DISCOVER THE CITY
@@ -1026,9 +928,7 @@
           Plan your stay
         </a>
 
-
       </div>
-
 
     </section>
 
@@ -1039,12 +939,9 @@
 
     <section class="visual-section">
 
-
       <div class="visual-grid">
 
-
         <div class="visual-item reveal">
-
 
           <div class="photo-placeholder">
 
@@ -1054,12 +951,10 @@
 
           </div>
 
-
         </div>
 
 
         <div class="visual-text reveal">
-
 
           <p class="section-kicker">
             THE PRIME STANDARD
@@ -1085,12 +980,9 @@
 
           </p>
 
-
         </div>
 
-
       </div>
-
 
     </section>
 
@@ -1101,9 +993,7 @@
 
     <section class="cta section">
 
-
       <div class="container cta-content reveal">
-
 
         <p class="section-kicker">
           YOUR NEXT STAY
@@ -1128,9 +1018,7 @@
           Book your stay
         </a>
 
-
       </div>
-
 
     </section>
 
@@ -1144,15 +1032,11 @@
 
   <footer class="footer">
 
-
     <div class="container">
-
 
       <div class="footer-top">
 
-
         <div class="footer-brand">
-
 
           <div class="logo">
 
@@ -1166,22 +1050,18 @@
 
           </div>
 
-
           <p>
             Refined short stays in Bologna, Italy.
           </p>
-
 
         </div>
 
 
         <div class="footer-column">
 
-
           <p class="footer-title">
             EXPLORE
           </p>
-
 
           <a href="#residences">
             Residences
@@ -1199,43 +1079,35 @@
             Book now
           </a>
 
-
         </div>
 
 
         <div class="footer-column">
-
 
           <p class="footer-title">
             RESIDENCES
           </p>
 
-
           <a href="gastone-rossi-12.html">
             Gastone Rossi 12
           </a>
 
-
           <a href="barontini-8.html">
             Barontini 8
           </a>
-
 
         </div>
 
 
         <div class="footer-column">
 
-
           <p class="footer-title">
             CONTACT
           </p>
 
-
           <a href="mailto:vittoriolandi005@gmail.com">
             Email us
           </a>
-
 
           <a
             href="https://wa.me/393917055625"
@@ -1245,15 +1117,12 @@
             WhatsApp
           </a>
 
-
         </div>
-
 
       </div>
 
 
       <div class="footer-bottom">
-
 
         <p>
 
@@ -1263,24 +1132,19 @@
 
         </p>
 
-
         <p>
           Bologna · Italy
         </p>
 
-
       </div>
 
-
     </div>
-
 
   </footer>
 
 
   <!-- =====================================================
        PRIME RESIDENCE ASSISTANT
-       HOME
   ====================================================== -->
 
   <div
@@ -1289,12 +1153,10 @@
     data-assistant-residence="Prime Residence Bologna"
   >
 
-
     <div
       class="prime-assistant-prompt"
       aria-hidden="true"
     >
-
 
       <button
         class="assistant-prompt-main"
@@ -1302,27 +1164,22 @@
         aria-label="Ask about Prime Residence Bologna"
       >
 
-
         <span class="assistant-prompt-dot"></span>
 
 
         <span class="assistant-prompt-content">
 
-
           <span class="assistant-prompt-label">
             PRIME ASSISTANT
           </span>
-
 
           <strong>
             What would you like to know about Prime Residence Bologna?
           </strong>
 
-
           <small>
             Discover our residences, the experience and how to plan your stay.
           </small>
-
 
         </span>
 
@@ -1330,7 +1187,6 @@
         <span class="assistant-prompt-arrow">
           →
         </span>
-
 
       </button>
 
@@ -1343,7 +1199,6 @@
         ×
       </button>
 
-
     </div>
 
 
@@ -1354,14 +1209,11 @@
       aria-expanded="false"
     >
 
-
       <span class="assistant-launcher-dot"></span>
-
 
       <span class="assistant-launcher-text">
         PRIME ASSISTANT
       </span>
-
 
     </button>
 
@@ -1372,31 +1224,24 @@
       aria-hidden="true"
     >
 
-
       <div class="prime-assistant-header">
 
-
         <div class="prime-assistant-identity">
-
 
           <span class="assistant-status-dot"></span>
 
 
           <div>
 
-
             <span class="assistant-name">
               PRIME ASSISTANT
             </span>
-
 
             <span class="assistant-status">
               PRIME RESIDENCE BOLOGNA
             </span>
 
-
           </div>
-
 
         </div>
 
@@ -1409,7 +1254,6 @@
           ×
         </button>
 
-
       </div>
 
 
@@ -1418,14 +1262,11 @@
         aria-live="polite"
       >
 
-
         <div class="assistant-message assistant-message-bot">
-
 
           <span class="assistant-message-label">
             PRIME ASSISTANT
           </span>
-
 
           <p>
 
@@ -1434,15 +1275,12 @@
 
           </p>
 
-
         </div>
-
 
       </div>
 
 
       <div class="prime-assistant-suggestions">
-
 
         <button
           type="button"
@@ -1452,7 +1290,6 @@
           WHAT IS PRIME?
         </button>
 
-
         <button
           type="button"
           class="assistant-suggestion"
@@ -1460,7 +1297,6 @@
         >
           THE RESIDENCES
         </button>
-
 
         <button
           type="button"
@@ -1470,7 +1306,6 @@
           COMPARE
         </button>
 
-
         <button
           type="button"
           class="assistant-suggestion"
@@ -1478,7 +1313,6 @@
         >
           BOOKING
         </button>
-
 
         <button
           type="button"
@@ -1488,7 +1322,6 @@
           LOCATION
         </button>
 
-
       </div>
 
 
@@ -1497,14 +1330,12 @@
         autocomplete="off"
       >
 
-
         <label
           for="primeAssistantInput"
           class="assistant-visually-hidden"
         >
           Ask Prime Residence Assistant a question
         </label>
-
 
         <input
           id="primeAssistantInput"
@@ -1514,7 +1345,6 @@
           maxlength="250"
         >
 
-
         <button
           class="prime-assistant-send"
           type="submit"
@@ -1523,20 +1353,16 @@
           →
         </button>
 
-
       </form>
 
 
       <div class="prime-assistant-contact">
 
-
         <span>
           NEED PERSONAL ASSISTANCE?
         </span>
 
-
         <div>
-
 
           <a
             href="https://wa.me/393917055625"
@@ -1546,22 +1372,15 @@
             WHATSAPP ↗
           </a>
 
-
-          <a
-            href="mailto:vittoriolandi005@gmail.com"
-          >
+          <a href="mailto:vittoriolandi005@gmail.com">
             EMAIL ↗
           </a>
 
-
         </div>
-
 
       </div>
 
-
     </section>
-
 
   </div>
 
