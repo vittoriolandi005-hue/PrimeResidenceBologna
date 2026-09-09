@@ -1,4 +1,3 @@
-```javascript
 document.addEventListener("DOMContentLoaded", () => {
 
   const loader = document.querySelector(".loader");
@@ -6,158 +5,99 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!loader) return;
 
-  let introFinished = false;
-  let introAnimating = false;
-
-  const INTRO_DURATION = 2200;
-
   /* =========================================
-     FINISH INTRO
+     INTRO SCROLL
+     Un piccolo scroll avvia automaticamente
+     il movimento lento verso la seconda pagina
   ========================================= */
 
-  function finishIntro() {
+  let introFinished = false;
+  let introAnimating = false;
+  let introStartTime = null;
 
+  const INTRO_DURATION = 2200; // 2.2 secondi
+
+  function finishIntro() {
     if (introFinished) return;
 
     introFinished = true;
     introAnimating = false;
 
-    document.body.classList.remove("intro-active");
-    document.body.style.overflow = "";
-
     loader.style.transform =
       "translate3d(0, -100%, 0)";
 
-    loader.style.pointerEvents = "none";
-
     if (scrollEnter) {
       scrollEnter.style.opacity = "0";
+      scrollEnter.style.transform =
+        "translate3d(-50%, 25px, 0)";
     }
+
+    document.body.classList.remove("intro-active");
+    document.body.style.overflow = "";
+
+    window.scrollTo({
+      top: 0,
+      behavior: "auto"
+    });
   }
 
+  function animateIntro(timestamp) {
+    if (introFinished) return;
 
-  /* =========================================
-     AUTOMATIC INTRO SCROLL
-  ========================================= */
+    if (!introStartTime) {
+      introStartTime = timestamp;
+    }
 
-  function startIntro() {
+    const elapsed = timestamp - introStartTime;
 
-    if (
-      introFinished ||
-      introAnimating
-    ) {
+    let progress =
+      Math.min(elapsed / INTRO_DURATION, 1);
+
+    /*
+      Ease-in-out molto morbido:
+      parte lentamente,
+      accelera leggermente,
+      rallenta alla fine.
+    */
+    const easedProgress =
+      progress < 0.5
+        ? 2 * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+    loader.style.transform =
+      `translate3d(0, ${-easedProgress * 100}%, 0)`;
+
+    if (scrollEnter) {
+      scrollEnter.style.opacity =
+        Math.max(0, 1 - easedProgress * 3);
+
+      scrollEnter.style.transform =
+        `translate3d(-50%, ${easedProgress * 25}px, 0)`;
+    }
+
+    if (progress >= 1) {
+      finishIntro();
       return;
     }
 
-    introAnimating = true;
-
-    /*
-      Sblocchiamo temporaneamente lo scroll
-      per permettere alla pagina di muoversi.
-    */
-
-    document.body.style.overflow = "";
-
-    const startPosition = window.scrollY;
-
-    const targetPosition =
-      document.querySelector("#home")
-        ? document.querySelector("#home").offsetTop
-        : window.innerHeight;
-
-    const distance =
-      targetPosition - startPosition;
-
-    const startTime = performance.now();
-
-
-    function animateScroll(currentTime) {
-
-      const elapsed =
-        currentTime - startTime;
-
-      const progress =
-        Math.min(
-          elapsed / INTRO_DURATION,
-          1
-        );
-
-
-      /*
-        Movimento cinematico:
-        lento all'inizio,
-        fluido al centro,
-        rallenta alla fine.
-      */
-
-      const eased =
-        progress < 0.5
-          ? 2 * progress * progress
-          : 1 -
-            Math.pow(
-              -2 * progress + 2,
-              2
-            ) / 2;
-
-
-      window.scrollTo(
-        0,
-        startPosition +
-        distance * eased
-      );
-
-
-      /*
-        Il pannello nero dell'intro
-        scivola via contemporaneamente.
-      */
-
-      loader.style.transform =
-        `translate3d(
-          0,
-          ${-eased * 100}%,
-          0
-        )`;
-
-
-      if (scrollEnter) {
-
-        scrollEnter.style.opacity =
-          Math.max(
-            0,
-            1 - eased * 3
-          );
-
-      }
-
-
-      if (progress < 1) {
-
-        requestAnimationFrame(
-          animateScroll
-        );
-
-      } else {
-
-        finishIntro();
-
-      }
-
-    }
-
-
-    requestAnimationFrame(
-      animateScroll
-    );
-
+    requestAnimationFrame(animateIntro);
   }
 
+  function startIntro() {
+    if (introFinished || introAnimating) return;
 
-  /* =========================================
-     MOUSE WHEEL
-     UN SOLO SCROLL
-  ========================================= */
+    introAnimating = true;
+    introStartTime = null;
 
+    requestAnimationFrame(animateIntro);
+  }
+
+  /*
+    PRIMO SCROLL
+
+    Qualsiasi scroll verso il basso durante
+    l'intro avvia l'animazione automatica.
+  */
   window.addEventListener(
     "wheel",
     (event) => {
@@ -178,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================
-     TOUCH
+     TOUCH / MOBILE
   ========================================= */
 
   let touchStart = 0;
@@ -197,7 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
       passive: true
     }
   );
-
 
   window.addEventListener(
     "touchmove",
@@ -227,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================
-     KEYBOARD
+     TASTIERA
   ========================================= */
 
   window.addEventListener(
@@ -253,7 +192,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================
-     NAVBAR
+     NAVBAR SCROLL
+     NON MODIFICATO
   ========================================= */
 
   const navbar =
@@ -267,15 +207,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (window.scrollY > 50) {
 
-        navbar.classList.add(
-          "scrolled"
-        );
+        navbar.classList.add("scrolled");
 
       } else {
 
-        navbar.classList.remove(
-          "scrolled"
-        );
+        navbar.classList.remove("scrolled");
 
       }
 
@@ -285,6 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================================
      REVEAL ANIMATIONS
+     NON MODIFICATO
   ========================================= */
 
   const revealElements =
@@ -297,9 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
         entries.forEach(
           (entry) => {
 
-            if (
-              entry.isIntersecting
-            ) {
+            if (entry.isIntersecting) {
 
               entry.target.classList.add(
                 "visible"
@@ -320,7 +255,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     );
 
-
   revealElements.forEach(
     (element) => {
 
@@ -334,6 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================================
      MOBILE MENU
+     NON MODIFICATO
   ========================================= */
 
   const menuButton =
@@ -362,7 +297,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================
-     SMOOTH ANCHOR LINKS
+     ANCHOR LINKS
+     NON MODIFICATO
   ========================================= */
 
   document
@@ -377,7 +313,9 @@ document.addEventListener("DOMContentLoaded", () => {
           function(event) {
 
             const targetId =
-              this.getAttribute("href");
+              this.getAttribute(
+                "href"
+              );
 
             const target =
               document.querySelector(
@@ -400,7 +338,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================
-     YEAR
+     FOOTER YEAR
+     NON MODIFICATO
   ========================================= */
 
   const year =
@@ -414,4 +353,3 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
-```
