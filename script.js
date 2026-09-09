@@ -7,8 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!loader) return;
 
   /* =========================================
-     PREMIUM INTRO
-     Scroll automatico lento e cinematografico
+     INTRO SCROLL
+     Un piccolo scroll avvia automaticamente
+     il movimento lento verso la seconda pagina
   ========================================= */
 
   let introFinished = false;
@@ -29,22 +30,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (scrollEnter) {
       scrollEnter.style.opacity = "0";
       scrollEnter.style.transform =
-        "translate3d(-50%, 30px, 0)";
+        "translate3d(-50%, 25px, 0)";
     }
 
     document.body.classList.remove("intro-active");
     document.body.style.overflow = "";
 
-    /*
-      Piccola pausa finale per evitare
-      qualsiasi movimento brusco.
-    */
-    window.scrollTo({
-      top: 0,
-      behavior: "auto"
-    });
+    window.scrollTo(0, 0);
   }
-
 
   function animateIntro(timestamp) {
 
@@ -57,17 +50,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const elapsed =
       timestamp - introStartTime;
 
-    let progress =
+    const progress =
       Math.min(
         elapsed / INTRO_DURATION,
         1
       );
 
-
-    /* =====================================
-       CINEMATIC EASING
-    ===================================== */
-
+    /* Movimento morbido */
     const easedProgress =
       progress < 0.5
         ? 2 * progress * progress
@@ -77,98 +66,34 @@ document.addEventListener("DOMContentLoaded", () => {
             2
           ) / 2;
 
-
-    /* =====================================
-       LOADER MOVEMENT
-       Movimento principale
-    ===================================== */
-
+    /* Movimento del pannello intro */
     loader.style.transform =
-      `translate3d(
-        0,
-        ${-easedProgress * 100}%,
-        0
-      )`;
+      `translate3d(0, ${-easedProgress * 100}%, 0)`;
 
-
-    /* =====================================
-       SCROLL INDICATOR
-       Scompare elegantemente
-    ===================================== */
-
+    /* Indicatore scroll */
     if (scrollEnter) {
 
-      const indicatorOpacity =
+      scrollEnter.style.opacity =
         Math.max(
           0,
-          1 - easedProgress * 4
+          1 - easedProgress * 3
         );
-
-      const indicatorMove =
-        easedProgress * 35;
-
-      scrollEnter.style.opacity =
-        indicatorOpacity;
 
       scrollEnter.style.transform =
-        `translate3d(
-          -50%,
-          ${indicatorMove}px,
-          0
-        )`;
-
+        `translate3d(-50%, ${easedProgress * 25}px, 0)`;
     }
-
-
-    /* =====================================
-       PREMIUM DEPTH EFFECT
-       Leggerissimo zoom durante la transizione
-    ===================================== */
-
-    const loaderContent =
-      loader.querySelector(
-        ".loader-content"
-      );
-
-    if (loaderContent) {
-
-      const scale =
-        1 +
-        easedProgress * 0.035;
-
-      const opacity =
-        Math.max(
-          0,
-          1 - easedProgress * 1.4
-        );
-
-      loaderContent.style.transform =
-        `scale(${scale})`;
-
-      loaderContent.style.opacity =
-        opacity;
-
-    }
-
-
-    /* =====================================
-       FINE ANIMAZIONE
-    ===================================== */
 
     if (progress >= 1) {
 
       finishIntro();
 
       return;
-
     }
 
     requestAnimationFrame(
       animateIntro
     );
-
   }
-
 
   function startIntro() {
 
@@ -185,13 +110,12 @@ document.addEventListener("DOMContentLoaded", () => {
     requestAnimationFrame(
       animateIntro
     );
-
   }
 
 
   /* =========================================
-     DESKTOP SCROLL
-     UN SOLO SCROLL → ANIMAZIONE AUTOMATICA
+     MOUSE WHEEL
+     UN SOLO SCROLL → PARTE AUTOMATICAMENTE
   ========================================= */
 
   window.addEventListener(
@@ -214,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================
-     MOBILE TOUCH
+     TOUCH / MOBILE
   ========================================= */
 
   let touchStart = 0;
@@ -233,7 +157,6 @@ document.addEventListener("DOMContentLoaded", () => {
       passive: true
     }
   );
-
 
   window.addEventListener(
     "touchmove",
@@ -263,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================
-     KEYBOARD
+     TASTIERA
   ========================================= */
 
   window.addEventListener(
@@ -303,15 +226,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (window.scrollY > 50) {
 
-        navbar.classList.add(
-          "scrolled"
-        );
+        navbar.classList.add("scrolled");
 
       } else {
 
-        navbar.classList.remove(
-          "scrolled"
-        );
+        navbar.classList.remove("scrolled");
 
       }
 
@@ -320,13 +239,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================
-     REVEAL ANIMATIONS
+     REVEAL
   ========================================= */
 
   const revealElements =
-    document.querySelectorAll(
-      ".reveal"
-    );
+    document.querySelectorAll(".reveal");
 
   const revealObserver =
     new IntersectionObserver(
@@ -335,9 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
         entries.forEach(
           (entry) => {
 
-            if (
-              entry.isIntersecting
-            ) {
+            if (entry.isIntersecting) {
 
               entry.target.classList.add(
                 "visible"
@@ -346,7 +261,6 @@ document.addEventListener("DOMContentLoaded", () => {
               revealObserver.unobserve(
                 entry.target
               );
-
             }
 
           }
@@ -357,7 +271,6 @@ document.addEventListener("DOMContentLoaded", () => {
         threshold: 0.15
       }
     );
-
 
   revealElements.forEach(
     (element) => {
@@ -375,15 +288,10 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================================= */
 
   const menuButton =
-    document.querySelector(
-      ".menu-button"
-    );
+    document.querySelector(".menu-button");
 
   const mobileMenu =
-    document.querySelector(
-      ".mobile-menu"
-    );
-
+    document.querySelector(".mobile-menu");
 
   if (
     menuButton &&
@@ -409,9 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================================= */
 
   document
-    .querySelectorAll(
-      'a[href^="#"]'
-    )
+    .querySelectorAll('a[href^="#"]')
     .forEach(
       (link) => {
 
@@ -420,9 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
           function(event) {
 
             const targetId =
-              this.getAttribute(
-                "href"
-              );
+              this.getAttribute("href");
 
             const target =
               document.querySelector(
@@ -449,9 +353,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================================= */
 
   const year =
-    document.querySelector(
-      "#year"
-    );
+    document.querySelector("#year");
 
   if (year) {
 
