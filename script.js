@@ -5,10 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!loader) return;
 
-  // =====================================================
-  // INTRO / SCROLL TO ENTER
-  // =====================================================
-
   let progress = 0;
   let targetProgress = 0;
   let introFinished = false;
@@ -18,6 +14,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let animationFrame = null;
 
+
+  // =========================
+  // ANIMAZIONE INTRO
+  // =========================
 
   function animateIntro() {
 
@@ -62,6 +62,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
+  // =========================
+  // FINE INTRO
+  // =========================
+
   function finishIntro() {
 
     if (introFinished) return;
@@ -85,9 +89,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  // =====================================================
-  // MOUSE WHEEL INTRO
-  // =====================================================
+  // =========================
+  // MOUSE WHEEL
+  // =========================
 
   window.addEventListener(
     "wheel",
@@ -110,9 +114,9 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
 
-  // =====================================================
-  // TOUCH INTRO
-  // =====================================================
+  // =========================
+  // TOUCH
+  // =========================
 
   let touchStart = 0;
 
@@ -162,9 +166,9 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
 
-  // =====================================================
-  // KEYBOARD INTRO
-  // =====================================================
+  // =========================
+  // TASTIERA
+  // =========================
 
   window.addEventListener(
     "keydown",
@@ -207,15 +211,14 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
 
-  // =====================================================
+  // =========================
   // NAVBAR
-  // =====================================================
+  // =========================
 
   const navbar =
     document.querySelector(".navbar");
 
-
-  function updateNavbar() {
+  window.addEventListener("scroll", () => {
 
     if (!navbar) return;
 
@@ -228,23 +231,16 @@ document.addEventListener("DOMContentLoaded", () => {
       navbar.classList.remove("scrolled");
 
     }
-  }
+
+  });
 
 
-  window.addEventListener(
-    "scroll",
-    updateNavbar,
-    { passive: true }
-  );
-
-
-  // =====================================================
-  // REVEAL ANIMATIONS
-  // =====================================================
+  // =========================
+  // REVEAL
+  // =========================
 
   const revealElements =
     document.querySelectorAll(".reveal");
-
 
   const revealObserver =
     new IntersectionObserver(
@@ -256,9 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             entry.target.classList.add("visible");
 
-            revealObserver.unobserve(
-              entry.target
-            );
+            revealObserver.unobserve(entry.target);
 
           }
 
@@ -266,65 +260,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
       },
       {
-        threshold: 0.15,
-        rootMargin: "0px 0px -5% 0px"
+        threshold: 0.15
       }
     );
 
 
   revealElements.forEach((element) => {
-
     revealObserver.observe(element);
-
   });
 
 
-  // =====================================================
-  // RESIDENCE CARDS
-  // =====================================================
-
-  const residenceCards =
-    document.querySelectorAll(".residence-card");
-
-
-  const residenceObserver =
-    new IntersectionObserver(
-      (entries) => {
-
-        entries.forEach((entry) => {
-
-          if (entry.isIntersecting) {
-
-            entry.target.classList.add(
-              "residence-visible"
-            );
-
-            residenceObserver.unobserve(
-              entry.target
-            );
-
-          }
-
-        });
-
-      },
-      {
-        threshold: 0.15,
-        rootMargin: "0px 0px -5% 0px"
-      }
-    );
-
-
-  residenceCards.forEach((card) => {
-
-    residenceObserver.observe(card);
-
-  });
-
-
-  // =====================================================
+  // =========================
   // MOBILE MENU
-  // =====================================================
+  // =========================
 
   const menuButton =
     document.querySelector(".menu-button");
@@ -332,89 +280,52 @@ document.addEventListener("DOMContentLoaded", () => {
   const mobileMenu =
     document.querySelector(".mobile-menu");
 
-
   if (menuButton && mobileMenu) {
 
-    menuButton.addEventListener(
-      "click",
-      () => {
+    menuButton.addEventListener("click", () => {
 
-        mobileMenu.classList.toggle("open");
+      mobileMenu.classList.toggle("open");
 
-        document.body.classList.toggle(
-          "menu-open"
-        );
+    });
 
-      }
-    );
-
-
-    // Chiude il menu quando viene
-    // selezionata una voce
-
-    mobileMenu
-      .querySelectorAll("a")
-      .forEach((link) => {
-
-        link.addEventListener(
-          "click",
-          () => {
-
-            mobileMenu.classList.remove(
-              "open"
-            );
-
-            document.body.classList.remove(
-              "menu-open"
-            );
-
-          }
-        );
-
-      });
   }
 
 
-  // =====================================================
+  // =========================
   // SMOOTH LINKS
-  // =====================================================
+  // =========================
 
   document
     .querySelectorAll('a[href^="#"]')
     .forEach((link) => {
 
-      link.addEventListener(
-        "click",
-        function(event) {
+      link.addEventListener("click", function(event) {
 
-          const targetId =
-            this.getAttribute("href");
+        const targetId =
+          this.getAttribute("href");
 
-          const target =
-            document.querySelector(targetId);
+        const target =
+          document.querySelector(targetId);
 
-          if (!target) return;
+        if (!target) return;
 
-          event.preventDefault();
+        event.preventDefault();
 
-          target.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
+        target.scrollIntoView({
+          behavior: "smooth"
+        });
 
-        }
-      );
+      });
 
     });
 
 
-  // =====================================================
+  // =========================
   // YEAR
-  // =====================================================
+  // =========================
 
   const year =
     document.querySelector("#year");
-
 
   if (year) {
 
@@ -422,12 +333,5 @@ document.addEventListener("DOMContentLoaded", () => {
       new Date().getFullYear();
 
   }
-
-
-  // =====================================================
-  // INITIAL NAVBAR STATE
-  // =====================================================
-
-  updateNavbar();
 
 });
