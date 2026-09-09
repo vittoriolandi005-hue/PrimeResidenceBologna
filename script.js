@@ -110,13 +110,15 @@ document.addEventListener("DOMContentLoaded", () => {
  
  
   /* ======================================================= 
-     04. PREMIUM HERO SCROLL
+     04. PREMIUM HERO → STAY BEAUTIFULLY
      
-     IMPORTANTE:
-     Questa è l'unica parte modificata.
-     Primo scroll dalla HOME:
-     HERO → transizione cinematografica →
-     sezione successiva / "Stay Beautifully".
+     VERSIONE FLUIDA
+     
+     - nessun delay artificiale
+     - nessun setTimeout
+     - nessun blocco dello scroll
+     - transizione rapida
+     - movimento cinematografico
   ======================================================= */ 
  
   const hero = document.querySelector(".hero"); 
@@ -127,156 +129,113 @@ document.addEventListener("DOMContentLoaded", () => {
  
     if (nextSection) { 
  
-      const INTRO_DURATION = 2200; 
+      const heroImage = 
+        hero.querySelector(".hero-image"); 
  
-      let introActive = false; 
-      let introFinished = false; 
-      let animationFrame = null; 
+      const heroOverlay = 
+        hero.querySelector(".hero-overlay"); 
+ 
+      const heroContent = 
+        hero.querySelector(".hero-content"); 
+ 
+      const heroScroll = 
+        hero.querySelector(".hero-scroll"); 
  
  
       /* ---------------------------------------------------
-         PREPARAZIONE DELLA TRANSIZIONE
+         CLASSI
       --------------------------------------------------- */ 
  
       hero.classList.add("scroll-enter"); 
       nextSection.classList.add("scroll-enter"); 
  
  
-      /* 
-         Le proprietà vengono aggiunte direttamente da JS.
-         Non tocchiamo il resto del CSS del sito.
-      */ 
+      /* ---------------------------------------------------
+         CONFIGURAZIONE
+      --------------------------------------------------- */ 
  
-      hero.style.willChange = 
-        "transform, opacity, clip-path"; 
+      const SLIDE_DISTANCE = 
+        Math.max( 
+          window.innerHeight * 0.82, 
+          520 
+        ); 
  
-      nextSection.style.willChange = 
-        "transform, opacity, clip-path"; 
+      const SLIDE_DURATION = 750; 
+ 
+      let slideRunning = false; 
+      let slideCompleted = false; 
+      let slideStart = 0; 
  
  
       /* ---------------------------------------------------
          STATO INIZIALE
       --------------------------------------------------- */ 
  
-      function prepareIntro() { 
+      hero.style.willChange = 
+        "transform, opacity"; 
  
-        if (window.scrollY > 8) return; 
+      nextSection.style.willChange = 
+        "transform, opacity"; 
  
-        hero.classList.remove( 
-          "intro-active" 
-        ); 
+      nextSection.style.transform = 
+        "translate3d(0, 0, 0)"; 
  
-        nextSection.classList.remove( 
-          "intro-active" 
-        ); 
- 
-        hero.style.transform = 
-          "translate3d(0, 0, 0)"; 
- 
-        hero.style.opacity = 
-          "1"; 
- 
-        hero.style.clipPath = 
-          "inset(0 0 0 0)"; 
- 
-        nextSection.style.transform = 
-          "translate3d(0, 100vh, 0)"; 
- 
-        nextSection.style.opacity = 
-          "1"; 
- 
-        nextSection.style.clipPath = 
-          "inset(0 0 0 0)"; 
- 
-      } 
- 
-      prepareIntro(); 
+      nextSection.style.opacity = "1"; 
  
  
       /* ---------------------------------------------------
-         EASING PREMIUM
+         EASING VELOCE E FLUIDO
       --------------------------------------------------- */ 
  
-      function easeInOutCubic(value) { 
- 
-        if (value < 0.5) { 
- 
-          return 4 * value * value * value; 
- 
-        } 
+      function premiumEase(progress) { 
  
         return 1 - Math.pow( 
-          -2 * value + 2, 
+          1 - progress, 
           3 
-        ) / 2; 
+        ); 
  
       } 
  
  
       /* ---------------------------------------------------
-         AVVIO DELLO SLIDE
+         AVVIO SLIDE
       --------------------------------------------------- */ 
  
-      function startIntro() { 
+      function startPremiumSlide() { 
  
-        if (introActive || introFinished) { 
+        if (slideRunning || slideCompleted) { 
           return; 
         } 
  
-        if (window.scrollY > 12) { 
+        if (window.scrollY > 15) { 
           return; 
         } 
  
-        introActive = true; 
+        slideRunning = true; 
  
-        hero.classList.add( 
-          "intro-active" 
-        ); 
- 
-        nextSection.classList.add( 
-          "intro-active" 
-        ); 
- 
- 
-        /* 
-           Blocchiamo lo scroll solamente durante
-           la transizione.
-        */ 
- 
-        const previousOverflow = 
-          document.body.style.overflow; 
- 
-        document.body.dataset.previousOverflow = 
-          previousOverflow; 
- 
-        document.body.style.overflow = 
-          "hidden"; 
- 
- 
-        const startTime = 
+        slideStart = 
           performance.now(); 
  
  
-        function animateIntro(currentTime) { 
+        function animate(currentTime) { 
  
           const elapsed = 
-            currentTime - startTime; 
+            currentTime - slideStart; 
  
           let progress = 
-            elapsed / INTRO_DURATION; 
+            elapsed / SLIDE_DURATION; 
  
           progress = Math.max( 
             0, 
             Math.min(1, progress) 
           ); 
  
- 
           const eased = 
-            easeInOutCubic(progress); 
+            premiumEase(progress); 
  
  
           /* ---------------------------------------------
-             HERO SCIVOLA VERSO L'ALTO
+             HERO
           --------------------------------------------- */ 
  
           const heroY = 
@@ -287,51 +246,109 @@ document.addEventListener("DOMContentLoaded", () => {
  
  
           /* ---------------------------------------------
-             HERO LEGGERMENTE SFUMA
+             HERO IMAGE
           --------------------------------------------- */ 
  
-          hero.style.opacity = 
-            String( 
-              1 - eased * 0.18 
-            ); 
+          if (heroImage) { 
+ 
+            const imageScale = 
+              1 + (eased * 0.055); 
+ 
+            const imageY = 
+              eased * -18; 
+ 
+            heroImage.style.transform = 
+              `scale(${imageScale}) translate3d(0, ${imageY}px, 0)`; 
+ 
+          } 
  
  
           /* ---------------------------------------------
-             NEXT SECTION SALE DAL BASSO
+             HERO OVERLAY
           --------------------------------------------- */ 
  
-          const nextY = 
-            100 - (100 * eased); 
+          if (heroOverlay) { 
+ 
+            heroOverlay.style.opacity = 
+              String( 
+                0.15 + eased * 0.40 
+              ); 
+ 
+          } 
+ 
+ 
+          /* ---------------------------------------------
+             HERO CONTENT
+          --------------------------------------------- */ 
+ 
+          if (heroContent) { 
+ 
+            const contentY = 
+              eased * -35; 
+ 
+            const contentOpacity = 
+              1 - eased; 
+ 
+            heroContent.style.transform = 
+              `translate3d(0, ${contentY}px, 0)`; 
+ 
+            heroContent.style.opacity = 
+              String( 
+                Math.max( 
+                  0, 
+                  contentOpacity 
+                ) 
+              ); 
+ 
+          } 
+ 
+ 
+          /* ---------------------------------------------
+             SCROLL INDICATOR
+          --------------------------------------------- */ 
+ 
+          if (heroScroll) { 
+ 
+            heroScroll.style.opacity = 
+              String( 
+                Math.max( 
+                  0, 
+                  1 - eased * 2 
+                ) 
+              ); 
+ 
+            heroScroll.style.transform = 
+              `translate3d(0, ${eased * 20}px, 0)`; 
+ 
+          } 
+ 
+ 
+          /* ---------------------------------------------
+             STAY BEAUTIFULLY
+          --------------------------------------------- */ 
+ 
+          const sectionY = 
+            SLIDE_DISTANCE * 
+            (1 - eased); 
  
           nextSection.style.transform = 
-            `translate3d(0, ${nextY}vh, 0)`; 
+            `translate3d(0, ${sectionY}px, 0)`; 
  
           nextSection.style.opacity = 
             String( 
-              0.94 + eased * 0.06 
+              0.96 + eased * 0.04 
             ); 
  
  
           /* ---------------------------------------------
-             CLIP PREMIUM
+             CONTINUA FINCHÉ NON TERMINA
           --------------------------------------------- */ 
- 
-          const topClip = 
-            Math.max( 
-              0, 
-              12 - eased * 12 
-            ); 
- 
-          nextSection.style.clipPath = 
-            `inset(${topClip}% 0 0 0)`; 
- 
  
           if (progress < 1) { 
  
-            animationFrame = 
-              requestAnimationFrame( 
-                animateIntro 
-              ); 
+            requestAnimationFrame( 
+              animate 
+            ); 
  
             return; 
  
@@ -339,28 +356,27 @@ document.addEventListener("DOMContentLoaded", () => {
  
  
           /* ---------------------------------------------
-             FINE ANIMAZIONE
+             STATO FINALE
           --------------------------------------------- */ 
  
           hero.style.transform = 
             "translate3d(0, -100%, 0)"; 
  
-          hero.style.opacity = 
-            "0"; 
+          hero.style.opacity = "0"; 
  
           nextSection.style.transform = 
             "translate3d(0, 0, 0)"; 
  
-          nextSection.style.opacity = 
-            "1"; 
+          nextSection.style.opacity = "1"; 
  
-          nextSection.style.clipPath = 
-            "inset(0 0 0 0)"; 
+ 
+          slideRunning = false; 
+          slideCompleted = true; 
  
  
           /* 
-             Portiamo realmente la pagina
-             all'inizio della sezione successiva.
+             La pagina viene posizionata esattamente
+             sulla sezione Stay Beautifully.
           */ 
  
           window.scrollTo({ 
@@ -368,71 +384,49 @@ document.addEventListener("DOMContentLoaded", () => {
             behavior: "instant" 
           }); 
  
- 
-          /* 
-             Ripristiniamo lo scroll.
-          */ 
- 
-          document.body.style.overflow = 
-            document.body.dataset.previousOverflow || 
-            ""; 
- 
- 
-          introActive = false; 
-          introFinished = true; 
- 
-          cancelAnimationFrame( 
-            animationFrame 
-          ); 
- 
         } 
  
  
-        animationFrame = 
-          requestAnimationFrame( 
-            animateIntro 
-          ); 
+        requestAnimationFrame( 
+          animate 
+        ); 
  
       } 
  
  
-      /* ---------------------------------------------------
-         MOUSE WHEEL
-      --------------------------------------------------- */ 
- 
-      function handleWheel(event) { 
- 
-        if (introFinished) { 
-          return; 
-        } 
- 
-        if (window.scrollY > 12) { 
-          return; 
-        } 
- 
-        if (event.deltaY > 0) { 
- 
-          event.preventDefault(); 
- 
-          startIntro(); 
- 
-        } 
- 
-      } 
- 
+      /* ===================================================
+         MOUSE / TRACKPAD
+      =================================================== */ 
  
       window.addEventListener( 
         "wheel", 
-        handleWheel, 
-        { 
-          passive: false 
-        } 
+        (event) => { 
+ 
+          if (slideCompleted) { 
+            return; 
+          } 
+ 
+          if (slideRunning) { 
+            event.preventDefault(); 
+            return; 
+          } 
+ 
+          if (window.scrollY <= 15 && event.deltaY > 0) { 
+ 
+            event.preventDefault(); 
+ 
+            startPremiumSlide(); 
+ 
+          } 
+ 
+        }, 
+        { passive: false } 
       ); 
  
  
-      /* ---------------------------------------------------
+      /* ===================================================
          TOUCH
-      --------------------------------------------------- */ 
+      =================================================== */ 
  
       let touchStartY = null; 
  
@@ -458,13 +452,17 @@ document.addEventListener("DOMContentLoaded", () => {
  
           if ( 
             touchStartY === null || 
-            introFinished || 
-            introActive 
+            slideCompleted 
           ) { 
             return; 
           } 
  
-          if (window.scrollY > 12) { 
+          if (slideRunning) { 
+            event.preventDefault(); 
+            return; 
+          } 
+ 
+          if (window.scrollY > 15) { 
             return; 
           } 
  
@@ -474,13 +472,13 @@ document.addEventListener("DOMContentLoaded", () => {
           const difference = 
             touchStartY - currentY; 
  
-          if (difference > 12) { 
+          if (difference > 10) { 
  
             event.preventDefault(); 
  
-            startIntro(); 
- 
             touchStartY = null; 
+ 
+            startPremiumSlide(); 
  
           } 
  
@@ -500,24 +498,22 @@ document.addEventListener("DOMContentLoaded", () => {
       ); 
  
  
-      /* ---------------------------------------------------
+      /* ===================================================
          TASTIERA
-      --------------------------------------------------- */ 
+      =================================================== */ 
  
       window.addEventListener( 
         "keydown", 
         (event) => { 
  
           if ( 
-            introFinished || 
-            introActive 
+            slideCompleted || 
+            slideRunning 
           ) { 
             return; 
           } 
  
-          if ( 
-            window.scrollY > 12 
-          ) { 
+          if (window.scrollY > 15) { 
             return; 
           } 
  
@@ -529,29 +525,7 @@ document.addEventListener("DOMContentLoaded", () => {
  
             event.preventDefault(); 
  
-            startIntro(); 
- 
-          } 
- 
-        } 
-      ); 
- 
- 
-      /* ---------------------------------------------------
-         RESIZE
-      --------------------------------------------------- */ 
- 
-      window.addEventListener( 
-        "resize", 
-        () => { 
- 
-          if ( 
-            !introActive && 
-            !introFinished && 
-            window.scrollY <= 12 
-          ) { 
- 
-            prepareIntro(); 
+            startPremiumSlide(); 
  
           } 
  
