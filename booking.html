@@ -3,263 +3,264 @@
 
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="description"
-    content="Book your stay at Prime Residence Bologna."
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Book Your Stay | Prime Residence Bologna</title>
 
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
+  <meta
+    name="description"
+    content="Book your stay at Prime Residence Bologna. Choose your residence and submit your booking request."
   >
 
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
-    crossorigin
-  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Playfair+Display:wght@400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap"
     rel="stylesheet"
   >
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+  <link rel="stylesheet" href="style.css">
 </head>
 
 
 <body class="booking-page">
 
 
-  <!-- NAVBAR -->
+  <!-- NAVIGATION -->
 
-  <header class="navbar booking-navbar">
+  <header class="navbar">
 
-    <a
-      href="index.html"
-      class="nav-logo"
-    >
-      PRIME
-      <span>RESIDENCE BOLOGNA</span>
-    </a>
+    <div class="nav-container">
+
+      <a href="index.html" class="logo">
+
+        <span class="logo-main">
+          PRIME RESIDENCE
+        </span>
+
+        <span class="logo-sub">
+          BOLOGNA
+        </span>
+
+      </a>
 
 
-    <nav class="desktop-nav">
+      <nav class="desktop-nav">
+
+        <a href="index.html#residences">
+          Residences
+        </a>
+
+        <a href="index.html#experience">
+          Experience
+        </a>
+
+        <a href="index.html#bologna">
+          Bologna
+        </a>
+
+        <a href="booking.html" class="nav-book">
+          Book now
+        </a>
+
+      </nav>
+
+
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-label="Open menu"
+      >
+
+        <span></span>
+        <span></span>
+
+      </button>
+
+    </div>
+
+
+    <!-- MOBILE MENU -->
+
+    <div class="mobile-menu">
 
       <a href="index.html#residences">
-        RESIDENCES
+        Residences
       </a>
 
       <a href="index.html#experience">
-        EXPERIENCE
+        Experience
       </a>
 
       <a href="index.html#bologna">
-        BOLOGNA
+        Bologna
       </a>
 
-      <a href="index.html#contact">
-        CONTACT
+      <a href="booking.html">
+        Book now
       </a>
-
-    </nav>
-
-
-    <div class="nav-right">
-
-      <div class="language-switch">
-        <span class="active">EN</span>
-        <span>IT</span>
-      </div>
-
-      <button
-        class="menu-button"
-        aria-label="Open menu"
-        type="button"
-      >
-        <span></span>
-        <span></span>
-      </button>
 
     </div>
 
   </header>
 
 
-  <!-- MOBILE MENU -->
-
-  <div class="mobile-menu">
-
-    <a href="index.html#residences">
-      RESIDENCES
-    </a>
-
-    <a href="index.html#experience">
-      EXPERIENCE
-    </a>
-
-    <a href="index.html#bologna">
-      BOLOGNA
-    </a>
-
-    <a href="index.html#contact">
-      CONTACT
-    </a>
-
-  </div>
-
-
-  <!-- BOOKING HEADER -->
+  <!-- BOOKING HERO -->
 
   <main>
 
     <section class="booking-hero">
 
-      <div class="booking-hero-inner">
+      <div class="container">
 
-        <div class="section-label">
-          PRIME RESIDENCE BOLOGNA
+        <div class="booking-hero-inner reveal">
+
+          <p class="section-kicker">
+            PRIME RESIDENCE BOLOGNA
+          </p>
+
+          <h1>
+            Choose your
+            <em>residence.</em>
+          </h1>
+
+          <p>
+            Select the residence you would like to stay in
+            and then choose your preferred dates.
+          </p>
+
         </div>
-
-        <h1>
-          Choose your
-          <br>
-          <em>residence.</em>
-        </h1>
-
-        <p>
-          Select the residence you would like
-          to stay in and check your preferred dates.
-        </p>
 
       </div>
 
     </section>
 
 
-    <!-- RESIDENCE CHOICE -->
+    <!-- SELECT RESIDENCE -->
 
-    <section class="booking-choice">
+    <section class="booking-choice section">
 
-      <div class="booking-section-heading">
+      <div class="container">
 
-        <span>
-          01
-        </span>
+        <div class="booking-section-heading reveal">
 
-        <span>
-          SELECT RESIDENCE
-        </span>
+          <span>01</span>
 
-      </div>
+          <span>
+            SELECT RESIDENCE
+          </span>
 
-
-      <div class="booking-residence-grid">
+        </div>
 
 
-        <!-- GASTONE -->
-
-        <a
-          href="javascript:void(0)"
-          class="booking-residence-card"
-          data-residence="Gastone Rossi 12"
-          data-bedrooms="3"
-          data-bathrooms="2"
-          data-guests="6"
-        >
-
-          <div class="booking-card-image">
-
-            <div class="photo-placeholder">
-              GASTONE ROSSI 12
-            </div>
-
-            <div class="booking-card-number">
-              01
-            </div>
-
-          </div>
+        <div class="booking-residence-grid">
 
 
-          <div class="booking-card-content">
+          <!-- GASTONE ROSSI 12 -->
 
-            <div>
+          <a
+            href="#booking-form-section"
+            class="booking-residence-card reveal"
+            data-residence="Gastone Rossi 12"
+            data-bedrooms="3"
+            data-bathrooms="2"
+            data-guests="6"
+          >
 
-              <h2>
-                Gastone Rossi 12
-              </h2>
+            <div class="booking-card-image">
 
-              <p>
-                3 bedrooms · 2 bathrooms · up to 6 guests
-              </p>
+              <div class="photo-placeholder">
+                <span>PHOTO 01</span>
+              </div>
+
+              <div class="booking-card-number">
+                01
+              </div>
 
             </div>
 
-            <span class="booking-card-arrow">
-              SELECT ↗
-            </span>
 
-          </div>
+            <div class="booking-card-content">
 
-        </a>
+              <div>
 
+                <p class="residence-location">
+                  BOLOGNA · ITALY
+                </p>
 
-        <!-- BARONTINI -->
+                <h2>
+                  Gastone Rossi 12
+                </h2>
 
-        <a
-          href="javascript:void(0)"
-          class="booking-residence-card"
-          data-residence="Barontini 8"
-          data-bedrooms="2"
-          data-bathrooms="1"
-          data-guests="6"
-        >
+                <p>
+                  3 bedrooms · 2 bathrooms · up to 6 guests
+                </p>
 
-          <div class="booking-card-image">
-
-            <div class="photo-placeholder">
-              BARONTINI 8
-            </div>
-
-            <div class="booking-card-number">
-              02
-            </div>
-
-          </div>
+              </div>
 
 
-          <div class="booking-card-content">
-
-            <div>
-
-              <h2>
-                Barontini 8
-              </h2>
-
-              <p>
-                2 bedrooms · 1 bathroom · up to 6 guests
-              </p>
+              <span class="booking-card-arrow">
+                SELECT ↗
+              </span>
 
             </div>
 
-            <span class="booking-card-arrow">
-              SELECT ↗
-            </span>
+          </a>
 
-          </div>
 
-        </a>
+          <!-- BARONTINI 8 -->
+
+          <a
+            href="#booking-form-section"
+            class="booking-residence-card reveal"
+            data-residence="Barontini 8"
+            data-bedrooms="2"
+            data-bathrooms="1"
+            data-guests="6"
+          >
+
+            <div class="booking-card-image">
+
+              <div class="photo-placeholder">
+                <span>PHOTO 02</span>
+              </div>
+
+              <div class="booking-card-number">
+                02
+              </div>
+
+            </div>
+
+
+            <div class="booking-card-content">
+
+              <div>
+
+                <p class="residence-location">
+                  BOLOGNA · ITALY
+                </p>
+
+                <h2>
+                  Barontini 8
+                </h2>
+
+                <p>
+                  2 bedrooms · 1 bathroom · up to 6 guests
+                </p>
+
+              </div>
+
+
+              <span class="booking-card-arrow">
+                SELECT ↗
+              </span>
+
+            </div>
+
+          </a>
+
+        </div>
 
       </div>
 
@@ -270,310 +271,325 @@
 
     <section
       id="booking-form-section"
-      class="booking-form-section"
+      class="booking-form-section section"
     >
 
-      <div class="booking-form-wrapper">
+      <div class="container">
+
+        <div class="booking-form-wrapper">
 
 
-        <div class="booking-form-intro">
+          <!-- FORM INTRO -->
 
-          <div class="section-label">
-            02 · YOUR STAY
+          <div class="booking-form-intro reveal">
+
+            <p class="section-kicker">
+              02 · YOUR STAY
+            </p>
+
+            <h2>
+              Check your
+              <em>dates.</em>
+            </h2>
+
+            <p>
+              Select your residence, dates and number
+              of guests. We will check availability
+              and contact you with confirmation.
+            </p>
+
           </div>
 
-          <h2>
-            Check your
-            <br>
-            <em>dates.</em>
-          </h2>
 
-          <p>
-            Select your residence, dates and number
-            of guests. We will check availability
-            and contact you with confirmation.
-          </p>
+          <!-- FORM -->
+
+          <form
+            id="bookingRequestForm"
+            class="booking-form reveal"
+          >
+
+            <!-- SELECTED RESIDENCE -->
+
+            <input
+              type="hidden"
+              id="residence"
+              name="residence"
+              value=""
+            >
+
+
+            <div class="form-selected-residence">
+
+              <span>
+                SELECTED RESIDENCE
+              </span>
+
+              <strong id="selectedResidenceText">
+                Please select a residence above
+              </strong>
+
+            </div>
+
+
+            <!-- DATES -->
+
+            <div class="form-row">
+
+
+              <div class="form-field">
+
+                <label for="checkin">
+                  CHECK-IN
+                </label>
+
+                <input
+                  type="date"
+                  id="checkin"
+                  name="checkin"
+                  required
+                >
+
+              </div>
+
+
+              <div class="form-field">
+
+                <label for="checkout">
+                  CHECK-OUT
+                </label>
+
+                <input
+                  type="date"
+                  id="checkout"
+                  name="checkout"
+                  required
+                >
+
+              </div>
+
+
+            </div>
+
+
+            <!-- GUESTS -->
+
+            <div class="form-field">
+
+              <label for="guests">
+                NUMBER OF GUESTS
+              </label>
+
+              <select
+                id="guests"
+                name="guests"
+                required
+              >
+
+                <option value="">
+                  Select guests
+                </option>
+
+                <option value="1">
+                  1 guest
+                </option>
+
+                <option value="2">
+                  2 guests
+                </option>
+
+                <option value="3">
+                  3 guests
+                </option>
+
+                <option value="4">
+                  4 guests
+                </option>
+
+                <option value="5">
+                  5 guests
+                </option>
+
+                <option value="6">
+                  6 guests
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <!-- GUEST DETAILS -->
+
+            <div class="form-divider">
+              GUEST DETAILS
+            </div>
+
+
+            <div class="form-row">
+
+
+              <div class="form-field">
+
+                <label for="firstName">
+                  FIRST NAME
+                </label>
+
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  autocomplete="given-name"
+                  required
+                >
+
+              </div>
+
+
+              <div class="form-field">
+
+                <label for="lastName">
+                  LAST NAME
+                </label>
+
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  autocomplete="family-name"
+                  required
+                >
+
+              </div>
+
+
+            </div>
+
+
+            <div class="form-row">
+
+
+              <div class="form-field">
+
+                <label for="birthDate">
+                  DATE OF BIRTH
+                </label>
+
+                <input
+                  type="date"
+                  id="birthDate"
+                  name="birthDate"
+                  required
+                >
+
+              </div>
+
+
+              <div class="form-field">
+
+                <label for="email">
+                  EMAIL
+                </label>
+
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  autocomplete="email"
+                  required
+                >
+
+              </div>
+
+
+            </div>
+
+
+            <!-- PHONE -->
+
+            <div class="form-field">
+
+              <label for="phone">
+                PHONE
+              </label>
+
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                autocomplete="tel"
+                required
+              >
+
+            </div>
+
+
+            <!-- NOTES -->
+
+            <div class="form-field">
+
+              <label for="message">
+                ADDITIONAL NOTES
+              </label>
+
+              <textarea
+                id="message"
+                name="message"
+                rows="5"
+                placeholder="Anything we should know about your stay?"
+              ></textarea>
+
+            </div>
+
+
+            <!-- PRIVACY -->
+
+            <label class="privacy-check">
+
+              <input
+                type="checkbox"
+                id="privacy"
+                name="privacy"
+                required
+              >
+
+              <span>
+                I agree that my information may be used
+                to process this booking request.
+              </span>
+
+            </label>
+
+
+            <!-- SUBMIT -->
+
+            <button
+              type="submit"
+              class="booking-submit"
+            >
+
+              <span>
+                SEND BOOKING REQUEST
+              </span>
+
+              <span>
+                ↗
+              </span>
+
+            </button>
+
+
+            <!-- MESSAGE -->
+
+            <div
+              id="bookingMessage"
+              class="booking-message"
+              aria-live="polite"
+            ></div>
+
+
+          </form>
 
         </div>
-
-
-        <form
-          id="bookingRequestForm"
-          class="booking-form"
-        >
-
-          <input
-            type="hidden"
-            id="residence"
-            name="residence"
-            value=""
-          >
-
-
-          <!-- SELECTED RESIDENCE -->
-
-          <div class="form-selected-residence">
-
-            <span>
-              SELECTED RESIDENCE
-            </span>
-
-            <strong id="selectedResidenceText">
-              Please select a residence above
-            </strong>
-
-          </div>
-
-
-          <!-- DATES -->
-
-          <div class="form-row">
-
-
-            <div class="form-field">
-
-              <label for="checkin">
-                CHECK-IN
-              </label>
-
-              <input
-                type="date"
-                id="checkin"
-                name="checkin"
-                required
-              >
-
-            </div>
-
-
-            <div class="form-field">
-
-              <label for="checkout">
-                CHECK-OUT
-              </label>
-
-              <input
-                type="date"
-                id="checkout"
-                name="checkout"
-                required
-              >
-
-            </div>
-
-
-          </div>
-
-
-          <!-- GUESTS -->
-
-          <div class="form-field">
-
-            <label for="guests">
-              NUMBER OF GUESTS
-            </label>
-
-            <select
-              id="guests"
-              name="guests"
-              required
-            >
-
-              <option value="">
-                Select guests
-              </option>
-
-              <option value="1">
-                1 guest
-              </option>
-
-              <option value="2">
-                2 guests
-              </option>
-
-              <option value="3">
-                3 guests
-              </option>
-
-              <option value="4">
-                4 guests
-              </option>
-
-              <option value="5">
-                5 guests
-              </option>
-
-              <option value="6">
-                6 guests
-              </option>
-
-            </select>
-
-          </div>
-
-
-          <!-- PERSONAL DATA -->
-
-          <div class="form-divider">
-            GUEST DETAILS
-          </div>
-
-
-          <div class="form-row">
-
-
-            <div class="form-field">
-
-              <label for="firstName">
-                FIRST NAME
-              </label>
-
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                autocomplete="given-name"
-                required
-              >
-
-            </div>
-
-
-            <div class="form-field">
-
-              <label for="lastName">
-                LAST NAME
-              </label>
-
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                autocomplete="family-name"
-                required
-              >
-
-            </div>
-
-
-          </div>
-
-
-          <div class="form-row">
-
-
-            <div class="form-field">
-
-              <label for="birthDate">
-                DATE OF BIRTH
-              </label>
-
-              <input
-                type="date"
-                id="birthDate"
-                name="birthDate"
-                required
-              >
-
-            </div>
-
-
-            <div class="form-field">
-
-              <label for="email">
-                EMAIL
-              </label>
-
-              <input
-                type="email"
-                id="email"
-                name="email"
-                autocomplete="email"
-                required
-              >
-
-            </div>
-
-
-          </div>
-
-
-          <div class="form-field">
-
-            <label for="phone">
-              PHONE
-            </label>
-
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              autocomplete="tel"
-              required
-            >
-
-          </div>
-
-
-          <div class="form-field">
-
-            <label for="message">
-              ADDITIONAL NOTES
-            </label>
-
-            <textarea
-              id="message"
-              name="message"
-              rows="5"
-              placeholder="Anything we should know about your stay?"
-            ></textarea>
-
-          </div>
-
-
-          <!-- PRIVACY -->
-
-          <label class="privacy-check">
-
-            <input
-              type="checkbox"
-              id="privacy"
-              name="privacy"
-              required
-            >
-
-            <span>
-              I agree that my information may be used
-              to process this booking request.
-            </span>
-
-          </label>
-
-
-          <!-- SUBMIT -->
-
-          <button
-            type="submit"
-            class="booking-submit"
-          >
-
-            SEND BOOKING REQUEST
-
-            <span>
-              ↗
-            </span>
-
-          </button>
-
-
-          <div
-            id="bookingMessage"
-            class="booking-message"
-            aria-live="polite"
-          ></div>
-
-
-        </form>
 
       </div>
 
@@ -582,22 +598,29 @@
 
     <!-- FINAL NOTE -->
 
-    <section class="booking-note">
+    <section class="booking-note section">
 
-      <div class="section-label">
-        PRIME RESIDENCE BOLOGNA
+      <div class="container">
+
+        <div class="booking-note-inner reveal">
+
+          <p class="section-kicker">
+            PRIME RESIDENCE BOLOGNA
+          </p>
+
+          <h2>
+            We will be
+            <em>in touch.</em>
+          </h2>
+
+          <p>
+            Your request does not constitute a confirmed reservation.
+            Availability will be checked before we confirm your stay.
+          </p>
+
+        </div>
+
       </div>
-
-      <h2>
-        We will be
-        <br>
-        <em>in touch.</em>
-      </h2>
-
-      <p>
-        Your request does not constitute a confirmed reservation.
-        Availability will be checked before we confirm your stay.
-      </p>
 
     </section>
 
@@ -606,88 +629,135 @@
 
   <!-- FOOTER -->
 
-  <footer>
+  <footer class="footer">
 
-    <div class="footer-top">
+    <div class="container">
 
-      <div class="footer-brand">
+      <div class="footer-top">
 
-        <div class="footer-logo">
-          PRIME
+
+        <div class="footer-brand">
+
+          <div class="logo">
+
+            <span class="logo-main">
+              PRIME RESIDENCE
+            </span>
+
+            <span class="logo-sub">
+              BOLOGNA
+            </span>
+
+          </div>
+
+          <p>
+            Refined short stays in Bologna, Italy.
+          </p>
+
         </div>
 
-        <div class="footer-subtitle">
-          RESIDENCE BOLOGNA
+
+        <div class="footer-column">
+
+          <p class="footer-title">
+            EXPLORE
+          </p>
+
+          <a href="index.html#residences">
+            Residences
+          </a>
+
+          <a href="index.html#experience">
+            Experience
+          </a>
+
+          <a href="index.html#bologna">
+            Bologna
+          </a>
+
+          <a href="booking.html">
+            Book now
+          </a>
+
         </div>
 
+
+        <div class="footer-column">
+
+          <p class="footer-title">
+            RESIDENCES
+          </p>
+
+          <a href="gastone-rossi-12.html">
+            Gastone Rossi 12
+          </a>
+
+          <a href="barontini-8.html">
+            Barontini 8
+          </a>
+
+        </div>
+
+
+        <div class="footer-column">
+
+          <p class="footer-title">
+            CONTACT
+          </p>
+
+          <a href="mailto:vittoriolandi005@gmail.com">
+            Email us
+          </a>
+
+          <a
+            href="https://wa.me/393917055625"
+            target="_blank"
+            rel="noopener"
+          >
+            WhatsApp
+          </a>
+
+        </div>
+
+
       </div>
 
 
-      <div class="footer-contact">
+      <div class="footer-bottom">
 
-        <a href="mailto:vittoriolandi005@gmail.com">
-          vittoriolandi005@gmail.com
-        </a>
+        <p>
+          © <span id="year"></span>
+          Prime Residence Bologna.
+          All rights reserved.
+        </p>
 
-        <a
-          href="https://wa.me/393917055625"
-          target="_blank"
-          rel="noopener"
-        >
-          +39 391 705 5625
-        </a>
+        <p>
+          Bologna · Italy
+        </p>
 
       </div>
-
-
-      <div class="footer-social">
-
-        <a
-          href="https://wa.me/393917055625"
-          target="_blank"
-          rel="noopener"
-        >
-          WHATSAPP ↗
-        </a>
-
-      </div>
-
-    </div>
-
-
-    <div class="footer-bottom">
-
-      <span>
-        © <span id="year"></span>
-        PRIME RESIDENCE BOLOGNA
-      </span>
-
-      <span>
-        BOLOGNA · ITALY
-      </span>
 
     </div>
 
   </footer>
 
 
+  <!-- WHATSAPP -->
+
   <a
     href="https://wa.me/393917055625"
+    class="whatsapp-button"
     target="_blank"
     rel="noopener"
-    class="whatsapp-button"
     aria-label="Contact Prime Residence Bologna on WhatsApp"
   >
-
-    <span class="whatsapp-dot"></span>
-
-    WHATSAPP
-
+    <span>WhatsApp</span>
   </a>
 
+
+  <!-- JAVASCRIPT -->
 
   <script src="script.js"></script>
 
 </body>
-
 </html>
