@@ -1,622 +1,441 @@
+/* =========================================================
+   PRIME RESIDENCE BOLOGNA
+   COMPLETE WEBSITE JAVASCRIPT
+   Homepage + Residence Pages + Booking Page
+========================================================= */
+
 document.addEventListener("DOMContentLoaded", () => {
 
+  /* =======================================================
+     01. LOADER
+  ======================================================= */
 
-  /* =====================================================
-     FOOTER YEAR
-  ===================================================== */
+  const loader = document.querySelector(".loader");
 
-  const year = document.querySelector("#year");
-
-  if (year) {
-    year.textContent = new Date().getFullYear();
+  if (loader) {
+    setTimeout(() => {
+      loader.classList.add("hide");
+    }, 1200);
   }
 
 
-  /* =====================================================
-     HOMEPAGE INTRO
-  ===================================================== */
+  /* =======================================================
+     02. NAVBAR
+  ======================================================= */
 
-  const loader = document.querySelector(".loader");
-  const scrollEnter = document.querySelector(".scroll-enter");
+  const navbar = document.querySelector(".navbar");
 
-  if (loader) {
+  function handleNavbar() {
+    if (!navbar) return;
 
-    let introFinished = false;
-    let introAnimating = false;
-    let introStartTime = null;
+    if (window.scrollY > 40) {
+      navbar.classList.add("scrolled");
+    } else {
+      navbar.classList.remove("scrolled");
+    }
+  }
 
-    const INTRO_DURATION = 2200;
+  handleNavbar();
+
+  window.addEventListener("scroll", handleNavbar, {
+    passive: true
+  });
 
 
-    function finishIntro() {
+  /* =======================================================
+     03. MOBILE MENU
+  ======================================================= */
 
-      if (introFinished) return;
+  const menuToggle = document.querySelector(".menu-toggle");
+  const mobileMenu = document.querySelector(".mobile-menu");
 
-      introFinished = true;
-      introAnimating = false;
+  if (menuToggle && mobileMenu) {
 
-      loader.style.transform =
-        "translate3d(0, -100%, 0)";
+    menuToggle.addEventListener("click", () => {
 
-      if (scrollEnter) {
+      const isOpen = menuToggle.classList.toggle("active");
 
-        scrollEnter.style.opacity = "0";
+      mobileMenu.classList.toggle("active", isOpen);
 
-        scrollEnter.style.transform =
-          "translate3d(-50%, 25px, 0)";
-
-      }
-
-      document.body.classList.remove(
-        "intro-active"
+      menuToggle.setAttribute(
+        "aria-expanded",
+        isOpen ? "true" : "false"
       );
 
-      document.body.style.overflow = "";
+      document.body.style.overflow = isOpen ? "hidden" : "";
+    });
 
-    }
 
+    const mobileLinks = mobileMenu.querySelectorAll("a");
 
-    function animateIntro(timestamp) {
+    mobileLinks.forEach((link) => {
 
-      if (introFinished) return;
+      link.addEventListener("click", () => {
 
-      if (!introStartTime) {
-        introStartTime = timestamp;
-      }
+        menuToggle.classList.remove("active");
+        mobileMenu.classList.remove("active");
 
-      const elapsed =
-        timestamp - introStartTime;
-
-      const progress =
-        Math.min(
-          elapsed / INTRO_DURATION,
-          1
+        menuToggle.setAttribute(
+          "aria-expanded",
+          "false"
         );
 
+        document.body.style.overflow = "";
 
-      const easedProgress =
-        progress < 0.5
-          ? 2 * progress * progress
-          : 1 -
-            Math.pow(
-              -2 * progress + 2,
-              2
-            ) / 2;
+      });
+
+    });
+  }
 
 
-      loader.style.transform =
-        `translate3d(0, ${-easedProgress * 100}%, 0)`;
+  /* =======================================================
+     04. REVEAL ANIMATIONS
+  ======================================================= */
 
+  const revealElements = document.querySelectorAll(".reveal");
 
-      if (scrollEnter) {
+  if (revealElements.length > 0) {
 
-        scrollEnter.style.opacity =
-          Math.max(
-            0,
-            1 - easedProgress * 3
-          );
+    const revealObserver = new IntersectionObserver(
+      (entries, observer) => {
 
-        scrollEnter.style.transform =
-          `translate3d(-50%, ${easedProgress * 25}px, 0)`;
+        entries.forEach((entry) => {
 
+          if (entry.isIntersecting) {
+
+            entry.target.classList.add("visible");
+
+            observer.unobserve(entry.target);
+
+          }
+
+        });
+
+      },
+      {
+        threshold: 0.12
       }
+    );
+
+    revealElements.forEach((element) => {
+      revealObserver.observe(element);
+    });
+  }
 
 
-      if (progress >= 1) {
+  /* =======================================================
+     05. SMOOTH ANCHOR LINKS
+  ======================================================= */
 
-        finishIntro();
+  const anchorLinks = document.querySelectorAll(
+    'a[href^="#"]'
+  );
 
+  anchorLinks.forEach((link) => {
+
+    link.addEventListener("click", (event) => {
+
+      const targetId = link.getAttribute("href");
+
+      if (!targetId || targetId === "#") {
         return;
-
       }
 
+      const target = document.querySelector(targetId);
 
-      requestAnimationFrame(
-        animateIntro
-      );
+      if (!target) {
+        return;
+      }
 
+      event.preventDefault();
+
+      const navbarHeight = navbar
+        ? navbar.offsetHeight
+        : 0;
+
+      const targetPosition =
+        target.getBoundingClientRect().top +
+        window.scrollY -
+        navbarHeight;
+
+      window.scrollTo({
+        top: targetPosition,
+        behavior: "smooth"
+      });
+
+    });
+
+  });
+
+
+  /* =======================================================
+     06. BOOKING PAGE
+  ======================================================= */
+
+  const bookingCards = document.querySelectorAll(
+    ".booking-residence-card"
+  );
+
+  const bookingForm = document.querySelector(
+    "#bookingRequestForm"
+  );
+
+  const residenceInput = document.querySelector(
+    "#residence"
+  );
+
+  const selectedResidenceText = document.querySelector(
+    "#selectedResidenceText"
+  );
+
+  const bookingFormSection = document.querySelector(
+    "#booking-form-section"
+  );
+
+  const checkinInput = document.querySelector(
+    "#checkin"
+  );
+
+  const checkoutInput = document.querySelector(
+    "#checkout"
+  );
+
+  const bookingMessage = document.querySelector(
+    "#bookingMessage"
+  );
+
+  const bookingSubmit = document.querySelector(
+    ".booking-submit"
+  );
+
+
+  /* =======================================================
+     07. TODAY'S DATE
+  ======================================================= */
+
+  function getLocalDateString() {
+
+    const today = new Date();
+
+    const year = today.getFullYear();
+
+    const month = String(
+      today.getMonth() + 1
+    ).padStart(2, "0");
+
+    const day = String(
+      today.getDate()
+    ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  }
+
+
+  const todayString = getLocalDateString();
+
+
+  if (checkinInput) {
+    checkinInput.min = todayString;
+  }
+
+  if (checkoutInput) {
+    checkoutInput.min = todayString;
+  }
+
+
+  /* =======================================================
+     08. RESIDENCE SELECTION
+  ======================================================= */
+
+  function selectResidence(card) {
+
+    if (!card) return;
+
+    const residence =
+      card.dataset.residence;
+
+    if (!residence) return;
+
+
+    /* Remove previous selection */
+
+    bookingCards.forEach((item) => {
+      item.classList.remove("selected");
+    });
+
+
+    /* Select current residence */
+
+    card.classList.add("selected");
+
+
+    /* Update hidden field */
+
+    if (residenceInput) {
+      residenceInput.value = residence;
     }
 
 
-    function startIntro() {
+    /* Update visible residence */
+
+    if (selectedResidenceText) {
+      selectedResidenceText.textContent =
+        residence;
+    }
+
+
+    /* Show booking form */
+
+    if (bookingFormSection) {
+
+      setTimeout(() => {
+
+        bookingFormSection.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+
+      }, 150);
+
+    }
+
+  }
+
+
+  bookingCards.forEach((card) => {
+
+    card.addEventListener("click", () => {
+      selectResidence(card);
+    });
+
+
+    /* Keyboard accessibility */
+
+    card.addEventListener("keydown", (event) => {
 
       if (
-        introFinished ||
-        introAnimating
+        event.key === "Enter" ||
+        event.key === " "
       ) {
-        return;
-      }
-
-      introAnimating = true;
-      introStartTime = null;
-
-      requestAnimationFrame(
-        animateIntro
-      );
-
-    }
-
-
-    window.addEventListener(
-      "wheel",
-      (event) => {
-
-        if (introFinished) return;
 
         event.preventDefault();
 
-        if (event.deltaY > 0) {
-          startIntro();
-        }
-
-      },
-      {
-        passive: false
-      }
-    );
-
-
-    let touchStart = 0;
-
-
-    window.addEventListener(
-      "touchstart",
-      (event) => {
-
-        if (introFinished) return;
-
-        touchStart =
-          event.touches[0].clientY;
-
-      },
-      {
-        passive: true
-      }
-    );
-
-
-    window.addEventListener(
-      "touchmove",
-      (event) => {
-
-        if (introFinished) return;
-
-        const currentTouch =
-          event.touches[0].clientY;
-
-        const movement =
-          touchStart - currentTouch;
-
-
-        if (movement > 5) {
-
-          event.preventDefault();
-
-          startIntro();
-
-        }
-
-      },
-      {
-        passive: false
-      }
-    );
-
-
-    window.addEventListener(
-      "keydown",
-      (event) => {
-
-        if (introFinished) return;
-
-        if (
-          event.key === "ArrowDown" ||
-          event.key === "PageDown" ||
-          event.key === " "
-        ) {
-
-          event.preventDefault();
-
-          startIntro();
-
-        }
+        selectResidence(card);
 
       }
-    );
+
+    });
+
+  });
+
+
+  /* =======================================================
+     09. CHECK-IN / CHECK-OUT DATES
+  ======================================================= */
+
+  if (checkinInput && checkoutInput) {
+
+    checkinInput.addEventListener("change", () => {
+
+      const checkinDate =
+        checkinInput.value;
+
+      if (!checkinDate) {
+        return;
+      }
+
+
+      /* Checkout cannot be before check-in */
+
+      checkoutInput.min = checkinDate;
+
+
+      /* If checkout is already invalid, clear it */
+
+      if (
+        checkoutInput.value &&
+        checkoutInput.value <= checkinDate
+      ) {
+
+        checkoutInput.value = "";
+
+      }
+
+    });
+
+
+    checkoutInput.addEventListener("change", () => {
+
+      const checkinDate =
+        checkinInput.value;
+
+      const checkoutDate =
+        checkoutInput.value;
+
+
+      if (
+        checkinDate &&
+        checkoutDate &&
+        checkoutDate <= checkinDate
+      ) {
+
+        showBookingMessage(
+          "Il check-out deve essere successivo al check-in.",
+          "error"
+        );
+
+        checkoutInput.value = "";
+
+      }
+
+    });
 
   }
 
 
-  /* =====================================================
-     NAVBAR
-  ===================================================== */
+  /* =======================================================
+     10. BOOKING MESSAGE
+  ======================================================= */
 
-  const navbar =
-    document.querySelector(".navbar");
-
-
-  window.addEventListener(
-    "scroll",
-    () => {
-
-      if (!navbar) return;
-
-      if (window.scrollY > 50) {
-
-        navbar.classList.add(
-          "scrolled"
-        );
-
-      } else {
-
-        navbar.classList.remove(
-          "scrolled"
-        );
-
-      }
-
-    }
-  );
-
-
-  /* =====================================================
-     REVEAL ANIMATIONS
-  ===================================================== */
-
-  const revealElements =
-    document.querySelectorAll(
-      ".reveal"
-    );
-
-
-  if (
-    revealElements.length &&
-    "IntersectionObserver" in window
+  function showBookingMessage(
+    message,
+    type = "error"
   ) {
 
-    const revealObserver =
-      new IntersectionObserver(
-        (entries) => {
+    if (!bookingMessage) return;
 
-          entries.forEach(
-            (entry) => {
+    bookingMessage.textContent = message;
 
-              if (
-                entry.isIntersecting
-              ) {
+    bookingMessage.className =
+      `booking-message ${type}`;
 
-                entry.target.classList.add(
-                  "visible"
-                );
+    bookingMessage.style.display = "block";
 
-                revealObserver.unobserve(
-                  entry.target
-                );
-
-              }
-
-            }
-          );
-
-        },
-        {
-          threshold: 0.15
-        }
-      );
-
-
-    revealElements.forEach(
-      (element) => {
-
-        revealObserver.observe(
-          element
-        );
-
-      }
-    );
-
-  } else {
-
-    revealElements.forEach(
-      (element) => {
-
-        element.classList.add(
-          "visible"
-        );
-
-      }
-    );
+    bookingMessage.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest"
+    });
 
   }
 
 
-  /* =====================================================
-     MOBILE MENU
-  ===================================================== */
+  function hideBookingMessage() {
 
-  const menuButton =
-    document.querySelector(
-      ".menu-button"
-    );
+    if (!bookingMessage) return;
 
-  const mobileMenu =
-    document.querySelector(
-      ".mobile-menu"
-    );
+    bookingMessage.textContent = "";
 
+    bookingMessage.className =
+      "booking-message";
 
-  if (
-    menuButton &&
-    mobileMenu
-  ) {
-
-    menuButton.addEventListener(
-      "click",
-      () => {
-
-        mobileMenu.classList.toggle(
-          "open"
-        );
-
-      }
-    );
-
-
-    mobileMenu
-      .querySelectorAll("a")
-      .forEach(
-        (link) => {
-
-          link.addEventListener(
-            "click",
-            () => {
-
-              mobileMenu.classList.remove(
-                "open"
-              );
-
-            }
-          );
-
-        }
-      );
+    bookingMessage.style.display = "none";
 
   }
 
 
-  /* =====================================================
-     ANCHOR LINKS
-  ===================================================== */
-
-  document
-    .querySelectorAll(
-      'a[href^="#"]'
-    )
-    .forEach(
-      (link) => {
-
-        link.addEventListener(
-          "click",
-          function(event) {
-
-            const targetId =
-              this.getAttribute(
-                "href"
-              );
-
-            if (
-              !targetId ||
-              targetId === "#"
-            ) {
-              return;
-            }
-
-
-            const target =
-              document.querySelector(
-                targetId
-              );
-
-
-            if (!target) return;
-
-
-            event.preventDefault();
-
-
-            target.scrollIntoView({
-              behavior: "smooth"
-            });
-
-          }
-        );
-
-      }
-    );
-
-
-  /* =====================================================
-     BOOKING PAGE
-  ===================================================== */
-
-  const bookingCards =
-    document.querySelectorAll(
-      ".booking-residence-card"
-    );
-
-  const bookingForm =
-    document.querySelector(
-      "#bookingRequestForm"
-    );
-
-  const residenceInput =
-    document.querySelector(
-      "#residence"
-    );
-
-  const selectedResidenceText =
-    document.querySelector(
-      "#selectedResidenceText"
-    );
-
-  const bookingFormSection =
-    document.querySelector(
-      "#booking-form-section"
-    );
-
-
-  let selectedResidence = "";
-
-
-  /* =====================================================
-     SELECT RESIDENCE
-  ===================================================== */
-
-  bookingCards.forEach(
-    (card) => {
-
-      card.addEventListener(
-        "click",
-        (event) => {
-
-          event.preventDefault();
-
-
-          selectedResidence =
-            card.dataset.residence;
-
-
-          if (residenceInput) {
-
-            residenceInput.value =
-              selectedResidence;
-
-          }
-
-
-          if (
-            selectedResidenceText
-          ) {
-
-            selectedResidenceText.textContent =
-              selectedResidence;
-
-          }
-
-
-          bookingCards.forEach(
-            (item) => {
-
-              item.classList.remove(
-                "selected"
-              );
-
-            }
-          );
-
-
-          card.classList.add(
-            "selected"
-          );
-
-
-          if (bookingFormSection) {
-
-            bookingFormSection.scrollIntoView({
-              behavior: "smooth"
-            });
-
-          }
-
-        }
-      );
-
-    }
-  );
-
-
-  /* =====================================================
-     DATE RESTRICTIONS
-  ===================================================== */
-
-  const checkin =
-    document.querySelector(
-      "#checkin"
-    );
-
-  const checkout =
-    document.querySelector(
-      "#checkout"
-    );
-
-
-  function getToday() {
-
-    const date =
-      new Date();
-
-    const year =
-      date.getFullYear();
-
-    const month =
-      String(
-        date.getMonth() + 1
-      ).padStart(2, "0");
-
-    const day =
-      String(
-        date.getDate()
-      ).padStart(2, "0");
-
-
-    return `${year}-${month}-${day}`;
-
-  }
-
-
-  if (checkin) {
-
-    checkin.min =
-      getToday();
-
-  }
-
-
-  if (checkout) {
-
-    checkout.min =
-      getToday();
-
-  }
-
-
-  if (checkin && checkout) {
-
-    checkin.addEventListener(
-      "change",
-      () => {
-
-        checkout.min =
-          checkin.value;
-
-        if (
-          checkout.value &&
-          checkout.value <= checkin.value
-        ) {
-
-          checkout.value = "";
-
-        }
-
-      }
-    );
-
-  }
-
-
-  /* =====================================================
-     BOOKING FORM SUBMISSION
-  ===================================================== */
+  /* =======================================================
+     11. BOOKING FORM SUBMISSION
+  ======================================================= */
 
   if (bookingForm) {
 
@@ -626,106 +445,125 @@ document.addEventListener("DOMContentLoaded", () => {
 
         event.preventDefault();
 
-
-        const bookingMessage =
-          document.querySelector(
-            "#bookingMessage"
-          );
+        hideBookingMessage();
 
 
-        if (!selectedResidence) {
-
-          if (bookingMessage) {
-
-            bookingMessage.textContent =
-              "Please select a residence first.";
-
-            bookingMessage.className =
-              "booking-message error";
-
-          }
-
-          return;
-
-        }
-
+        /* -------------------------------------------------
+           Check residence
+        ------------------------------------------------- */
 
         if (
-          !checkin ||
-          !checkout ||
-          !checkin.value ||
-          !checkout.value
+          !residenceInput ||
+          !residenceInput.value
         ) {
 
-          if (bookingMessage) {
-
-            bookingMessage.textContent =
-              "Please select your check-in and check-out dates.";
-
-            bookingMessage.className =
-              "booking-message error";
-
-          }
-
-          return;
-
-        }
-
-
-        if (
-          checkout.value <=
-          checkin.value
-        ) {
-
-          if (bookingMessage) {
-
-            bookingMessage.textContent =
-              "Check-out must be after check-in.";
-
-            bookingMessage.className =
-              "booking-message error";
-
-          }
-
-          return;
-
-        }
-
-
-        const submitButton =
-          bookingForm.querySelector(
-            ".booking-submit"
+          showBookingMessage(
+            "Seleziona prima una residence.",
+            "error"
           );
 
+          const residenceSection =
+            document.querySelector(
+              ".booking-choice"
+            );
 
-        if (submitButton) {
+          if (residenceSection) {
+            residenceSection.scrollIntoView({
+              behavior: "smooth"
+            });
+          }
 
-          submitButton.disabled =
-            true;
+          return;
+        }
 
-          submitButton.classList.add(
+
+        /* -------------------------------------------------
+           Check dates
+        ------------------------------------------------- */
+
+        if (
+          checkinInput &&
+          checkoutInput
+        ) {
+
+          if (
+            !checkinInput.value ||
+            !checkoutInput.value
+          ) {
+
+            showBookingMessage(
+              "Inserisci le date di check-in e check-out.",
+              "error"
+            );
+
+            return;
+          }
+
+
+          if (
+            checkoutInput.value <=
+            checkinInput.value
+          ) {
+
+            showBookingMessage(
+              "Il check-out deve essere successivo al check-in.",
+              "error"
+            );
+
+            return;
+          }
+
+        }
+
+
+        /* -------------------------------------------------
+           Check privacy
+        ------------------------------------------------- */
+
+        const privacyCheckbox =
+          document.querySelector("#privacy");
+
+        if (
+          privacyCheckbox &&
+          !privacyCheckbox.checked
+        ) {
+
+          showBookingMessage(
+            "Devi accettare la privacy policy per inviare la richiesta.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        /* -------------------------------------------------
+           Loading state
+        ------------------------------------------------- */
+
+        if (bookingSubmit) {
+
+          bookingSubmit.disabled = true;
+
+          bookingSubmit.classList.add(
             "loading"
           );
 
-        }
+          bookingSubmit.dataset.originalText =
+            bookingSubmit.textContent;
 
-
-        if (bookingMessage) {
-
-          bookingMessage.textContent =
-            "Sending your request...";
-
-          bookingMessage.className =
-            "booking-message";
+          bookingSubmit.textContent =
+            "INVIO IN CORSO...";
 
         }
 
+
+        /* -------------------------------------------------
+           Collect form data
+        ------------------------------------------------- */
 
         const formData =
-          new FormData(
-            bookingForm
-          );
-
+          new FormData(bookingForm);
 
         const data =
           Object.fromEntries(
@@ -733,106 +571,134 @@ document.addEventListener("DOMContentLoaded", () => {
           );
 
 
+        /* -------------------------------------------------
+           Send request to Cloudflare Function
+        ------------------------------------------------- */
+
         try {
 
-          const response =
-            await fetch(
-              "/api/booking-request",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type":
-                    "application/json"
-                },
-                body:
-                  JSON.stringify(data)
-              }
-            );
+          const response = await fetch(
+            "/api/booking-request",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+              body: JSON.stringify(data)
+            }
+          );
 
 
-          const result =
-            await response.json();
+          let result = {};
 
+          try {
+
+            result =
+              await response.json();
+
+          } catch (jsonError) {
+
+            result = {};
+
+          }
+
+
+          /* -------------------------------------------------
+             Error from server
+          ------------------------------------------------- */
 
           if (!response.ok) {
 
             throw new Error(
               result.message ||
-              "Something went wrong."
+              "Si è verificato un errore durante l'invio."
             );
 
           }
 
 
-          bookingForm.reset();
+          /* -------------------------------------------------
+             SUCCESS
+          ------------------------------------------------- */
 
-          selectedResidence = "";
-
-
-          if (residenceInput) {
-            residenceInput.value = "";
-          }
-
-
-          if (
-            selectedResidenceText
-          ) {
-
-            selectedResidenceText.textContent =
-              "Please select a residence above";
-
-          }
-
-
-          bookingCards.forEach(
-            (card) => {
-
-              card.classList.remove(
-                "selected"
-              );
-
-            }
+          showBookingMessage(
+            result.message ||
+            "Richiesta inviata con successo. Ti ricontatteremo al più presto.",
+            "success"
           );
 
 
-          if (bookingMessage) {
+          /* Save selected residence */
 
-            bookingMessage.textContent =
-              "Your booking request has been sent successfully. We will contact you shortly.";
+          const selectedResidence =
+            residenceInput.value;
 
-            bookingMessage.className =
-              "booking-message success";
 
+          /* Reset form */
+
+          bookingForm.reset();
+
+
+          /* Restore residence */
+
+          if (residenceInput) {
+            residenceInput.value =
+              selectedResidence;
           }
+
+
+          if (selectedResidenceText) {
+            selectedResidenceText.textContent =
+              selectedResidence;
+          }
+
+
+          /* Restore date limits */
+
+          if (checkinInput) {
+            checkinInput.min =
+              getLocalDateString();
+          }
+
+          if (checkoutInput) {
+            checkoutInput.min =
+              getLocalDateString();
+          }
+
 
         } catch (error) {
 
           console.error(
-            "Booking request error:",
+            "Booking error:",
             error
           );
 
 
-          if (bookingMessage) {
-
-            bookingMessage.textContent =
-              "We could not send your request. Please try again or contact us on WhatsApp.";
-
-            bookingMessage.className =
-              "booking-message error";
-
-          }
+          showBookingMessage(
+            error.message ||
+            "Non è stato possibile inviare la richiesta. Riprova tra poco.",
+            "error"
+          );
 
         } finally {
 
-          if (submitButton) {
 
-            submitButton.disabled =
-              false;
+          /* -------------------------------------------------
+             Restore button
+          ------------------------------------------------- */
 
-            submitButton.classList.remove(
+          if (bookingSubmit) {
+
+            bookingSubmit.disabled = false;
+
+            bookingSubmit.classList.remove(
               "loading"
             );
+
+            bookingSubmit.textContent =
+              bookingSubmit.dataset.originalText ||
+              "SEND BOOKING REQUEST";
 
           }
 
@@ -842,5 +708,101 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
   }
+
+
+  /* =======================================================
+     12. BOOKING FORM FIELD VALIDATION
+  ======================================================= */
+
+  const bookingInputs = document.querySelectorAll(
+    "#bookingRequestForm input, #bookingRequestForm select, #bookingRequestForm textarea"
+  );
+
+
+  bookingInputs.forEach((input) => {
+
+    input.addEventListener("input", () => {
+
+      if (
+        bookingMessage &&
+        bookingMessage.classList.contains("error")
+      ) {
+
+        hideBookingMessage();
+
+      }
+
+    });
+
+  });
+
+
+  /* =======================================================
+     13. ESC KEY
+  ======================================================= */
+
+  document.addEventListener("keydown", (event) => {
+
+    if (
+      event.key === "Escape" &&
+      mobileMenu &&
+      mobileMenu.classList.contains("active")
+    ) {
+
+      mobileMenu.classList.remove("active");
+
+      if (menuToggle) {
+        menuToggle.classList.remove("active");
+
+        menuToggle.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+      }
+
+      document.body.style.overflow = "";
+
+    }
+
+  });
+
+
+  /* =======================================================
+     14. RESIZE
+  ======================================================= */
+
+  window.addEventListener("resize", () => {
+
+    if (
+      window.innerWidth > 700 &&
+      mobileMenu &&
+      mobileMenu.classList.contains("active")
+    ) {
+
+      mobileMenu.classList.remove("active");
+
+      if (menuToggle) {
+        menuToggle.classList.remove("active");
+
+        menuToggle.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+      }
+
+      document.body.style.overflow = "";
+
+    }
+
+  });
+
+
+  /* =======================================================
+     15. CONSOLE MESSAGE
+  ======================================================= */
+
+  console.log(
+    "Prime Residence Bologna website loaded successfully."
+  );
 
 });
