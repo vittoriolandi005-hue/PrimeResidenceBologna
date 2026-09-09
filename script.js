@@ -6,94 +6,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!loader) return;
 
-  /* =========================================
-     INTRO SCROLL
-     Un piccolo scroll avvia automaticamente
-     il movimento lento verso la seconda pagina
-  ========================================= */
-
   let introFinished = false;
   let introAnimating = false;
-  let introStartTime = null;
 
   const INTRO_DURATION = 2200;
 
+  /* =========================================
+     FINISH INTRO
+  ========================================= */
+
   function finishIntro() {
+
     if (introFinished) return;
 
     introFinished = true;
     introAnimating = false;
 
-    loader.style.transform =
-      "translate3d(0, -100%, 0)";
-
-    if (scrollEnter) {
-      scrollEnter.style.opacity = "0";
-      scrollEnter.style.transform =
-        "translate3d(-50%, 25px, 0)";
-    }
-
     document.body.classList.remove("intro-active");
     document.body.style.overflow = "";
 
-    window.scrollTo(0, 0);
-  }
-
-  function animateIntro(timestamp) {
-
-    if (introFinished) return;
-
-    if (!introStartTime) {
-      introStartTime = timestamp;
-    }
-
-    const elapsed =
-      timestamp - introStartTime;
-
-    const progress =
-      Math.min(
-        elapsed / INTRO_DURATION,
-        1
-      );
-
-    /* Movimento morbido */
-    const easedProgress =
-      progress < 0.5
-        ? 2 * progress * progress
-        : 1 -
-          Math.pow(
-            -2 * progress + 2,
-            2
-          ) / 2;
-
-    /* Movimento del pannello intro */
     loader.style.transform =
-      `translate3d(0, ${-easedProgress * 100}%, 0)`;
+      "translate3d(0, -100%, 0)";
 
-    /* Indicatore scroll */
+    loader.style.pointerEvents = "none";
+
     if (scrollEnter) {
-
-      scrollEnter.style.opacity =
-        Math.max(
-          0,
-          1 - easedProgress * 3
-        );
-
-      scrollEnter.style.transform =
-        `translate3d(-50%, ${easedProgress * 25}px, 0)`;
+      scrollEnter.style.opacity = "0";
     }
-
-    if (progress >= 1) {
-
-      finishIntro();
-
-      return;
-    }
-
-    requestAnimationFrame(
-      animateIntro
-    );
   }
+
+
+  /* =========================================
+     AUTOMATIC INTRO SCROLL
+  ========================================= */
 
   function startIntro() {
 
@@ -105,17 +50,112 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     introAnimating = true;
-    introStartTime = null;
+
+    /*
+      Sblocchiamo temporaneamente lo scroll
+      per permettere alla pagina di muoversi.
+    */
+
+    document.body.style.overflow = "";
+
+    const startPosition = window.scrollY;
+
+    const targetPosition =
+      document.querySelector("#home")
+        ? document.querySelector("#home").offsetTop
+        : window.innerHeight;
+
+    const distance =
+      targetPosition - startPosition;
+
+    const startTime = performance.now();
+
+
+    function animateScroll(currentTime) {
+
+      const elapsed =
+        currentTime - startTime;
+
+      const progress =
+        Math.min(
+          elapsed / INTRO_DURATION,
+          1
+        );
+
+
+      /*
+        Movimento cinematico:
+        lento all'inizio,
+        fluido al centro,
+        rallenta alla fine.
+      */
+
+      const eased =
+        progress < 0.5
+          ? 2 * progress * progress
+          : 1 -
+            Math.pow(
+              -2 * progress + 2,
+              2
+            ) / 2;
+
+
+      window.scrollTo(
+        0,
+        startPosition +
+        distance * eased
+      );
+
+
+      /*
+        Il pannello nero dell'intro
+        scivola via contemporaneamente.
+      */
+
+      loader.style.transform =
+        `translate3d(
+          0,
+          ${-eased * 100}%,
+          0
+        )`;
+
+
+      if (scrollEnter) {
+
+        scrollEnter.style.opacity =
+          Math.max(
+            0,
+            1 - eased * 3
+          );
+
+      }
+
+
+      if (progress < 1) {
+
+        requestAnimationFrame(
+          animateScroll
+        );
+
+      } else {
+
+        finishIntro();
+
+      }
+
+    }
+
 
     requestAnimationFrame(
-      animateIntro
+      animateScroll
     );
+
   }
 
 
   /* =========================================
      MOUSE WHEEL
-     UN SOLO SCROLL → PARTE AUTOMATICAMENTE
+     UN SOLO SCROLL
   ========================================= */
 
   window.addEventListener(
@@ -138,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================
-     TOUCH / MOBILE
+     TOUCH
   ========================================= */
 
   let touchStart = 0;
@@ -157,6 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
       passive: true
     }
   );
+
 
   window.addEventListener(
     "touchmove",
@@ -186,7 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================
-     TASTIERA
+     KEYBOARD
   ========================================= */
 
   window.addEventListener(
@@ -226,11 +267,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (window.scrollY > 50) {
 
-        navbar.classList.add("scrolled");
+        navbar.classList.add(
+          "scrolled"
+        );
 
       } else {
 
-        navbar.classList.remove("scrolled");
+        navbar.classList.remove(
+          "scrolled"
+        );
 
       }
 
@@ -239,7 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================
-     REVEAL
+     REVEAL ANIMATIONS
   ========================================= */
 
   const revealElements =
@@ -252,7 +297,9 @@ document.addEventListener("DOMContentLoaded", () => {
         entries.forEach(
           (entry) => {
 
-            if (entry.isIntersecting) {
+            if (
+              entry.isIntersecting
+            ) {
 
               entry.target.classList.add(
                 "visible"
@@ -261,6 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
               revealObserver.unobserve(
                 entry.target
               );
+
             }
 
           }
@@ -271,6 +319,7 @@ document.addEventListener("DOMContentLoaded", () => {
         threshold: 0.15
       }
     );
+
 
   revealElements.forEach(
     (element) => {
@@ -313,11 +362,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================
-     ANCHOR LINKS
+     SMOOTH ANCHOR LINKS
   ========================================= */
 
   document
-    .querySelectorAll('a[href^="#"]')
+    .querySelectorAll(
+      'a[href^="#"]'
+    )
     .forEach(
       (link) => {
 
@@ -349,7 +400,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================
-     FOOTER YEAR
+     YEAR
   ========================================= */
 
   const year =
