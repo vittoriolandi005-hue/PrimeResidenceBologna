@@ -6,40 +6,86 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!loader) return;
 
   let progress = 0;
+  let targetProgress = 0;
   let introFinished = false;
 
-  // Più basso = scroll più veloce
-  const SCROLL_DISTANCE = 1000;
+  // 10% più veloce rispetto alla versione precedente
+  const SCROLL_DISTANCE = 900;
 
-  function updateIntro() {
+  // Fluidità del movimento
+  const EASE = 0.085;
+
+  let animationFrame = null;
+
+
+  // =========================
+  // AGGIORNA ANIMAZIONE
+  // =========================
+
+  function animateIntro() {
+
+    if (introFinished) return;
+
+    // Avvicina gradualmente il movimento al punto desiderato
+    progress += (targetProgress - progress) * EASE;
+
+    // Evita micro-movimenti alla fine
+    if (Math.abs(targetProgress - progress) < 0.0005) {
+      progress = targetProgress;
+    }
 
     progress = Math.max(0, Math.min(1, progress));
 
-    // Movimento progressivo della schermata iniziale
+    // Movimento fluido della schermata
     loader.style.transform =
       `translate3d(0, ${-progress * 100}%, 0)`;
 
-    // Scomparsa progressiva della scritta
+    // Scomparsa graduale della scritta
     if (scrollEnter) {
 
       scrollEnter.style.opacity =
         Math.max(0, 1 - progress * 3);
 
       scrollEnter.style.transform =
-        `translateX(-50%) translateY(${progress * 25}px)`;
+        `translate3d(-50%, ${progress * 25}px, 0)`;
     }
 
-    if (progress >= 1) {
+    // Fine intro
+    if (progress >= 0.999) {
       finishIntro();
+      return;
     }
+
+    animationFrame =
+      requestAnimationFrame(animateIntro);
   }
+
+
+  // =========================
+  // AVVIA ANIMAZIONE
+  // =========================
+
+  function startAnimation() {
+
+    if (animationFrame) return;
+
+    animationFrame =
+      requestAnimationFrame(animateIntro);
+  }
+
+
+  // =========================
+  // FINE INTRO
+  // =========================
 
   function finishIntro() {
 
     if (introFinished) return;
 
     introFinished = true;
+
     progress = 1;
+    targetProgress = 1;
 
     loader.style.transform =
       "translate3d(0, -100%, 0)";
@@ -47,6 +93,11 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.remove("intro-active");
 
     document.body.style.overflow = "";
+
+    if (animationFrame) {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = null;
+    }
   }
 
 
@@ -62,9 +113,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       event.preventDefault();
 
-      progress += event.deltaY / SCROLL_DISTANCE;
+      // Aumenta progressivamente il target
+      targetProgress +=
+        event.deltaY / SCROLL_DISTANCE;
 
-      updateIntro();
+      targetProgress =
+        Math.max(0, Math.min(1, targetProgress));
+
+      startAnimation();
 
     },
     { passive: false }
@@ -72,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // =========================
-  // TOUCH / MOBILE
+  // TOUCH
   // =========================
 
   let touchStart = 0;
@@ -83,11 +139,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (introFinished) return;
 
-      touchStart = event.touches[0].clientY;
+      touchStart =
+        event.touches[0].clientY;
 
     },
     { passive: true }
   );
+
 
   window.addEventListener(
     "touchmove",
@@ -105,11 +163,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         event.preventDefault();
 
-        progress += movement / 1000;
+        targetProgress +=
+          movement / SCROLL_DISTANCE;
+
+        targetProgress =
+          Math.max(0, Math.min(1, targetProgress));
 
         touchStart = currentTouch;
 
-        updateIntro();
+        startAnimation();
       }
 
     },
@@ -135,9 +197,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         event.preventDefault();
 
-        progress += 0.15;
+        targetProgress += 0.15;
 
-        updateIntro();
+        targetProgress =
+          Math.min(1, targetProgress);
+
+        startAnimation();
       }
 
       if (
@@ -147,9 +212,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         event.preventDefault();
 
-        progress -= 0.15;
+        targetProgress -= 0.15;
 
-        updateIntro();
+        targetProgress =
+          Math.max(0, targetProgress);
+
+        startAnimation();
       }
 
     }
