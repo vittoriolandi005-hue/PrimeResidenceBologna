@@ -41,6 +41,118 @@
     href="style.css"
   >
 
+
+  <style>
+    /* =====================================================
+       LOADER — SCROLL TO DISCOVER
+       Solo indicazione visiva: non modifica la logica JS
+    ====================================================== */
+
+    .loader-scroll-hint {
+      position: absolute;
+      left: 50%;
+      top: calc(50% + 125px);
+      z-index: 2;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+
+      width: max-content;
+
+      color: #b69b67;
+      text-align: center;
+
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .loader-scroll-text {
+      display: block;
+
+      font-size: 8px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      white-space: nowrap;
+
+      opacity: 0.88;
+    }
+
+    .loader-scroll-indicator {
+      position: relative;
+
+      display: block;
+
+      width: 1px;
+      height: 34px;
+
+      overflow: hidden;
+
+      background: rgba(182, 155, 103, 0.22);
+    }
+
+    .loader-scroll-indicator::after {
+      content: "";
+
+      position: absolute;
+      top: -100%;
+      left: 0;
+
+      width: 1px;
+      height: 100%;
+
+      background: #b69b67;
+
+      animation: loaderScrollIndicator 1.8s ease-in-out infinite;
+    }
+
+    @keyframes loaderScrollIndicator {
+      0% {
+        transform: translateY(0);
+        opacity: 0;
+      }
+
+      20% {
+        opacity: 1;
+      }
+
+      70% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(200%);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .loader-scroll-hint {
+        top: calc(50% + 108px);
+        gap: 10px;
+      }
+
+      .loader-scroll-text {
+        font-size: 7px;
+        letter-spacing: 0.28em;
+      }
+
+      .loader-scroll-indicator {
+        height: 30px;
+      }
+    }
+
+    @media (max-height: 600px) {
+      .loader-scroll-hint {
+        top: calc(50% + 95px);
+      }
+    }
+  </style>
+
 </head>
 
 
@@ -64,6 +176,20 @@
       <div class="loader-city">
         BOLOGNA
       </div>
+
+    </div>
+
+
+    <div
+      class="loader-scroll-hint"
+      aria-hidden="true"
+    >
+
+      <span class="loader-scroll-text">
+        SCROLL TO DISCOVER
+      </span>
+
+      <span class="loader-scroll-indicator"></span>
 
     </div>
 
