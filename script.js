@@ -1,4 +1,3 @@
-```javascript
 /* =========================================================
    PRIME RESIDENCE BOLOGNA
    PREMIUM WEBSITE JAVASCRIPT
@@ -18,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1400);
   }
 
-
   /* =======================================================
      02. NAVBAR
   ======================================================= */
@@ -36,1366 +34,423 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   updateNavbar();
-
-  window.addEventListener("scroll", updateNavbar, {
-    passive: true
-  });
-
+  window.addEventListener("scroll", updateNavbar, { passive: true });
 
   /* =======================================================
      03. MOBILE MENU
   ======================================================= */
 
-  const menuToggle =
-    document.querySelector(".menu-toggle");
-
-  const mobileMenu =
-    document.querySelector(".mobile-menu");
+  const menuToggle = document.querySelector(".menu-toggle");
+  const mobileMenu = document.querySelector(".mobile-menu");
 
   if (menuToggle && mobileMenu) {
 
-    menuToggle.setAttribute(
-      "aria-expanded",
-      "false"
-    );
+    menuToggle.setAttribute("aria-expanded", "false");
 
     menuToggle.addEventListener("click", () => {
 
-      const open =
-        menuToggle.classList.toggle("active");
+      const open = menuToggle.classList.toggle("active");
 
-      mobileMenu.classList.toggle(
-        "active",
-        open
-      );
+      mobileMenu.classList.toggle("active", open);
 
       menuToggle.setAttribute(
         "aria-expanded",
         open ? "true" : "false"
       );
 
-      document.body.style.overflow =
-        open ? "hidden" : "";
+      document.body.style.overflow = open ? "hidden" : "";
 
     });
 
+    mobileMenu.querySelectorAll("a").forEach(link => {
 
-    mobileMenu
-      .querySelectorAll("a")
-      .forEach((link) => {
+      link.addEventListener("click", () => {
 
-        link.addEventListener("click", () => {
-
-          menuToggle.classList.remove("active");
-
-          mobileMenu.classList.remove("active");
-
-          menuToggle.setAttribute(
-            "aria-expanded",
-            "false"
-          );
-
-          document.body.style.overflow = "";
-
-        });
+        menuToggle.classList.remove("active");
+        mobileMenu.classList.remove("active");
+        menuToggle.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
 
       });
 
+    });
+
   }
 
-
   /* =======================================================
-     04. HOMEPAGE FIRST-SCROLL ANIMATION
-
-     HERO
-        ↓
-     INTRO / "STAY BEAUTIFULLY"
-
-     COMPORTAMENTO:
-
-     - parte solamente dalla cima della Home
-     - il PRIMO scroll verso il basso avvia l'animazione
-     - il movimento dell'utente viene bloccato
-     - la pagina viene portata automaticamente
-       all'inizio della sezione INTRO
-     - durata esatta: 2200ms
-     - dopo l'animazione lo scroll torna normale
-     - l'animazione viene eseguita una sola volta
+     04. PREMIUM FIRST SCROLL (2200ms)
   ======================================================= */
 
-  const hero =
-    document.querySelector(".hero");
+  const hero = document.querySelector(".hero");
 
-  const intro =
-    document.querySelector(".intro");
+  if (hero && hero.nextElementSibling) {
 
+    const intro = hero.nextElementSibling;
 
-  if (hero && intro) {
+    const DURATION = 2200;
 
-    const SCROLL_DURATION = 2200;
+    let introFinished = false;
+    let introAnimating = false;
 
-    let programmedScrollActive = false;
-
-    let programmedScrollCompleted = false;
-
-    let touchStartY = null;
-
-
-    /* -------------------------------------------------------
-       EASING
-
-       Movimento elegante:
-       lento → accelera → rallenta
-    ------------------------------------------------------- */
-
-    function cinematicEase(t) {
+    function ease(t) {
 
       return t < 0.5
         ? 4 * t * t * t
-        : 1 -
-          Math.pow(-2 * t + 2, 3) / 2;
+        : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
     }
 
+    function startIntro() {
 
-    /* -------------------------------------------------------
-       START PROGRAMMED SCROLL
-    ------------------------------------------------------- */
+      if (introFinished || introAnimating) return;
+      if (window.scrollY > 5) return;
 
-    function startProgrammedScroll() {
+      introAnimating = true;
 
-      if (programmedScrollActive) {
-        return;
-      }
+      const startY = window.scrollY;
+      const targetY = intro.offsetTop;
+      const startTime = performance.now();
 
-      if (programmedScrollCompleted) {
-        return;
-      }
+      function animate(now) {
 
+        const elapsed = now - startTime;
 
-      /*
-       L'animazione deve partire solamente
-       quando siamo realmente in cima alla Home.
-      */
+        const progress = Math.min(elapsed / DURATION, 1);
 
-      if (window.scrollY > 5) {
-        return;
-      }
+        const y = startY + (targetY - startY) * ease(progress);
 
+        window.scrollTo(0, y);
 
-      programmedScrollActive = true;
+        if (progress < 1) {
 
+          requestAnimationFrame(animate);
 
-      /* -----------------------------------------------------
-         POSIZIONE DI PARTENZA
-      ----------------------------------------------------- */
+        } else {
 
-      const startPosition = 0;
+          window.scrollTo(0, targetY);
 
-
-      /* -----------------------------------------------------
-         CALCOLO DELLA POSIZIONE DELL'INTRO
-
-         È importante calcolarla PRIMA di modificare
-         qualsiasi proprietà della pagina.
-      ----------------------------------------------------- */
-
-      const targetPosition =
-        intro.getBoundingClientRect().top +
-        window.scrollY;
-
-
-      /*
-       Se per qualche motivo l'intro fosse già in cima,
-       interrompiamo senza bloccare la pagina.
-      */
-
-      if (targetPosition <= 5) {
-
-        programmedScrollActive = false;
-
-        programmedScrollCompleted = true;
-
-        return;
-
-      }
-
-
-      /* -----------------------------------------------------
-         DISATTIVA TEMPORANEAMENTE LO SCROLL SMOOTH DEL CSS
-
-         Il CSS contiene:
-
-         html {
-           scroll-behavior: smooth;
-         }
-
-         Durante questa animazione vogliamo invece
-         controllare NOI ogni singolo frame.
-      ----------------------------------------------------- */
-
-      const htmlElement =
-        document.documentElement;
-
-      const previousScrollBehavior =
-        htmlElement.style.scrollBehavior;
-
-      htmlElement.style.scrollBehavior =
-        "auto";
-
-
-      /*
-       NON usiamo overflow:hidden.
-
-       È questo uno dei problemi del vecchio codice:
-       bloccava il contenitore che doveva essere
-       controllato da window.scrollTo().
-      */
-
-
-      /* -----------------------------------------------------
-         ASSICURIAMOCI DI PARTIRE ESATTAMENTE DA 0
-      ----------------------------------------------------- */
-
-      window.scrollTo(0, 0);
-
-
-      /* -----------------------------------------------------
-         TEMPO DI PARTENZA
-      ----------------------------------------------------- */
-
-      const animationStart =
-        performance.now();
-
-
-      /* -----------------------------------------------------
-         ANIMAZIONE FRAME-BY-FRAME
-      ----------------------------------------------------- */
-
-      function animateScroll(currentTime) {
-
-        const elapsed =
-          currentTime -
-          animationStart;
-
-
-        let progress =
-          elapsed /
-          SCROLL_DURATION;
-
-
-        progress =
-          Math.max(
-            0,
-            Math.min(
-              1,
-              progress
-            )
-          );
-
-
-        const eased =
-          cinematicEase(progress);
-
-
-        const currentPosition =
-          startPosition +
-          (
-            targetPosition -
-            startPosition
-          ) *
-          eased;
-
-
-        /*
-         Movimento reale della pagina.
-        */
-
-        window.scrollTo(
-          0,
-          currentPosition
-        );
-
-
-        /* ---------------------------------------------------
-           FINE ANIMAZIONE
-        --------------------------------------------------- */
-
-        if (progress >= 1) {
-
-          /*
-           Portiamo la pagina ESATTAMENTE
-           all'inizio dell'intro.
-          */
-
-          window.scrollTo(
-            0,
-            targetPosition
-          );
-
-
-          /*
-           Ripristiniamo il comportamento originale
-           dello scroll.
-          */
-
-          htmlElement.style.scrollBehavior =
-            previousScrollBehavior;
-
-
-          programmedScrollActive =
-            false;
-
-          programmedScrollCompleted =
-            true;
-
-
-          return;
+          introAnimating = false;
+          introFinished = true;
 
         }
 
-
-        requestAnimationFrame(
-          animateScroll
-        );
-
       }
 
-
-      /*
-       PARTENZA IMMEDIATA.
-      */
-
-      requestAnimationFrame(
-        animateScroll
-      );
+      requestAnimationFrame(animate);
 
     }
 
+    /* ---------- Mouse ---------- */
 
-    /* =======================================================
-       MOUSE / TRACKPAD
+    window.addEventListener("wheel", (event) => {
 
-       IL PRIMO SCROLL VERSO IL BASSO
-       AVVIA L'ANIMAZIONE.
-    ======================================================= */
-
-    window.addEventListener(
-      "wheel",
-      (event) => {
-
-        /*
-         Durante l'animazione impediamo qualsiasi
-         ulteriore movimento manuale.
-        */
-
-        if (programmedScrollActive) {
-
-          event.preventDefault();
-
-          return;
-
-        }
-
-
-        /*
-         Dopo la prima animazione lasciamo
-         completamente normale lo scroll.
-        */
-
-        if (programmedScrollCompleted) {
-          return;
-        }
-
-
-        /*
-         Siamo in cima + movimento verso il basso.
-        */
-
-        if (
-          window.scrollY <= 5 &&
-          event.deltaY > 0
-        ) {
-
-          event.preventDefault();
-
-          startProgrammedScroll();
-
-        }
-
-      },
-      {
-        passive: false
+      if (introAnimating) {
+        event.preventDefault();
+        return;
       }
-    );
 
+      if (
+        !introFinished &&
+        window.scrollY <= 5 &&
+        event.deltaY > 0
+      ) {
 
-    /* =======================================================
-       TOUCH / MOBILE
-
-       Swipe verso l'alto del dito =
-       scroll verso il basso.
-    ======================================================= */
-
-    window.addEventListener(
-      "touchstart",
-      (event) => {
-
-        if (
-          event.touches.length !== 1
-        ) {
-          return;
-        }
-
-        touchStartY =
-          event.touches[0].clientY;
-
-      },
-      {
-        passive: true
-      }
-    );
-
-
-    window.addEventListener(
-      "touchmove",
-      (event) => {
-
-        if (
-          touchStartY === null
-        ) {
-          return;
-        }
-
-
-        if (
-          programmedScrollActive
-        ) {
-
-          event.preventDefault();
-
-          return;
-
-        }
-
-
-        if (
-          programmedScrollCompleted
-        ) {
-
-          return;
-
-        }
-
-
-        if (
-          window.scrollY > 5
-        ) {
-
-          return;
-
-        }
-
-
-        const currentY =
-          event.touches[0].clientY;
-
-
-        const movement =
-          touchStartY -
-          currentY;
-
-
-        /*
-         Il dito si muove verso l'alto:
-         l'utente vuole andare verso il basso.
-        */
-
-        if (
-          movement > 8
-        ) {
-
-          event.preventDefault();
-
-          touchStartY = null;
-
-          startProgrammedScroll();
-
-        }
-
-      },
-      {
-        passive: false
-      }
-    );
-
-
-    window.addEventListener(
-      "touchend",
-      () => {
-
-        touchStartY = null;
-
-      },
-      {
-        passive: true
-      }
-    );
-
-
-    /* =======================================================
-       TASTIERA
-    ======================================================= */
-
-    window.addEventListener(
-      "keydown",
-      (event) => {
-
-        if (
-          programmedScrollActive
-        ) {
-
-          event.preventDefault();
-
-          return;
-
-        }
-
-
-        if (
-          programmedScrollCompleted
-        ) {
-
-          return;
-
-        }
-
-
-        if (
-          window.scrollY > 5
-        ) {
-
-          return;
-
-        }
-
-
-        if (
-          event.key === "ArrowDown" ||
-          event.key === "PageDown" ||
-          event.key === " "
-        ) {
-
-          event.preventDefault();
-
-          startProgrammedScroll();
-
-        }
+        event.preventDefault();
+        startIntro();
 
       }
-    );
+
+    }, { passive: false });
+
+    /* ---------- Touch ---------- */
+
+    let touchStartY = 0;
+
+    window.addEventListener("touchstart", (event) => {
+
+      touchStartY = event.touches[0].clientY;
+
+    }, { passive: true });
+
+    window.addEventListener("touchmove", (event) => {
+
+      if (introAnimating) {
+        event.preventDefault();
+        return;
+      }
+
+      if (introFinished) return;
+      if (window.scrollY > 5) return;
+
+      const move = touchStartY - event.touches[0].clientY;
+
+      if (move > 8) {
+
+        event.preventDefault();
+        startIntro();
+
+      }
+
+    }, { passive: false });
+
+    /* ---------- Keyboard ---------- */
+
+    window.addEventListener("keydown", (event) => {
+
+      if (introAnimating || introFinished) return;
+      if (window.scrollY > 5) return;
+
+      if (
+        event.key === "ArrowDown" ||
+        event.key === "PageDown" ||
+        event.key === " "
+      ) {
+
+        event.preventDefault();
+        startIntro();
+
+      }
+
+    });
 
   }
-
 
   /* =======================================================
      05. REVEAL ANIMATIONS
   ======================================================= */
 
-  const revealElements =
-    document.querySelectorAll(".reveal");
+  const revealElements = document.querySelectorAll(".reveal");
 
   if (revealElements.length) {
 
-    const revealObserver =
-      new IntersectionObserver(
-        (entries, observer) => {
+    const observer = new IntersectionObserver((entries, obs) => {
 
-          entries.forEach((entry) => {
+      entries.forEach(entry => {
 
-            if (entry.isIntersecting) {
+        if (entry.isIntersecting) {
 
-              entry.target.classList.add(
-                "visible"
-              );
+          entry.target.classList.add("visible");
+          obs.unobserve(entry.target);
 
-              observer.unobserve(
-                entry.target
-              );
-
-            }
-
-          });
-
-        },
-        {
-          threshold: 0.12
         }
-      );
 
+      });
 
-    revealElements.forEach((element) => {
+    }, { threshold: 0.12 });
 
-      revealObserver.observe(element);
-
-    });
+    revealElements.forEach(el => observer.observe(el));
 
   }
-
 
   /* =======================================================
      06. ANCHOR LINKS
   ======================================================= */
 
-  document
-    .querySelectorAll('a[href^="#"]')
-    .forEach((link) => {
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
 
-      link.addEventListener(
-        "click",
-        (event) => {
+    link.addEventListener("click", event => {
 
-          const id =
-            link.getAttribute("href");
+      const id = link.getAttribute("href");
 
+      if (!id || id === "#") return;
 
-          if (!id || id === "#") {
-            return;
-          }
+      const target = document.querySelector(id);
 
+      if (!target) return;
 
-          const target =
-            document.querySelector(id);
+      event.preventDefault();
 
+      const offset = navbar ? navbar.offsetHeight : 0;
 
-          if (!target) {
-            return;
-          }
-
-
-          event.preventDefault();
-
-
-          const navbarHeight =
-            navbar
-              ? navbar.offsetHeight
-              : 0;
-
-
-          const position =
-            target.getBoundingClientRect().top +
-            window.scrollY -
-            navbarHeight;
-
-
-          window.scrollTo({
-            top: position,
-            behavior: "smooth"
-          });
-
-        }
-      );
+      window.scrollTo({
+        top: target.offsetTop - offset,
+        behavior: "smooth"
+      });
 
     });
-
-
-  /* =======================================================
-     07. BOOKING PAGE
-  ======================================================= */
-
-  const bookingCards =
-    document.querySelectorAll(
-      ".booking-residence-card"
-    );
-
-  const bookingForm =
-    document.querySelector(
-      "#bookingRequestForm"
-    );
-
-  const residenceInput =
-    document.querySelector(
-      "#residence"
-    );
-
-  const selectedResidenceText =
-    document.querySelector(
-      "#selectedResidenceText"
-    );
-
-  const bookingFormSection =
-    document.querySelector(
-      "#booking-form-section"
-    );
-
-  const checkinInput =
-    document.querySelector(
-      "#checkin"
-    );
-
-  const checkoutInput =
-    document.querySelector(
-      "#checkout"
-    );
-
-  const bookingMessage =
-    document.querySelector(
-      "#bookingMessage"
-    );
-
-  const bookingSubmit =
-    document.querySelector(
-      ".booking-submit"
-    );
-
-
-  /* =======================================================
-     08. LOCAL DATE
-  ======================================================= */
-
-  function getLocalDateString() {
-
-    const today =
-      new Date();
-
-
-    const year =
-      today.getFullYear();
-
-
-    const month =
-      String(
-        today.getMonth() + 1
-      ).padStart(
-        2,
-        "0"
-      );
-
-
-    const day =
-      String(
-        today.getDate()
-      ).padStart(
-        2,
-        "0"
-      );
-
-
-    return `${year}-${month}-${day}`;
-
-  }
-
-
-  if (checkinInput) {
-
-    checkinInput.min =
-      getLocalDateString();
-
-  }
-
-
-  if (checkoutInput) {
-
-    checkoutInput.min =
-      getLocalDateString();
-
-  }
-
-
-  /* =======================================================
-     09. RESIDENCE SELECTION
-  ======================================================= */
-
-  function selectResidence(card) {
-
-    if (!card) {
-      return;
-    }
-
-
-    const residence =
-      card.dataset.residence;
-
-
-    if (!residence) {
-      return;
-    }
-
-
-    bookingCards.forEach((item) => {
-
-      item.classList.remove(
-        "selected"
-      );
-
-    });
-
-
-    card.classList.add(
-      "selected"
-    );
-
-
-    if (residenceInput) {
-
-      residenceInput.value =
-        residence;
-
-    }
-
-
-    if (selectedResidenceText) {
-
-      selectedResidenceText.textContent =
-        residence;
-
-    }
-
-
-    if (bookingFormSection) {
-
-      setTimeout(() => {
-
-        bookingFormSection.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-
-      }, 150);
-
-    }
-
-  }
-
-
-  bookingCards.forEach((card) => {
-
-    card.addEventListener(
-      "click",
-      () => {
-
-        selectResidence(card);
-
-      }
-    );
-
-
-    card.addEventListener(
-      "keydown",
-      (event) => {
-
-        if (
-          event.key === "Enter" ||
-          event.key === " "
-        ) {
-
-          event.preventDefault();
-
-          selectResidence(card);
-
-        }
-
-      }
-    );
 
   });
 
-
   /* =======================================================
-     10. CHECK-IN / CHECK-OUT
+     07. BOOKING
   ======================================================= */
 
-  if (
-    checkinInput &&
-    checkoutInput
-  ) {
+  const bookingCards = document.querySelectorAll(".booking-residence-card");
+  const bookingForm = document.querySelector("#bookingRequestForm");
+  const residenceInput = document.querySelector("#residence");
+  const selectedResidenceText = document.querySelector("#selectedResidenceText");
+  const bookingFormSection = document.querySelector("#booking-form-section");
+  const checkin = document.querySelector("#checkin");
+  const checkout = document.querySelector("#checkout");
+  const bookingMessage = document.querySelector("#bookingMessage");
+  const submit = document.querySelector(".booking-submit");
 
-    checkinInput.addEventListener(
-      "change",
-      () => {
-
-        const checkin =
-          checkinInput.value;
-
-
-        if (!checkin) {
-          return;
-        }
-
-
-        checkoutInput.min =
-          checkin;
-
-
-        if (
-          checkoutInput.value &&
-          checkoutInput.value <= checkin
-        ) {
-
-          showBookingMessage(
-            "Il check-out deve essere successivo al check-in.",
-            "error"
-          );
-
-
-          checkoutInput.value = "";
-
-        }
-
-      }
-    );
-
-
-    checkoutInput.addEventListener(
-      "change",
-      () => {
-
-        const checkin =
-          checkinInput.value;
-
-        const checkout =
-          checkoutInput.value;
-
-
-        if (
-          checkin &&
-          checkout &&
-          checkout <= checkin
-        ) {
-
-          showBookingMessage(
-            "Il check-out deve essere successivo al check-in.",
-            "error"
-          );
-
-
-          checkoutInput.value = "";
-
-        }
-
-      }
-    );
-
+  function today() {
+    return new Date().toISOString().split("T")[0];
   }
 
+  if (checkin) checkin.min = today();
+  if (checkout) checkout.min = today();
 
-  /* =======================================================
-     11. BOOKING MESSAGE
-  ======================================================= */
+  bookingCards.forEach(card => {
 
-  function showBookingMessage(
-    message,
-    type = "error"
-  ) {
+    card.addEventListener("click", () => {
 
-    if (!bookingMessage) {
-      return;
-    }
+      bookingCards.forEach(c => c.classList.remove("selected"));
 
+      card.classList.add("selected");
 
-    bookingMessage.textContent =
-      message;
+      const name = card.dataset.residence || "";
 
+      if (residenceInput) residenceInput.value = name;
+      if (selectedResidenceText) selectedResidenceText.textContent = name;
 
-    bookingMessage.className =
-      `booking-message ${type}`;
-
-
-    bookingMessage.style.display =
-      "block";
-
-  }
-
-
-  function hideBookingMessage() {
-
-    if (!bookingMessage) {
-      return;
-    }
-
-
-    bookingMessage.textContent =
-      "";
-
-    bookingMessage.className =
-      "booking-message";
-
-    bookingMessage.style.display =
-      "none";
-
-  }
-
-
-  /* =======================================================
-     12. BOOKING SUBMIT
-  ======================================================= */
-
-  if (bookingForm) {
-
-    bookingForm.addEventListener(
-      "submit",
-      async (event) => {
-
-        event.preventDefault();
-
-        hideBookingMessage();
-
-
-        if (
-          !residenceInput ||
-          !residenceInput.value
-        ) {
-
-          showBookingMessage(
-            "Seleziona prima una residence.",
-            "error"
-          );
-
-          return;
-
-        }
-
-
-        if (
-          checkinInput &&
-          checkoutInput
-        ) {
-
-          if (
-            !checkinInput.value ||
-            !checkoutInput.value
-          ) {
-
-            showBookingMessage(
-              "Inserisci le date di check-in e check-out.",
-              "error"
-            );
-
-            return;
-
-          }
-
-
-          if (
-            checkoutInput.value <=
-            checkinInput.value
-          ) {
-
-            showBookingMessage(
-              "Il check-out deve essere successivo al check-in.",
-              "error"
-            );
-
-            return;
-
-          }
-
-        }
-
-
-        const privacy =
-          document.querySelector(
-            "#privacy"
-          );
-
-
-        if (
-          privacy &&
-          !privacy.checked
-        ) {
-
-          showBookingMessage(
-            "Devi accettare la privacy policy per inviare la richiesta.",
-            "error"
-          );
-
-          return;
-
-        }
-
-
-        if (bookingSubmit) {
-
-          bookingSubmit.disabled =
-            true;
-
-          bookingSubmit.classList.add(
-            "loading"
-          );
-
-          bookingSubmit.dataset.originalText =
-            bookingSubmit.textContent;
-
-          bookingSubmit.textContent =
-            "INVIO IN CORSO...";
-
-        }
-
-
-        const formData =
-          new FormData(
-            bookingForm
-          );
-
-
-        const data =
-          Object.fromEntries(
-            formData.entries()
-          );
-
-
-        try {
-
-          const response =
-            await fetch(
-              "/api/booking-request",
-              {
-                method: "POST",
-
-                headers: {
-                  "Content-Type":
-                    "application/json"
-                },
-
-                body:
-                  JSON.stringify(data)
-              }
-            );
-
-
-          let result = {};
-
-
-          try {
-
-            result =
-              await response.json();
-
-          } catch (error) {
-
-            result = {};
-
-          }
-
-
-          if (!response.ok) {
-
-            throw new Error(
-              result.message ||
-              "Si è verificato un errore durante l'invio."
-            );
-
-          }
-
-
-          showBookingMessage(
-            result.message ||
-            "Richiesta inviata con successo. Ti ricontatteremo al più presto.",
-            "success"
-          );
-
-
-          const selectedResidence =
-            residenceInput.value;
-
-
-          bookingForm.reset();
-
-
-          residenceInput.value =
-            selectedResidence;
-
-
-          if (selectedResidenceText) {
-
-            selectedResidenceText.textContent =
-              selectedResidence;
-
-          }
-
-
-          if (checkinInput) {
-
-            checkinInput.min =
-              getLocalDateString();
-
-          }
-
-
-          if (checkoutInput) {
-
-            checkoutInput.min =
-              getLocalDateString();
-
-          }
-
-
-        } catch (error) {
-
-          console.error(
-            "Booking error:",
-            error
-          );
-
-
-          showBookingMessage(
-            error.message ||
-            "Non è stato possibile inviare la richiesta. Riprova tra poco.",
-            "error"
-          );
-
-
-        } finally {
-
-          if (bookingSubmit) {
-
-            bookingSubmit.disabled =
-              false;
-
-            bookingSubmit.classList.remove(
-              "loading"
-            );
-
-            bookingSubmit.textContent =
-              bookingSubmit.dataset.originalText ||
-              "SEND BOOKING REQUEST";
-
-          }
-
-        }
-
-      }
-    );
-
-  }
-
-
-  /* =======================================================
-     13. FORM ERROR RESET
-  ======================================================= */
-
-  document
-    .querySelectorAll(
-      "#bookingRequestForm input, #bookingRequestForm select, #bookingRequestForm textarea"
-    )
-    .forEach((input) => {
-
-      input.addEventListener(
-        "input",
-        () => {
-
-          if (
-            bookingMessage &&
-            bookingMessage.classList.contains(
-              "error"
-            )
-          ) {
-
-            hideBookingMessage();
-
-          }
-
-        }
-      );
+      bookingFormSection?.scrollIntoView({
+        behavior: "smooth"
+      });
 
     });
 
+  });
 
-  /* =======================================================
-     14. ESCAPE MOBILE MENU
-  ======================================================= */
+  if (checkin && checkout) {
 
-  document.addEventListener(
-    "keydown",
-    (event) => {
+    checkin.addEventListener("change", () => {
 
-      if (
-        event.key === "Escape" &&
-        mobileMenu &&
-        mobileMenu.classList.contains(
-          "active"
-        )
-      ) {
+      checkout.min = checkin.value;
 
-        mobileMenu.classList.remove(
-          "active"
-        );
+      if (checkout.value <= checkin.value) {
+        checkout.value = "";
+      }
 
+    });
 
-        if (menuToggle) {
+  }
 
-          menuToggle.classList.remove(
-            "active"
-          );
+  function showMessage(text, type) {
 
-          menuToggle.setAttribute(
-            "aria-expanded",
-            "false"
-          );
+    if (!bookingMessage) return;
 
+    bookingMessage.textContent = text;
+    bookingMessage.className = `booking-message ${type}`;
+    bookingMessage.style.display = "block";
+
+  }
+
+  if (bookingForm) {
+
+    bookingForm.addEventListener("submit", async event => {
+
+      event.preventDefault();
+
+      if (!residenceInput?.value) {
+        showMessage("Seleziona una residence.", "error");
+        return;
+      }
+
+      if (!checkin?.value || !checkout?.value) {
+        showMessage("Inserisci check-in e check-out.", "error");
+        return;
+      }
+
+      if (checkout.value <= checkin.value) {
+        showMessage("Il check-out deve essere successivo al check-in.", "error");
+        return;
+      }
+
+      if (submit) {
+        submit.disabled = true;
+        submit.classList.add("loading");
+      }
+
+      const data = Object.fromEntries(new FormData(bookingForm).entries());
+
+      try {
+
+        const response = await fetch("/api/booking-request", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) throw new Error(result.message || "Errore");
+
+        bookingForm.reset();
+
+        if (residenceInput) residenceInput.value = data.residence;
+        if (selectedResidenceText) selectedResidenceText.textContent = data.residence;
+
+        showMessage("Richiesta inviata con successo.", "success");
+
+      } catch {
+
+        showMessage("Invio non riuscito.", "error");
+
+      } finally {
+
+        if (submit) {
+          submit.disabled = false;
+          submit.classList.remove("loading");
         }
-
-
-        document.body.style.overflow =
-          "";
 
       }
 
-    }
-  );
+    });
 
-
-  /* =======================================================
-     15. RESIZE
-  ======================================================= */
-
-  window.addEventListener(
-    "resize",
-    () => {
-
-      if (
-        window.innerWidth > 700 &&
-        mobileMenu &&
-        mobileMenu.classList.contains(
-          "active"
-        )
-      ) {
-
-        mobileMenu.classList.remove(
-          "active"
-        );
-
-
-        if (menuToggle) {
-
-          menuToggle.classList.remove(
-            "active"
-          );
-
-          menuToggle.setAttribute(
-            "aria-expanded",
-            "false"
-          );
-
-        }
-
-
-        document.body.style.overflow =
-          "";
-
-      }
-
-    }
-  );
-
+  }
 
   /* =======================================================
-     16. READY
+     08. ESCAPE
   ======================================================= */
 
-  console.log(
-    "Prime Residence Bologna — programmed first-scroll animation ready."
-  );
+  document.addEventListener("keydown", event => {
+
+    if (
+      event.key === "Escape" &&
+      mobileMenu?.classList.contains("active")
+    ) {
+
+      mobileMenu.classList.remove("active");
+      menuToggle?.classList.remove("active");
+      document.body.style.overflow = "";
+
+    }
+
+  });
+
+  /* =======================================================
+     09. RESIZE
+  ======================================================= */
+
+  window.addEventListener("resize", () => {
+
+    if (
+      window.innerWidth > 700 &&
+      mobileMenu?.classList.contains("active")
+    ) {
+
+      mobileMenu.classList.remove("active");
+      menuToggle?.classList.remove("active");
+      document.body.style.overflow = "";
+
+    }
+
+  });
+
+  /* =======================================================
+     10. FOOTER YEAR
+  ======================================================= */
+
+  const year = document.querySelector("#year");
+
+  if (year) {
+    year.textContent = new Date().getFullYear();
+  }
+
+  console.log("Prime Residence Bologna — premium ready.");
 
 });
-```
