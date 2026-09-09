@@ -228,7 +228,6 @@ residenceInput=document.querySelector("#residence"),
 calendarResidence=document.querySelector("#calendarResidence"),
 checkinInput=document.querySelector("#checkin"),
 checkoutInput=document.querySelector("#checkout"),
-guestsInput=document.querySelector("#guests"),
 selectedResidenceText=document.querySelector("#selectedResidenceText"),
 bookingFormSection=document.querySelector("#booking-form-section"),
 bookingMessage=document.querySelector("#bookingMessage"),
@@ -421,7 +420,14 @@ calendarGrid.appendChild(button);
 }
 }
 
+/* =========================================================
+   CLICK SELECTION
+   PRIMO CLICK = CHECK-IN
+   SECONDO CLICK = CHECK-OUT
+========================================================= */
+
 function handleDayClick(day){
+
 if(suppressClick){
 suppressClick=false;
 return;
@@ -431,7 +437,8 @@ clearCalendarMessage();
 
 if(isPast(day))return;
 
-if(!selectedStart||selectedEnd){
+/* NESSUN CHECK-IN ANCORA */
+if(!selectedStart){
 
 if(isBooked(day)){
 showCalendarMessage("This date is fully booked. Please choose an available check-in date.","info");
@@ -453,12 +460,9 @@ renderCalendar();
 return;
 }
 
-if(day===selectedStart){
-clearStay();
-return;
-}
+/* SOGGIORNO GIÀ COMPLETO: NUOVO CLICK = NUOVO CHECK-IN */
+if(selectedStart&&selectedEnd){
 
-if(day<selectedStart){
 if(isBooked(day)){
 showCalendarMessage("This date is fully booked. Please choose an available check-in date.","info");
 return;
@@ -469,10 +473,45 @@ selectedEnd="";
 previewEnd="";
 
 if(checkinInput)checkinInput.value=day;
+if(checkoutInput)checkoutInput.value="";
+
+if(selectedStay)selectedStay.classList.remove("visible");
+
+lockSubmit("Select Check-out");
 
 renderCalendar();
 return;
 }
+
+/* CLICK SULLO STESSO GIORNO = AZZERA */
+if(day===selectedStart){
+clearStay();
+return;
+}
+
+/* SE CLICCO PRIMA DEL CHECK-IN, QUEL GIORNO DIVENTA IL NUOVO CHECK-IN */
+if(day<selectedStart){
+
+if(isBooked(day)){
+showCalendarMessage("This date is fully booked. Please choose an available check-in date.","info");
+return;
+}
+
+selectedStart=day;
+selectedEnd="";
+previewEnd="";
+
+if(checkinInput)checkinInput.value=day;
+if(checkoutInput)checkoutInput.value="";
+
+lockSubmit("Select Check-out");
+
+renderCalendar();
+return;
+}
+
+/* SECONDO CLICK DOPO IL CHECK-IN = CHECK-OUT */
+if(day>selectedStart){
 
 if(!validCheckout(selectedStart,day)){
 showCalendarMessage("Your selected stay crosses a fully booked date. Please choose another check-out date.","error");
@@ -485,7 +524,14 @@ previewEnd="";
 clearCalendarMessage();
 updateSelectedStay();
 renderCalendar();
+return;
 }
+
+}
+
+/* =========================================================
+   DRAG SELECTION
+========================================================= */
 
 function startCalendarDrag(e,day){
 if(e.button!==0||isPast(day)||isBooked(day))return;
@@ -493,20 +539,8 @@ if(e.button!==0||isPast(day)||isBooked(day))return;
 dragActive=true;
 dragMoved=false;
 dragStart=day;
-selectedStart=day;
-selectedEnd="";
-previewEnd=day;
-
-if(checkinInput)checkinInput.value=day;
-if(checkoutInput)checkoutInput.value="";
-
-if(selectedStay)selectedStay.classList.remove("visible");
-
-lockSubmit("Select Check-out");
 
 document.body.style.userSelect="none";
-
-renderCalendar();
 }
 
 document.addEventListener("mouseover",e=>{
@@ -522,6 +556,8 @@ if(day===dragStart)return;
 dragMoved=true;
 
 if(day>dragStart&&validCheckout(dragStart,day)){
+selectedStart=dragStart;
+selectedEnd="";
 previewEnd=day;
 renderCalendar();
 }
@@ -534,6 +570,7 @@ dragActive=false;
 document.body.style.userSelect="";
 
 if(dragMoved&&previewEnd&&previewEnd>dragStart&&validCheckout(dragStart,previewEnd)){
+
 selectedStart=dragStart;
 selectedEnd=previewEnd;
 previewEnd="";
@@ -542,11 +579,26 @@ suppressClick=true;
 clearCalendarMessage();
 updateSelectedStay();
 renderCalendar();
+
 }else{
+
+/*
+IMPORTANTE:
+SE NON È STATO FATTO DRAG,
+NON MODIFICHIAMO QUI LE DATE.
+LASCIAMO CHE IL NORMALE EVENTO CLICK
+GESTISCA PRIMO E SECONDO CLICK.
+*/
+
 previewEnd="";
 renderCalendar();
+
 }
 });
+
+/* =========================================================
+   LOAD CALENDAR
+========================================================= */
 
 async function loadCalendar(calendarKey,residenceName){
 if(!primeCalendar)return;
@@ -575,6 +627,7 @@ displayMonth=new Date(now.getFullYear(),now.getMonth(),1);
 renderCalendar();
 
 try{
+
 const response=await fetch(`/api/availability?residence=${encodeURIComponent(calendarKey)}`,{cache:"no-store"});
 const result=await response.json();
 
@@ -593,6 +646,7 @@ lockSubmit("Select Your Stay");
 renderCalendar();
 
 }catch(error){
+
 if(requestId!==calendarRequestId)return;
 
 calendarLoaded=false;
@@ -653,6 +707,10 @@ if(selectedStayClear)selectedStayClear.addEventListener("click",()=>{
 clearStay();
 clearCalendarMessage();
 });
+
+/* =========================================================
+   BOOKING FORM
+========================================================= */
 
 function showMessage(text,type){
 if(!bookingMessage)return;
@@ -720,9 +778,11 @@ return;
 lockSubmit("Rechecking Availability...");
 
 try{
+
 const stillAvailable=await verifyStayAgain();
 
 if(!stillAvailable){
+
 showMessage("Availability has changed and these dates are no longer available. Please select another stay.","error");
 
 await loadCalendar(
@@ -734,6 +794,7 @@ return;
 }
 
 }catch(error){
+
 showMessage("We could not verify availability right now. Please try again in a moment.","error");
 unlockSubmit();
 return;
@@ -744,6 +805,7 @@ lockSubmit("Sending...");
 const data=Object.fromEntries(new FormData(bookingForm).entries());
 
 try{
+
 const response=await fetch("/api/booking-request",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
@@ -775,8 +837,10 @@ if(selectedResidenceText)selectedResidenceText.textContent=residence;
 await loadCalendar(calendar,residence);
 
 }catch(error){
+
 showMessage(error.message||"Unable to send request.","error");
 unlockSubmit();
+
 }
 });
 }
