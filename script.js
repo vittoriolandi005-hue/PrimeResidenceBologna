@@ -1,203 +1,281 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  const loader = document.querySelector(".loader");
-  const scrollEnter = document.querySelector(".scroll-enter");
 
-  if (!loader) return;
+  /* =====================================================
+     INTRO
+  ====================================================== */
 
-  /* =========================================
-     INTRO SCROLL
-     Un piccolo scroll avvia automaticamente
-     il movimento lento verso la seconda pagina
-  ========================================= */
+  const loader =
+    document.querySelector(".loader");
 
-  let introFinished = false;
-  let introAnimating = false;
-  let introStartTime = null;
+  const scrollEnter =
+    document.querySelector(".scroll-enter");
 
-  const INTRO_DURATION = 2200; // 2.2 secondi
 
-  function finishIntro() {
-    if (introFinished) return;
+  if (loader) {
 
-    introFinished = true;
-    introAnimating = false;
+    let introFinished = false;
 
-    loader.style.transform =
-      "translate3d(0, -100%, 0)";
+    let introAnimating = false;
 
-    if (scrollEnter) {
-      scrollEnter.style.opacity = "0";
-      scrollEnter.style.transform =
-        "translate3d(-50%, 25px, 0)";
-    }
+    let introStartTime = null;
 
-    document.body.classList.remove("intro-active");
-    document.body.style.overflow = "";
 
-    window.scrollTo({
-      top: 0,
-      behavior: "auto"
-    });
-  }
+    const INTRO_DURATION = 2200;
 
-  function animateIntro(timestamp) {
-    if (introFinished) return;
 
-    if (!introStartTime) {
-      introStartTime = timestamp;
-    }
-
-    const elapsed = timestamp - introStartTime;
-
-    let progress =
-      Math.min(elapsed / INTRO_DURATION, 1);
-
-    /*
-      Ease-in-out molto morbido:
-      parte lentamente,
-      accelera leggermente,
-      rallenta alla fine.
-    */
-    const easedProgress =
-      progress < 0.5
-        ? 2 * progress * progress
-        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-
-    loader.style.transform =
-      `translate3d(0, ${-easedProgress * 100}%, 0)`;
-
-    if (scrollEnter) {
-      scrollEnter.style.opacity =
-        Math.max(0, 1 - easedProgress * 3);
-
-      scrollEnter.style.transform =
-        `translate3d(-50%, ${easedProgress * 25}px, 0)`;
-    }
-
-    if (progress >= 1) {
-      finishIntro();
-      return;
-    }
-
-    requestAnimationFrame(animateIntro);
-  }
-
-  function startIntro() {
-    if (introFinished || introAnimating) return;
-
-    introAnimating = true;
-    introStartTime = null;
-
-    requestAnimationFrame(animateIntro);
-  }
-
-  /*
-    PRIMO SCROLL
-
-    Qualsiasi scroll verso il basso durante
-    l'intro avvia l'animazione automatica.
-  */
-  window.addEventListener(
-    "wheel",
-    (event) => {
+    function finishIntro() {
 
       if (introFinished) return;
 
-      event.preventDefault();
 
-      if (event.deltaY > 0) {
-        startIntro();
-      }
+      introFinished = true;
 
-    },
-    {
-      passive: false
-    }
-  );
+      introAnimating = false;
 
 
-  /* =========================================
-     TOUCH / MOBILE
-  ========================================= */
+      loader.style.transform =
+        "translate3d(0, -100%, 0)";
 
-  let touchStart = 0;
 
-  window.addEventListener(
-    "touchstart",
-    (event) => {
+      if (scrollEnter) {
 
-      if (introFinished) return;
+        scrollEnter.style.opacity = "0";
 
-      touchStart =
-        event.touches[0].clientY;
-
-    },
-    {
-      passive: true
-    }
-  );
-
-  window.addEventListener(
-    "touchmove",
-    (event) => {
-
-      if (introFinished) return;
-
-      const currentTouch =
-        event.touches[0].clientY;
-
-      const movement =
-        touchStart - currentTouch;
-
-      if (movement > 5) {
-
-        event.preventDefault();
-
-        startIntro();
+        scrollEnter.style.transform =
+          "translate3d(-50%, 25px, 0)";
 
       }
 
-    },
-    {
-      passive: false
+
+      document.body.classList.remove(
+        "intro-active"
+      );
+
+
+      document.body.style.overflow = "";
+
+
+      window.scrollTo({
+        top: 0,
+        behavior: "auto"
+      });
+
     }
-  );
 
 
-  /* =========================================
-     TASTIERA
-  ========================================= */
-
-  window.addEventListener(
-    "keydown",
-    (event) => {
+    function animateIntro(timestamp) {
 
       if (introFinished) return;
+
+
+      if (!introStartTime) {
+
+        introStartTime = timestamp;
+
+      }
+
+
+      const elapsed =
+        timestamp - introStartTime;
+
+
+      const progress =
+        Math.min(
+          elapsed / INTRO_DURATION,
+          1
+        );
+
+
+      const easedProgress =
+        progress < 0.5
+
+          ? 2 * progress * progress
+
+          : 1 -
+            Math.pow(
+              -2 * progress + 2,
+              2
+            ) / 2;
+
+
+      loader.style.transform =
+        `translate3d(0, ${-easedProgress * 100}%, 0)`;
+
+
+      if (scrollEnter) {
+
+        scrollEnter.style.opacity =
+          Math.max(
+            0,
+            1 - easedProgress * 3
+          );
+
+
+        scrollEnter.style.transform =
+          `translate3d(-50%, ${easedProgress * 25}px, 0)`;
+
+      }
+
+
+      if (progress >= 1) {
+
+        finishIntro();
+
+        return;
+
+      }
+
+
+      requestAnimationFrame(
+        animateIntro
+      );
+
+    }
+
+
+    function startIntro() {
 
       if (
-        event.key === "ArrowDown" ||
-        event.key === "PageDown" ||
-        event.key === " "
+        introFinished ||
+        introAnimating
       ) {
 
-        event.preventDefault();
-
-        startIntro();
+        return;
 
       }
 
+
+      introAnimating = true;
+
+      introStartTime = null;
+
+
+      requestAnimationFrame(
+        animateIntro
+      );
+
     }
-  );
 
 
-  /* =========================================
-     NAVBAR SCROLL
-     NON MODIFICATO
-  ========================================= */
+    /* =========================
+       MOUSE / WHEEL
+    ========================== */
+
+    window.addEventListener(
+      "wheel",
+      (event) => {
+
+        if (introFinished) return;
+
+
+        event.preventDefault();
+
+
+        if (event.deltaY > 0) {
+
+          startIntro();
+
+        }
+
+      },
+      {
+        passive: false
+      }
+    );
+
+
+    /* =========================
+       TOUCH
+    ========================== */
+
+    let touchStart = 0;
+
+
+    window.addEventListener(
+      "touchstart",
+      (event) => {
+
+        if (introFinished) return;
+
+
+        touchStart =
+          event.touches[0].clientY;
+
+      },
+      {
+        passive: true
+      }
+    );
+
+
+    window.addEventListener(
+      "touchmove",
+      (event) => {
+
+        if (introFinished) return;
+
+
+        const currentTouch =
+          event.touches[0].clientY;
+
+
+        const movement =
+          touchStart -
+          currentTouch;
+
+
+        if (movement > 5) {
+
+          event.preventDefault();
+
+          startIntro();
+
+        }
+
+      },
+      {
+        passive: false
+      }
+    );
+
+
+    /* =========================
+       KEYBOARD
+    ========================== */
+
+    window.addEventListener(
+      "keydown",
+      (event) => {
+
+        if (introFinished) return;
+
+
+        if (
+          event.key === "ArrowDown" ||
+          event.key === "PageDown" ||
+          event.key === " "
+        ) {
+
+          event.preventDefault();
+
+          startIntro();
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* =====================================================
+     NAVBAR
+  ====================================================== */
 
   const navbar =
     document.querySelector(".navbar");
+
 
   window.addEventListener(
     "scroll",
@@ -205,13 +283,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!navbar) return;
 
+
       if (window.scrollY > 50) {
 
-        navbar.classList.add("scrolled");
+        navbar.classList.add(
+          "scrolled"
+        );
 
       } else {
 
-        navbar.classList.remove("scrolled");
+        navbar.classList.remove(
+          "scrolled"
+        );
 
       }
 
@@ -219,63 +302,86 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
 
-  /* =========================================
+  /* =====================================================
      REVEAL ANIMATIONS
-     NON MODIFICATO
-  ========================================= */
+  ====================================================== */
 
   const revealElements =
     document.querySelectorAll(".reveal");
 
-  const revealObserver =
-    new IntersectionObserver(
-      (entries) => {
 
-        entries.forEach(
-          (entry) => {
+  if (
+    "IntersectionObserver" in window
+  ) {
 
-            if (entry.isIntersecting) {
+    const revealObserver =
+      new IntersectionObserver(
+        (entries) => {
 
-              entry.target.classList.add(
-                "visible"
-              );
+          entries.forEach(
+            (entry) => {
 
-              revealObserver.unobserve(
-                entry.target
-              );
+              if (
+                entry.isIntersecting
+              ) {
+
+                entry.target.classList.add(
+                  "visible"
+                );
+
+
+                revealObserver.unobserve(
+                  entry.target
+                );
+
+              }
 
             }
+          );
 
-          }
+        },
+        {
+          threshold: 0.15
+        }
+      );
+
+
+    revealElements.forEach(
+      (element) => {
+
+        revealObserver.observe(
+          element
         );
 
-      },
-      {
-        threshold: 0.15
       }
     );
 
-  revealElements.forEach(
-    (element) => {
+  } else {
 
-      revealObserver.observe(
-        element
-      );
+    revealElements.forEach(
+      (element) => {
 
-    }
-  );
+        element.classList.add(
+          "visible"
+        );
+
+      }
+    );
+
+  }
 
 
-  /* =========================================
+  /* =====================================================
      MOBILE MENU
-     NON MODIFICATO
-  ========================================= */
+  ====================================================== */
 
   const menuButton =
     document.querySelector(".menu-button");
 
+
   const mobileMenu =
     document.querySelector(".mobile-menu");
+
 
   if (
     menuButton &&
@@ -293,13 +399,32 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     );
 
+
+    mobileMenu
+      .querySelectorAll("a")
+      .forEach(
+        (link) => {
+
+          link.addEventListener(
+            "click",
+            () => {
+
+              mobileMenu.classList.remove(
+                "open"
+              );
+
+            }
+          );
+
+        }
+      );
+
   }
 
 
-  /* =========================================
+  /* =====================================================
      ANCHOR LINKS
-     NON MODIFICATO
-  ========================================= */
+  ====================================================== */
 
   document
     .querySelectorAll(
@@ -317,14 +442,28 @@ document.addEventListener("DOMContentLoaded", () => {
                 "href"
               );
 
+
+            if (
+              !targetId ||
+              targetId === "#"
+            ) {
+
+              return;
+
+            }
+
+
             const target =
               document.querySelector(
                 targetId
               );
 
+
             if (!target) return;
 
+
             event.preventDefault();
+
 
             target.scrollIntoView({
               behavior: "smooth"
@@ -337,13 +476,13 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-  /* =========================================
+  /* =====================================================
      FOOTER YEAR
-     NON MODIFICATO
-  ========================================= */
+  ====================================================== */
 
   const year =
     document.querySelector("#year");
+
 
   if (year) {
 
@@ -351,5 +490,208 @@ document.addEventListener("DOMContentLoaded", () => {
       new Date().getFullYear();
 
   }
+
+
+  /* =====================================================
+     APARTMENT GALLERY
+  ====================================================== */
+
+  const galleries =
+    document.querySelectorAll(
+      ".apartment-gallery"
+    );
+
+
+  galleries.forEach(
+    (gallery) => {
+
+      const slides =
+        gallery.querySelectorAll(
+          ".apartment-slide"
+        );
+
+
+      const previousButton =
+        gallery.querySelector(
+          ".gallery-arrow.prev"
+        );
+
+
+      const nextButton =
+        gallery.querySelector(
+          ".gallery-arrow.next"
+        );
+
+
+      const gallerySection =
+        gallery.closest(
+          ".apartment-gallery-section"
+        );
+
+
+      const counter =
+        gallerySection
+          ? gallerySection.querySelector(
+              ".apartment-gallery-counter"
+            )
+          : null;
+
+
+      if (!slides.length) return;
+
+
+      let currentSlide = 0;
+
+
+      function showSlide(index) {
+
+        if (index < 0) {
+
+          index =
+            slides.length - 1;
+
+        }
+
+
+        if (
+          index >= slides.length
+        ) {
+
+          index = 0;
+
+        }
+
+
+        currentSlide = index;
+
+
+        slides.forEach(
+          (slide, slideIndex) => {
+
+            slide.classList.toggle(
+              "active",
+              slideIndex === currentSlide
+            );
+
+          }
+        );
+
+
+        if (counter) {
+
+          counter.textContent =
+            String(
+              currentSlide + 1
+            ).padStart(2, "0") +
+            " / " +
+            String(
+              slides.length
+            ).padStart(2, "0");
+
+        }
+
+      }
+
+
+      if (previousButton) {
+
+        previousButton.addEventListener(
+          "click",
+          () => {
+
+            showSlide(
+              currentSlide - 1
+            );
+
+          }
+        );
+
+      }
+
+
+      if (nextButton) {
+
+        nextButton.addEventListener(
+          "click",
+          () => {
+
+            showSlide(
+              currentSlide + 1
+            );
+
+          }
+        );
+
+      }
+
+
+      /* =========================
+         SWIPE
+      ========================== */
+
+      let galleryTouchStart = 0;
+
+
+      gallery.addEventListener(
+        "touchstart",
+        (event) => {
+
+          galleryTouchStart =
+            event.touches[0].clientX;
+
+        },
+        {
+          passive: true
+        }
+      );
+
+
+      gallery.addEventListener(
+        "touchend",
+        (event) => {
+
+          const galleryTouchEnd =
+            event.changedTouches[0].clientX;
+
+
+          const distance =
+            galleryTouchStart -
+            galleryTouchEnd;
+
+
+          if (
+            Math.abs(distance) < 40
+          ) {
+
+            return;
+
+          }
+
+
+          if (distance > 0) {
+
+            showSlide(
+              currentSlide + 1
+            );
+
+          } else {
+
+            showSlide(
+              currentSlide - 1
+            );
+
+          }
+
+        },
+        {
+          passive: true
+        }
+      );
+
+
+      showSlide(0);
+
+    }
+  );
 
 });
