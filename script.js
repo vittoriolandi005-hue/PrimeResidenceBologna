@@ -7,92 +7,223 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================================
      INTRO SCREEN
-     L'intro rimane fino allo scroll
+     SCROLL GRADUALE
   ========================================= */
 
   const loader = document.querySelector(".loader");
 
+  let introProgress = 0;
   let introFinished = false;
 
-  document.body.classList.add("intro-active");
+  const INTRO_SCROLL_DISTANCE = 900;
 
 
-  function closeIntro() {
+  function updateIntro() {
 
     if (introFinished) return;
 
-    introFinished = true;
+    const progress = Math.min(
+      Math.max(introProgress, 0),
+      1
+    );
 
-    loader.classList.add("hidden");
+    /*
+      La schermata viene spinta gradualmente
+      verso l'alto in base allo scroll.
+    */
 
-    document.body.classList.remove("intro-active");
+    loader.style.transform =
+      `translate3d(0, ${-progress * 100}%, 0)`;
 
   }
 
 
-  /* Scroll con mouse */
+  function finishIntro() {
 
-  window.addEventListener("wheel", (event) => {
+    introFinished = true;
 
-    if (introFinished) return;
+    loader.style.transform =
+      "translate3d(0, -100%, 0)";
 
-    if (event.deltaY > 0) {
-      closeIntro();
+    document.body.classList.remove(
+      "intro-active"
+    );
+
+  }
+
+
+  /* =========================================
+     MOUSE WHEEL
+  ========================================= */
+
+  window.addEventListener(
+    "wheel",
+    (event) => {
+
+      if (introFinished) return;
+
+      /*
+        Usiamo una piccola percentuale
+        dello scroll del mouse.
+      */
+
+      introProgress +=
+        event.deltaY / INTRO_SCROLL_DISTANCE;
+
+
+      introProgress =
+        Math.min(
+          Math.max(introProgress, 0),
+          1
+        );
+
+
+      updateIntro();
+
+
+      /*
+        Solo quando l'utente ha realmente
+        completato lo scroll l'intro finisce.
+      */
+
+      if (introProgress >= 1) {
+
+        finishIntro();
+
+      }
+
+    },
+    {
+      passive: true
     }
-
-  }, { passive: true });
-
-
-  /* Scroll con tastiera */
-
-  window.addEventListener("keydown", (event) => {
-
-    if (introFinished) return;
-
-    if (
-      event.key === "ArrowDown" ||
-      event.key === "PageDown" ||
-      event.key === " "
-    ) {
-
-      event.preventDefault();
-
-      closeIntro();
-
-    }
-
-  });
+  );
 
 
-  /* Scroll su smartphone */
+  /* =========================================
+     TOUCH / SMARTPHONE
+  ========================================= */
 
   let touchStartY = 0;
 
-  window.addEventListener("touchstart", (event) => {
+  window.addEventListener(
+    "touchstart",
+    (event) => {
 
-    touchStartY = event.touches[0].clientY;
+      if (introFinished) return;
 
-  }, { passive: true });
+      touchStartY =
+        event.touches[0].clientY;
 
-
-  window.addEventListener("touchend", (event) => {
-
-    if (introFinished) return;
-
-    const touchEndY = event.changedTouches[0].clientY;
-
-    if (touchStartY - touchEndY > 30) {
-      closeIntro();
+    },
+    {
+      passive: true
     }
+  );
 
-  }, { passive: true });
+
+  window.addEventListener(
+    "touchmove",
+    (event) => {
+
+      if (introFinished) return;
+
+      const currentY =
+        event.touches[0].clientY;
+
+      const movement =
+        touchStartY - currentY;
+
+
+      if (movement > 0) {
+
+        introProgress +=
+          movement / 1200;
+
+        introProgress =
+          Math.min(
+            Math.max(introProgress, 0),
+            1
+          );
+
+        updateIntro();
+
+        touchStartY = currentY;
+
+      }
+
+    },
+    {
+      passive: true
+    }
+  );
+
+
+  window.addEventListener(
+    "touchend",
+    () => {
+
+      if (
+        !introFinished &&
+        introProgress >= 1
+      ) {
+
+        finishIntro();
+
+      }
+
+    },
+    {
+      passive: true
+    }
+  );
+
+
+  /* =========================================
+     KEYBOARD
+  ========================================= */
+
+  window.addEventListener(
+    "keydown",
+    (event) => {
+
+      if (introFinished) return;
+
+
+      if (
+        event.key === "ArrowDown" ||
+        event.key === "PageDown" ||
+        event.key === " "
+      ) {
+
+        introProgress += 0.15;
+
+        introProgress =
+          Math.min(
+            introProgress,
+            1
+          );
+
+        updateIntro();
+
+
+        if (introProgress >= 1) {
+
+          finishIntro();
+
+        }
+
+      }
+
+    }
+  );
 
 
   /* =========================================
      NAVBAR
   ========================================= */
 
-  const navbar = document.querySelector(".navbar");
+  const navbar =
+    document.querySelector(".navbar");
 
 
   function updateNavbar() {
@@ -113,7 +244,9 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener(
     "scroll",
     updateNavbar,
-    { passive: true }
+    {
+      passive: true
+    }
   );
 
 
@@ -121,7 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =========================================
-     SCROLL REVEAL ANIMATIONS
+     SCROLL REVEAL
   ========================================= */
 
   const revealElements =
@@ -135,7 +268,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         entries.forEach((entry) => {
 
-          if (!entry.isIntersecting) return;
+          if (!entry.isIntersecting) {
+            return;
+          }
 
 
           const delay =
@@ -144,38 +279,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
           setTimeout(() => {
 
-            entry.target.classList.add("visible");
+            entry.target.classList.add(
+              "visible"
+            );
 
           }, delay);
 
 
-          observer.unobserve(entry.target);
+          observer.unobserve(
+            entry.target
+          );
 
         });
 
       },
-
       {
         threshold: 0.12,
-        rootMargin: "0px 0px -50px 0px"
+        rootMargin:
+          "0px 0px -50px 0px"
       }
-
     );
 
 
-  revealElements.forEach((element, index) => {
+  revealElements.forEach(
+    (element, index) => {
 
-    if (index % 3 === 1) {
-      element.dataset.delay = "100";
+      if (index % 3 === 1) {
+
+        element.dataset.delay =
+          "100";
+
+      }
+
+
+      if (index % 3 === 2) {
+
+        element.dataset.delay =
+          "180";
+
+      }
+
+
+      revealObserver.observe(
+        element
+      );
+
     }
-
-    if (index % 3 === 2) {
-      element.dataset.delay = "180";
-    }
-
-    revealObserver.observe(element);
-
-  });
+  );
 
 
   /* =========================================
@@ -183,7 +333,9 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================================= */
 
   const heroImage =
-    document.querySelector(".hero-image");
+    document.querySelector(
+      ".hero-image"
+    );
 
   let ticking = false;
 
@@ -197,10 +349,17 @@ document.addEventListener("DOMContentLoaded", () => {
       window.scrollY;
 
 
-    if (scroll < window.innerHeight) {
+    if (
+      scroll <
+      window.innerHeight
+    ) {
 
       heroImage.style.transform =
-        `translate3d(0, ${scroll * 0.12}px, 0) scale(1.03)`;
+        `translate3d(
+          0,
+          ${scroll * 0.12}px,
+          0
+        ) scale(1.03)`;
 
     }
 
@@ -210,19 +369,25 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  window.addEventListener("scroll", () => {
+  window.addEventListener(
+    "scroll",
+    () => {
 
-    if (!ticking) {
+      if (!ticking) {
 
-      window.requestAnimationFrame(
-        updateParallax
-      );
+        window.requestAnimationFrame(
+          updateParallax
+        );
 
-      ticking = true;
+        ticking = true;
 
+      }
+
+    },
+    {
+      passive: true
     }
-
-  }, { passive: true });
+  );
 
 
   /* =========================================
@@ -230,85 +395,117 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================================= */
 
   const menuButton =
-    document.querySelector(".menu-button");
+    document.querySelector(
+      ".menu-button"
+    );
 
   const mobileMenu =
-    document.querySelector(".mobile-menu");
+    document.querySelector(
+      ".mobile-menu"
+    );
 
   const mobileLinks =
-    document.querySelectorAll(".mobile-menu a");
+    document.querySelectorAll(
+      ".mobile-menu a"
+    );
 
 
-  if (menuButton && mobileMenu) {
+  if (
+    menuButton &&
+    mobileMenu
+  ) {
 
-    menuButton.addEventListener("click", () => {
+    menuButton.addEventListener(
+      "click",
+      () => {
 
-      mobileMenu.classList.toggle("open");
+        mobileMenu.classList.toggle(
+          "open"
+        );
 
-      document.body.classList.toggle(
-        "menu-open"
-      );
+        document.body.classList.toggle(
+          "menu-open"
+        );
 
-    });
+      }
+    );
 
   }
 
 
-  mobileLinks.forEach((link) => {
+  mobileLinks.forEach(
+    (link) => {
 
-    link.addEventListener("click", () => {
+      link.addEventListener(
+        "click",
+        () => {
 
-      mobileMenu.classList.remove("open");
+          mobileMenu.classList.remove(
+            "open"
+          );
 
-      document.body.classList.remove(
-        "menu-open"
+          document.body.classList.remove(
+            "menu-open"
+          );
+
+        }
       );
 
-    });
-
-  });
+    }
+  );
 
 
   /* =========================================
-     SMOOTH SCROLL
+     SMOOTH ANCHOR LINKS
   ========================================= */
 
   document
-    .querySelectorAll('a[href^="#"]')
-    .forEach((link) => {
+    .querySelectorAll(
+      'a[href^="#"]'
+    )
+    .forEach(
+      (link) => {
 
-      link.addEventListener("click", function(event) {
+        link.addEventListener(
+          "click",
+          function(event) {
 
-        const targetId =
-          this.getAttribute("href");
-
-
-        if (
-          !targetId ||
-          targetId === "#"
-        ) {
-          return;
-        }
-
-
-        const target =
-          document.querySelector(targetId);
+            const targetId =
+              this.getAttribute(
+                "href"
+              );
 
 
-        if (!target) return;
+            if (
+              !targetId ||
+              targetId === "#"
+            ) {
+              return;
+            }
 
 
-        event.preventDefault();
+            const target =
+              document.querySelector(
+                targetId
+              );
 
 
-        target.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
+            if (!target) return;
 
-      });
 
-    });
+            event.preventDefault();
+
+
+            target.scrollIntoView({
+              behavior: "smooth",
+              block: "start"
+            });
+
+          }
+        );
+
+      }
+    );
 
 
   /* =========================================
@@ -316,7 +513,9 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================================= */
 
   const year =
-    document.getElementById("year");
+    document.getElementById(
+      "year"
+    );
 
 
   if (year) {
@@ -337,30 +536,43 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-  languages.forEach((language) => {
+  languages.forEach(
+    (language) => {
 
-    language.addEventListener("click", () => {
+      language.addEventListener(
+        "click",
+        () => {
 
-      languages.forEach((item) => {
+          languages.forEach(
+            (item) => {
 
-        item.classList.remove("active");
+              item.classList.remove(
+                "active"
+              );
 
-      });
+            }
+          );
 
 
-      language.classList.add("active");
+          language.classList.add(
+            "active"
+          );
 
-    });
+        }
+      );
 
-  });
+    }
+  );
 
 
   /* =========================================
-     PREVENT SCROLL WHEN MOBILE MENU IS OPEN
+     MOBILE MENU SCROLL LOCK
   ========================================= */
 
   const menuStyle =
-    document.createElement("style");
+    document.createElement(
+      "style"
+    );
 
 
   menuStyle.textContent = `
@@ -372,6 +584,8 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
 
 
-  document.head.appendChild(menuStyle);
+  document.head.appendChild(
+    menuStyle
+  );
 
 });
