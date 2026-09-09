@@ -43,6 +43,10 @@ function startIntro(){
 if(introFinished||introAnimating)return;
 introAnimating=true;
 startTime=null;
+
+/* AVVISA IL PRIME ASSISTANT CHE L'ANIMAZIONE È PARTITA */
+window.dispatchEvent(new CustomEvent("primeIntroStarted"));
+
 requestAnimationFrame(animate);
 }
 
@@ -97,7 +101,7 @@ if(mouseStartY-mouseCurrentY>=35)startIntro();
 
 loader.addEventListener("dragstart",e=>e.preventDefault());
 
-/* TASTIERA COERENTE CON DIREZIONE UP */
+/* TASTIERA */
 window.addEventListener("keydown",e=>{
 if(introFinished)return;
 if(e.key==="ArrowUp"||e.key==="PageUp"){e.preventDefault();startIntro();}
@@ -392,6 +396,12 @@ prompt.classList.remove("visible");
 prompt.setAttribute("aria-hidden","true");
 }
 
+function showPrompt(){
+if(!prompt||assistant.classList.contains("chat-open"))return;
+prompt.classList.add("visible");
+prompt.setAttribute("aria-hidden","false");
+}
+
 function openChat(){
 if(!chatWindow)return;
 hidePrompt();
@@ -422,16 +432,42 @@ try{sessionStorage.setItem(promptStorageKey,"1");}catch{}
 });
 }
 
-if(prompt){
-let closed=false;
-try{closed=sessionStorage.getItem(promptStorageKey)==="1";}catch{}
-if(!closed)setTimeout(()=>{
-if(!assistant.classList.contains("chat-open")){
-prompt.classList.add("visible");
-prompt.setAttribute("aria-hidden","false");
+/* =========================================================
+   BANNER ASSISTANT
+
+   HOME:
+   4 SECONDI DOPO L'INIZIO DELL'ANIMAZIONE
+
+   APPARTAMENTI:
+   COMPORTAMENTO INVARIATO
+========================================================= */
+
+let promptClosed=false;
+try{promptClosed=sessionStorage.getItem(promptStorageKey)==="1";}catch{}
+
+if(prompt&&!promptClosed){
+
+if(page==="home"){
+
+let homePromptScheduled=false;
+
+window.addEventListener("primeIntroStarted",()=>{
+if(homePromptScheduled)return;
+homePromptScheduled=true;
+setTimeout(showPrompt,4000);
+},{once:true});
+
+}else{
+
+setTimeout(showPrompt,2500);
+
 }
-},2500);
+
 }
+
+/* =========================================================
+   RISPOSTE ASSISTANT
+========================================================= */
 
 function getResponse(original){
 const question=original.toLowerCase().trim(),italian=isItalian(original),current=residences[page]||null,actions=[];
