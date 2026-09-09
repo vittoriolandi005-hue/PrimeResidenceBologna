@@ -1,189 +1,114 @@
-/* =========================================================
-   PRIME RESIDENCE BOLOGNA
-   MAIN JAVASCRIPT
-========================================================= */
-
 document.addEventListener("DOMContentLoaded", () => {
-
-  /* =======================================================
-     INTRO / LOADER
-  ======================================================= */
 
   const loader = document.querySelector(".loader");
   const scrollEnter = document.querySelector(".scroll-enter");
 
   if (!loader) return;
 
-  let progress = 0;
-  let targetProgress = 0;
+  /* =========================================
+     INTRO SCROLL
+     Un piccolo scroll avvia automaticamente
+     il movimento lento verso la seconda pagina
+  ========================================= */
+
   let introFinished = false;
+  let introAnimating = false;
+  let introStartTime = null;
 
-  /*
-    Più basso = serve più rotella per completare l'intro
-    Più alto = l'intro scorre più velocemente
-  */
-  const SCROLL_DISTANCE = 900;
-
-  /*
-    Valore più alto rispetto a prima:
-    rende il movimento molto più reattivo.
-  */
-  const EASE = 0.22;
-
-  let animationFrame = null;
-
-
-  /* =======================================================
-     ANIMAZIONE INTRO
-  ======================================================= */
-
-  function animateIntro() {
-
-    if (introFinished) return;
-
-    /*
-      Avvicinamento rapido al valore richiesto
-    */
-    progress +=
-      (targetProgress - progress) * EASE;
-
-    /*
-      Quando siamo abbastanza vicini,
-      raggiungiamo direttamente il valore.
-    */
-    if (
-      Math.abs(targetProgress - progress) < 0.001
-    ) {
-      progress = targetProgress;
-    }
-
-    progress = Math.max(
-      0,
-      Math.min(1, progress)
-    );
-
-
-    /*
-      Movimento del loader
-    */
-    loader.style.transform =
-      `translate3d(0, ${-progress * 100}%, 0)`;
-
-
-    /*
-      Testo SCROLL TO ENTER
-    */
-    if (scrollEnter) {
-
-      scrollEnter.style.opacity =
-        Math.max(
-          0,
-          1 - progress * 3
-        );
-
-      scrollEnter.style.transform =
-        `translate3d(-50%, ${progress * 25}px, 0)`;
-    }
-
-
-    /*
-      Fine intro
-    */
-    if (progress >= 0.999) {
-
-      finishIntro();
-
-      return;
-    }
-
-
-    animationFrame =
-      requestAnimationFrame(
-        animateIntro
-      );
-  }
-
-
-  function startAnimation() {
-
-    if (animationFrame) return;
-
-    animationFrame =
-      requestAnimationFrame(
-        animateIntro
-      );
-  }
-
-
-  /* =======================================================
-     FINE INTRO
-  ======================================================= */
+  const INTRO_DURATION = 2200; // 2.2 secondi
 
   function finishIntro() {
-
     if (introFinished) return;
 
     introFinished = true;
-
-    progress = 1;
-    targetProgress = 1;
-
+    introAnimating = false;
 
     loader.style.transform =
       "translate3d(0, -100%, 0)";
 
+    if (scrollEnter) {
+      scrollEnter.style.opacity = "0";
+      scrollEnter.style.transform =
+        "translate3d(-50%, 25px, 0)";
+    }
 
-    document.body.classList.remove(
-      "intro-active"
-    );
-
+    document.body.classList.remove("intro-active");
     document.body.style.overflow = "";
 
-
-    if (animationFrame) {
-
-      cancelAnimationFrame(
-        animationFrame
-      );
-
-      animationFrame = null;
-    }
+    window.scrollTo({
+      top: 0,
+      behavior: "auto"
+    });
   }
 
+  function animateIntro(timestamp) {
+    if (introFinished) return;
 
-  /* =======================================================
-     MOUSE WHEEL
-  ======================================================= */
+    if (!introStartTime) {
+      introStartTime = timestamp;
+    }
 
+    const elapsed = timestamp - introStartTime;
+
+    let progress =
+      Math.min(elapsed / INTRO_DURATION, 1);
+
+    /*
+      Ease-in-out molto morbido:
+      parte lentamente,
+      accelera leggermente,
+      rallenta alla fine.
+    */
+    const easedProgress =
+      progress < 0.5
+        ? 2 * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+    loader.style.transform =
+      `translate3d(0, ${-easedProgress * 100}%, 0)`;
+
+    if (scrollEnter) {
+      scrollEnter.style.opacity =
+        Math.max(0, 1 - easedProgress * 3);
+
+      scrollEnter.style.transform =
+        `translate3d(-50%, ${easedProgress * 25}px, 0)`;
+    }
+
+    if (progress >= 1) {
+      finishIntro();
+      return;
+    }
+
+    requestAnimationFrame(animateIntro);
+  }
+
+  function startIntro() {
+    if (introFinished || introAnimating) return;
+
+    introAnimating = true;
+    introStartTime = null;
+
+    requestAnimationFrame(animateIntro);
+  }
+
+  /*
+    PRIMO SCROLL
+
+    Qualsiasi scroll verso il basso durante
+    l'intro avvia l'animazione automatica.
+  */
   window.addEventListener(
     "wheel",
     (event) => {
 
       if (introFinished) return;
 
-
-      /*
-        Blocchiamo lo scroll normale solamente
-        mentre è attiva la schermata iniziale.
-      */
       event.preventDefault();
 
-
-      /*
-        Movimento diretto della rotella
-      */
-      targetProgress +=
-        event.deltaY / SCROLL_DISTANCE;
-
-
-      targetProgress =
-        Math.max(
-          0,
-          Math.min(1, targetProgress)
-        );
-
-
-      startAnimation();
+      if (event.deltaY > 0) {
+        startIntro();
+      }
 
     },
     {
@@ -192,12 +117,11 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
 
-  /* =======================================================
-     TOUCH
-  ======================================================= */
+  /* =========================================
+     TOUCH / MOBILE
+  ========================================= */
 
   let touchStart = 0;
-
 
   window.addEventListener(
     "touchstart",
@@ -214,43 +138,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   );
 
-
   window.addEventListener(
     "touchmove",
     (event) => {
 
       if (introFinished) return;
 
-
       const currentTouch =
         event.touches[0].clientY;
-
 
       const movement =
         touchStart - currentTouch;
 
-
-      if (Math.abs(movement) > 1) {
+      if (movement > 5) {
 
         event.preventDefault();
 
+        startIntro();
 
-        targetProgress +=
-          movement / SCROLL_DISTANCE;
-
-
-        targetProgress =
-          Math.max(
-            0,
-            Math.min(1, targetProgress)
-          );
-
-
-        touchStart =
-          currentTouch;
-
-
-        startAnimation();
       }
 
     },
@@ -260,9 +165,9 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
 
-  /* =======================================================
+  /* =========================================
      TASTIERA
-  ======================================================= */
+  ========================================= */
 
   window.addEventListener(
     "keydown",
@@ -270,10 +175,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (introFinished) return;
 
-
-      /*
-        AVANTI
-      */
       if (
         event.key === "ArrowDown" ||
         event.key === "PageDown" ||
@@ -282,56 +183,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         event.preventDefault();
 
+        startIntro();
 
-        targetProgress += 0.15;
-
-
-        targetProgress =
-          Math.min(
-            1,
-            targetProgress
-          );
-
-
-        startAnimation();
-      }
-
-
-      /*
-        INDIETRO
-      */
-      if (
-        event.key === "ArrowUp" ||
-        event.key === "PageUp"
-      ) {
-
-        event.preventDefault();
-
-
-        targetProgress -= 0.15;
-
-
-        targetProgress =
-          Math.max(
-            0,
-            targetProgress
-          );
-
-
-        startAnimation();
       }
 
     }
   );
 
 
-  /* =======================================================
-     NAVBAR
-  ======================================================= */
+  /* =========================================
+     NAVBAR SCROLL
+     NON MODIFICATO
+  ========================================= */
 
   const navbar =
     document.querySelector(".navbar");
-
 
   window.addEventListener(
     "scroll",
@@ -339,31 +205,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!navbar) return;
 
-
       if (window.scrollY > 50) {
 
-        navbar.classList.add(
-          "scrolled"
-        );
+        navbar.classList.add("scrolled");
 
       } else {
 
-        navbar.classList.remove(
-          "scrolled"
-        );
+        navbar.classList.remove("scrolled");
+
       }
 
     }
   );
 
 
-  /* =======================================================
+  /* =========================================
      REVEAL ANIMATIONS
-  ======================================================= */
+     NON MODIFICATO
+  ========================================= */
 
   const revealElements =
     document.querySelectorAll(".reveal");
-
 
   const revealObserver =
     new IntersectionObserver(
@@ -372,18 +234,16 @@ document.addEventListener("DOMContentLoaded", () => {
         entries.forEach(
           (entry) => {
 
-            if (
-              entry.isIntersecting
-            ) {
+            if (entry.isIntersecting) {
 
               entry.target.classList.add(
                 "visible"
               );
 
-
               revealObserver.unobserve(
                 entry.target
               );
+
             }
 
           }
@@ -394,7 +254,6 @@ document.addEventListener("DOMContentLoaded", () => {
         threshold: 0.15
       }
     );
-
 
   revealElements.forEach(
     (element) => {
@@ -407,21 +266,16 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
 
-  /* =======================================================
+  /* =========================================
      MOBILE MENU
-  ======================================================= */
+     NON MODIFICATO
+  ========================================= */
 
   const menuButton =
-    document.querySelector(
-      ".menu-button"
-    );
-
+    document.querySelector(".menu-button");
 
   const mobileMenu =
-    document.querySelector(
-      ".mobile-menu"
-    );
-
+    document.querySelector(".mobile-menu");
 
   if (
     menuButton &&
@@ -438,12 +292,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       }
     );
+
   }
 
 
-  /* =======================================================
-     SMOOTH ANCHOR LINKS
-  ======================================================= */
+  /* =========================================
+     ANCHOR LINKS
+     NON MODIFICATO
+  ========================================= */
 
   document
     .querySelectorAll(
@@ -461,18 +317,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 "href"
               );
 
-
             const target =
               document.querySelector(
                 targetId
               );
 
-
             if (!target) return;
 
-
             event.preventDefault();
-
 
             target.scrollIntoView({
               behavior: "smooth"
@@ -485,15 +337,13 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-  /* =======================================================
-     CURRENT YEAR
-  ======================================================= */
+  /* =========================================
+     FOOTER YEAR
+     NON MODIFICATO
+  ========================================= */
 
   const year =
-    document.querySelector(
-      "#year"
-    );
-
+    document.querySelector("#year");
 
   if (year) {
 
