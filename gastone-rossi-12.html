@@ -15,15 +15,9 @@
     content="Gastone Rossi 12 — Prime Residence Bologna."
   >
 
-  <title>
-    Gastone Rossi 12 — Prime Residence Bologna
-  </title>
+  <title>Gastone Rossi 12 — Prime Residence Bologna</title>
 
-
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
-  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
 
   <link
     rel="preconnect"
@@ -38,8 +32,10 @@
 
   <link
     rel="stylesheet"
-    href="style.css"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   >
+
+  <link rel="stylesheet" href="style.css">
 
 </head>
 
@@ -53,13 +49,9 @@
 
   <header class="apartment-nav">
 
-    <a
-      href="index.html"
-      class="apartment-nav-logo"
-    >
+    <a href="index.html" class="apartment-nav-logo">
       PRIME
     </a>
-
 
     <div class="apartment-nav-right">
 
@@ -69,7 +61,6 @@
       >
         RESIDENCES
       </a>
-
 
       <a
         href="booking.html"
@@ -99,7 +90,6 @@
         ← BACK TO RESIDENCES
       </a>
 
-
       <div class="apartment-hero-image">
 
         <div class="photo-placeholder">
@@ -108,9 +98,7 @@
 
       </div>
 
-
       <div class="apartment-hero-overlay"></div>
-
 
       <div class="apartment-hero-content">
 
@@ -118,15 +106,11 @@
           PRIME RESIDENCE · BOLOGNA
         </div>
 
-
         <h1>
-
           Gastone Rossi
           <br>
           <em>12.</em>
-
         </h1>
-
 
         <div class="apartment-location">
           BOLOGNA · ITALY
@@ -143,58 +127,25 @@
 
     <section class="apartment-facts">
 
-
       <div class="apartment-fact">
-
-        <span>
-          BEDROOMS
-        </span>
-
-        <strong>
-          03
-        </strong>
-
+        <span>BEDROOMS</span>
+        <strong>03</strong>
       </div>
 
-
       <div class="apartment-fact">
-
-        <span>
-          BATHROOMS
-        </span>
-
-        <strong>
-          02
-        </strong>
-
+        <span>BATHROOMS</span>
+        <strong>02</strong>
       </div>
 
-
       <div class="apartment-fact">
-
-        <span>
-          GUESTS
-        </span>
-
-        <strong>
-          06
-        </strong>
-
+        <span>GUESTS</span>
+        <strong>06</strong>
       </div>
 
-
       <div class="apartment-fact">
-
-        <span>
-          RESIDENCE
-        </span>
-
-        <strong>
-          01
-        </strong>
-
+        <span>RESIDENCE</span>
+        <strong>01</strong>
       </div>
-
 
     </section>
 
@@ -207,45 +158,33 @@
 
       <div class="apartment-intro-grid">
 
-
         <div class="apartment-section-label">
           THE RESIDENCE
         </div>
 
-
         <div class="apartment-intro-text">
 
-
           <h2>
-
             Space to live,
             <br>
             <em>room to stay.</em>
-
           </h2>
 
-
           <p>
-
             Gastone Rossi 12 is a spacious
             contemporary residence designed
             for longer stays, families and
             groups looking for comfort
             in Bologna.
-
           </p>
 
-
           <p>
-
             With three bedrooms, two bathrooms
             and space for up to six guests,
             the residence offers the freedom
             and privacy of a home while keeping
             Bologna within easy reach.
-
           </p>
-
 
         </div>
 
@@ -260,13 +199,11 @@
 
     <section class="apartment-gallery-section">
 
-
       <div class="apartment-gallery-header">
 
         <div class="apartment-gallery-title">
           GALLERY
         </div>
-
 
         <div class="apartment-gallery-counter">
           01 / 05
@@ -276,7 +213,6 @@
 
 
       <div class="apartment-gallery">
-
 
         <div class="apartment-slide active">
 
@@ -290,7 +226,6 @@
 
         </div>
 
-
         <div class="apartment-slide">
 
           <div class="photo-placeholder">
@@ -302,7 +237,6 @@
           </div>
 
         </div>
-
 
         <div class="apartment-slide">
 
@@ -316,7 +250,6 @@
 
         </div>
 
-
         <div class="apartment-slide">
 
           <div class="photo-placeholder">
@@ -329,7 +262,6 @@
 
         </div>
 
-
         <div class="apartment-slide">
 
           <div class="photo-placeholder">
@@ -341,7 +273,6 @@
           </div>
 
         </div>
-
 
       </div>
 
@@ -358,433 +289,234 @@
 
       </div>
 
-
     </section>
 
 
     <!-- =====================================================
-         LOCATION + AROUND THE RESIDENCE
+         LOCATION
     ====================================================== -->
 
     <section class="residence-location-section">
 
-
       <div class="residence-location-heading">
-
 
         <div class="apartment-section-label">
           LOCATION
         </div>
 
-
-        <div class="residence-location-title">
+        <div class="residence-location-heading-main">
 
           <h2>
-
             Your place
             <br>
             <em>in Bologna.</em>
-
           </h2>
 
-
           <p>
-
             Via Gastone Rossi 12
             <br>
             Bologna · Italy
-
           </p>
 
         </div>
 
-
       </div>
 
 
-      <div class="residence-location-layout">
+      <div class="residence-location-grid">
 
 
-        <!-- =================================================
-             PRIME MAP
-        ================================================== -->
+        <!-- MAP COLUMN -->
 
-        <div class="prime-map">
+        <div class="residence-map-column">
 
-
-          <div class="prime-map-background"></div>
-
-
-          <div class="prime-map-grid"></div>
+          <div
+            id="gastoneMap"
+            class="residence-real-map"
+            aria-label="Map showing Via Gastone Rossi 12 in Bologna"
+          ></div>
 
 
-          <!-- STREETS -->
-
-          <div class="prime-map-road road-one"></div>
-
-          <div class="prime-map-road road-two"></div>
-
-          <div class="prime-map-road road-three"></div>
-
-          <div class="prime-map-road road-four"></div>
-
-          <div class="prime-map-road road-five"></div>
-
-          <div class="prime-map-road road-six"></div>
-
-
-          <!-- CITY BLOCKS -->
-
-          <div class="prime-map-block block-one"></div>
-
-          <div class="prime-map-block block-two"></div>
-
-          <div class="prime-map-block block-three"></div>
-
-          <div class="prime-map-block block-four"></div>
-
-          <div class="prime-map-block block-five"></div>
-
-
-          <!-- MAP LABELS -->
-
-          <span class="prime-map-label map-label-centre">
-            BOLOGNA
-          </span>
-
-
-          <span class="prime-map-label map-label-university">
-            UNIVERSITY DISTRICT
-          </span>
-
-
-          <span class="prime-map-label map-label-centro">
-            CENTRO STORICO
-          </span>
-
-
-          <!-- RESIDENCE PIN -->
-
-          <div class="prime-map-pin gastone-pin">
-
-
-            <div class="prime-map-pin-marker">
-
-              <span></span>
-
-            </div>
-
-
-            <div class="prime-map-pin-card">
-
-
-              <span class="prime-map-pin-kicker">
-                PRIME RESIDENCE
-              </span>
-
-
-              <strong>
-                Gastone Rossi 12
-              </strong>
-
-
-              <small>
-                Via Gastone Rossi 12 · Bologna
-              </small>
-
-
-            </div>
-
-
-          </div>
-
-
-          <!-- MAP FOOTER -->
-
-          <div class="prime-map-bottom">
-
-
-            <span>
-              BOLOGNA · ITALY
-            </span>
-
-
-            <a
-              href="https://www.google.com/maps/search/?api=1&query=Via%20Gastone%20Rossi%2012%20Bologna"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-
-              OPEN IN GOOGLE MAPS
-
-              <span>
-                ↗
-              </span>
-
-            </a>
-
-
-          </div>
-
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=Via%20Gastone%20Rossi%2012%20Bologna"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="map-expand-link"
+          >
+            <span>CLICK TO EXPAND</span>
+            <span>↗</span>
+          </a>
 
         </div>
 
 
-        <!-- =================================================
-             AROUND THE RESIDENCE
-        ================================================== -->
+        <!-- SURROUNDINGS COLUMN -->
 
-        <aside class="residence-surroundings">
+        <aside class="residence-nearby">
 
+          <div class="nearby-header">
 
-          <div class="surroundings-heading">
-
-
-            <span class="surroundings-kicker">
+            <span class="nearby-kicker">
               AROUND THE RESIDENCE
             </span>
 
-
             <h3>
-
-              Discover
-              <br>
-              <em>what's nearby.</em>
-
+              Dintorni
+              <em>della struttura.</em>
             </h3>
-
-
-            <p>
-
-              Culture, architecture and the
-              unmistakable atmosphere of Bologna
-              are all within easy reach.
-
-            </p>
-
 
           </div>
 
 
-          <div class="surroundings-list">
-
-
-            <!-- 01 -->
+          <div class="nearby-list">
 
             <a
-              href="https://www.google.com/maps/search/?api=1&query=Pinacoteca%20Nazionale%20di%20Bologna"
+              href="https://www.google.com/maps/search/?api=1&query=Universita%20di%20Bologna"
               target="_blank"
               rel="noopener noreferrer"
-              class="surrounding-item"
+              class="nearby-item"
             >
+              <span class="nearby-index">01</span>
 
-
-              <span class="surrounding-number">
-                01
-              </span>
-
-
-              <div class="surrounding-content">
-
-                <strong>
-                  Pinacoteca Nazionale
-                </strong>
-
-                <span>
-                  ART · CULTURE
-                </span>
-
+              <div class="nearby-place">
+                <strong>Università di Bologna</strong>
+                <small>UNIVERSITY · CULTURE</small>
               </div>
 
-
-              <span class="surrounding-link-icon">
-                ↗
+              <span
+                class="nearby-distance"
+                data-lat="44.4962"
+                data-lng="11.3544"
+              >
+                —
               </span>
-
-
             </a>
 
 
-            <!-- 02 -->
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Pinacoteca%20Nazionale%20Bologna"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="nearby-item"
+            >
+              <span class="nearby-index">02</span>
+
+              <div class="nearby-place">
+                <strong>Pinacoteca Nazionale</strong>
+                <small>ART · CULTURE</small>
+              </div>
+
+              <span
+                class="nearby-distance"
+                data-lat="44.4967"
+                data-lng="11.3532"
+              >
+                —
+              </span>
+            </a>
+
 
             <a
               href="https://www.google.com/maps/search/?api=1&query=Due%20Torri%20Bologna"
               target="_blank"
               rel="noopener noreferrer"
-              class="surrounding-item"
+              class="nearby-item"
             >
+              <span class="nearby-index">03</span>
 
-
-              <span class="surrounding-number">
-                02
-              </span>
-
-
-              <div class="surrounding-content">
-
-                <strong>
-                  Le Due Torri
-                </strong>
-
-                <span>
-                  LANDMARK · HISTORY
-                </span>
-
+              <div class="nearby-place">
+                <strong>Le Due Torri</strong>
+                <small>LANDMARK · HISTORY</small>
               </div>
 
-
-              <span class="surrounding-link-icon">
-                ↗
+              <span
+                class="nearby-distance"
+                data-lat="44.4942"
+                data-lng="11.3465"
+              >
+                —
               </span>
-
-
             </a>
 
-
-            <!-- 03 -->
 
             <a
-              href="https://www.google.com/maps/search/?api=1&query=Basilica%20di%20Santo%20Stefano%20Bologna"
+              href="https://www.google.com/maps/search/?api=1&query=Piazza%20Santo%20Stefano%20Bologna"
               target="_blank"
               rel="noopener noreferrer"
-              class="surrounding-item"
+              class="nearby-item"
             >
+              <span class="nearby-index">04</span>
 
-
-              <span class="surrounding-number">
-                03
-              </span>
-
-
-              <div class="surrounding-content">
-
-                <strong>
-                  Santo Stefano
-                </strong>
-
-                <span>
-                  BASILICA · HISTORY
-                </span>
-
+              <div class="nearby-place">
+                <strong>Piazza Santo Stefano</strong>
+                <small>SQUARE · HISTORY</small>
               </div>
 
-
-              <span class="surrounding-link-icon">
-                ↗
+              <span
+                class="nearby-distance"
+                data-lat="44.4919"
+                data-lng="11.3482"
+              >
+                —
               </span>
-
-
             </a>
 
-
-            <!-- 04 -->
 
             <a
               href="https://www.google.com/maps/search/?api=1&query=Piazza%20Maggiore%20Bologna"
               target="_blank"
               rel="noopener noreferrer"
-              class="surrounding-item"
+              class="nearby-item"
             >
+              <span class="nearby-index">05</span>
 
-
-              <span class="surrounding-number">
-                04
-              </span>
-
-
-              <div class="surrounding-content">
-
-                <strong>
-                  Piazza Maggiore
-                </strong>
-
-                <span>
-                  HISTORIC CENTRE
-                </span>
-
+              <div class="nearby-place">
+                <strong>Piazza Maggiore</strong>
+                <small>HISTORIC CENTRE</small>
               </div>
 
-
-              <span class="surrounding-link-icon">
-                ↗
+              <span
+                class="nearby-distance"
+                data-lat="44.4939"
+                data-lng="11.3426"
+              >
+                —
               </span>
-
-
             </a>
 
 
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Giardini%20Margherita%20Bologna"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="nearby-item"
+            >
+              <span class="nearby-index">06</span>
+
+              <div class="nearby-place">
+                <strong>Giardini Margherita</strong>
+                <small>PARK · NATURE</small>
+              </div>
+
+              <span
+                class="nearby-distance"
+                data-lat="44.4810"
+                data-lng="11.3555"
+              >
+                —
+              </span>
+            </a>
+
           </div>
 
 
-          <div class="surroundings-footer">
-
-
-            <span>
-              PRIME RESIDENCE
-            </span>
-
-
-            <span>
-              BOLOGNA · ITALY
-            </span>
-
-
+          <div class="nearby-note">
+            DISTANCES ARE APPROXIMATE FROM THE RESIDENCE
           </div>
-
 
         </aside>
 
-
       </div>
-
-
-      <div class="residence-address-bar">
-
-
-        <div>
-
-          <span class="residence-address-label">
-            RESIDENCE
-          </span>
-
-          <strong>
-            Gastone Rossi 12
-          </strong>
-
-        </div>
-
-
-        <div>
-
-          <span class="residence-address-label">
-            ADDRESS
-          </span>
-
-          <strong>
-            Via Gastone Rossi 12 · Bologna
-          </strong>
-
-        </div>
-
-
-        <a
-          href="https://www.google.com/maps/search/?api=1&query=Via%20Gastone%20Rossi%2012%20Bologna"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="residence-address-link"
-        >
-
-          DIRECTIONS
-
-          <span>
-            ↗
-          </span>
-
-        </a>
-
-
-      </div>
-
 
     </section>
 
@@ -795,9 +527,7 @@
 
     <section class="apartment-amenities">
 
-
       <div class="apartment-amenities-grid">
-
 
         <div>
 
@@ -805,50 +535,39 @@
             AMENITIES
           </div>
 
-
           <h2>
-
             Everything
             <br>
             you need.
-
           </h2>
 
         </div>
 
-
         <div class="amenities-list">
-
 
           <div class="amenity">
             3 BEDROOMS
           </div>
 
-
           <div class="amenity">
             2 BATHROOMS
           </div>
-
 
           <div class="amenity">
             UP TO 6 GUESTS
           </div>
 
+          <div class="amenity placeholder">
+            ADD AMENITY
+          </div>
 
           <div class="amenity placeholder">
             ADD AMENITY
           </div>
 
-
           <div class="amenity placeholder">
             ADD AMENITY
           </div>
-
-
-          <div class="amenity placeholder">
-            ADD AMENITY
-          </div>
-
 
         </div>
 
@@ -863,9 +582,7 @@
 
     <section class="apartment-info">
 
-
       <div class="apartment-info-grid">
-
 
         <div class="apartment-info-block">
 
@@ -874,15 +591,12 @@
           </h4>
 
           <p>
-
             Bologna, Italy.
             <br>
             Exact location details can be added here.
-
           </p>
 
         </div>
-
 
         <div class="apartment-info-block">
 
@@ -891,15 +605,12 @@
           </h4>
 
           <p>
-
             Check-in information
             and arrival instructions
             can be added here.
-
           </p>
 
         </div>
-
 
         <div class="apartment-info-block">
 
@@ -908,15 +619,12 @@
           </h4>
 
           <p>
-
             House rules and important
             guest information can be
             added here.
-
           </p>
 
         </div>
-
 
       </div>
 
@@ -929,37 +637,28 @@
 
     <section class="apartment-booking">
 
-
       <div class="apartment-booking-inner">
-
 
         <div class="section-label">
           GASTONE ROSSI 12 · PRIME RESIDENCE
         </div>
 
-
         <h2>
-
           Your stay
           <br>
           <em>starts here.</em>
-
         </h2>
-
 
         <a
           href="booking.html"
           class="apartment-booking-button"
         >
-
           BOOK YOUR STAY
 
           <span>
             →
           </span>
-
         </a>
-
 
       </div>
 
@@ -975,9 +674,7 @@
 
   <footer>
 
-
     <div class="footer-top">
-
 
       <div class="footer-brand">
 
@@ -994,12 +691,9 @@
 
       <div class="footer-contact">
 
-        <a
-          href="mailto:vittoriolandi005@gmail.com"
-        >
+        <a href="mailto:vittoriolandi005@gmail.com">
           vittoriolandi005@gmail.com
         </a>
-
 
         <a
           href="https://wa.me/393917055625"
@@ -1024,19 +718,15 @@
 
       </div>
 
-
     </div>
 
 
     <div class="footer-bottom">
 
       <span>
-
         © <span id="year"></span>
         PRIME RESIDENCE BOLOGNA
-
       </span>
-
 
       <span>
         BOLOGNA · ITALY
@@ -1047,10 +737,6 @@
   </footer>
 
 
-  <!-- =====================================================
-       WHATSAPP
-  ====================================================== -->
-
   <a
     href="https://wa.me/393917055625"
     target="_blank"
@@ -1058,13 +744,132 @@
     class="whatsapp-button"
     aria-label="Contact Prime Residence Bologna on WhatsApp"
   >
-
     <span class="whatsapp-dot"></span>
-
     WHATSAPP
-
   </a>
 
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+
+      const mapElement = document.querySelector("#gastoneMap");
+      if (!mapElement || typeof L === "undefined") return;
+
+      const fallback = {
+        lat: 44.4985,
+        lng: 11.3650
+      };
+
+      let residence = { ...fallback };
+
+      try {
+        const response = await fetch(
+          "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" +
+          encodeURIComponent("Via Gastone Rossi 12, Bologna, Italy")
+        );
+
+        const results = await response.json();
+
+        if (results.length) {
+          residence.lat = parseFloat(results[0].lat);
+          residence.lng = parseFloat(results[0].lon);
+        }
+      } catch (error) {
+        console.warn("Residence geocoding unavailable. Using fallback position.");
+      }
+
+      const map = L.map("gastoneMap", {
+        zoomControl: false,
+        scrollWheelZoom: false,
+        attributionControl: true
+      }).setView(
+        [residence.lat, residence.lng],
+        15
+      );
+
+      L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          maxZoom: 19,
+          attribution: "&copy; OpenStreetMap contributors"
+        }
+      ).addTo(map);
+
+      L.control.zoom({
+        position: "bottomright"
+      }).addTo(map);
+
+      const primeIcon = L.divIcon({
+        className: "prime-leaflet-pin",
+        html: `
+          <div class="prime-leaflet-pin-outer">
+            <div class="prime-leaflet-pin-inner"></div>
+          </div>
+        `,
+        iconSize: [48, 48],
+        iconAnchor: [24, 24]
+      });
+
+      L.marker(
+        [residence.lat, residence.lng],
+        {
+          icon: primeIcon
+        }
+      )
+      .addTo(map)
+      .bindPopup(`
+        <div class="prime-map-popup">
+          <span>PRIME RESIDENCE</span>
+          <strong>Gastone Rossi 12</strong>
+          <small>Via Gastone Rossi 12 · Bologna</small>
+        </div>
+      `);
+
+      function distanceKm(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(lat1 * Math.PI / 180) *
+          Math.cos(lat2 * Math.PI / 180) *
+          Math.sin(dLon / 2) *
+          Math.sin(dLon / 2);
+
+        return R * 2 * Math.atan2(
+          Math.sqrt(a),
+          Math.sqrt(1 - a)
+        );
+      }
+
+      document
+        .querySelectorAll(".nearby-distance")
+        .forEach(element => {
+
+          const lat = parseFloat(element.dataset.lat);
+          const lng = parseFloat(element.dataset.lng);
+
+          const km = distanceKm(
+            residence.lat,
+            residence.lng,
+            lat,
+            lng
+          );
+
+          if (km < 1) {
+            element.textContent =
+              `${Math.round(km * 1000 / 50) * 50} M`;
+          } else {
+            element.textContent =
+              `${km.toFixed(1)} KM`;
+          }
+        });
+
+    });
+  </script>
 
   <script src="script.js"></script>
 
