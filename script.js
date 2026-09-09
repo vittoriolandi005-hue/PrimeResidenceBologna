@@ -1,3 +1,4 @@
+```javascript
 /* ========================================================= 
    PRIME RESIDENCE BOLOGNA 
    PREMIUM WEBSITE JAVASCRIPT 
@@ -112,13 +113,16 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ======================================================= 
      04. PREMIUM HERO → STAY BEAUTIFULLY
      
-     VERSIONE FLUIDA
+     SLIDE ORIGINALE
      
-     - nessun delay artificiale
-     - nessun setTimeout
-     - nessun blocco dello scroll
-     - transizione rapida
-     - movimento cinematografico
+     - parte esclusivamente dalla cima della Home
+     - primo scroll verso il basso
+     - durata 2.2 secondi
+     - nessun timeout per l'animazione
+     - nessun ritardo prima dell'avvio
+     - Hero scorre verso l'alto
+     - Stay Beautifully entra dal basso
+     - al termine viene ripristinato lo scroll normale
   ======================================================= */ 
  
   const hero = document.querySelector(".hero"); 
@@ -143,6 +147,17 @@ document.addEventListener("DOMContentLoaded", () => {
  
  
       /* ---------------------------------------------------
+         CONFIGURAZIONE
+      --------------------------------------------------- */ 
+ 
+      const SLIDE_DURATION = 2200; 
+ 
+      let slideActive = false; 
+      let slideCompleted = false; 
+      let animationFrame = null; 
+ 
+ 
+      /* ---------------------------------------------------
          CLASSI
       --------------------------------------------------- */ 
  
@@ -151,24 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
  
  
       /* ---------------------------------------------------
-         CONFIGURAZIONE
-      --------------------------------------------------- */ 
- 
-      const SLIDE_DISTANCE = 
-        Math.max( 
-          window.innerHeight * 0.82, 
-          520 
-        ); 
- 
-      const SLIDE_DURATION = 750; 
- 
-      let slideRunning = false; 
-      let slideCompleted = false; 
-      let slideStart = 0; 
- 
- 
-      /* ---------------------------------------------------
-         STATO INIZIALE
+         PREPARAZIONE
       --------------------------------------------------- */ 
  
       hero.style.willChange = 
@@ -178,49 +176,61 @@ document.addEventListener("DOMContentLoaded", () => {
         "transform, opacity"; 
  
       nextSection.style.transform = 
-        "translate3d(0, 0, 0)"; 
+        "translate3d(0, 100vh, 0)"; 
  
-      nextSection.style.opacity = "1"; 
+      nextSection.style.opacity = 
+        "1"; 
  
  
       /* ---------------------------------------------------
-         EASING VELOCE E FLUIDO
+         EASING EDITORIALE
       --------------------------------------------------- */ 
  
       function premiumEase(progress) { 
  
-        return 1 - Math.pow( 
-          1 - progress, 
-          3 
-        ); 
+        return progress < 0.5 
+          ? 4 * progress * progress * progress 
+          : 1 - Math.pow( 
+              -2 * progress + 2, 
+              3 
+            ) / 2; 
  
       } 
  
  
       /* ---------------------------------------------------
-         AVVIO SLIDE
+         AVVIO IMMEDIATO DELLO SLIDE
       --------------------------------------------------- */ 
  
       function startPremiumSlide() { 
  
-        if (slideRunning || slideCompleted) { 
+        if (slideActive || slideCompleted) { 
           return; 
         } 
  
-        if (window.scrollY > 15) { 
+        if (window.scrollY > 5) { 
           return; 
         } 
  
-        slideRunning = true; 
+        slideActive = true; 
  
-        slideStart = 
+ 
+        /* 
+           Blocchiamo il normale movimento della pagina
+           soltanto mentre lo slide è in corso.
+        */ 
+ 
+        document.body.style.overflow = "hidden"; 
+ 
+ 
+        const startTime = 
           performance.now(); 
  
  
-        function animate(currentTime) { 
+        function animateSlide(currentTime) { 
  
           const elapsed = 
-            currentTime - slideStart; 
+            currentTime - startTime; 
  
           let progress = 
             elapsed / SLIDE_DURATION; 
@@ -235,69 +245,57 @@ document.addEventListener("DOMContentLoaded", () => {
  
  
           /* ---------------------------------------------
-             HERO
+             HERO — SCORRE COMPLETAMENTE VERSO L'ALTO
           --------------------------------------------- */ 
  
-          const heroY = 
-            -100 * eased; 
- 
           hero.style.transform = 
-            `translate3d(0, ${heroY}%, 0)`; 
+            `translate3d(0, ${-100 * eased}%, 0)`; 
  
  
           /* ---------------------------------------------
-             HERO IMAGE
+             IMMAGINE HERO
           --------------------------------------------- */ 
  
           if (heroImage) { 
  
-            const imageScale = 
-              1 + (eased * 0.055); 
+            const scale = 
+              1 + eased * 0.08; 
  
             const imageY = 
-              eased * -18; 
+              eased * -20; 
  
             heroImage.style.transform = 
-              `scale(${imageScale}) translate3d(0, ${imageY}px, 0)`; 
+              `scale(${scale}) translate3d(0, ${imageY}px, 0)`; 
  
           } 
  
  
           /* ---------------------------------------------
-             HERO OVERLAY
+             OVERLAY
           --------------------------------------------- */ 
  
           if (heroOverlay) { 
  
             heroOverlay.style.opacity = 
               String( 
-                0.15 + eased * 0.40 
+                0.15 + eased * 0.45 
               ); 
  
           } 
  
  
           /* ---------------------------------------------
-             HERO CONTENT
+             TESTO HERO
           --------------------------------------------- */ 
  
           if (heroContent) { 
  
-            const contentY = 
-              eased * -35; 
- 
-            const contentOpacity = 
-              1 - eased; 
- 
             heroContent.style.transform = 
-              `translate3d(0, ${contentY}px, 0)`; 
+              `translate3d(0, ${-55 * eased}px, 0)`; 
  
             heroContent.style.opacity = 
               String( 
-                Math.max( 
-                  0, 
-                  contentOpacity 
-                ) 
+                1 - eased 
               ); 
  
           } 
@@ -309,46 +307,44 @@ document.addEventListener("DOMContentLoaded", () => {
  
           if (heroScroll) { 
  
+            heroScroll.style.transform = 
+              `translate3d(0, ${40 * eased}px, 0)`; 
+ 
             heroScroll.style.opacity = 
               String( 
                 Math.max( 
                   0, 
-                  1 - eased * 2 
+                  1 - eased * 2.5 
                 ) 
               ); 
- 
-            heroScroll.style.transform = 
-              `translate3d(0, ${eased * 20}px, 0)`; 
  
           } 
  
  
           /* ---------------------------------------------
              STAY BEAUTIFULLY
+             
+             Parte da sotto lo schermo e sale
+             contemporaneamente al movimento dell'Hero.
           --------------------------------------------- */ 
  
-          const sectionY = 
-            SLIDE_DISTANCE * 
-            (1 - eased); 
+          const nextY = 
+            100 * (1 - eased); 
  
           nextSection.style.transform = 
-            `translate3d(0, ${sectionY}px, 0)`; 
- 
-          nextSection.style.opacity = 
-            String( 
-              0.96 + eased * 0.04 
-            ); 
+            `translate3d(0, ${nextY}vh, 0)`; 
  
  
           /* ---------------------------------------------
-             CONTINUA FINCHÉ NON TERMINA
+             CONTINUA
           --------------------------------------------- */ 
  
           if (progress < 1) { 
  
-            requestAnimationFrame( 
-              animate 
-            ); 
+            animationFrame = 
+              requestAnimationFrame( 
+                animateSlide 
+              ); 
  
             return; 
  
@@ -356,40 +352,51 @@ document.addEventListener("DOMContentLoaded", () => {
  
  
           /* ---------------------------------------------
-             STATO FINALE
+             POSIZIONE FINALE
           --------------------------------------------- */ 
  
           hero.style.transform = 
             "translate3d(0, -100%, 0)"; 
  
-          hero.style.opacity = "0"; 
+          hero.style.opacity = 
+            "0"; 
  
           nextSection.style.transform = 
             "translate3d(0, 0, 0)"; 
  
-          nextSection.style.opacity = "1"; 
- 
- 
-          slideRunning = false; 
-          slideCompleted = true; 
+          nextSection.style.opacity = 
+            "1"; 
  
  
           /* 
-             La pagina viene posizionata esattamente
-             sulla sezione Stay Beautifully.
+             Portiamo la finestra esattamente
+             all'inizio della sezione successiva.
           */ 
  
-          window.scrollTo({ 
-            top: nextSection.offsetTop, 
-            behavior: "instant" 
-          }); 
+          window.scrollTo( 
+            0, 
+            nextSection.offsetTop 
+          ); 
+ 
+ 
+          /* 
+             Fine dello slide.
+          */ 
+ 
+          slideActive = false; 
+          slideCompleted = true; 
+ 
+          document.body.style.overflow = ""; 
+ 
+          animationFrame = null; 
  
         } 
  
  
-        requestAnimationFrame( 
-          animate 
-        ); 
+        animationFrame = 
+          requestAnimationFrame( 
+            animateSlide 
+          ); 
  
       } 
  
@@ -402,16 +409,37 @@ document.addEventListener("DOMContentLoaded", () => {
         "wheel", 
         (event) => { 
  
+          /* 
+             Se lo slide è già stato fatto,
+             lasciamo il browser completamente libero.
+          */ 
+ 
           if (slideCompleted) { 
             return; 
           } 
  
-          if (slideRunning) { 
+ 
+          /* 
+             Durante lo slide impediamo che il browser
+             faccia uno scroll aggiuntivo.
+          */ 
+ 
+          if (slideActive) { 
+ 
             event.preventDefault(); 
             return; 
+ 
           } 
  
-          if (window.scrollY <= 15 && event.deltaY > 0) { 
+ 
+          /* 
+             Lo slide parte SOLO dalla cima.
+          */ 
+ 
+          if ( 
+            window.scrollY <= 5 && 
+            event.deltaY > 0 
+          ) { 
  
             event.preventDefault(); 
  
@@ -420,7 +448,9 @@ document.addEventListener("DOMContentLoaded", () => {
           } 
  
         }, 
-        { passive: false } 
+        { 
+          passive: false 
+        } 
       ); 
  
  
@@ -457,12 +487,14 @@ document.addEventListener("DOMContentLoaded", () => {
             return; 
           } 
  
-          if (slideRunning) { 
+          if (slideActive) { 
+ 
             event.preventDefault(); 
             return; 
+ 
           } 
  
-          if (window.scrollY > 15) { 
+          if (window.scrollY > 5) { 
             return; 
           } 
  
@@ -472,7 +504,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const difference = 
             touchStartY - currentY; 
  
-          if (difference > 10) { 
+          if (difference > 8) { 
  
             event.preventDefault(); 
  
@@ -508,12 +540,12 @@ document.addEventListener("DOMContentLoaded", () => {
  
           if ( 
             slideCompleted || 
-            slideRunning 
+            slideActive 
           ) { 
             return; 
           } 
  
-          if (window.scrollY > 15) { 
+          if (window.scrollY > 5) { 
             return; 
           } 
  
@@ -1284,3 +1316,5 @@ document.addEventListener("DOMContentLoaded", () => {
   ); 
  
 });
+```
+
