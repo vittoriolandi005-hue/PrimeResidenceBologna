@@ -1,800 +1,1819 @@
 /* =========================================================
-   BOOKING PAGE
+   PRIME RESIDENCE BOLOGNA
+   COMPLETE WEBSITE STYLESHEET
+   Homepage + Booking Page
 ========================================================= */
 
-.booking-page {
-  background: var(--ivory);
-  color: var(--black);
+
+/* =========================================================
+   01. RESET
+========================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-
-/* =========================
-   BOOKING NAVBAR
-========================= */
-
-.booking-navbar {
-  color: var(--black);
-  mix-blend-mode: normal;
-  background: rgba(243, 240, 233, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(17,17,17,0.08);
+html {
+  scroll-behavior: smooth;
 }
 
-.booking-navbar .book-button {
-  border-color: rgba(17,17,17,0.4);
+body {
+  font-family: "DM Sans", sans-serif;
+  background: #f3efe7;
+  color: #171614;
+  overflow-x: hidden;
 }
 
-
-/* =========================
-   BOOKING HERO
-========================= */
-
-.booking-hero {
-  min-height: 72vh;
-
-  display: flex;
-  align-items: flex-end;
-
-  padding:
-    180px 8vw 100px;
-
-  background:
-    radial-gradient(
-      circle at 80% 20%,
-      rgba(182,162,122,0.16),
-      transparent 30%
-    ),
-    var(--ivory);
+body,
+button,
+input,
+select,
+textarea {
+  font-family: "DM Sans", sans-serif;
 }
 
-
-.booking-hero-inner {
-  max-width: 900px;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-
-.booking-hero h1 {
-  font-family: var(--serif);
-
-  font-size:
-    clamp(65px, 9vw, 140px);
-
-  font-weight: 400;
-
-  line-height: 0.9;
-
-  letter-spacing: -0.045em;
-
-  margin-top: 35px;
-}
-
-
-.booking-hero h1 em {
-  font-style: italic;
-}
-
-
-.booking-hero p {
-  max-width: 480px;
-
-  margin-top: 45px;
-
-  font-size: 14px;
-
-  line-height: 1.8;
-
-  color: #625d55;
-}
-
-
-/* =========================
-   CHOICE
-========================= */
-
-.booking-choice {
-  padding:
-    8vw 8vw 13vw;
-
-  background: var(--cream);
-}
-
-
-.booking-section-heading {
-  display: flex;
-
-  justify-content: space-between;
-
-  padding-bottom: 20px;
-
-  border-bottom:
-    1px solid var(--border);
-
-  font-size: 8px;
-
-  letter-spacing: 0.25em;
-}
-
-
-.booking-residence-grid {
-  display: grid;
-
-  grid-template-columns:
-    repeat(2, 1fr);
-
-  gap: 35px;
-
-  margin-top: 70px;
-}
-
-
-.booking-residence-card {
-  display: block;
-
-  background: var(--ivory);
-
-  overflow: hidden;
-
+button {
+  border: none;
+  background: none;
   cursor: pointer;
-
-  border:
-    1px solid transparent;
-
-  transition:
-    transform 0.5s cubic-bezier(.22,1,.36,1),
-    border-color 0.4s ease;
 }
 
-
-.booking-residence-card:hover {
-  transform: translateY(-8px);
+img {
+  display: block;
+  max-width: 100%;
 }
 
-
-.booking-residence-card.selected {
-  border-color:
-    var(--gold);
-
-  transform:
-    translateY(-8px);
-}
-
-
-.booking-card-image {
-  position: relative;
-
-  height: 600px;
-
-  overflow: hidden;
-}
-
-
-.booking-card-image
-.photo-placeholder {
-  transition:
-    transform 1.2s cubic-bezier(.22,1,.36,1);
-}
-
-
-.booking-residence-card:hover
-.booking-card-image
-.photo-placeholder {
-  transform: scale(1.04);
-}
-
-
-.booking-card-number {
-  position: absolute;
-
-  top: 25px;
-  left: 25px;
-
-  color: white;
-
-  font-size: 9px;
-
-  letter-spacing: 0.2em;
-}
-
-
-.booking-card-content {
-  display: flex;
-
-  justify-content: space-between;
-
-  align-items: flex-end;
-
-  gap: 30px;
-
-  padding: 35px;
-}
-
-
-.booking-card-content h2 {
-  font-family: var(--serif);
-
-  font-size:
-    clamp(34px, 4vw, 55px);
-
-  font-weight: 400;
-
-  line-height: 1;
-
-  letter-spacing: -0.03em;
-}
-
-
-.booking-card-content p {
-  margin-top: 14px;
-
-  font-size: 8px;
-
-  letter-spacing: 0.16em;
-
-  color: #777168;
-}
-
-
-.booking-card-arrow {
-  flex-shrink: 0;
-
-  font-size: 8px;
-
-  letter-spacing: 0.2em;
-
-  padding-bottom: 5px;
-
-  border-bottom:
-    1px solid #777168;
+::selection {
+  background: #b69b67;
+  color: #fff;
 }
 
 
 /* =========================================================
-   BOOKING FORM SECTION
+   02. GLOBAL
 ========================================================= */
 
-.booking-form-section {
-  background: var(--ivory);
-
-  padding:
-    12vw 8vw;
-}
-
-
-.booking-form-wrapper {
-  display: grid;
-
-  grid-template-columns:
-    0.8fr 1.2fr;
-
-  gap: 10vw;
-
-  max-width: 1400px;
-
+.container {
+  width: min(1240px, calc(100% - 80px));
   margin: 0 auto;
 }
 
-
-.booking-form-intro {
-  position: sticky;
-
-  top: 120px;
-
-  align-self: start;
+.section {
+  position: relative;
+  padding: 140px 0;
 }
 
+.eyebrow {
+  display: block;
+  margin-bottom: 22px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #9b8155;
+}
 
-.booking-form-intro h2 {
-  font-family: var(--serif);
-
-  font-size:
-    clamp(55px, 6vw, 90px);
-
+h1,
+h2,
+h3 {
+  font-family: "Playfair Display", serif;
   font-weight: 400;
+}
 
-  line-height: 0.92;
+h1 {
+  font-size: clamp(58px, 8vw, 112px);
+  line-height: .92;
+  letter-spacing: -3px;
+}
 
-  letter-spacing: -0.04em;
+h2 {
+  font-size: clamp(44px, 6vw, 78px);
+  line-height: .98;
+  letter-spacing: -2px;
+}
 
-  margin-top: 35px;
+h3 {
+  font-size: clamp(34px, 4vw, 54px);
+  line-height: 1;
+}
+
+p {
+  line-height: 1.7;
 }
 
 
-.booking-form-intro h2 em {
-  font-style: italic;
+/* =========================================================
+   03. LOADER
+========================================================= */
+
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #171614;
+  color: #f3efe7;
+  transition:
+    opacity .8s ease,
+    visibility .8s ease;
+}
+
+.loader.hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader-inner {
+  text-align: center;
+  animation: loaderFade 1.2s ease forwards;
+}
+
+.loader-logo {
+  font-family: "Playfair Display", serif;
+  font-size: 58px;
+  letter-spacing: 8px;
+}
+
+.loader-subtitle {
+  margin-top: 12px;
+  font-size: 9px;
+  letter-spacing: 4px;
+  color: #b69b67;
+}
+
+@keyframes loaderFade {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 
-.booking-form-intro p {
-  max-width: 390px;
+/* =========================================================
+   04. NAVBAR
+========================================================= */
 
-  margin-top: 40px;
-
-  font-size: 13px;
-
-  line-height: 1.8;
-
-  color: #625d55;
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  color: #fff;
+  transition:
+    background .4s ease,
+    color .4s ease,
+    padding .4s ease;
 }
 
+.navbar.scrolled {
+  background: rgba(243, 239, 231, .96);
+  color: #171614;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 0 rgba(23, 22, 20, .08);
+}
 
-/* =========================
-   FORM
-========================= */
+.nav-container {
+  width: min(1400px, calc(100% - 80px));
+  height: 100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: height .4s ease;
+}
 
-.booking-form {
+.navbar.scrolled .nav-container {
+  height: 76px;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.logo-main {
+  font-family: "Playfair Display", serif;
+  font-size: 26px;
+  letter-spacing: 5px;
+}
+
+.logo-sub {
+  margin-top: 7px;
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: 3px;
+}
+
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 42px;
+}
+
+.desktop-nav a {
+  position: relative;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.desktop-nav a:not(.nav-book)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -7px;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width .3s ease;
+}
+
+.desktop-nav a:not(.nav-book):hover::after {
   width: 100%;
 }
 
+.nav-book {
+  padding: 13px 22px;
+  border: 1px solid currentColor;
+  transition:
+    background .3s ease,
+    color .3s ease;
+}
 
-.form-selected-residence {
+.nav-book:hover {
+  background: #171614;
+  color: #f3efe7;
+}
+
+.menu-toggle {
+  display: none;
+  width: 36px;
+  height: 28px;
+  position: relative;
+}
+
+.menu-toggle span {
+  position: absolute;
+  right: 0;
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+  transition: transform .3s ease;
+}
+
+.menu-toggle span:first-child {
+  top: 9px;
+}
+
+.menu-toggle span:last-child {
+  top: 18px;
+}
+
+.menu-toggle.active span:first-child {
+  transform: translateY(4.5px) rotate(45deg);
+}
+
+.menu-toggle.active span:last-child {
+  transform: translateY(-4.5px) rotate(-45deg);
+}
+
+
+/* =========================================================
+   05. MOBILE MENU
+========================================================= */
+
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: #171614;
+  color: #f3efe7;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity .4s ease,
+    visibility .4s ease;
+}
+
+.mobile-menu.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-menu-inner {
+  height: 100%;
   display: flex;
-
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+}
 
-  gap: 12px;
+.mobile-menu-inner a {
+  font-family: "Playfair Display", serif;
+  font-size: 38px;
+}
 
-  padding-bottom: 30px;
-
-  margin-bottom: 45px;
-
-  border-bottom:
-    1px solid var(--border);
+.mobile-book {
+  margin-top: 15px;
+  padding: 14px 30px;
+  border: 1px solid #b69b67;
+  color: #b69b67;
+  font-family: "DM Sans", sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 
-.form-selected-residence span {
-  font-size: 8px;
+/* =========================================================
+   06. HERO
+========================================================= */
 
-  letter-spacing: 0.25em;
+.hero {
+  position: relative;
+  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  overflow: hidden;
+}
 
-  color: #777168;
+.hero-background {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      120deg,
+      #40392f 0%,
+      #6a5d4c 45%,
+      #332f2a 100%
+    );
+  transform: scale(1.03);
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,.62),
+      rgba(0,0,0,.18)
+    );
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  width: min(900px, calc(100% - 80px));
+  margin-left: max(40px, calc((100vw - 1240px) / 2));
+}
+
+.hero-content .eyebrow {
+  color: #d0b77f;
+}
+
+.hero-description {
+  max-width: 510px;
+  margin-top: 35px;
+  color: rgba(255,255,255,.82);
+  font-size: 15px;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 42px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 30px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition:
+    background .3s ease,
+    color .3s ease,
+    border-color .3s ease,
+    transform .3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background: #b69b67;
+  border: 1px solid #b69b67;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #a48650;
+  border-color: #a48650;
+}
+
+.btn-secondary {
+  border: 1px solid rgba(255,255,255,.55);
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background: #fff;
+  color: #171614;
+}
+
+.hero-scroll {
+  position: absolute;
+  z-index: 3;
+  bottom: 38px;
+  right: 40px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: rgba(255,255,255,.7);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.scroll-line {
+  width: 60px;
+  height: 1px;
+  background: rgba(255,255,255,.55);
 }
 
 
-.form-selected-residence strong {
-  font-family: var(--serif);
+/* =========================================================
+   07. INTRO
+========================================================= */
 
-  font-size: 32px;
-
-  font-weight: 400;
+.intro {
+  background: #f3efe7;
 }
 
-
-.form-row {
+.intro-grid {
   display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 80px;
+}
 
-  grid-template-columns:
-    repeat(2, 1fr);
+.intro-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding-top: 12px;
+  color: #8b8172;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
 
+.intro-label span:first-child {
+  color: #b69b67;
+}
+
+.intro-content {
+  max-width: 850px;
+}
+
+.intro-content h2 {
+  margin-bottom: 42px;
+}
+
+.intro-content p {
+  max-width: 680px;
+  margin-bottom: 20px;
+  color: #615c54;
+  font-size: 15px;
+}
+
+
+/* =========================================================
+   08. RESIDENCES
+========================================================= */
+
+.residences {
+  background: #eae4d9;
+}
+
+.section-heading {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+  align-items: end;
+  margin-bottom: 100px;
+}
+
+.section-heading p {
+  max-width: 430px;
+  color: #655f56;
+  font-size: 14px;
+}
+
+.residence-card {
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  min-height: 610px;
+  margin-bottom: 100px;
+}
+
+.residence-card:last-child {
+  margin-bottom: 0;
+}
+
+.residence-card-reverse {
+  grid-template-columns: .85fr 1.15fr;
+}
+
+.residence-card-reverse .residence-image {
+  order: 2;
+}
+
+.residence-card-reverse .residence-info {
+  order: 1;
+}
+
+.residence-image {
+  position: relative;
+  min-height: 550px;
+  overflow: hidden;
+  background: #d5cec0;
+}
+
+.photo-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(
+      135deg,
+      #bdb3a2,
+      #ddd5c7
+    );
+  color: rgba(23,22,20,.45);
+  font-size: 11px;
+  letter-spacing: 4px;
+}
+
+.residence-number {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  color: rgba(255,255,255,.9);
+  font-family: "Playfair Display", serif;
+  font-size: 22px;
+}
+
+.residence-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 70px;
+  background: #f7f3eb;
+}
+
+.residence-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   gap: 30px;
 }
 
-
-.form-field {
-  display: flex;
-
-  flex-direction: column;
-
-  margin-bottom: 32px;
+.residence-top h3 {
+  margin-top: 5px;
 }
 
-
-.form-field label {
-  margin-bottom: 12px;
-
-  font-size: 8px;
-
-  letter-spacing: 0.22em;
-
-  color: #777168;
-}
-
-
-.form-field input,
-.form-field select,
-.form-field textarea {
-  width: 100%;
-
-  border: 0;
-
-  border-bottom:
-    1px solid rgba(17,17,17,0.3);
-
-  background: transparent;
-
-  border-radius: 0;
-
-  padding:
-    14px 0;
-
-  font-family: var(--sans);
-
-  font-size: 14px;
-
-  color: var(--black);
-
-  outline: none;
-
-  transition:
-    border-color 0.3s ease;
-}
-
-
-.form-field textarea {
-  resize: vertical;
-
-  min-height: 120px;
-}
-
-
-.form-field input:focus,
-.form-field select:focus,
-.form-field textarea:focus {
-  border-color:
-    var(--black);
-}
-
-
-.form-field select {
-  cursor: pointer;
-}
-
-
-.form-divider {
-  margin:
-    35px 0;
-
-  padding-top: 30px;
-
-  border-top:
-    1px solid var(--border);
-
-  font-size: 8px;
-
-  letter-spacing: 0.25em;
-}
-
-
-/* =========================
-   PRIVACY
-========================= */
-
-.privacy-check {
-  display: flex;
-
-  align-items: flex-start;
-
-  gap: 12px;
-
-  margin:
-    20px 0 35px;
-
+.residence-location {
+  padding-top: 6px;
+  color: #8c8478;
   font-size: 10px;
-
-  line-height: 1.6;
-
-  color: #625d55;
-
-  cursor: pointer;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-
-.privacy-check input {
-  margin-top: 3px;
-
-  width: 14px;
-  height: 14px;
-
-  flex-shrink: 0;
+.residence-description {
+  max-width: 480px;
+  margin-top: 35px;
+  color: #666056;
+  font-size: 14px;
 }
 
+.residence-details {
+  display: flex;
+  gap: 45px;
+  margin-top: 50px;
+  padding-top: 25px;
+  border-top: 1px solid #d9d2c5;
+}
 
-/* =========================
-   SUBMIT
-========================= */
+.residence-details div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
 
-.booking-submit {
+.residence-details strong {
+  font-family: "Playfair Display", serif;
+  font-size: 26px;
+  font-weight: 400;
+}
+
+.residence-details span {
+  color: #8c8478;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.text-link {
   display: inline-flex;
-
   align-items: center;
-
-  justify-content: center;
-
-  gap: 25px;
-
-  padding:
-    20px 28px;
-
-  border:
-    1px solid var(--black);
-
-  background:
-    var(--black);
-
-  color:
-    white;
-
-  font-family: var(--sans);
-
-  font-size: 8px;
-
-  letter-spacing: 0.24em;
-
-  cursor: pointer;
-
-  transition:
-    background 0.3s ease,
-    color 0.3s ease,
-    transform 0.3s ease;
+  gap: 15px;
+  width: fit-content;
+  margin-top: 48px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #171614;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: gap .3s ease;
 }
 
-
-.booking-submit:hover {
-  background:
-    transparent;
-
-  color:
-    var(--black);
-
-  transform:
-    translateY(-3px);
-}
-
-
-.booking-submit:disabled {
-  opacity: 0.5;
-
-  cursor:
-    wait;
-
-  transform:
-    none;
-}
-
-
-.booking-submit.loading {
-  pointer-events:
-    none;
-}
-
-
-/* =========================
-   MESSAGE
-========================= */
-
-.booking-message {
-  margin-top: 25px;
-
-  font-size: 11px;
-
-  line-height: 1.6;
-}
-
-
-.booking-message.success {
-  color: #315f3b;
-}
-
-
-.booking-message.error {
-  color: #9a3939;
+.text-link:hover {
+  gap: 23px;
 }
 
 
 /* =========================================================
-   BOOKING NOTE
+   09. EXPERIENCE
+========================================================= */
+
+.experience {
+  background: #171614;
+  color: #f3efe7;
+}
+
+.experience-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+  align-items: center;
+}
+
+.experience-image {
+  min-height: 680px;
+}
+
+.experience-image .photo-placeholder {
+  min-height: 680px;
+  background:
+    linear-gradient(
+      145deg,
+      #51493d,
+      #2c2925
+    );
+  color: rgba(255,255,255,.4);
+}
+
+.experience-content h2 {
+  margin-bottom: 35px;
+}
+
+.experience-content > p {
+  max-width: 520px;
+  color: #aaa49b;
+  font-size: 14px;
+}
+
+.experience-list {
+  margin-top: 55px;
+}
+
+.experience-item {
+  display: grid;
+  grid-template-columns: 45px 1fr;
+  gap: 20px;
+  padding: 25px 0;
+  border-top: 1px solid rgba(255,255,255,.13);
+}
+
+.experience-item:last-child {
+  border-bottom: 1px solid rgba(255,255,255,.13);
+}
+
+.experience-item > span {
+  color: #b69b67;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.experience-item h4 {
+  margin-bottom: 7px;
+  font-family: "Playfair Display", serif;
+  font-size: 22px;
+  font-weight: 400;
+}
+
+.experience-item p {
+  color: #8e8981;
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   10. BOLOGNA
+========================================================= */
+
+.bologna {
+  min-height: 680px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  color: #fff;
+}
+
+.bologna-background {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      120deg,
+      #725f48,
+      #302b26
+    );
+}
+
+.bologna-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.3);
+}
+
+.bologna-content {
+  position: relative;
+  z-index: 2;
+  max-width: 750px;
+}
+
+.bologna-content .eyebrow {
+  color: #d0b77f;
+}
+
+.bologna-content p {
+  max-width: 520px;
+  margin-top: 35px;
+  color: rgba(255,255,255,.78);
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   11. VISUAL SECTION
+========================================================= */
+
+.visual-section {
+  background: #f3efe7;
+}
+
+.visual-grid {
+  display: grid;
+  grid-template-columns: 1.5fr .8fr;
+  gap: 25px;
+  align-items: stretch;
+}
+
+.visual-item {
+  min-height: 520px;
+}
+
+.visual-large {
+  min-height: 700px;
+}
+
+.visual-item .photo-placeholder {
+  min-height: inherit;
+}
+
+
+/* =========================================================
+   12. CTA
+========================================================= */
+
+.cta {
+  background: #e5ded1;
+  text-align: center;
+}
+
+.cta-content {
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.cta-content p {
+  max-width: 500px;
+  margin: 30px auto 40px;
+  color: #686157;
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   13. FOOTER
+========================================================= */
+
+.footer {
+  padding: 85px 0 30px;
+  background: #171614;
+  color: #f3efe7;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+  padding-bottom: 75px;
+}
+
+.footer-brand p {
+  margin-top: 25px;
+  color: #8e8981;
+  font-size: 12px;
+}
+
+.footer-title {
+  display: block;
+  margin-bottom: 20px;
+  color: #b69b67;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-column a {
+  width: fit-content;
+  color: #aaa49b;
+  font-size: 12px;
+  transition: color .3s ease;
+}
+
+.footer-column a:hover {
+  color: #fff;
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 25px;
+  border-top: 1px solid rgba(255,255,255,.1);
+  color: #716c64;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   14. WHATSAPP
+========================================================= */
+
+.whatsapp-button {
+  position: fixed;
+  right: 25px;
+  bottom: 25px;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 125px;
+  height: 48px;
+  padding: 0 20px;
+  background: #171614;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.15);
+  box-shadow: 0 10px 30px rgba(0,0,0,.15);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition:
+    transform .3s ease,
+    background .3s ease;
+}
+
+.whatsapp-button:hover {
+  transform: translateY(-4px);
+  background: #25231f;
+}
+
+
+/* =========================================================
+   15. REVEAL ANIMATIONS
+========================================================= */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(35px);
+  transition:
+    opacity .9s ease,
+    transform .9s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* =========================================================
+   16. BOOKING PAGE
+========================================================= */
+
+.booking-page {
+  background: #f3efe7;
+  color: #171614;
+}
+
+
+/* Booking navbar */
+
+.booking-navbar {
+  position: relative;
+  background: #f3efe7;
+  color: #171614;
+  box-shadow: 0 1px 0 rgba(23,22,20,.08);
+}
+
+.booking-navbar .nav-container {
+  height: 90px;
+}
+
+
+/* Booking hero */
+
+.booking-hero {
+  padding: 155px 0 95px;
+  background: #e5ded1;
+}
+
+.booking-hero-content {
+  max-width: 900px;
+}
+
+.booking-hero h1 {
+  max-width: 900px;
+  font-size: clamp(52px, 7vw, 90px);
+}
+
+.booking-hero-description {
+  max-width: 570px;
+  margin-top: 30px;
+  color: #696258;
+  font-size: 15px;
+}
+
+
+/* =========================================================
+   17. RESIDENCE CHOICE
+========================================================= */
+
+.booking-choice {
+  padding: 110px 0;
+  background: #f3efe7;
+}
+
+.booking-choice-heading {
+  margin-bottom: 55px;
+}
+
+.booking-choice-heading h2 {
+  font-size: clamp(40px, 5vw, 65px);
+}
+
+.residence-choice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+
+.residence-choice {
+  position: relative;
+  min-height: 540px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #d7d0c3;
+}
+
+.residence-choice-image {
+  position: absolute;
+  inset: 0;
+}
+
+.residence-choice-image .photo-placeholder {
+  transition: transform .8s ease;
+}
+
+.residence-choice:hover .photo-placeholder {
+  transform: scale(1.04);
+}
+
+.residence-choice-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to top,
+      rgba(0,0,0,.75),
+      rgba(0,0,0,.05) 65%
+    );
+}
+
+.residence-choice-content {
+  position: absolute;
+  z-index: 2;
+  left: 40px;
+  right: 40px;
+  bottom: 40px;
+  color: #fff;
+}
+
+.residence-choice-number {
+  margin-bottom: 12px;
+  color: #d0b77f;
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+.residence-choice-content h3 {
+  font-size: 42px;
+}
+
+.residence-choice-details {
+  display: flex;
+  gap: 22px;
+  margin-top: 18px;
+  color: rgba(255,255,255,.75);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.residence-choice.selected {
+  outline: 2px solid #b69b67;
+  outline-offset: -2px;
+}
+
+.residence-choice.selected::after {
+  content: "SELECTED";
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  z-index: 4;
+  padding: 9px 13px;
+  background: #b69b67;
+  color: #fff;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+}
+
+
+/* =========================================================
+   18. BOOKING FORM
+========================================================= */
+
+.booking-form-section {
+  padding: 120px 0 140px;
+  background: #eae4d9;
+}
+
+.booking-form-wrapper {
+  max-width: 950px;
+  margin: 0 auto;
+}
+
+.booking-form-heading {
+  margin-bottom: 55px;
+}
+
+.booking-form-heading h2 {
+  font-size: clamp(42px, 5vw, 68px);
+}
+
+.selected-residence-display {
+  margin-top: 20px;
+  color: #9b8155;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.booking-form {
+  padding: 55px;
+  background: #f7f3eb;
+}
+
+.form-section-title {
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #d8d0c3;
+  color: #9b8155;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  margin-bottom: 9px;
+  color: #575148;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 15px 16px;
+  border: 1px solid #d2c9bb;
+  border-radius: 0;
+  outline: none;
+  background: #fbf9f4;
+  color: #171614;
+  font-size: 13px;
+  transition:
+    border-color .3s ease,
+    box-shadow .3s ease;
+}
+
+.form-group input,
+.form-group select {
+  height: 52px;
+}
+
+.form-group textarea {
+  min-height: 135px;
+  resize: vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #b69b67;
+  box-shadow: 0 0 0 1px #b69b67;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #aaa39a;
+}
+
+
+/* =========================================================
+   19. PRIVACY
+========================================================= */
+
+.booking-privacy {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 35px;
+}
+
+.booking-privacy input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: #b69b67;
+}
+
+.booking-privacy label {
+  color: #777067;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.booking-privacy a {
+  color: #171614;
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+   20. BOOKING SUBMIT
+========================================================= */
+
+.booking-submit-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid #d8d0c3;
+}
+
+.booking-submit {
+  min-width: 240px;
+}
+
+.booking-submit:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.booking-form-message {
+  display: none;
+  padding: 15px 18px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.booking-form-message.success {
+  display: block;
+  background: #e2eadf;
+  color: #3d5a38;
+  border: 1px solid #bdceb8;
+}
+
+.booking-form-message.error {
+  display: block;
+  background: #f0dfda;
+  color: #743c32;
+  border: 1px solid #d8b7af;
+}
+
+
+/* =========================================================
+   21. BOOKING NOTE
 ========================================================= */
 
 .booking-note {
-  padding:
-    13vw 8vw;
-
-  background:
-    var(--black);
-
-  color:
-    white;
-}
-
-
-.booking-note h2 {
-  font-family:
-    var(--serif);
-
-  font-size:
-    clamp(60px, 8vw, 120px);
-
-  font-weight:
-    400;
-
-  line-height:
-    0.9;
-
-  letter-spacing:
-    -0.04em;
-
-  margin-top:
-    35px;
-}
-
-
-.booking-note h2 em {
-  font-style:
-    italic;
-}
-
-
-.booking-note p {
-  max-width:
-    470px;
-
-  margin-top:
-    45px;
-
-  font-size:
-    12px;
-
-  line-height:
-    1.8;
-
-  color:
-    rgba(255,255,255,0.6);
+  max-width: 950px;
+  margin: 30px auto 0;
+  color: #81786d;
+  font-size: 11px;
+  line-height: 1.7;
+  text-align: center;
 }
 
 
 /* =========================================================
-   BOOKING RESPONSIVE
+   22. BOOKING FOOTER
 ========================================================= */
 
-@media (max-width: 900px) {
+.booking-page .footer {
+  margin-top: 0;
+}
 
-  .booking-hero {
-    min-height: 65vh;
 
-    padding:
-      150px 7vw 80px;
+/* =========================================================
+   23. DATE INPUTS
+========================================================= */
+
+input[type="date"] {
+  color-scheme: light;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: .65;
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   24. RESPONSIVE - TABLET
+========================================================= */
+
+@media (max-width: 1000px) {
+
+  .container {
+    width: min(100% - 50px, 900px);
   }
 
-
-  .booking-choice {
-    padding:
-      15vw 7vw 20vw;
+  .nav-container {
+    width: calc(100% - 50px);
   }
 
+  .desktop-nav {
+    gap: 25px;
+  }
 
-  .booking-residence-grid {
-    grid-template-columns:
-      1fr;
+  .intro-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
 
+  .section-heading {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+
+  .residence-card,
+  .residence-card-reverse {
+    grid-template-columns: 1fr;
+  }
+
+  .residence-card-reverse .residence-image {
+    order: 1;
+  }
+
+  .residence-card-reverse .residence-info {
+    order: 2;
+  }
+
+  .residence-image {
+    min-height: 500px;
+  }
+
+  .residence-info {
+    min-height: 500px;
+    padding: 55px;
+  }
+
+  .experience-grid {
+    grid-template-columns: 1fr;
     gap: 60px;
   }
 
-
-  .booking-card-image {
-    height: 500px;
+  .experience-image,
+  .experience-image .photo-placeholder {
+    min-height: 550px;
   }
 
-
-  .booking-form-section {
-    padding:
-      18vw 7vw;
+  .footer-top {
+    grid-template-columns: 2fr 1fr 1fr;
   }
 
-
-  .booking-form-wrapper {
-    grid-template-columns:
-      1fr;
-
-    gap: 70px;
+  .footer-column:last-child {
+    grid-column: 2;
   }
 
-
-  .booking-form-intro {
-    position:
-      static;
+  .residence-choice-grid {
+    gap: 18px;
   }
 
-
-  .booking-note {
-    padding:
-      20vw 7vw;
+  .residence-choice {
+    min-height: 460px;
   }
 
 }
 
 
-@media (max-width: 600px) {
+/* =========================================================
+   25. RESPONSIVE - MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .container {
+    width: calc(100% - 36px);
+  }
+
+  .section {
+    padding: 90px 0;
+  }
+
+  h1 {
+    font-size: clamp(48px, 15vw, 70px);
+    letter-spacing: -2px;
+  }
+
+  h2 {
+    font-size: clamp(40px, 12vw, 58px);
+    letter-spacing: -1.5px;
+  }
+
+
+  /* NAV */
+
+  .nav-container {
+    width: calc(100% - 36px);
+    height: 80px;
+  }
+
+  .navbar.scrolled .nav-container {
+    height: 70px;
+  }
+
+  .desktop-nav {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .logo-main {
+    font-size: 22px;
+  }
+
+  .logo-sub {
+    font-size: 6px;
+    letter-spacing: 2.5px;
+  }
+
+
+  /* HERO */
+
+  .hero {
+    min-height: 100svh;
+    height: 100svh;
+  }
+
+  .hero-content {
+    width: calc(100% - 36px);
+    margin: 0 18px;
+  }
+
+  .hero-description {
+    max-width: 360px;
+    margin-top: 25px;
+    font-size: 13px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 300px;
+    gap: 10px;
+    margin-top: 32px;
+  }
+
+  .btn {
+    min-height: 50px;
+  }
+
+  .hero-scroll {
+    right: 18px;
+    bottom: 24px;
+    font-size: 7px;
+  }
+
+  .scroll-line {
+    width: 35px;
+  }
+
+
+  /* INTRO */
+
+  .intro-grid {
+    gap: 35px;
+  }
+
+  .intro-content h2 {
+    margin-bottom: 30px;
+  }
+
+  .intro-content p {
+    font-size: 13px;
+  }
+
+
+  /* RESIDENCES */
+
+  .section-heading {
+    margin-bottom: 60px;
+  }
+
+  .section-heading p {
+    font-size: 13px;
+  }
+
+  .residence-card {
+    margin-bottom: 55px;
+  }
+
+  .residence-image {
+    min-height: 390px;
+  }
+
+  .residence-info {
+    min-height: auto;
+    padding: 40px 25px 45px;
+  }
+
+  .residence-top {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .residence-top h3 {
+    font-size: 38px;
+  }
+
+  .residence-location {
+    white-space: normal;
+  }
+
+  .residence-description {
+    margin-top: 25px;
+    font-size: 13px;
+  }
+
+  .residence-details {
+    gap: 25px;
+    margin-top: 35px;
+  }
+
+  .residence-details strong {
+    font-size: 23px;
+  }
+
+  .text-link {
+    margin-top: 35px;
+  }
+
+
+  /* EXPERIENCE */
+
+  .experience-grid {
+    gap: 45px;
+  }
+
+  .experience-image,
+  .experience-image .photo-placeholder {
+    min-height: 400px;
+  }
+
+  .experience-content > p {
+    font-size: 13px;
+  }
+
+
+  /* BOLOGNA */
+
+  .bologna {
+    min-height: 570px;
+  }
+
+  .bologna-content p {
+    font-size: 13px;
+  }
+
+
+  /* VISUAL */
+
+  .visual-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .visual-item,
+  .visual-large {
+    min-height: 400px;
+  }
+
+
+  /* CTA */
+
+  .cta-content p {
+    font-size: 13px;
+  }
+
+
+  /* FOOTER */
+
+  .footer {
+    padding: 65px 0 25px;
+  }
+
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 45px 25px;
+    padding-bottom: 55px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .footer-column:last-child {
+    grid-column: auto;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+
+  /* WHATSAPP */
+
+  .whatsapp-button {
+    right: 15px;
+    bottom: 15px;
+    min-width: 105px;
+    height: 44px;
+    padding: 0 15px;
+    font-size: 8px;
+  }
+
+
+  /* BOOKING */
 
   .booking-hero {
-    min-height: 65vh;
-
-    padding:
-      130px 7vw 70px;
+    padding: 120px 0 75px;
   }
-
 
   .booking-hero h1 {
-    font-size:
-      58px;
+    font-size: clamp(46px, 14vw, 65px);
   }
 
-
-  .booking-hero p {
-    font-size:
-      12px;
-
-    margin-top:
-      30px;
+  .booking-hero-description {
+    font-size: 13px;
   }
 
-
-  .booking-section-heading {
-    font-size:
-      7px;
+  .booking-choice {
+    padding: 75px 0;
   }
 
-
-  .booking-card-image {
-    height:
-      390px;
+  .booking-choice-heading {
+    margin-bottom: 40px;
   }
 
-
-  .booking-card-content {
-    flex-direction:
-      column;
-
-    align-items:
-      flex-start;
-
-    padding:
-      28px;
+  .residence-choice-grid {
+    grid-template-columns: 1fr;
   }
 
-
-  .booking-card-content h2 {
-    font-size:
-      40px;
+  .residence-choice {
+    min-height: 430px;
   }
 
-
-  .booking-card-arrow {
-    margin-top:
-      10px;
+  .residence-choice-content {
+    left: 25px;
+    right: 25px;
+    bottom: 28px;
   }
 
-
-  .booking-form-intro h2 {
-    font-size:
-      55px;
+  .residence-choice-content h3 {
+    font-size: 37px;
   }
 
-
-  .form-row {
-    grid-template-columns:
-      1fr;
-
-    gap:
-      0;
+  .booking-form-section {
+    padding: 75px 0 90px;
   }
 
-
-  .form-selected-residence strong {
-    font-size:
-      27px;
+  .booking-form {
+    padding: 30px 20px;
   }
 
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .form-group.full-width {
+    grid-column: auto;
+  }
+
+  .booking-submit-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
   .booking-submit {
-    width:
-      100%;
+    width: 100%;
   }
 
+  .booking-form-message {
+    width: 100%;
+  }
 
-  .booking-note h2 {
-    font-size:
-      62px;
+}
+
+
+/* =========================================================
+   26. SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+
+  .container {
+    width: calc(100% - 30px);
+  }
+
+  .nav-container {
+    width: calc(100% - 30px);
+  }
+
+  .hero-content {
+    width: calc(100% - 30px);
+    margin: 0 15px;
+  }
+
+  .hero-actions {
+    max-width: 100%;
+  }
+
+  .residence-info {
+    padding: 35px 20px 40px;
+  }
+
+  .residence-top h3 {
+    font-size: 34px;
+  }
+
+  .residence-details {
+    gap: 20px;
+  }
+
+  .residence-choice-content h3 {
+    font-size: 33px;
+  }
+
+  .booking-form {
+    padding: 25px 16px;
+  }
+
+}
+
+
+/* =========================================================
+   27. ACCESSIBILITY
+========================================================= */
+
+:focus-visible {
+  outline: 2px solid #b69b67;
+  outline-offset: 4px;
+}
+
+
+/* =========================================================
+   28. REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
 
 }
