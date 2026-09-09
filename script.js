@@ -169,7 +169,151 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     06. BOOKING PAGE
+     06. HOMEPAGE — STAY BEAUTIFULLY TRANSITION
+  ======================================================= */
+
+  const hero = document.querySelector(".hero");
+
+  /*
+     When the user starts scrolling from the hero,
+     create a smooth editorial transition into
+     the "Stay Beautifully" section.
+
+     The effect works together with the existing
+     CSS reveal animations.
+  */
+
+  if (hero) {
+
+    let heroTransitionActive = false;
+
+    function handleHeroScroll() {
+
+      const scrollY = window.scrollY;
+
+      const heroHeight = hero.offsetHeight;
+
+      /*
+         Start the transition only while the user
+         is moving away from the hero.
+      */
+
+      if (
+        scrollY > 20 &&
+        scrollY < heroHeight
+      ) {
+
+        if (!heroTransitionActive) {
+          heroTransitionActive = true;
+          document.body.classList.add(
+            "hero-transition-active"
+          );
+        }
+
+      } else {
+
+        if (heroTransitionActive) {
+          heroTransitionActive = false;
+          document.body.classList.remove(
+            "hero-transition-active"
+          );
+        }
+
+      }
+
+    }
+
+    handleHeroScroll();
+
+    window.addEventListener(
+      "scroll",
+      handleHeroScroll,
+      { passive: true }
+    );
+
+
+    /*
+       If the first section after the hero exists,
+       reveal it progressively as it enters the screen.
+    */
+
+    const nextSection = hero.nextElementSibling;
+
+    if (nextSection) {
+
+      nextSection.classList.add(
+        "hero-next-section"
+      );
+
+      const nextSectionObserver =
+        new IntersectionObserver(
+          (entries, observer) => {
+
+            entries.forEach((entry) => {
+
+              if (entry.isIntersecting) {
+
+                entry.target.classList.add(
+                  "hero-next-section-visible"
+                );
+
+                observer.unobserve(
+                  entry.target
+                );
+
+              }
+
+            });
+
+          },
+          {
+            threshold: 0.15
+          }
+        );
+
+      nextSectionObserver.observe(nextSection);
+    }
+
+  }
+
+
+  /* =======================================================
+     07. PARALLAX HERO
+  ======================================================= */
+
+  const heroImage =
+    document.querySelector(".hero-image");
+
+  if (heroImage) {
+
+    function heroParallax() {
+
+      const scrollY = window.scrollY;
+
+      if (scrollY <= window.innerHeight) {
+
+        const movement = scrollY * 0.18;
+
+        heroImage.style.transform =
+          `translateY(${movement}px)`;
+
+      }
+
+    }
+
+    heroParallax();
+
+    window.addEventListener(
+      "scroll",
+      heroParallax,
+      { passive: true }
+    );
+
+  }
+
+
+  /* =======================================================
+     08. BOOKING PAGE
   ======================================================= */
 
   const bookingCards = document.querySelectorAll(
@@ -210,7 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     07. TODAY'S DATE
+     09. TODAY'S DATE
   ======================================================= */
 
   function getLocalDateString() {
@@ -244,7 +388,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     08. RESIDENCE SELECTION
+     10. RESIDENCE SELECTION
   ======================================================= */
 
   function selectResidence(card) {
@@ -257,34 +401,24 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!residence) return;
 
 
-    /* Remove previous selection */
-
     bookingCards.forEach((item) => {
       item.classList.remove("selected");
     });
 
 
-    /* Select current residence */
-
     card.classList.add("selected");
 
-
-    /* Update hidden field */
 
     if (residenceInput) {
       residenceInput.value = residence;
     }
 
 
-    /* Update visible residence */
-
     if (selectedResidenceText) {
       selectedResidenceText.textContent =
         residence;
     }
 
-
-    /* Show booking form */
 
     if (bookingFormSection) {
 
@@ -309,8 +443,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    /* Keyboard accessibility */
-
     card.addEventListener("keydown", (event) => {
 
       if (
@@ -330,7 +462,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     09. CHECK-IN / CHECK-OUT DATES
+     11. CHECK-IN / CHECK-OUT
   ======================================================= */
 
   if (checkinInput && checkoutInput) {
@@ -344,13 +476,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-
-      /* Checkout cannot be before check-in */
-
       checkoutInput.min = checkinDate;
 
-
-      /* If checkout is already invalid, clear it */
 
       if (
         checkoutInput.value &&
@@ -394,7 +521,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     10. BOOKING MESSAGE
+     12. BOOKING MESSAGE
   ======================================================= */
 
   function showBookingMessage(
@@ -434,7 +561,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     11. BOOKING FORM SUBMISSION
+     13. BOOKING FORM SUBMISSION
   ======================================================= */
 
   if (bookingForm) {
@@ -447,10 +574,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         hideBookingMessage();
 
-
-        /* -------------------------------------------------
-           Check residence
-        ------------------------------------------------- */
 
         if (
           !residenceInput ||
@@ -468,18 +591,16 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
           if (residenceSection) {
+
             residenceSection.scrollIntoView({
               behavior: "smooth"
             });
+
           }
 
           return;
         }
 
-
-        /* -------------------------------------------------
-           Check dates
-        ------------------------------------------------- */
 
         if (
           checkinInput &&
@@ -516,10 +637,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /* -------------------------------------------------
-           Check privacy
-        ------------------------------------------------- */
-
         const privacyCheckbox =
           document.querySelector("#privacy");
 
@@ -536,10 +653,6 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-
-        /* -------------------------------------------------
-           Loading state
-        ------------------------------------------------- */
 
         if (bookingSubmit) {
 
@@ -558,10 +671,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /* -------------------------------------------------
-           Collect form data
-        ------------------------------------------------- */
-
         const formData =
           new FormData(bookingForm);
 
@@ -570,10 +679,6 @@ document.addEventListener("DOMContentLoaded", () => {
             formData.entries()
           );
 
-
-        /* -------------------------------------------------
-           Send request to Cloudflare Function
-        ------------------------------------------------- */
 
         try {
 
@@ -604,10 +709,6 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
 
-          /* -------------------------------------------------
-             Error from server
-          ------------------------------------------------- */
-
           if (!response.ok) {
 
             throw new Error(
@@ -618,10 +719,6 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
 
-          /* -------------------------------------------------
-             SUCCESS
-          ------------------------------------------------- */
-
           showBookingMessage(
             result.message ||
             "Richiesta inviata con successo. Ti ricontatteremo al più presto.",
@@ -629,18 +726,12 @@ document.addEventListener("DOMContentLoaded", () => {
           );
 
 
-          /* Save selected residence */
-
           const selectedResidence =
             residenceInput.value;
 
 
-          /* Reset form */
-
           bookingForm.reset();
 
-
-          /* Restore residence */
 
           if (residenceInput) {
             residenceInput.value =
@@ -653,8 +744,6 @@ document.addEventListener("DOMContentLoaded", () => {
               selectedResidence;
           }
 
-
-          /* Restore date limits */
 
           if (checkinInput) {
             checkinInput.min =
@@ -683,11 +772,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         } finally {
 
-
-          /* -------------------------------------------------
-             Restore button
-          ------------------------------------------------- */
-
           if (bookingSubmit) {
 
             bookingSubmit.disabled = false;
@@ -711,7 +795,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     12. BOOKING FORM FIELD VALIDATION
+     14. BOOKING FORM VALIDATION
   ======================================================= */
 
   const bookingInputs = document.querySelectorAll(
@@ -738,7 +822,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     13. ESC KEY
+     15. ESC KEY
   ======================================================= */
 
   document.addEventListener("keydown", (event) => {
@@ -752,12 +836,14 @@ document.addEventListener("DOMContentLoaded", () => {
       mobileMenu.classList.remove("active");
 
       if (menuToggle) {
+
         menuToggle.classList.remove("active");
 
         menuToggle.setAttribute(
           "aria-expanded",
           "false"
         );
+
       }
 
       document.body.style.overflow = "";
@@ -768,7 +854,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     14. RESIZE
+     16. RESIZE
   ======================================================= */
 
   window.addEventListener("resize", () => {
@@ -782,12 +868,14 @@ document.addEventListener("DOMContentLoaded", () => {
       mobileMenu.classList.remove("active");
 
       if (menuToggle) {
+
         menuToggle.classList.remove("active");
 
         menuToggle.setAttribute(
           "aria-expanded",
           "false"
         );
+
       }
 
       document.body.style.overflow = "";
@@ -798,7 +886,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     15. CONSOLE MESSAGE
+     17. CONSOLE
   ======================================================= */
 
   console.log(
