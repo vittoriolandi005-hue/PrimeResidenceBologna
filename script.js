@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =======================================================
      01. PREMIUM INTRO SCROLL
-     NON MODIFICARE
+     SWIPE / DRAG VERSO L'ALTO
   ======================================================= */
 
   const loader = document.querySelector(".loader");
@@ -21,7 +21,12 @@ document.addEventListener("DOMContentLoaded", () => {
     let introFinished = false;
     let introAnimating = false;
     let startTime = null;
+
     let touchStartY = 0;
+
+    let mouseStartY = 0;
+    let mouseCurrentY = 0;
+    let mouseDragging = false;
 
     document.body.style.overflow = "hidden";
 
@@ -48,14 +53,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
       loader.classList.add("hide");
 
-      document.body.style.overflow = "";
+      loader.classList.remove(
+        "mouse-dragging"
+      );
+
+      document.body.style.userSelect =
+        "";
+
+      document.body.style.overflow =
+        "";
 
     }
 
 
     function animate(now) {
 
-      if (!startTime) startTime = now;
+      if (!startTime) {
+        startTime = now;
+      }
 
       const elapsed =
         now - startTime;
@@ -93,7 +108,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (
         introFinished ||
         introAnimating
-      ) return;
+      ) {
+        return;
+      }
 
       introAnimating = true;
       startTime = null;
@@ -105,11 +122,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+    /* =====================================================
+       MOUSE WHEEL / TRACKPAD
+       Manteniamo anche lo scroll tradizionale
+    ====================================================== */
+
     window.addEventListener(
       "wheel",
       e => {
 
-        if (introFinished) return;
+        if (introFinished) {
+          return;
+        }
 
         e.preventDefault();
 
@@ -126,9 +150,18 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
+    /* =====================================================
+       TOUCH
+       DITO DAL BASSO VERSO L'ALTO
+    ====================================================== */
+
     window.addEventListener(
       "touchstart",
       e => {
+
+        if (introFinished) {
+          return;
+        }
 
         touchStartY =
           e.touches[0].clientY;
@@ -144,11 +177,16 @@ document.addEventListener("DOMContentLoaded", () => {
       "touchmove",
       e => {
 
-        if (introFinished) return;
+        if (introFinished) {
+          return;
+        }
+
+        const currentY =
+          e.touches[0].clientY;
 
         const movement =
           touchStartY -
-          e.touches[0].clientY;
+          currentY;
 
 
         if (movement > 6) {
@@ -166,11 +204,133 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
+    /* =====================================================
+       MOUSE DRAG
+       CLICK + TRASCINA DAL BASSO VERSO L'ALTO
+    ====================================================== */
+
+    loader.addEventListener(
+      "mousedown",
+      e => {
+
+        if (
+          introFinished ||
+          introAnimating
+        ) {
+          return;
+        }
+
+        if (e.button !== 0) {
+          return;
+        }
+
+        mouseDragging = true;
+
+        mouseStartY =
+          e.clientY;
+
+        mouseCurrentY =
+          e.clientY;
+
+        loader.classList.add(
+          "mouse-dragging"
+        );
+
+        document.body.style.userSelect =
+          "none";
+
+      }
+    );
+
+
+    window.addEventListener(
+      "mousemove",
+      e => {
+
+        if (
+          !mouseDragging ||
+          introFinished ||
+          introAnimating
+        ) {
+          return;
+        }
+
+        mouseCurrentY =
+          e.clientY;
+
+        const movement =
+          mouseStartY -
+          mouseCurrentY;
+
+
+        if (movement > 35) {
+
+          mouseDragging =
+            false;
+
+          loader.classList.remove(
+            "mouse-dragging"
+          );
+
+          document.body.style.userSelect =
+            "";
+
+          startIntro();
+
+        }
+
+      }
+    );
+
+
+    window.addEventListener(
+      "mouseup",
+      e => {
+
+        if (!mouseDragging) {
+          return;
+        }
+
+        mouseDragging =
+          false;
+
+        mouseCurrentY =
+          e.clientY;
+
+        loader.classList.remove(
+          "mouse-dragging"
+        );
+
+        document.body.style.userSelect =
+          "";
+
+
+        const movement =
+          mouseStartY -
+          mouseCurrentY;
+
+
+        if (movement > 35) {
+
+          startIntro();
+
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       KEYBOARD
+    ====================================================== */
+
     window.addEventListener(
       "keydown",
       e => {
 
-        if (introFinished) return;
+        if (introFinished) {
+          return;
+        }
 
 
         if (
@@ -203,7 +363,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateNavbar() {
 
-    if (!navbar) return;
+    if (!navbar) {
+      return;
+    }
 
 
     if (window.scrollY > 50) {
@@ -403,7 +565,9 @@ document.addEventListener("DOMContentLoaded", () => {
           if (
             !id ||
             id === "#"
-          ) return;
+          ) {
+            return;
+          }
 
 
           const target =
@@ -412,7 +576,9 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-          if (!target) return;
+          if (!target) {
+            return;
+          }
 
 
           e.preventDefault();
@@ -464,7 +630,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (
         slides.length < 2
-      ) return;
+      ) {
+        return;
+      }
 
 
       const section =
@@ -602,7 +770,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (
           Math.abs(difference) <
           45
-        ) return;
+        ) {
+          return;
+        }
 
 
         if (
@@ -680,7 +850,9 @@ document.addEventListener("DOMContentLoaded", () => {
         "mousemove",
         e => {
 
-          if (!dragging) return;
+          if (!dragging) {
+            return;
+          }
 
           mouseEndX =
             e.clientX;
@@ -693,10 +865,13 @@ document.addEventListener("DOMContentLoaded", () => {
         "mouseup",
         e => {
 
-          if (!dragging) return;
+          if (!dragging) {
+            return;
+          }
 
 
-          dragging = false;
+          dragging =
+            false;
 
           mouseEndX =
             e.clientX;
@@ -718,10 +893,13 @@ document.addEventListener("DOMContentLoaded", () => {
         "mouseleave",
         () => {
 
-          if (!dragging) return;
+          if (!dragging) {
+            return;
+          }
 
 
-          dragging = false;
+          dragging =
+            false;
 
           gallery.style.userSelect =
             "";
@@ -922,7 +1100,9 @@ document.addEventListener("DOMContentLoaded", () => {
     type
   ) {
 
-    if (!bookingMessage) return;
+    if (!bookingMessage) {
+      return;
+    }
 
 
     bookingMessage.textContent =
@@ -939,7 +1119,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function hideMessage() {
 
-    if (!bookingMessage) return;
+    if (!bookingMessage) {
+      return;
+    }
+
 
     bookingMessage.style.display =
       "none";
@@ -1227,10 +1410,6 @@ document.addEventListener("DOMContentLoaded", () => {
       `primeAssistantPromptClosed_${page}`;
 
 
-    /* =====================================================
-       RESIDENCE DATA
-    ===================================================== */
-
     const residences = {
 
       gastone: {
@@ -1281,13 +1460,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
 
-    /* =====================================================
-       LANGUAGE
-    ===================================================== */
-
     function isItalian(text) {
 
-      const words = [
+      const lower =
+        text.toLowerCase();
+
+
+      const indicators = [
 
         "ciao",
         "salve",
@@ -1295,10 +1474,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "buonasera",
         "cos'è",
         "cosa è",
-        "cosa e",
-        "che cos'è",
-        "che cosa è",
-        "prime residence",
+        "che cos",
         "appartamento",
         "camere",
         "camera",
@@ -1307,66 +1483,32 @@ document.addEventListener("DOMContentLoaded", () => {
         "ospiti",
         "prenot",
         "prezzo",
-        "costa",
         "quanto",
         "dove",
         "indirizzo",
         "parcheggio",
         "animali",
-        "wifi",
-        "check in",
-        "check-out",
-        "disponibil",
         "famiglia",
-        "gruppo",
         "persone",
         "grazie",
-        "contatto"
+        "contatt"
 
       ];
 
 
-      const lower =
-        text.toLowerCase();
-
-
-      const italianSignals =
-        words.filter(
-          word =>
-            lower.includes(word)
-        );
-
-
-      return italianSignals.length > 0 &&
-        (
-          lower.includes("cos'è") ||
-          lower.includes("cosa è") ||
-          lower.includes("che cos") ||
-          lower.includes("appartamento") ||
-          lower.includes("camere") ||
-          lower.includes("bagni") ||
-          lower.includes("ospiti") ||
-          lower.includes("prenot") ||
-          lower.includes("prezzo") ||
-          lower.includes("quanto") ||
-          lower.includes("dove") ||
-          lower.includes("grazie") ||
-          lower.includes("ciao") ||
-          lower.includes("salve") ||
-          lower.includes("famiglia") ||
-          lower.includes("persone")
-        );
+      return indicators.some(
+        word =>
+          lower.includes(word)
+      );
 
     }
 
 
-    /* =====================================================
-       MESSAGES
-    ===================================================== */
-
     function scrollMessages() {
 
-      if (!messages) return;
+      if (!messages) {
+        return;
+      }
 
 
       requestAnimationFrame(
@@ -1387,7 +1529,9 @@ document.addEventListener("DOMContentLoaded", () => {
       actions = []
     ) {
 
-      if (!messages) return;
+      if (!messages) {
+        return;
+      }
 
 
       const wrapper =
@@ -1475,13 +1619,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-       OPEN / CLOSE
-    ===================================================== */
-
     function hidePrompt() {
 
-      if (!prompt) return;
+      if (!prompt) {
+        return;
+      }
 
 
       prompt.classList.remove(
@@ -1499,7 +1641,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function openChat() {
 
-      if (!chatWindow) return;
+      if (!chatWindow) {
+        return;
+      }
 
 
       hidePrompt();
@@ -1549,7 +1693,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function closeAssistant() {
 
-      if (!chatWindow) return;
+      if (!chatWindow) {
+        return;
+      }
 
 
       assistant.classList.remove(
@@ -1636,11 +1782,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-       AUTOMATIC BANNER
-       HOME + BOTH RESIDENCES
-    ===================================================== */
-
     if (prompt) {
 
       let closed =
@@ -1693,10 +1834,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-       RESPONSES
-    ===================================================== */
-
     function getResponse(
       originalQuestion
     ) {
@@ -1721,48 +1858,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const actions = [];
 
 
-      /* ABOUT PRIME RESIDENCE BOLOGNA */
-
       if (
-        question.includes(
-          "about-prime"
-        ) ||
-        question.includes(
-          "what is prime"
-        ) ||
-        question.includes(
-          "what's prime"
-        ) ||
-        question.includes(
-          "what does prime residence"
-        ) ||
-        question.includes(
-          "tell me about prime"
-        ) ||
-        question.includes(
-          "what do you offer"
-        ) ||
-        question.includes(
-          "who are you"
-        ) ||
-        question.includes(
-          "cos'è prime"
-        ) ||
-        question.includes(
-          "cosa è prime"
-        ) ||
-        question.includes(
-          "cosa e prime"
-        ) ||
-        question.includes(
-          "che cos'è prime"
-        ) ||
-        question.includes(
-          "che cosa è prime"
-        ) ||
-        question.includes(
-          "che cosa offre prime"
-        )
+        question.includes("about-prime") ||
+        question.includes("what is prime") ||
+        question.includes("what's prime") ||
+        question.includes("tell me about prime") ||
+        question.includes("what do you offer") ||
+        question.includes("who are you") ||
+        question.includes("cos'è prime") ||
+        question.includes("cosa è prime") ||
+        question.includes("che cos'è prime")
       ) {
 
         return {
@@ -1792,8 +1897,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /* GREETING */
-
       if (
         /^(hi|hello|hey|ciao|salve|buongiorno|buonasera)\b/.test(
           question
@@ -1814,8 +1917,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /* THANK YOU */
-
       if (
         question.includes("thank") ||
         question.includes("grazie")
@@ -1835,68 +1936,12 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /* LANGUAGES */
-
       if (
-        question.includes(
-          "speak italian"
-        ) ||
-        question.includes(
-          "parli italiano"
-        )
-      ) {
-
-        return {
-
-          text:
-            "Sì. Possiamo continuare in italiano.",
-
-          actions
-
-        };
-
-      }
-
-
-      if (
-        question.includes(
-          "speak english"
-        ) ||
-        question.includes(
-          "parli inglese"
-        )
-      ) {
-
-        return {
-
-          text:
-            "Yes. I can assist you in English.",
-
-          actions
-
-        };
-
-      }
-
-
-      /* RESIDENCES */
-
-      if (
-        question.includes(
-          "which residences"
-        ) ||
-        question.includes(
-          "what residences"
-        ) ||
-        question.includes(
-          "the residences"
-        ) ||
-        question.includes(
-          "quali appartamenti"
-        ) ||
-        question.includes(
-          "quali residence"
-        )
+        question.includes("which residences") ||
+        question.includes("what residences") ||
+        question.includes("the residences") ||
+        question.includes("quali appartamenti") ||
+        question.includes("quali residence")
       ) {
 
         return {
@@ -1913,104 +1958,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /* GASTONE */
-
-      if (
-        question.includes(
-          "gastone"
-        ) &&
-        (
-          question.includes("tell") ||
-          question.includes("about") ||
-          question.includes("inform") ||
-          question.includes("descriv")
-        )
-      ) {
-
-        return {
-
-          text:
-            italian
-              ? "Gastone Rossi 12 è un residence spazioso a Bologna con 3 camere da letto, 2 bagni e spazio per un massimo di 6 ospiti."
-              : residences.gastone.description,
-
-          actions: [
-
-            {
-              label:
-                "VIEW GASTONE ROSSI 12 →",
-
-              href:
-                "gastone-rossi-12.html"
-
-            }
-
-          ]
-
-        };
-
-      }
-
-
-      /* BARONTINI */
-
-      if (
-        question.includes(
-          "barontini"
-        ) &&
-        (
-          question.includes("tell") ||
-          question.includes("about") ||
-          question.includes("inform") ||
-          question.includes("descriv")
-        )
-      ) {
-
-        return {
-
-          text:
-            italian
-              ? "Barontini 8 è un residence con 2 camere da letto, 1 bagno e spazio per un massimo di 6 ospiti."
-              : residences.barontini.description,
-
-          actions: [
-
-            {
-              label:
-                "VIEW BARONTINI 8 →",
-
-              href:
-                "barontini-8.html"
-
-            }
-
-          ]
-
-        };
-
-      }
-
-
-      /* CURRENT RESIDENCE */
-
       if (
         current &&
         (
-          question.includes(
-            "residence-details"
-          ) ||
-          question.includes(
-            "this residence"
-          ) ||
-          question.includes(
-            "this apartment"
-          ) ||
-          question.includes(
-            "questo appartamento"
-          ) ||
-          question.includes(
-            "questa struttura"
-          )
+          question.includes("residence-details") ||
+          question.includes("this residence") ||
+          question.includes("this apartment") ||
+          question.includes("questo appartamento") ||
+          question.includes("questa struttura")
         )
       ) {
 
@@ -2027,8 +1982,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       }
 
-
-      /* BEDROOMS */
 
       if (
         question.includes("bedroom") ||
@@ -2090,8 +2043,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /* BATHROOMS */
-
       if (
         question.includes("bathroom") ||
         question.includes("bagno") ||
@@ -2152,20 +2103,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /* GUESTS */
-
       if (
         question.includes("guest") ||
         question.includes("ospiti") ||
         question.includes("persone") ||
-        question.includes("people") ||
-        question.includes("sleep")
+        question.includes("people")
       ) {
 
-        if (
-          current &&
-          !question.includes("both")
-        ) {
+        if (current) {
 
           return {
 
@@ -2195,16 +2140,12 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /* COMPARE */
-
       if (
         question.includes("compare") ||
         question.includes("difference") ||
         question.includes("which is better") ||
         question.includes("differenza") ||
-        question.includes("quale scegliere") ||
-        question.includes("quale è meglio") ||
-        question.includes("quale e meglio")
+        question.includes("quale scegliere")
       ) {
 
         return {
@@ -2220,52 +2161,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       }
 
-
-      /* FAMILY */
-
-      if (
-        question.includes("family") ||
-        question.includes("famiglia")
-      ) {
-
-        return {
-
-          text:
-            italian
-              ? "Entrambi i residence possono ospitare gruppi fino a 6 persone. Gastone Rossi 12, con 3 camere da letto e 2 bagni, può risultare particolarmente comodo per famiglie che desiderano più spazi separati."
-              : "Both residences can accommodate groups of up to 6 guests. Gastone Rossi 12, with 3 bedrooms and 2 bathrooms, may be particularly comfortable for families needing more separate spaces.",
-
-          actions
-
-        };
-
-      }
-
-
-      /* GROUP */
-
-      if (
-        question.includes("group") ||
-        question.includes("friends") ||
-        question.includes("gruppo") ||
-        question.includes("amici")
-      ) {
-
-        return {
-
-          text:
-            italian
-              ? "Entrambi i residence possono ospitare fino a 6 persone. Per gruppi che desiderano più camere e un secondo bagno, Gastone Rossi 12 offre maggiore separazione degli spazi."
-              : "Both residences accommodate up to 6 guests. For groups wanting more bedrooms and a second bathroom, Gastone Rossi 12 offers more separation between spaces.",
-
-          actions
-
-        };
-
-      }
-
-
-      /* LOCATION */
 
       if (
         question.includes("location") ||
@@ -2329,42 +2224,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /* NEARBY */
-
-      if (
-        question.includes("nearby") ||
-        question.includes("around") ||
-        question.includes("attractions") ||
-        question.includes("vicino") ||
-        question.includes("dintorni") ||
-        question.includes("attrazioni")
-      ) {
-
-        return {
-
-          text:
-            italian
-              ? current
-                ? `Nella pagina di ${current.name} trovi la sezione Dintorni della struttura, con luoghi e attrazioni vicine e la relativa distanza indicativa dal residence.`
-                : "Ogni pagina residence include una mappa interattiva e una sezione con attrazioni e luoghi vicini."
-              : current
-                ? `The ${current.name} page includes an Around the residence section with nearby landmarks and their approximate distance from the property.`
-                : "Each residence page includes an interactive map and a selection of nearby landmarks and attractions.",
-
-          actions
-
-        };
-
-      }
-
-
-      /* BOOKING */
-
       if (
         question.includes("booking") ||
         question.includes("book") ||
         question.includes("reserve") ||
-        question.includes("reservation") ||
         question.includes("prenot")
       ) {
 
@@ -2379,9 +2242,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             {
               label:
-                italian
-                  ? "PRENOTA IL TUO SOGGIORNO →"
-                  : "BOOK YOUR STAY →",
+                "BOOK YOUR STAY →",
 
               href:
                 "booking.html"
@@ -2394,8 +2255,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       }
 
-
-      /* AVAILABILITY */
 
       if (
         question.includes("available") ||
@@ -2428,15 +2287,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /* PRICE */
-
       if (
         question.includes("price") ||
         question.includes("cost") ||
-        question.includes("rate") ||
         question.includes("prezzo") ||
-        question.includes("quanto costa") ||
-        question.includes("tariff")
+        question.includes("quanto costa")
       ) {
 
         return {
@@ -2464,13 +2319,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /* CHECK-IN */
-
       if (
         question.includes("checkin") ||
         question.includes("check-in") ||
         question.includes("check in") ||
-        question.includes("arrival") ||
         question.includes("arrivo")
       ) {
 
@@ -2487,30 +2339,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       }
 
-
-      /* CHECK-OUT */
-
-      if (
-        question.includes("checkout") ||
-        question.includes("check-out") ||
-        question.includes("check out")
-      ) {
-
-        return {
-
-          text:
-            italian
-              ? "Le informazioni precise per il check-out vengono comunicate per il soggiorno. Un eventuale late check-out dipende dalla disponibilità."
-              : "Exact check-out information is provided for your stay. Late check-out depends on availability.",
-
-          actions
-
-        };
-
-      }
-
-
-      /* PARKING */
 
       if (
         question.includes("parking") ||
@@ -2531,96 +2359,19 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /* PETS */
-
-      if (
-        question.includes("pet") ||
-        question.includes("dog") ||
-        question.includes("cat") ||
-        question.includes("animali") ||
-        question.includes("cane") ||
-        question.includes("gatto")
-      ) {
-
-        return {
-
-          text:
-            italian
-              ? "Non dispongo ancora di informazioni confermate sulla politica relativa agli animali. Contatta Prime Residence prima della prenotazione."
-              : "I don't currently have confirmed information about the pet policy. Please contact Prime Residence before booking.",
-
-          actions
-
-        };
-
-      }
-
-
-      /* WIFI */
-
-      if (
-        question.includes("wifi") ||
-        question.includes("wi-fi") ||
-        question.includes("internet")
-      ) {
-
-        return {
-
-          text:
-            italian
-              ? "Questa informazione non è ancora confermata nei dati dell'assistente. Preferisco non indicarti un servizio finché non è stato verificato."
-              : "This amenity is not yet confirmed in the assistant's information. I prefer not to state that a service is available until it has been verified.",
-
-          actions
-
-        };
-
-      }
-
-
-      /* AIR CONDITIONING */
-
-      if (
-        question.includes(
-          "air conditioning"
-        ) ||
-        question.includes(
-          "aria condizionata"
-        )
-      ) {
-
-        return {
-
-          text:
-            italian
-              ? "Non dispongo ancora di informazioni confermate sull'aria condizionata. Prime Residence può fornirti la lista aggiornata dei servizi."
-              : "I don't currently have confirmed information about air conditioning. Prime Residence can provide the current amenity information.",
-
-          actions
-
-        };
-
-      }
-
-
-      /* CONTACT */
-
       if (
         question.includes("contact") ||
-        question.includes("person") ||
-        question.includes("human") ||
         question.includes("whatsapp") ||
         question.includes("email") ||
-        question.includes("contatt") ||
-        question.includes("operatore")
+        question.includes("contatt")
       ) {
 
         return {
 
           text:
             italian
-              ? "Certo. Puoi contattare direttamente Prime Residence tramite WhatsApp o email."
-              : "Of course. You can contact Prime Residence directly via WhatsApp or email.",
+              ? "Puoi contattare direttamente Prime Residence tramite WhatsApp o email."
+              : "You can contact Prime Residence directly via WhatsApp or email.",
 
           actions: [
 
@@ -2651,8 +2402,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       }
 
-
-      /* FALLBACK */
 
       return {
 
@@ -2691,10 +2440,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-       PROCESS QUESTION
-    ===================================================== */
-
     function processQuestion(
       question
     ) {
@@ -2702,7 +2447,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (
         !question ||
         !question.trim()
-      ) return;
+      ) {
+        return;
+      }
 
 
       const clean =
@@ -2737,10 +2484,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-       FORM
-    ===================================================== */
-
     if (
       form &&
       input
@@ -2771,10 +2514,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-       SUGGESTION BUTTONS
-    ===================================================== */
-
     suggestionButtons.forEach(
       button => {
 
@@ -2791,7 +2530,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             switch (type) {
-
 
               case "about-prime":
 
@@ -2886,10 +2624,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* =====================================================
-       ESC CLOSE
-    ===================================================== */
-
     document.addEventListener(
       "keydown",
       e => {
@@ -2972,10 +2706,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
-
-  /* =======================================================
-     READY
-  ======================================================= */
 
   console.log(
     "Prime Residence Bologna — website ready."
