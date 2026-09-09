@@ -105,258 +105,255 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     04. PREMIUM PROGRAMMED SCROLL
-     
-     HERO → STAY BEAUTIFULLY
+     04. HOMEPAGE FIRST-SCROLL ANIMATION
 
-     DURATA ESATTA: 2200ms
+     HERO
+        ↓
+     INTRO / "STAY BEAUTIFULLY"
 
-     Non è una slide.
-     È uno scroll automatico e cinematografico.
+     COMPORTAMENTO:
+
+     - parte solamente dalla cima della Home
+     - il PRIMO scroll verso il basso avvia l'animazione
+     - il movimento dell'utente viene bloccato
+     - la pagina viene portata automaticamente
+       all'inizio della sezione INTRO
+     - durata esatta: 2200ms
+     - dopo l'animazione lo scroll torna normale
+     - l'animazione viene eseguita una sola volta
   ======================================================= */
 
   const hero =
     document.querySelector(".hero");
 
-  if (hero) {
-
-    const nextSection =
-      hero.nextElementSibling;
-
-    if (nextSection) {
-
-      const SCROLL_DURATION = 2200;
-
-      let programmedScrollActive = false;
-
-      let programmedScrollCompleted = false;
+  const intro =
+    document.querySelector(".intro");
 
 
-      /* ---------------------------------------------------
-         EASING CINEMATICO
+  if (hero && intro) {
 
-         Parte morbido,
-         accelera al centro,
-         rallenta elegantemente alla fine.
-      --------------------------------------------------- */
+    const SCROLL_DURATION = 2200;
 
-      function cinematicEase(t) {
+    let programmedScrollActive = false;
 
-        return t < 0.5
-          ? 4 * t * t * t
-          : 1 -
-            Math.pow(
-              -2 * t + 2,
-              3
-            ) / 2;
+    let programmedScrollCompleted = false;
+
+    let touchStartY = null;
+
+
+    /* -------------------------------------------------------
+       EASING
+
+       Movimento elegante:
+       lento → accelera → rallenta
+    ------------------------------------------------------- */
+
+    function cinematicEase(t) {
+
+      return t < 0.5
+        ? 4 * t * t * t
+        : 1 -
+          Math.pow(-2 * t + 2, 3) / 2;
+
+    }
+
+
+    /* -------------------------------------------------------
+       START PROGRAMMED SCROLL
+    ------------------------------------------------------- */
+
+    function startProgrammedScroll() {
+
+      if (programmedScrollActive) {
+        return;
+      }
+
+      if (programmedScrollCompleted) {
+        return;
+      }
+
+
+      /*
+       L'animazione deve partire solamente
+       quando siamo realmente in cima alla Home.
+      */
+
+      if (window.scrollY > 5) {
+        return;
+      }
+
+
+      programmedScrollActive = true;
+
+
+      /* -----------------------------------------------------
+         POSIZIONE DI PARTENZA
+      ----------------------------------------------------- */
+
+      const startPosition = 0;
+
+
+      /* -----------------------------------------------------
+         CALCOLO DELLA POSIZIONE DELL'INTRO
+
+         È importante calcolarla PRIMA di modificare
+         qualsiasi proprietà della pagina.
+      ----------------------------------------------------- */
+
+      const targetPosition =
+        intro.getBoundingClientRect().top +
+        window.scrollY;
+
+
+      /*
+       Se per qualche motivo l'intro fosse già in cima,
+       interrompiamo senza bloccare la pagina.
+      */
+
+      if (targetPosition <= 5) {
+
+        programmedScrollActive = false;
+
+        programmedScrollCompleted = true;
+
+        return;
 
       }
 
 
-      /* ---------------------------------------------------
-         BLOCCO DELLO SCROLL DURANTE L'ANIMAZIONE
-      --------------------------------------------------- */
+      /* -----------------------------------------------------
+         DISATTIVA TEMPORANEAMENTE LO SCROLL SMOOTH DEL CSS
 
-      function lockProgrammedScroll() {
+         Il CSS contiene:
 
-        document.documentElement.style.overflow =
-          "hidden";
+         html {
+           scroll-behavior: smooth;
+         }
 
-        document.body.style.overflow =
-          "hidden";
+         Durante questa animazione vogliamo invece
+         controllare NOI ogni singolo frame.
+      ----------------------------------------------------- */
 
-      }
+      const htmlElement =
+        document.documentElement;
 
+      const previousScrollBehavior =
+        htmlElement.style.scrollBehavior;
 
-      /* ---------------------------------------------------
-         SBLOCCO DELLO SCROLL
-      --------------------------------------------------- */
-
-      function unlockProgrammedScroll() {
-
-        document.documentElement.style.overflow =
-          "";
-
-        document.body.style.overflow =
-          "";
-
-      }
+      htmlElement.style.scrollBehavior =
+        "auto";
 
 
-      /* ---------------------------------------------------
-         SCROLL PROGRAMMATO
-      --------------------------------------------------- */
+      /*
+       NON usiamo overflow:hidden.
 
-      function startProgrammedScroll() {
-
-        if (programmedScrollActive) {
-          return;
-        }
-
-        if (programmedScrollCompleted) {
-          return;
-        }
+       È questo uno dei problemi del vecchio codice:
+       bloccava il contenitore che doveva essere
+       controllato da window.scrollTo().
+      */
 
 
-        /*
-         Deve partire solamente dalla cima
-         assoluta della Home.
-        */
+      /* -----------------------------------------------------
+         ASSICURIAMOCI DI PARTIRE ESATTAMENTE DA 0
+      ----------------------------------------------------- */
 
-        if (window.scrollY > 5) {
-          return;
-        }
+      window.scrollTo(0, 0);
 
 
-        programmedScrollActive = true;
+      /* -----------------------------------------------------
+         TEMPO DI PARTENZA
+      ----------------------------------------------------- */
+
+      const animationStart =
+        performance.now();
 
 
-        /* -----------------------------------------------
-           POSIZIONE DI PARTENZA
-        ------------------------------------------------ */
+      /* -----------------------------------------------------
+         ANIMAZIONE FRAME-BY-FRAME
+      ----------------------------------------------------- */
 
-        const startPosition =
-          window.scrollY;
+      function animateScroll(currentTime) {
 
-
-        /* -----------------------------------------------
-           POSIZIONE DI ARRIVO
-
-           È l'inizio reale della sezione
-           "Stay Beautifully".
-        ------------------------------------------------ */
-
-        const targetPosition =
-          nextSection.getBoundingClientRect().top +
-          window.scrollY;
+        const elapsed =
+          currentTime -
+          animationStart;
 
 
-        /*
-         Se per qualsiasi motivo la sezione fosse già
-         nella posizione iniziale, non facciamo nulla.
-        */
-
-        if (
-          targetPosition <= startPosition + 5
-        ) {
-
-          programmedScrollActive = false;
-
-          return;
-
-        }
+        let progress =
+          elapsed /
+          SCROLL_DURATION;
 
 
-        /* -----------------------------------------------
-           BLOCCA IL CONTROLLO MANUALE
-        ------------------------------------------------ */
+        progress =
+          Math.max(
+            0,
+            Math.min(
+              1,
+              progress
+            )
+          );
 
-        lockProgrammedScroll();
+
+        const eased =
+          cinematicEase(progress);
+
+
+        const currentPosition =
+          startPosition +
+          (
+            targetPosition -
+            startPosition
+          ) *
+          eased;
 
 
         /*
-         Manteniamo la pagina esattamente all'inizio.
+         Movimento reale della pagina.
         */
 
         window.scrollTo(
           0,
-          startPosition
+          currentPosition
         );
 
 
-        /* -----------------------------------------------
-           TEMPO DI PARTENZA
-        ------------------------------------------------ */
+        /* ---------------------------------------------------
+           FINE ANIMAZIONE
+        --------------------------------------------------- */
 
-        const animationStart =
-          performance.now();
+        if (progress >= 1) {
 
-
-        /* -----------------------------------------------
-           ANIMAZIONE
-        ------------------------------------------------ */
-
-        function animateScroll(currentTime) {
-
-          const elapsed =
-            currentTime -
-            animationStart;
-
-
-          let progress =
-            elapsed /
-            SCROLL_DURATION;
-
-
-          progress =
-            Math.max(
-              0,
-              Math.min(
-                1,
-                progress
-              )
-            );
-
-
-          const eased =
-            cinematicEase(progress);
-
-
-          const currentPosition =
-            startPosition +
-            (
-              targetPosition -
-              startPosition
-            ) *
-            eased;
-
+          /*
+           Portiamo la pagina ESATTAMENTE
+           all'inizio dell'intro.
+          */
 
           window.scrollTo(
             0,
-            currentPosition
+            targetPosition
           );
 
 
-          /* ---------------------------------------------
-             FINE ANIMAZIONE
-          --------------------------------------------- */
+          /*
+           Ripristiniamo il comportamento originale
+           dello scroll.
+          */
 
-          if (
-            progress >= 1
-          ) {
-
-            window.scrollTo(
-              0,
-              targetPosition
-            );
+          htmlElement.style.scrollBehavior =
+            previousScrollBehavior;
 
 
-            unlockProgrammedScroll();
+          programmedScrollActive =
+            false;
+
+          programmedScrollCompleted =
+            true;
 
 
-            programmedScrollActive =
-              false;
-
-            programmedScrollCompleted =
-              true;
-
-
-            return;
-
-          }
-
-
-          requestAnimationFrame(
-            animateScroll
-          );
+          return;
 
         }
 
-
-        /*
-         PARTE IMMEDIATAMENTE.
-         Nessun setTimeout.
-        */
 
         requestAnimationFrame(
           animateScroll
@@ -365,207 +362,238 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
-      /* ===================================================
-         MOUSE / TRACKPAD
-
-         Primo movimento verso il basso dalla cima.
-      =================================================== */
-
-      window.addEventListener(
-        "wheel",
-        (event) => {
-
-          if (
-            programmedScrollActive
-          ) {
-
-            event.preventDefault();
-
-            return;
-
-          }
-
-
-          if (
-            programmedScrollCompleted
-          ) {
-            return;
-          }
-
-
-          if (
-            window.scrollY <= 5 &&
-            event.deltaY > 0
-          ) {
-
-            event.preventDefault();
-
-            startProgrammedScroll();
-
-          }
-
-        },
-        {
-          passive: false
-        }
-      );
-
-
-      /* ===================================================
-         TOUCH / MOBILE
-      =================================================== */
-
-      let touchStartY = null;
-
-
-      window.addEventListener(
-        "touchstart",
-        (event) => {
-
-          if (
-            event.touches.length !== 1
-          ) {
-            return;
-          }
-
-
-          touchStartY =
-            event.touches[0].clientY;
-
-        },
-        {
-          passive: true
-        }
-      );
-
-
-      window.addEventListener(
-        "touchmove",
-        (event) => {
-
-          if (
-            touchStartY === null
-          ) {
-            return;
-          }
-
-
-          if (
-            programmedScrollActive
-          ) {
-
-            event.preventDefault();
-
-            return;
-
-          }
-
-
-          if (
-            programmedScrollCompleted
-          ) {
-            return;
-          }
-
-
-          if (
-            window.scrollY > 5
-          ) {
-            return;
-          }
-
-
-          const currentY =
-            event.touches[0].clientY;
-
-
-          const movement =
-            touchStartY -
-            currentY;
-
-
-          /*
-           Movimento verso l'alto del dito =
-           scroll verso il basso.
-          */
-
-          if (
-            movement > 8
-          ) {
-
-            event.preventDefault();
-
-            touchStartY = null;
-
-            startProgrammedScroll();
-
-          }
-
-        },
-        {
-          passive: false
-        }
-      );
-
-
-      window.addEventListener(
-        "touchend",
-        () => {
-
-          touchStartY = null;
-
-        },
-        {
-          passive: true
-        }
-      );
-
-
-      /* ===================================================
-         TASTIERA
-      =================================================== */
-
-      window.addEventListener(
-        "keydown",
-        (event) => {
-
-          if (
-            programmedScrollActive
-          ) {
-            return;
-          }
-
-
-          if (
-            programmedScrollCompleted
-          ) {
-            return;
-          }
-
-
-          if (
-            window.scrollY > 5
-          ) {
-            return;
-          }
-
-
-          if (
-            event.key === "ArrowDown" ||
-            event.key === "PageDown" ||
-            event.key === " "
-          ) {
-
-            event.preventDefault();
-
-            startProgrammedScroll();
-
-          }
-
-        }
+      /*
+       PARTENZA IMMEDIATA.
+      */
+
+      requestAnimationFrame(
+        animateScroll
       );
 
     }
+
+
+    /* =======================================================
+       MOUSE / TRACKPAD
+
+       IL PRIMO SCROLL VERSO IL BASSO
+       AVVIA L'ANIMAZIONE.
+    ======================================================= */
+
+    window.addEventListener(
+      "wheel",
+      (event) => {
+
+        /*
+         Durante l'animazione impediamo qualsiasi
+         ulteriore movimento manuale.
+        */
+
+        if (programmedScrollActive) {
+
+          event.preventDefault();
+
+          return;
+
+        }
+
+
+        /*
+         Dopo la prima animazione lasciamo
+         completamente normale lo scroll.
+        */
+
+        if (programmedScrollCompleted) {
+          return;
+        }
+
+
+        /*
+         Siamo in cima + movimento verso il basso.
+        */
+
+        if (
+          window.scrollY <= 5 &&
+          event.deltaY > 0
+        ) {
+
+          event.preventDefault();
+
+          startProgrammedScroll();
+
+        }
+
+      },
+      {
+        passive: false
+      }
+    );
+
+
+    /* =======================================================
+       TOUCH / MOBILE
+
+       Swipe verso l'alto del dito =
+       scroll verso il basso.
+    ======================================================= */
+
+    window.addEventListener(
+      "touchstart",
+      (event) => {
+
+        if (
+          event.touches.length !== 1
+        ) {
+          return;
+        }
+
+        touchStartY =
+          event.touches[0].clientY;
+
+      },
+      {
+        passive: true
+      }
+    );
+
+
+    window.addEventListener(
+      "touchmove",
+      (event) => {
+
+        if (
+          touchStartY === null
+        ) {
+          return;
+        }
+
+
+        if (
+          programmedScrollActive
+        ) {
+
+          event.preventDefault();
+
+          return;
+
+        }
+
+
+        if (
+          programmedScrollCompleted
+        ) {
+
+          return;
+
+        }
+
+
+        if (
+          window.scrollY > 5
+        ) {
+
+          return;
+
+        }
+
+
+        const currentY =
+          event.touches[0].clientY;
+
+
+        const movement =
+          touchStartY -
+          currentY;
+
+
+        /*
+         Il dito si muove verso l'alto:
+         l'utente vuole andare verso il basso.
+        */
+
+        if (
+          movement > 8
+        ) {
+
+          event.preventDefault();
+
+          touchStartY = null;
+
+          startProgrammedScroll();
+
+        }
+
+      },
+      {
+        passive: false
+      }
+    );
+
+
+    window.addEventListener(
+      "touchend",
+      () => {
+
+        touchStartY = null;
+
+      },
+      {
+        passive: true
+      }
+    );
+
+
+    /* =======================================================
+       TASTIERA
+    ======================================================= */
+
+    window.addEventListener(
+      "keydown",
+      (event) => {
+
+        if (
+          programmedScrollActive
+        ) {
+
+          event.preventDefault();
+
+          return;
+
+        }
+
+
+        if (
+          programmedScrollCompleted
+        ) {
+
+          return;
+
+        }
+
+
+        if (
+          window.scrollY > 5
+        ) {
+
+          return;
+
+        }
+
+
+        if (
+          event.key === "ArrowDown" ||
+          event.key === "PageDown" ||
+          event.key === " "
+        ) {
+
+          event.preventDefault();
+
+          startProgrammedScroll();
+
+        }
+
+      }
+    );
 
   }
 
@@ -1366,7 +1394,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ======================================================= */
 
   console.log(
-    "Prime Residence Bologna — premium programmed scroll ready."
+    "Prime Residence Bologna — programmed first-scroll animation ready."
   );
 
 });
