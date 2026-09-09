@@ -2,7 +2,6 @@
 /* =========================================================
    PRIME RESIDENCE BOLOGNA
    PREMIUM WEBSITE JAVASCRIPT
-   Homepage + Premium Scroll + Booking
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -27,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const navbar = document.querySelector(".navbar");
 
   function updateNavbar() {
-
     if (!navbar) return;
 
     if (window.scrollY > 50) {
@@ -35,18 +33,13 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       navbar.classList.remove("scrolled");
     }
-
   }
 
   updateNavbar();
 
-  window.addEventListener(
-    "scroll",
-    updateNavbar,
-    {
-      passive: true
-    }
-  );
+  window.addEventListener("scroll", updateNavbar, {
+    passive: true
+  });
 
 
   /* =======================================================
@@ -66,56 +59,45 @@ document.addEventListener("DOMContentLoaded", () => {
       "false"
     );
 
-    menuToggle.addEventListener(
-      "click",
-      () => {
+    menuToggle.addEventListener("click", () => {
 
-        const open =
-          menuToggle.classList.toggle("active");
+      const open =
+        menuToggle.classList.toggle("active");
 
-        mobileMenu.classList.toggle(
-          "active",
-          open
-        );
+      mobileMenu.classList.toggle(
+        "active",
+        open
+      );
 
-        menuToggle.setAttribute(
-          "aria-expanded",
-          open ? "true" : "false"
-        );
+      menuToggle.setAttribute(
+        "aria-expanded",
+        open ? "true" : "false"
+      );
 
-        document.body.style.overflow =
-          open ? "hidden" : "";
+      document.body.style.overflow =
+        open ? "hidden" : "";
 
-      }
-    );
+    });
 
 
     mobileMenu
       .querySelectorAll("a")
       .forEach((link) => {
 
-        link.addEventListener(
-          "click",
-          () => {
+        link.addEventListener("click", () => {
 
-            menuToggle.classList.remove(
-              "active"
-            );
+          menuToggle.classList.remove("active");
 
-            mobileMenu.classList.remove(
-              "active"
-            );
+          mobileMenu.classList.remove("active");
 
-            menuToggle.setAttribute(
-              "aria-expanded",
-              "false"
-            );
+          menuToggle.setAttribute(
+            "aria-expanded",
+            "false"
+          );
 
-            document.body.style.overflow =
-              "";
+          document.body.style.overflow = "";
 
-          }
-        );
+        });
 
       });
 
@@ -123,21 +105,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     04. PREMIUM HERO → STAY BEAUTIFULLY
+     04. PREMIUM PROGRAMMED SCROLL
+     
+     HERO → STAY BEAUTIFULLY
 
-     CINEMATIC FULLSCREEN SLIDE
+     DURATA ESATTA: 2200ms
 
-     DURATA: 2200ms
-
-     - parte dalla cima assoluta
-     - primo scroll verso il basso
-     - nessun ritardo
-     - nessun timeout per lo slide
-     - Hero sale verso l'alto
-     - Stay Beautifully sale dal basso
-     - animazione sincronizzata
-     - scroll normale bloccato durante lo slide
-     - scroll normale ripristinato alla fine
+     Non è una slide.
+     È uno scroll automatico e cinematografico.
   ======================================================= */
 
   const hero =
@@ -150,91 +125,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (nextSection) {
 
-      const heroImage =
-        hero.querySelector(".hero-image");
+      const SCROLL_DURATION = 2200;
 
-      const heroOverlay =
-        hero.querySelector(".hero-overlay");
+      let programmedScrollActive = false;
 
-      const heroContent =
-        hero.querySelector(".hero-content");
-
-      const heroScroll =
-        hero.querySelector(".hero-scroll");
+      let programmedScrollCompleted = false;
 
 
       /* ---------------------------------------------------
-         CONFIGURAZIONE
+         EASING CINEMATICO
+
+         Parte morbido,
+         accelera al centro,
+         rallenta elegantemente alla fine.
       --------------------------------------------------- */
 
-      const SLIDE_DURATION = 2200;
-
-      let slideActive = false;
-      let slideCompleted = false;
-
-
-      /* ---------------------------------------------------
-         CSS NECESSARIO ALLO SLIDE
-
-         Viene inserito direttamente da JavaScript,
-         così il funzionamento non dipende da vecchie
-         regole CSS eventualmente mancanti.
-      --------------------------------------------------- */
-
-      const slideStyle =
-        document.createElement("style");
-
-      slideStyle.textContent = `
-
-        html.premium-slide-active,
-        body.premium-slide-active {
-          overflow: hidden !important;
-          height: 100% !important;
-        }
-
-        .premium-slide-hero {
-          position: fixed !important;
-          inset: 0 !important;
-          width: 100vw !important;
-          height: 100vh !important;
-          z-index: 9998 !important;
-          transform: translate3d(0, 0, 0);
-          opacity: 1;
-          overflow: hidden;
-          will-change: transform, opacity;
-        }
-
-        .premium-slide-next {
-          position: fixed !important;
-          inset: 0 !important;
-          width: 100vw !important;
-          height: 100vh !important;
-          z-index: 9999 !important;
-          transform: translate3d(0, 100vh, 0);
-          opacity: 1;
-          overflow: hidden;
-          will-change: transform;
-        }
-
-        .premium-slide-running {
-          user-select: none !important;
-        }
-
-      `;
-
-      document.head.appendChild(slideStyle);
-
-
-      /* ---------------------------------------------------
-         EASING
-
-         Movimento elegante:
-         lento all'inizio,
-         accelera,
-         rallenta alla fine.
-      --------------------------------------------------- */
-
-      function premiumEase(t) {
+      function cinematicEase(t) {
 
         return t < 0.5
           ? 4 * t * t * t
@@ -248,152 +154,138 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
       /* ---------------------------------------------------
-         START PREMIUM SLIDE
+         BLOCCO DELLO SCROLL DURANTE L'ANIMAZIONE
       --------------------------------------------------- */
 
-      function startPremiumSlide() {
+      function lockProgrammedScroll() {
 
-        if (slideActive) {
+        document.documentElement.style.overflow =
+          "hidden";
+
+        document.body.style.overflow =
+          "hidden";
+
+      }
+
+
+      /* ---------------------------------------------------
+         SBLOCCO DELLO SCROLL
+      --------------------------------------------------- */
+
+      function unlockProgrammedScroll() {
+
+        document.documentElement.style.overflow =
+          "";
+
+        document.body.style.overflow =
+          "";
+
+      }
+
+
+      /* ---------------------------------------------------
+         SCROLL PROGRAMMATO
+      --------------------------------------------------- */
+
+      function startProgrammedScroll() {
+
+        if (programmedScrollActive) {
           return;
         }
 
-        if (slideCompleted) {
+        if (programmedScrollCompleted) {
           return;
         }
+
+
+        /*
+         Deve partire solamente dalla cima
+         assoluta della Home.
+        */
 
         if (window.scrollY > 5) {
           return;
         }
 
 
-        slideActive = true;
+        programmedScrollActive = true;
 
 
         /* -----------------------------------------------
-           POSIZIONE INIZIALE
+           POSIZIONE DI PARTENZA
         ------------------------------------------------ */
+
+        const startPosition =
+          window.scrollY;
+
+
+        /* -----------------------------------------------
+           POSIZIONE DI ARRIVO
+
+           È l'inizio reale della sezione
+           "Stay Beautifully".
+        ------------------------------------------------ */
+
+        const targetPosition =
+          nextSection.getBoundingClientRect().top +
+          window.scrollY;
+
+
+        /*
+         Se per qualsiasi motivo la sezione fosse già
+         nella posizione iniziale, non facciamo nulla.
+        */
+
+        if (
+          targetPosition <= startPosition + 5
+        ) {
+
+          programmedScrollActive = false;
+
+          return;
+
+        }
+
+
+        /* -----------------------------------------------
+           BLOCCA IL CONTROLLO MANUALE
+        ------------------------------------------------ */
+
+        lockProgrammedScroll();
+
+
+        /*
+         Manteniamo la pagina esattamente all'inizio.
+        */
 
         window.scrollTo(
           0,
-          0
+          startPosition
         );
 
 
         /* -----------------------------------------------
-           BLOCCO SCROLL
+           TEMPO DI PARTENZA
         ------------------------------------------------ */
 
-        document.documentElement.classList.add(
-          "premium-slide-active"
-        );
-
-        document.body.classList.add(
-          "premium-slide-active"
-        );
-
-        document.body.classList.add(
-          "premium-slide-running"
-        );
-
-
-        /* -----------------------------------------------
-           HERO
-        ------------------------------------------------ */
-
-        hero.classList.add(
-          "premium-slide-hero"
-        );
-
-        hero.style.transform =
-          "translate3d(0, 0, 0)";
-
-        hero.style.opacity =
-          "1";
-
-
-        /* -----------------------------------------------
-           STAY BEAUTIFULLY
-        ------------------------------------------------ */
-
-        nextSection.classList.add(
-          "premium-slide-next"
-        );
-
-        nextSection.style.transform =
-          "translate3d(0, 100vh, 0)";
-
-        nextSection.style.opacity =
-          "1";
-
-
-        /* -----------------------------------------------
-           ELEMENTI HERO
-        ------------------------------------------------ */
-
-        if (heroImage) {
-
-          heroImage.style.transform =
-            "scale(1) translate3d(0, 0, 0)";
-
-          heroImage.style.opacity =
-            "1";
-
-        }
-
-
-        if (heroOverlay) {
-
-          heroOverlay.style.opacity =
-            "0.15";
-
-        }
-
-
-        if (heroContent) {
-
-          heroContent.style.transform =
-            "translate3d(0, 0, 0)";
-
-          heroContent.style.opacity =
-            "1";
-
-        }
-
-
-        if (heroScroll) {
-
-          heroScroll.style.transform =
-            "translate3d(0, 0, 0)";
-
-          heroScroll.style.opacity =
-            "1";
-
-        }
+        const animationStart =
+          performance.now();
 
 
         /* -----------------------------------------------
            ANIMAZIONE
-
-           PARTE IMMEDIATAMENTE.
-
-           requestAnimationFrame è usato solo per
-           sincronizzare i fotogrammi dell'animazione.
-
-           DURATA = 2200ms.
         ------------------------------------------------ */
 
-        const startTime =
-          performance.now();
-
-
-        function animate(currentTime) {
+        function animateScroll(currentTime) {
 
           const elapsed =
-            currentTime - startTime;
+            currentTime -
+            animationStart;
 
 
           let progress =
-            elapsed / SLIDE_DURATION;
+            elapsed /
+            SCROLL_DURATION;
 
 
           progress =
@@ -407,254 +299,97 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
           const eased =
-            premiumEase(progress);
+            cinematicEase(progress);
 
 
-          /* ---------------------------------------------
-             HERO
-
-             0%   = posizione originale
-             100% = completamente sopra
-          --------------------------------------------- */
-
-          const heroY =
-            -100 * eased;
+          const currentPosition =
+            startPosition +
+            (
+              targetPosition -
+              startPosition
+            ) *
+            eased;
 
 
-          hero.style.transform =
-            `translate3d(0, ${heroY}%, 0)`;
-
-
-          /* ---------------------------------------------
-             HERO IMAGE
-
-             Leggero zoom cinematografico.
-          --------------------------------------------- */
-
-          if (heroImage) {
-
-            const scale =
-              1 + eased * 0.075;
-
-            const imageY =
-              eased * -18;
-
-
-            heroImage.style.transform =
-              `scale(${scale}) translate3d(0, ${imageY}px, 0)`;
-
-          }
-
-
-          /* ---------------------------------------------
-             HERO OVERLAY
-          --------------------------------------------- */
-
-          if (heroOverlay) {
-
-            heroOverlay.style.opacity =
-              String(
-                0.15 +
-                eased * 0.45
-              );
-
-          }
-
-
-          /* ---------------------------------------------
-             HERO CONTENT
-
-             Il testo si allontana leggermente
-             mentre il pannello esce.
-          --------------------------------------------- */
-
-          if (heroContent) {
-
-            const contentY =
-              eased * -55;
-
-            const contentOpacity =
-              1 - eased;
-
-
-            heroContent.style.transform =
-              `translate3d(0, ${contentY}px, 0)`;
-
-            heroContent.style.opacity =
-              String(
-                Math.max(
-                  0,
-                  contentOpacity
-                )
-              );
-
-          }
-
-
-          /* ---------------------------------------------
-             SCROLL INDICATOR
-          --------------------------------------------- */
-
-          if (heroScroll) {
-
-            heroScroll.style.transform =
-              `translate3d(0, ${eased * 35}px, 0)`;
-
-            heroScroll.style.opacity =
-              String(
-                Math.max(
-                  0,
-                  1 - eased * 2
-                )
-              );
-
-          }
-
-
-          /* ---------------------------------------------
-             STAY BEAUTIFULLY
-
-             100vh → 0vh
-
-             Quindi entra ESATTAMENTE dal basso.
-          --------------------------------------------- */
-
-          const nextY =
-            100 * (1 - eased);
-
-
-          nextSection.style.transform =
-            `translate3d(0, ${nextY}vh, 0)`;
-
-
-          /* ---------------------------------------------
-             CONTINUA
-          --------------------------------------------- */
-
-          if (progress < 1) {
-
-            requestAnimationFrame(
-              animate
-            );
-
-            return;
-
-          }
+          window.scrollTo(
+            0,
+            currentPosition
+          );
 
 
           /* ---------------------------------------------
              FINE ANIMAZIONE
           --------------------------------------------- */
 
-          hero.style.transform =
-            "translate3d(0, -100%, 0)";
+          if (
+            progress >= 1
+          ) {
 
-          hero.style.opacity =
-            "0";
+            window.scrollTo(
+              0,
+              targetPosition
+            );
 
 
-          nextSection.style.transform =
-            "translate3d(0, 0, 0)";
+            unlockProgrammedScroll();
 
 
-          /* ---------------------------------------------
-             RIMUOVIAMO IL BLOCCO DELLO SCROLL
-          --------------------------------------------- */
+            programmedScrollActive =
+              false;
 
-          document.documentElement.classList.remove(
-            "premium-slide-active"
+            programmedScrollCompleted =
+              true;
+
+
+            return;
+
+          }
+
+
+          requestAnimationFrame(
+            animateScroll
           );
-
-          document.body.classList.remove(
-            "premium-slide-active"
-          );
-
-          document.body.classList.remove(
-            "premium-slide-running"
-          );
-
-
-          /* ---------------------------------------------
-             CALCOLIAMO LA POSIZIONE REALE DI
-             STAY BEAUTIFULLY
-          --------------------------------------------- */
-
-          const nextSectionPosition =
-            nextSection.getBoundingClientRect().top +
-            window.scrollY;
-
-
-          /* ---------------------------------------------
-             RIPRISTINO DEL POSIZIONAMENTO NORMALE
-          --------------------------------------------- */
-
-          hero.classList.remove(
-            "premium-slide-hero"
-          );
-
-          nextSection.classList.remove(
-            "premium-slide-next"
-          );
-
-
-          /* ---------------------------------------------
-             PORTIAMO LA PAGINA ESATTAMENTE ALLA
-             SEZIONE STAY BEAUTIFULLY
-          --------------------------------------------- */
-
-          window.scrollTo(
-            0,
-            nextSectionPosition
-          );
-
-
-          /* ---------------------------------------------
-             HERO RESTA ALLE SPALLE
-          --------------------------------------------- */
-
-          hero.style.transform =
-            "translate3d(0, -100%, 0)";
-
-          hero.style.opacity =
-            "0";
-
-
-          /* ---------------------------------------------
-             FINE
-          --------------------------------------------- */
-
-          slideActive = false;
-          slideCompleted = true;
 
         }
 
 
+        /*
+         PARTE IMMEDIATAMENTE.
+         Nessun setTimeout.
+        */
+
         requestAnimationFrame(
-          animate
+          animateScroll
         );
 
       }
 
 
       /* ===================================================
-         WHEEL / MOUSE / TRACKPAD
+         MOUSE / TRACKPAD
+
+         Primo movimento verso il basso dalla cima.
       =================================================== */
 
       window.addEventListener(
         "wheel",
         (event) => {
 
-          if (slideCompleted) {
-            return;
-          }
-
-
-          if (slideActive) {
+          if (
+            programmedScrollActive
+          ) {
 
             event.preventDefault();
 
             return;
 
+          }
+
+
+          if (
+            programmedScrollCompleted
+          ) {
+            return;
           }
 
 
@@ -665,7 +400,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             event.preventDefault();
 
-            startPremiumSlide();
+            startProgrammedScroll();
 
           }
 
@@ -680,8 +415,7 @@ document.addEventListener("DOMContentLoaded", () => {
          TOUCH / MOBILE
       =================================================== */
 
-      let touchStartY =
-        null;
+      let touchStartY = null;
 
 
       window.addEventListener(
@@ -693,6 +427,7 @@ document.addEventListener("DOMContentLoaded", () => {
           ) {
             return;
           }
+
 
           touchStartY =
             event.touches[0].clientY;
@@ -709,19 +444,27 @@ document.addEventListener("DOMContentLoaded", () => {
         (event) => {
 
           if (
-            touchStartY === null ||
-            slideCompleted
+            touchStartY === null
           ) {
             return;
           }
 
 
-          if (slideActive) {
+          if (
+            programmedScrollActive
+          ) {
 
             event.preventDefault();
 
             return;
 
+          }
+
+
+          if (
+            programmedScrollCompleted
+          ) {
+            return;
           }
 
 
@@ -736,19 +479,25 @@ document.addEventListener("DOMContentLoaded", () => {
             event.touches[0].clientY;
 
 
-          const difference =
+          const movement =
             touchStartY -
             currentY;
 
 
-          if (difference > 8) {
+          /*
+           Movimento verso l'alto del dito =
+           scroll verso il basso.
+          */
+
+          if (
+            movement > 8
+          ) {
 
             event.preventDefault();
 
-            touchStartY =
-              null;
+            touchStartY = null;
 
-            startPremiumSlide();
+            startProgrammedScroll();
 
           }
 
@@ -763,8 +512,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "touchend",
         () => {
 
-          touchStartY =
-            null;
+          touchStartY = null;
 
         },
         {
@@ -782,8 +530,14 @@ document.addEventListener("DOMContentLoaded", () => {
         (event) => {
 
           if (
-            slideCompleted ||
-            slideActive
+            programmedScrollActive
+          ) {
+            return;
+          }
+
+
+          if (
+            programmedScrollCompleted
           ) {
             return;
           }
@@ -804,7 +558,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             event.preventDefault();
 
-            startPremiumSlide();
+            startProgrammedScroll();
 
           }
 
@@ -821,9 +575,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ======================================================= */
 
   const revealElements =
-    document.querySelectorAll(
-      ".reveal"
-    );
+    document.querySelectorAll(".reveal");
 
   if (revealElements.length) {
 
@@ -831,25 +583,21 @@ document.addEventListener("DOMContentLoaded", () => {
       new IntersectionObserver(
         (entries, observer) => {
 
-          entries.forEach(
-            (entry) => {
+          entries.forEach((entry) => {
 
-              if (
-                entry.isIntersecting
-              ) {
+            if (entry.isIntersecting) {
 
-                entry.target.classList.add(
-                  "visible"
-                );
+              entry.target.classList.add(
+                "visible"
+              );
 
-                observer.unobserve(
-                  entry.target
-                );
-
-              }
+              observer.unobserve(
+                entry.target
+              );
 
             }
-          );
+
+          });
 
         },
         {
@@ -858,15 +606,11 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
 
-    revealElements.forEach(
-      (element) => {
+    revealElements.forEach((element) => {
 
-        revealObserver.observe(
-          element
-        );
+      revealObserver.observe(element);
 
-      }
-    );
+    });
 
   }
 
@@ -876,66 +620,55 @@ document.addEventListener("DOMContentLoaded", () => {
   ======================================================= */
 
   document
-    .querySelectorAll(
-      'a[href^="#"]'
-    )
-    .forEach(
-      (link) => {
+    .querySelectorAll('a[href^="#"]')
+    .forEach((link) => {
 
-        link.addEventListener(
-          "click",
-          (event) => {
+      link.addEventListener(
+        "click",
+        (event) => {
 
-            const id =
-              link.getAttribute(
-                "href"
-              );
+          const id =
+            link.getAttribute("href");
 
 
-            if (
-              !id ||
-              id === "#"
-            ) {
-              return;
-            }
-
-
-            const target =
-              document.querySelector(
-                id
-              );
-
-
-            if (!target) {
-              return;
-            }
-
-
-            event.preventDefault();
-
-
-            const navbarHeight =
-              navbar
-                ? navbar.offsetHeight
-                : 0;
-
-
-            const position =
-              target.getBoundingClientRect().top +
-              window.scrollY -
-              navbarHeight;
-
-
-            window.scrollTo({
-              top: position,
-              behavior: "smooth"
-            });
-
+          if (!id || id === "#") {
+            return;
           }
-        );
 
-      }
-    );
+
+          const target =
+            document.querySelector(id);
+
+
+          if (!target) {
+            return;
+          }
+
+
+          event.preventDefault();
+
+
+          const navbarHeight =
+            navbar
+              ? navbar.offsetHeight
+              : 0;
+
+
+          const position =
+            target.getBoundingClientRect().top +
+            window.scrollY -
+            navbarHeight;
+
+
+          window.scrollTo({
+            top: position,
+            behavior: "smooth"
+          });
+
+        }
+      );
+
+    });
 
 
   /* =======================================================
@@ -997,8 +730,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const today =
       new Date();
 
+
     const year =
       today.getFullYear();
+
 
     const month =
       String(
@@ -1008,6 +743,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "0"
       );
 
+
     const day =
       String(
         today.getDate()
@@ -1015,6 +751,7 @@ document.addEventListener("DOMContentLoaded", () => {
         2,
         "0"
       );
+
 
     return `${year}-${month}-${day}`;
 
@@ -1038,7 +775,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     09. SELECT RESIDENCE
+     09. RESIDENCE SELECTION
   ======================================================= */
 
   function selectResidence(card) {
@@ -1057,15 +794,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    bookingCards.forEach(
-      (item) => {
+    bookingCards.forEach((item) => {
 
-        item.classList.remove(
-          "selected"
-        );
+      item.classList.remove(
+        "selected"
+      );
 
-      }
-    );
+    });
 
 
     card.classList.add(
@@ -1091,60 +826,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (bookingFormSection) {
 
-      setTimeout(
-        () => {
+      setTimeout(() => {
 
-          bookingFormSection.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
+        bookingFormSection.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
 
-        },
-        150
-      );
+      }, 150);
 
     }
 
   }
 
 
-  bookingCards.forEach(
-    (card) => {
+  bookingCards.forEach((card) => {
 
-      card.addEventListener(
-        "click",
-        () => {
+    card.addEventListener(
+      "click",
+      () => {
 
-          selectResidence(
-            card
-          );
+        selectResidence(card);
 
-        }
-      );
+      }
+    );
 
 
-      card.addEventListener(
-        "keydown",
-        (event) => {
+    card.addEventListener(
+      "keydown",
+      (event) => {
 
-          if (
-            event.key === "Enter" ||
-            event.key === " "
-          ) {
+        if (
+          event.key === "Enter" ||
+          event.key === " "
+        ) {
 
-            event.preventDefault();
+          event.preventDefault();
 
-            selectResidence(
-              card
-            );
-
-          }
+          selectResidence(card);
 
         }
-      );
 
-    }
-  );
+      }
+    );
+
+  });
 
 
   /* =======================================================
@@ -1178,8 +904,13 @@ document.addEventListener("DOMContentLoaded", () => {
           checkoutInput.value <= checkin
         ) {
 
-          checkoutInput.value =
-            "";
+          showBookingMessage(
+            "Il check-out deve essere successivo al check-in.",
+            "error"
+          );
+
+
+          checkoutInput.value = "";
 
         }
 
@@ -1209,8 +940,8 @@ document.addEventListener("DOMContentLoaded", () => {
             "error"
           );
 
-          checkoutInput.value =
-            "";
+
+          checkoutInput.value = "";
 
         }
 
@@ -1244,12 +975,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     bookingMessage.style.display =
       "block";
-
-
-    bookingMessage.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest"
-    });
 
   }
 
@@ -1405,9 +1130,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
 
                 body:
-                  JSON.stringify(
-                    data
-                  )
+                  JSON.stringify(data)
               }
             );
 
@@ -1527,33 +1250,31 @@ document.addEventListener("DOMContentLoaded", () => {
     .querySelectorAll(
       "#bookingRequestForm input, #bookingRequestForm select, #bookingRequestForm textarea"
     )
-    .forEach(
-      (input) => {
+    .forEach((input) => {
 
-        input.addEventListener(
-          "input",
-          () => {
+      input.addEventListener(
+        "input",
+        () => {
 
-            if (
-              bookingMessage &&
-              bookingMessage.classList.contains(
-                "error"
-              )
-            ) {
+          if (
+            bookingMessage &&
+            bookingMessage.classList.contains(
+              "error"
+            )
+          ) {
 
-              hideBookingMessage();
-
-            }
+            hideBookingMessage();
 
           }
-        );
 
-      }
-    );
+        }
+      );
+
+    });
 
 
   /* =======================================================
-     14. ESCAPE
+     14. ESCAPE MOBILE MENU
   ======================================================= */
 
   document.addEventListener(
@@ -1645,7 +1366,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ======================================================= */
 
   console.log(
-    "Prime Residence Bologna — premium experience ready."
+    "Prime Residence Bologna — premium programmed scroll ready."
   );
 
 });
