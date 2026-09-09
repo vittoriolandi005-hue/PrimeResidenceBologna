@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =======================================================
      01. PREMIUM INTRO SCROLL (NO TIMER)
+     NON MODIFICARE
   ======================================================= */
 
   const loader = document.querySelector(".loader");
@@ -33,13 +34,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function finishIntro() {
+
       introFinished = true;
       introAnimating = false;
 
-      loader.style.transform = "translate3d(0,-100%,0)";
+      loader.style.transform =
+        "translate3d(0,-100%,0)";
+
       loader.classList.add("hide");
 
       document.body.style.overflow = "";
+
     }
 
     function animate(now) {
@@ -47,404 +52,1308 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!startTime) startTime = now;
 
       const elapsed = now - startTime;
-      const progress = Math.min(elapsed / INTRO_DURATION, 1);
+
+      const progress =
+        Math.min(
+          elapsed / INTRO_DURATION,
+          1
+        );
+
       const eased = ease(progress);
 
       loader.style.transform =
         `translate3d(0,${-eased * 100}%,0)`;
 
       if (progress < 1) {
+
         requestAnimationFrame(animate);
+
       } else {
+
         finishIntro();
+
       }
+
     }
 
     function startIntro() {
 
-      if (introFinished || introAnimating) return;
+      if (
+        introFinished ||
+        introAnimating
+      ) return;
 
       introAnimating = true;
+
       startTime = null;
 
       requestAnimationFrame(animate);
+
     }
 
-    window.addEventListener("wheel", (e) => {
+    window.addEventListener(
+      "wheel",
+      (e) => {
 
-      if (introFinished) return;
-
-      e.preventDefault();
-
-      if (e.deltaY > 0) startIntro();
-
-    }, { passive: false });
-
-    window.addEventListener("touchstart", (e) => {
-
-      touchStartY = e.touches[0].clientY;
-
-    }, { passive: true });
-
-    window.addEventListener("touchmove", (e) => {
-
-      if (introFinished) return;
-
-      const movement = touchStartY - e.touches[0].clientY;
-
-      if (movement > 6) {
+        if (introFinished) return;
 
         e.preventDefault();
-        startIntro();
+
+        if (e.deltaY > 0) {
+
+          startIntro();
+
+        }
+
+      },
+      {
+        passive: false
+      }
+    );
+
+    window.addEventListener(
+      "touchstart",
+      (e) => {
+
+        touchStartY =
+          e.touches[0].clientY;
+
+      },
+      {
+        passive: true
+      }
+    );
+
+    window.addEventListener(
+      "touchmove",
+      (e) => {
+
+        if (introFinished) return;
+
+        const movement =
+          touchStartY -
+          e.touches[0].clientY;
+
+        if (movement > 6) {
+
+          e.preventDefault();
+
+          startIntro();
+
+        }
+
+      },
+      {
+        passive: false
+      }
+    );
+
+    window.addEventListener(
+      "keydown",
+      (e) => {
+
+        if (introFinished) return;
+
+        if (
+          e.key === "ArrowDown" ||
+          e.key === "PageDown" ||
+          e.key === " "
+        ) {
+
+          e.preventDefault();
+
+          startIntro();
+
+        }
 
       }
-
-    }, { passive: false });
-
-    window.addEventListener("keydown", (e) => {
-
-      if (introFinished) return;
-
-      if (
-        e.key === "ArrowDown" ||
-        e.key === "PageDown" ||
-        e.key === " "
-      ) {
-
-        e.preventDefault();
-        startIntro();
-
-      }
-
-    });
+    );
 
   }
+
 
   /* =======================================================
      02. NAVBAR
   ======================================================= */
 
-  const navbar = document.querySelector(".navbar");
+  const navbar =
+    document.querySelector(".navbar");
 
   function updateNavbar() {
+
     if (!navbar) return;
 
     if (window.scrollY > 50) {
-      navbar.classList.add("scrolled");
+
+      navbar.classList.add(
+        "scrolled"
+      );
+
     } else {
-      navbar.classList.remove("scrolled");
+
+      navbar.classList.remove(
+        "scrolled"
+      );
+
     }
+
   }
 
   updateNavbar();
 
-  window.addEventListener("scroll", updateNavbar, {
-    passive: true
-  });
+  window.addEventListener(
+    "scroll",
+    updateNavbar,
+    {
+      passive: true
+    }
+  );
+
 
   /* =======================================================
      03. MOBILE MENU
   ======================================================= */
 
-  const menuToggle = document.querySelector(".menu-toggle");
-  const mobileMenu = document.querySelector(".mobile-menu");
+  const menuToggle =
+    document.querySelector(
+      ".menu-toggle"
+    );
 
-  if (menuToggle && mobileMenu) {
+  const mobileMenu =
+    document.querySelector(
+      ".mobile-menu"
+    );
 
-    menuToggle.setAttribute("aria-expanded", "false");
+  if (
+    menuToggle &&
+    mobileMenu
+  ) {
 
-    menuToggle.addEventListener("click", () => {
+    menuToggle.setAttribute(
+      "aria-expanded",
+      "false"
+    );
 
-      const open = menuToggle.classList.toggle("active");
+    menuToggle.addEventListener(
+      "click",
+      () => {
 
-      mobileMenu.classList.toggle("active", open);
+        const open =
+          menuToggle
+            .classList
+            .toggle("active");
 
-      menuToggle.setAttribute(
-        "aria-expanded",
-        open ? "true" : "false"
-      );
+        mobileMenu
+          .classList
+          .toggle(
+            "active",
+            open
+          );
 
-      document.body.style.overflow = open ? "hidden" : "";
+        menuToggle.setAttribute(
+          "aria-expanded",
+          open
+            ? "true"
+            : "false"
+        );
 
-    });
+        document.body.style.overflow =
+          open
+            ? "hidden"
+            : "";
 
-    mobileMenu.querySelectorAll("a").forEach(link => {
+      }
+    );
 
-      link.addEventListener("click", () => {
+    mobileMenu
+      .querySelectorAll("a")
+      .forEach(link => {
 
-        menuToggle.classList.remove("active");
-        mobileMenu.classList.remove("active");
-        menuToggle.setAttribute("aria-expanded", "false");
-        document.body.style.overflow = "";
+        link.addEventListener(
+          "click",
+          () => {
+
+            menuToggle
+              .classList
+              .remove("active");
+
+            mobileMenu
+              .classList
+              .remove("active");
+
+            menuToggle
+              .setAttribute(
+                "aria-expanded",
+                "false"
+              );
+
+            document.body
+              .style
+              .overflow = "";
+
+          }
+        );
 
       });
 
-    });
-
   }
+
 
   /* =======================================================
      04. REVEAL ANIMATIONS
   ======================================================= */
 
-  const revealElements = document.querySelectorAll(".reveal");
+  const revealElements =
+    document.querySelectorAll(
+      ".reveal"
+    );
 
   if (revealElements.length) {
 
-    const observer = new IntersectionObserver(entries => {
+    const observer =
+      new IntersectionObserver(
+        entries => {
 
-      entries.forEach(entry => {
+          entries.forEach(
+            entry => {
 
-        if (entry.isIntersecting) {
+              if (
+                entry.isIntersecting
+              ) {
 
-          entry.target.classList.add("visible");
-          observer.unobserve(entry.target);
+                entry
+                  .target
+                  .classList
+                  .add("visible");
 
+                observer
+                  .unobserve(
+                    entry.target
+                  );
+
+              }
+
+            }
+          );
+
+        },
+        {
+          threshold: 0.12
         }
+      );
 
-      });
-
-    }, {
-      threshold: 0.12
-    });
-
-    revealElements.forEach(el => observer.observe(el));
+    revealElements.forEach(
+      el => observer.observe(el)
+    );
 
   }
+
 
   /* =======================================================
      05. SMOOTH ANCHORS
   ======================================================= */
 
-  document.querySelectorAll('a[href^="#"]').forEach(link => {
+  document
+    .querySelectorAll(
+      'a[href^="#"]'
+    )
+    .forEach(link => {
 
-    link.addEventListener("click", e => {
+      link.addEventListener(
+        "click",
+        e => {
 
-      const id = link.getAttribute("href");
+          const id =
+            link.getAttribute(
+              "href"
+            );
 
-      if (!id || id === "#") return;
+          if (
+            !id ||
+            id === "#"
+          ) return;
 
-      const target = document.querySelector(id);
+          const target =
+            document.querySelector(
+              id
+            );
 
-      if (!target) return;
+          if (!target) return;
 
-      e.preventDefault();
+          e.preventDefault();
 
-      const offset = navbar ? navbar.offsetHeight : 0;
+          const offset =
+            navbar
+              ? navbar.offsetHeight
+              : 0;
 
-      window.scrollTo({
-        top: target.offsetTop - offset,
-        behavior: "smooth"
-      });
+          window.scrollTo({
+            top:
+              target.offsetTop -
+              offset,
+
+            behavior:
+              "smooth"
+          });
+
+        }
+      );
 
     });
 
-  });
 
   /* =======================================================
      06. BOOKING PAGE
   ======================================================= */
 
-  const bookingCards = document.querySelectorAll(".booking-residence-card");
-  const bookingForm = document.querySelector("#bookingRequestForm");
-  const residenceInput = document.querySelector("#residence");
-  const selectedResidenceText = document.querySelector("#selectedResidenceText");
-  const bookingFormSection = document.querySelector("#booking-form-section");
-  const checkinInput = document.querySelector("#checkin");
-  const checkoutInput = document.querySelector("#checkout");
-  const bookingMessage = document.querySelector("#bookingMessage");
-  const bookingSubmit = document.querySelector(".booking-submit");
+  const bookingCards =
+    document.querySelectorAll(
+      ".booking-residence-card"
+    );
+
+  const bookingForm =
+    document.querySelector(
+      "#bookingRequestForm"
+    );
+
+  const residenceInput =
+    document.querySelector(
+      "#residence"
+    );
+
+  const selectedResidenceText =
+    document.querySelector(
+      "#selectedResidenceText"
+    );
+
+  const bookingFormSection =
+    document.querySelector(
+      "#booking-form-section"
+    );
+
+  const checkinInput =
+    document.querySelector(
+      "#checkin"
+    );
+
+  const checkoutInput =
+    document.querySelector(
+      "#checkout"
+    );
+
+  const bookingMessage =
+    document.querySelector(
+      "#bookingMessage"
+    );
+
+  const bookingSubmit =
+    document.querySelector(
+      ".booking-submit"
+    );
+
 
   function getToday() {
 
-    const d = new Date();
+    const d =
+      new Date();
 
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    return `${d.getFullYear()}-${String(
+      d.getMonth() + 1
+    ).padStart(
+      2,
+      "0"
+    )}-${String(
+      d.getDate()
+    ).padStart(
+      2,
+      "0"
+    )}`;
 
   }
 
-  if (checkinInput) checkinInput.min = getToday();
-  if (checkoutInput) checkoutInput.min = getToday();
 
-  if (checkinInput && checkoutInput) {
+  if (checkinInput) {
 
-    checkinInput.addEventListener("change", () => {
+    checkinInput.min =
+      getToday();
 
-      checkoutInput.min = checkinInput.value;
+  }
 
-      if (
-        checkoutInput.value &&
-        checkoutInput.value <= checkinInput.value
-      ) {
-        checkoutInput.value = "";
+  if (checkoutInput) {
+
+    checkoutInput.min =
+      getToday();
+
+  }
+
+
+  if (
+    checkinInput &&
+    checkoutInput
+  ) {
+
+    checkinInput.addEventListener(
+      "change",
+      () => {
+
+        checkoutInput.min =
+          checkinInput.value;
+
+        if (
+          checkoutInput.value &&
+          checkoutInput.value <=
+          checkinInput.value
+        ) {
+
+          checkoutInput.value =
+            "";
+
+        }
+
       }
+    );
 
-    });
+  }
+
+
+  bookingCards.forEach(
+    card => {
+
+      card.addEventListener(
+        "click",
+        () => {
+
+          bookingCards.forEach(
+            c => {
+
+              c.classList.remove(
+                "selected"
+              );
+
+            }
+          );
+
+          card.classList.add(
+            "selected"
+          );
+
+          if (residenceInput) {
+
+            residenceInput.value =
+              card.dataset.residence;
+
+          }
+
+          if (
+            selectedResidenceText
+          ) {
+
+            selectedResidenceText
+              .textContent =
+              card.dataset.residence;
+
+          }
+
+          if (
+            bookingFormSection
+          ) {
+
+            bookingFormSection
+              .scrollIntoView({
+                behavior:
+                  "smooth"
+              });
+
+          }
+
+        }
+      );
+
+    }
+  );
+
+
+  function showMessage(
+    text,
+    type
+  ) {
+
+    if (!bookingMessage)
+      return;
+
+    bookingMessage.textContent =
+      text;
+
+    bookingMessage.className =
+      `booking-message ${type}`;
+
+    bookingMessage.style.display =
+      "block";
 
   }
 
-  bookingCards.forEach(card => {
-
-    card.addEventListener("click", () => {
-
-      bookingCards.forEach(c => c.classList.remove("selected"));
-
-      card.classList.add("selected");
-
-      if (residenceInput)
-        residenceInput.value = card.dataset.residence;
-
-      if (selectedResidenceText)
-        selectedResidenceText.textContent = card.dataset.residence;
-
-      if (bookingFormSection) {
-
-        bookingFormSection.scrollIntoView({
-          behavior: "smooth"
-        });
-
-      }
-
-    });
-
-  });
-
-  function showMessage(text, type) {
-
-    if (!bookingMessage) return;
-
-    bookingMessage.textContent = text;
-    bookingMessage.className = `booking-message ${type}`;
-    bookingMessage.style.display = "block";
-
-  }
 
   function hideMessage() {
 
-    if (!bookingMessage) return;
+    if (!bookingMessage)
+      return;
 
-    bookingMessage.style.display = "none";
+    bookingMessage.style.display =
+      "none";
 
   }
+
 
   if (bookingForm) {
 
-    bookingForm.addEventListener("submit", async e => {
+    bookingForm.addEventListener(
+      "submit",
+      async e => {
 
-      e.preventDefault();
+        e.preventDefault();
 
-      hideMessage();
+        hideMessage();
 
-      if (!residenceInput.value) {
-        showMessage("Please select a residence first.", "error");
-        return;
+
+        if (
+          !residenceInput.value
+        ) {
+
+          showMessage(
+            "Please select a residence first.",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        if (
+          !checkinInput.value ||
+          !checkoutInput.value
+        ) {
+
+          showMessage(
+            "Please select your dates.",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        if (
+          checkoutInput.value <=
+          checkinInput.value
+        ) {
+
+          showMessage(
+            "Check-out must be after check-in.",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        const privacy =
+          document.querySelector(
+            "#privacy"
+          );
+
+
+        if (
+          privacy &&
+          !privacy.checked
+        ) {
+
+          showMessage(
+            "Please accept the privacy policy.",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        bookingSubmit.disabled =
+          true;
+
+        bookingSubmit
+          .classList
+          .add("loading");
+
+
+        const originalText =
+          bookingSubmit.textContent;
+
+
+        bookingSubmit.textContent =
+          "SENDING...";
+
+
+        const data =
+          Object.fromEntries(
+            new FormData(
+              bookingForm
+            ).entries()
+          );
+
+
+        try {
+
+          const response =
+            await fetch(
+              "/api/booking-request",
+              {
+
+                method:
+                  "POST",
+
+                headers: {
+
+                  "Content-Type":
+                    "application/json"
+
+                },
+
+                body:
+                  JSON.stringify(
+                    data
+                  )
+
+              }
+            );
+
+
+          const result =
+            await response.json();
+
+
+          if (!response.ok) {
+
+            throw new Error(
+              result.message
+            );
+
+          }
+
+
+          showMessage(
+
+            result.message ||
+            "Booking request sent successfully.",
+
+            "success"
+
+          );
+
+
+          const selected =
+            residenceInput.value;
+
+
+          bookingForm.reset();
+
+
+          residenceInput.value =
+            selected;
+
+
+          if (
+            selectedResidenceText
+          ) {
+
+            selectedResidenceText
+              .textContent =
+              selected;
+
+          }
+
+
+        } catch (err) {
+
+
+          showMessage(
+
+            err.message ||
+            "Unable to send request.",
+
+            "error"
+
+          );
+
+
+        } finally {
+
+
+          bookingSubmit.disabled =
+            false;
+
+
+          bookingSubmit
+            .classList
+            .remove("loading");
+
+
+          bookingSubmit.textContent =
+            originalText;
+
+
+        }
+
       }
-
-      if (!checkinInput.value || !checkoutInput.value) {
-        showMessage("Please select your dates.", "error");
-        return;
-      }
-
-      if (checkoutInput.value <= checkinInput.value) {
-        showMessage("Check-out must be after check-in.", "error");
-        return;
-      }
-
-      const privacy = document.querySelector("#privacy");
-
-      if (privacy && !privacy.checked) {
-        showMessage("Please accept the privacy policy.", "error");
-        return;
-      }
-
-      bookingSubmit.disabled = true;
-      bookingSubmit.classList.add("loading");
-
-      const originalText = bookingSubmit.textContent;
-      bookingSubmit.textContent = "SENDING...";
-
-      const data = Object.fromEntries(new FormData(bookingForm).entries());
-
-      try {
-
-        const response = await fetch("/api/booking-request", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(data)
-        });
-
-        const result = await response.json();
-
-        if (!response.ok)
-          throw new Error(result.message);
-
-        showMessage(
-          result.message || "Booking request sent successfully.",
-          "success"
-        );
-
-        const selected = residenceInput.value;
-
-        bookingForm.reset();
-
-        residenceInput.value = selected;
-
-        if (selectedResidenceText)
-          selectedResidenceText.textContent = selected;
-
-      } catch (err) {
-
-        showMessage(
-          err.message || "Unable to send request.",
-          "error"
-        );
-
-      } finally {
-
-        bookingSubmit.disabled = false;
-        bookingSubmit.classList.remove("loading");
-        bookingSubmit.textContent = originalText;
-
-      }
-
-    });
+    );
 
   }
+
 
   /* =======================================================
      07. ESC CLOSE MENU
   ======================================================= */
 
-  document.addEventListener("keydown", e => {
+  document.addEventListener(
+    "keydown",
+    e => {
 
-    if (
-      e.key === "Escape" &&
-      mobileMenu &&
-      mobileMenu.classList.contains("active")
-    ) {
+      if (
+        e.key === "Escape" &&
+        mobileMenu &&
+        mobileMenu
+          .classList
+          .contains("active")
+      ) {
 
-      mobileMenu.classList.remove("active");
+        mobileMenu
+          .classList
+          .remove("active");
 
-      if (menuToggle) {
-        menuToggle.classList.remove("active");
-        menuToggle.setAttribute("aria-expanded", "false");
+        if (menuToggle) {
+
+          menuToggle
+            .classList
+            .remove("active");
+
+          menuToggle
+            .setAttribute(
+              "aria-expanded",
+              "false"
+            );
+
+        }
+
+        document.body
+          .style
+          .overflow = "";
+
       }
 
-      document.body.style.overflow = "";
+    }
+  );
+
+
+  /* =======================================================
+     08. APARTMENT GALLERY
+     AUTOPLAY + SWIPE + TRACKPAD + FRECCE
+  ======================================================= */
+
+  const apartmentGalleries =
+    document.querySelectorAll(
+      ".apartment-gallery"
+    );
+
+
+  apartmentGalleries.forEach(
+    gallery => {
+
+      const slides =
+        Array.from(
+          gallery.querySelectorAll(
+            ".apartment-slide"
+          )
+        );
+
+
+      if (!slides.length)
+        return;
+
+
+      const prevButton =
+        gallery.querySelector(
+          ".gallery-arrow.prev"
+        );
+
+
+      const nextButton =
+        gallery.querySelector(
+          ".gallery-arrow.next"
+        );
+
+
+      const gallerySection =
+        gallery.closest(
+          ".apartment-gallery-section"
+        );
+
+
+      const counter =
+        gallerySection
+          ? gallerySection
+              .querySelector(
+                ".apartment-gallery-counter"
+              )
+          : null;
+
+
+      let currentIndex = 0;
+
+      let autoplayTimer = null;
+
+      let touchStartX = 0;
+
+      let touchEndX = 0;
+
+      let pointerStartX = 0;
+
+      let pointerDown = false;
+
+      let wheelLocked = false;
+
+
+      const AUTOPLAY_DELAY =
+        4500;
+
+
+      function updateGallery(
+        newIndex
+      ) {
+
+        currentIndex =
+          (
+            newIndex +
+            slides.length
+          ) % slides.length;
+
+
+        slides.forEach(
+          (
+            slide,
+            index
+          ) => {
+
+            slide
+              .classList
+              .toggle(
+                "active",
+                index ===
+                currentIndex
+              );
+
+          }
+        );
+
+
+        if (counter) {
+
+          counter.textContent =
+            `${String(
+              currentIndex + 1
+            ).padStart(
+              2,
+              "0"
+            )} / ${String(
+              slides.length
+            ).padStart(
+              2,
+              "0"
+            )}`;
+
+        }
+
+      }
+
+
+      function nextSlide() {
+
+        updateGallery(
+          currentIndex + 1
+        );
+
+      }
+
+
+      function previousSlide() {
+
+        updateGallery(
+          currentIndex - 1
+        );
+
+      }
+
+
+      function stopAutoplay() {
+
+        if (autoplayTimer) {
+
+          clearInterval(
+            autoplayTimer
+          );
+
+          autoplayTimer = null;
+
+        }
+
+      }
+
+
+      function startAutoplay() {
+
+        stopAutoplay();
+
+        autoplayTimer =
+          setInterval(
+            () => {
+
+              nextSlide();
+
+            },
+            AUTOPLAY_DELAY
+          );
+
+      }
+
+
+      function restartAutoplay() {
+
+        stopAutoplay();
+
+        startAutoplay();
+
+      }
+
+
+      /* =========================
+         FRECCE
+      ========================= */
+
+      if (prevButton) {
+
+        prevButton.addEventListener(
+          "click",
+          () => {
+
+            previousSlide();
+
+            restartAutoplay();
+
+          }
+        );
+
+      }
+
+
+      if (nextButton) {
+
+        nextButton.addEventListener(
+          "click",
+          () => {
+
+            nextSlide();
+
+            restartAutoplay();
+
+          }
+        );
+
+      }
+
+
+      /* =========================
+         TOUCH SWIPE
+      ========================= */
+
+      gallery.addEventListener(
+        "touchstart",
+        e => {
+
+          touchStartX =
+            e.touches[0]
+              .clientX;
+
+        },
+        {
+          passive: true
+        }
+      );
+
+
+      gallery.addEventListener(
+        "touchend",
+        e => {
+
+          touchEndX =
+            e.changedTouches[0]
+              .clientX;
+
+
+          const movement =
+            touchEndX -
+            touchStartX;
+
+
+          if (
+            Math.abs(
+              movement
+            ) < 45
+          ) {
+
+            return;
+
+          }
+
+
+          if (movement < 0) {
+
+            nextSlide();
+
+          } else {
+
+            previousSlide();
+
+          }
+
+
+          restartAutoplay();
+
+        },
+        {
+          passive: true
+        }
+      );
+
+
+      /* =========================
+         MOUSE / PEN DRAG
+      ========================= */
+
+      gallery.addEventListener(
+        "pointerdown",
+        e => {
+
+          if (
+            e.pointerType ===
+            "touch"
+          ) {
+
+            return;
+
+          }
+
+
+          pointerDown = true;
+
+          pointerStartX =
+            e.clientX;
+
+
+          gallery.setPointerCapture(
+            e.pointerId
+          );
+
+        }
+      );
+
+
+      gallery.addEventListener(
+        "pointerup",
+        e => {
+
+          if (!pointerDown)
+            return;
+
+
+          pointerDown = false;
+
+
+          const movement =
+            e.clientX -
+            pointerStartX;
+
+
+          if (
+            Math.abs(
+              movement
+            ) < 55
+          ) {
+
+            return;
+
+          }
+
+
+          if (movement < 0) {
+
+            nextSlide();
+
+          } else {
+
+            previousSlide();
+
+          }
+
+
+          restartAutoplay();
+
+        }
+      );
+
+
+      gallery.addEventListener(
+        "pointercancel",
+        () => {
+
+          pointerDown = false;
+
+        }
+      );
+
+
+      /* =========================
+         TRACKPAD ORIZZONTALE
+      ========================= */
+
+      gallery.addEventListener(
+        "wheel",
+        e => {
+
+          if (
+            Math.abs(e.deltaX) <=
+            Math.abs(e.deltaY)
+          ) {
+
+            return;
+
+          }
+
+
+          e.preventDefault();
+
+
+          if (wheelLocked)
+            return;
+
+
+          wheelLocked = true;
+
+
+          if (e.deltaX > 0) {
+
+            nextSlide();
+
+          } else {
+
+            previousSlide();
+
+          }
+
+
+          restartAutoplay();
+
+
+          setTimeout(
+            () => {
+
+              wheelLocked = false;
+
+            },
+            650
+          );
+
+        },
+        {
+          passive: false
+        }
+      );
+
+
+      /* =========================
+         PAUSA QUANDO UTENTE
+         PASSA SOPRA LA GALLERY
+      ========================= */
+
+      gallery.addEventListener(
+        "mouseenter",
+        stopAutoplay
+      );
+
+
+      gallery.addEventListener(
+        "mouseleave",
+        startAutoplay
+      );
+
+
+      /* =========================
+         PAUSA QUANDO PAGINA
+         NON VISIBILE
+      ========================= */
+
+      document.addEventListener(
+        "visibilitychange",
+        () => {
+
+          if (
+            document.hidden
+          ) {
+
+            stopAutoplay();
+
+          } else {
+
+            startAutoplay();
+
+          }
+
+        }
+      );
+
+
+      /* =========================
+         START
+      ========================= */
+
+      updateGallery(0);
+
+      startAutoplay();
 
     }
+  );
 
-  });
 
   /* =======================================================
      READY
   ======================================================= */
 
-  const year = document.querySelector("#year");
-  if (year) year.textContent = new Date().getFullYear();
+  const year =
+    document.querySelector(
+      "#year"
+    );
 
-  console.log("Prime Residence Bologna — premium intro ready.");
+  if (year) {
+
+    year.textContent =
+      new Date()
+        .getFullYear();
+
+  }
+
+
+  console.log(
+    "Prime Residence Bologna — premium intro ready."
+  );
 
 });
