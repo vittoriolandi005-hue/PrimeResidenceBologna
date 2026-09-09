@@ -1,11 +1,12 @@
 /* =========================================================
    PRIME RESIDENCE BOLOGNA
    PREMIUM EDITORIAL WEBSITE
-   ========================================================= */
+========================================================= */
 
-/* =========================
+
+/* =========================================================
    RESET
-========================= */
+========================================================= */
 
 * {
   margin: 0;
@@ -13,12 +14,16 @@
   box-sizing: border-box;
 }
 
+
 html {
   width: 100%;
   min-height: 100%;
+
   scroll-behavior: smooth;
+
   overflow-x: hidden;
 }
+
 
 body {
   width: 100%;
@@ -32,33 +37,41 @@ body {
   overflow-x: hidden;
 
   -webkit-font-smoothing: antialiased;
+
   text-rendering: optimizeLegibility;
 }
+
 
 body.intro-active {
   overflow: hidden;
 }
+
 
 a {
   color: inherit;
   text-decoration: none;
 }
 
+
 button {
   font-family: inherit;
 }
 
 
-/* =========================
+/* =========================================================
    VARIABLES
-========================= */
+========================================================= */
 
 :root {
+
   --black: #111111;
+
   --dark: #191919;
+
   --white: #ffffff;
 
   --ivory: #f3f0e9;
+
   --cream: #e9e4da;
 
   --gold: #b6a27a;
@@ -66,15 +79,18 @@ button {
   --border: rgba(17, 17, 17, 0.16);
 
   --serif: "Playfair Display", serif;
+
   --sans: "DM Sans", sans-serif;
+
 }
 
 
 /* =========================================================
-   INTRO / LOADER
+   INTRO
 ========================================================= */
 
 .loader {
+
   position: fixed;
 
   inset: 0;
@@ -82,14 +98,19 @@ button {
   z-index: 9999;
 
   width: 100%;
+
   height: 100vh;
 
   background: var(--black);
+
   color: var(--white);
 
   display: flex;
+
   justify-content: center;
+
   align-items: center;
+
   flex-direction: column;
 
   transform: translate3d(0, 0, 0);
@@ -97,17 +118,25 @@ button {
   will-change: transform;
 
   overflow: hidden;
+
 }
 
+
 .loader-content {
+
   display: flex;
+
   flex-direction: column;
+
   align-items: center;
 
   text-align: center;
+
 }
 
+
 .loader-logo {
+
   font-family: var(--serif);
 
   font-size: clamp(48px, 8vw, 105px);
@@ -117,18 +146,25 @@ button {
   letter-spacing: 0.08em;
 
   line-height: 1;
+
 }
 
+
 .loader-line {
+
   width: 70px;
+
   height: 1px;
 
   background: rgba(255,255,255,0.5);
 
   margin: 24px 0;
+
 }
 
+
 .loader-subtitle {
+
   font-size: 9px;
 
   letter-spacing: 0.42em;
@@ -136,12 +172,16 @@ button {
   margin-left: 0.42em;
 
   opacity: 0.65;
+
 }
 
+
 .scroll-enter {
+
   position: absolute;
 
   left: 50%;
+
   bottom: 55px;
 
   transform: translateX(-50%);
@@ -158,7 +198,9 @@ button {
   transition:
     opacity 0.4s ease,
     transform 0.4s ease;
+
 }
+
 
 @keyframes scrollEnter {
 
@@ -170,6 +212,7 @@ button {
   50% {
     opacity: 1;
   }
+
 }
 
 
@@ -178,17 +221,20 @@ button {
 ========================================================= */
 
 .navbar {
+
   position: fixed;
 
   top: 0;
   left: 0;
 
   width: 100%;
+
   height: 92px;
 
   z-index: 1000;
 
   display: flex;
+
   align-items: center;
 
   justify-content: space-between;
@@ -202,16 +248,23 @@ button {
   transition:
     height 0.5s ease,
     padding 0.5s ease;
+
 }
 
+
 .navbar.scrolled {
+
   height: 70px;
 
   padding-left: 3vw;
+
   padding-right: 3vw;
+
 }
 
+
 .nav-logo {
+
   display: flex;
 
   flex-direction: column;
@@ -225,9 +278,12 @@ button {
   letter-spacing: 0.08em;
 
   flex-shrink: 0;
+
 }
 
+
 .nav-logo span {
+
   font-family: var(--sans);
 
   font-size: 6px;
@@ -237,18 +293,25 @@ button {
   margin-top: 7px;
 
   opacity: 0.75;
+
 }
 
+
 .desktop-nav {
+
   display: flex;
 
   gap: 38px;
 
   margin-left: auto;
+
   margin-right: 42px;
+
 }
 
+
 .desktop-nav a {
+
   position: relative;
 
   font-size: 9px;
@@ -257,40 +320,52 @@ button {
 
   white-space: nowrap;
 
-  transition:
-    opacity 0.3s ease;
+  transition: opacity 0.3s ease;
+
 }
 
+
 .desktop-nav a::after {
+
   content: "";
 
   position: absolute;
 
   left: 0;
+
   bottom: -7px;
 
   width: 0;
+
   height: 1px;
 
   background: currentColor;
 
-  transition:
-    width 0.4s ease;
+  transition: width 0.4s ease;
+
 }
+
 
 .desktop-nav a:hover::after {
+
   width: 100%;
+
 }
 
+
 .nav-right {
+
   display: flex;
 
   align-items: center;
 
   gap: 25px;
+
 }
 
+
 .language-switch {
+
   display: flex;
 
   gap: 9px;
@@ -298,18 +373,28 @@ button {
   font-size: 8px;
 
   letter-spacing: 0.15em;
+
 }
+
 
 .language-switch span {
+
   opacity: 0.4;
+
 }
+
 
 .language-switch .active {
+
   opacity: 1;
+
 }
 
+
 .book-button {
-  border: 1px solid rgba(255,255,255,0.6);
+
+  border:
+    1px solid rgba(255,255,255,0.6);
 
   padding: 13px 20px;
 
@@ -320,14 +405,21 @@ button {
   transition:
     background 0.3s ease,
     color 0.3s ease;
+
 }
+
 
 .book-button:hover {
+
   background: white;
+
   color: black;
+
 }
 
+
 .menu-button {
+
   display: none;
 
   border: 0;
@@ -335,20 +427,26 @@ button {
   background: transparent;
 
   width: 35px;
+
   height: 30px;
 
   cursor: pointer;
+
 }
 
+
 .menu-button span {
+
   display: block;
 
   width: 25px;
+
   height: 1px;
 
   background: currentColor;
 
   margin: 7px 0;
+
 }
 
 
@@ -357,6 +455,7 @@ button {
 ========================================================= */
 
 .mobile-menu {
+
   position: fixed;
 
   inset: 0;
@@ -387,23 +486,32 @@ button {
     opacity 0.4s ease,
     visibility 0.4s ease,
     transform 0.4s ease;
+
 }
 
+
 .mobile-menu.open {
+
   opacity: 1;
 
   visibility: visible;
 
   transform: translateY(0);
+
 }
 
+
 .mobile-menu a {
+
   font-family: var(--serif);
 
   font-size: 34px;
+
 }
 
+
 .mobile-menu a:last-child {
+
   font-family: var(--sans);
 
   font-size: 9px;
@@ -411,6 +519,7 @@ button {
   letter-spacing: 0.25em;
 
   margin-top: 20px;
+
 }
 
 
@@ -419,9 +528,11 @@ button {
 ========================================================= */
 
 .hero {
+
   position: relative;
 
   min-height: 100vh;
+
   height: 100vh;
 
   background: #222;
@@ -429,21 +540,29 @@ button {
   color: white;
 
   overflow: hidden;
+
 }
 
+
 .hero-image {
+
   position: absolute;
 
   inset: 0;
+
 }
 
+
 .photo-placeholder {
+
   width: 100%;
+
   height: 100%;
 
   display: flex;
 
   align-items: center;
+
   justify-content: center;
 
   background:
@@ -460,9 +579,12 @@ button {
   letter-spacing: 0.35em;
 
   text-align: center;
+
 }
 
+
 .hero-overlay {
+
   position: absolute;
 
   inset: 0;
@@ -473,20 +595,27 @@ button {
       rgba(0,0,0,0.72),
       rgba(0,0,0,0.15)
     );
+
 }
 
+
 .hero-content {
+
   position: absolute;
 
   left: 8vw;
+
   bottom: 13vh;
 
   max-width: 750px;
 
   z-index: 2;
+
 }
 
+
 .eyebrow {
+
   font-size: 9px;
 
   letter-spacing: 0.3em;
@@ -494,9 +623,12 @@ button {
   margin-bottom: 30px;
 
   opacity: 0.75;
+
 }
 
+
 .hero h1 {
+
   font-family: var(--serif);
 
   font-size: clamp(58px, 8vw, 125px);
@@ -506,13 +638,21 @@ button {
   line-height: 0.92;
 
   letter-spacing: -0.035em;
+
 }
+
 
 .hero h1 em {
+
   font-weight: 400;
+
+  font-style: italic;
+
 }
 
+
 .hero-description {
+
   max-width: 390px;
 
   margin-top: 38px;
@@ -522,9 +662,12 @@ button {
   line-height: 1.8;
 
   color: rgba(255,255,255,0.72);
+
 }
 
+
 .hero-link {
+
   display: inline-flex;
 
   align-items: center;
@@ -542,35 +685,48 @@ button {
 
   letter-spacing: 0.25em;
 
-  transition:
-    gap 0.4s ease;
+  transition: gap 0.4s ease;
+
 }
+
 
 .hero-link:hover {
+
   gap: 30px;
+
 }
 
+
 .hero-index {
+
   position: absolute;
 
   right: 5vw;
+
   bottom: 7vh;
 
   font-size: 9px;
 
   letter-spacing: 0.2em;
+
 }
 
+
 .hero-index span {
+
   opacity: 0.4;
 
   margin: 0 8px;
+
 }
 
+
 .hero-scroll {
+
   position: absolute;
 
   right: 5vw;
+
   top: 50%;
 
   transform:
@@ -586,13 +742,18 @@ button {
   align-items: center;
 
   gap: 15px;
+
 }
 
+
 .hero-scroll span {
+
   width: 45px;
+
   height: 1px;
 
   background: rgba(255,255,255,0.6);
+
 }
 
 
@@ -601,40 +762,48 @@ button {
 ========================================================= */
 
 .reveal {
+
   opacity: 0;
 
-  transform:
-    translateY(35px);
+  transform: translateY(35px);
 
   transition:
     opacity 1s cubic-bezier(.22,1,.36,1),
     transform 1s cubic-bezier(.22,1,.36,1);
+
 }
 
+
 .reveal.visible {
+
   opacity: 1;
 
-  transform:
-    translateY(0);
+  transform: translateY(0);
+
 }
 
 
 /* =========================================================
-   GENERAL SECTIONS
+   GENERAL
 ========================================================= */
 
 .section-number {
+
   font-size: 8px;
 
   letter-spacing: 0.2em;
 
   opacity: 0.5;
+
 }
 
+
 .section-label {
+
   font-size: 8px;
 
   letter-spacing: 0.3em;
+
 }
 
 
@@ -643,57 +812,73 @@ button {
 ========================================================= */
 
 .intro-section {
+
   width: 100%;
 
-  padding:
-    17vw 8vw;
+  padding: 17vw 8vw;
 
   background: var(--ivory);
+
 }
 
+
 .intro-grid {
+
   display: grid;
 
-  grid-template-columns:
-    1fr 2fr;
+  grid-template-columns: 1fr 2fr;
 
   gap: 8vw;
 
   margin-top: 70px;
 
   align-items: start;
+
 }
 
+
 .intro-label {
+
   font-size: 8px;
 
   letter-spacing: 0.25em;
 
   padding-top: 10px;
+
 }
+
 
 .intro-text {
+
   max-width: 780px;
+
 }
 
+
 .intro-text h2 {
+
   font-family: var(--serif);
 
-  font-size:
-    clamp(48px, 6vw, 90px);
+  font-size: clamp(48px, 6vw, 90px);
 
   line-height: 0.95;
 
   font-weight: 400;
 
   letter-spacing: -0.03em;
+
 }
+
 
 .intro-text h2 em {
+
   font-style: italic;
+
 }
 
+
 .intro-text p {
+
   max-width: 530px;
 
   margin-top: 45px;
@@ -703,10 +888,14 @@ button {
   line-height: 1.9;
 
   color: #5e5a53;
+
 }
 
+
 .intro-text p + p {
+
   margin-top: 18px;
+
 }
 
 
@@ -715,15 +904,18 @@ button {
 ========================================================= */
 
 .residences-section {
+
   width: 100%;
 
   background: var(--cream);
 
-  padding:
-    9vw 8vw 15vw;
+  padding: 9vw 8vw 15vw;
+
 }
 
+
 .section-header {
+
   display: flex;
 
   justify-content: space-between;
@@ -734,9 +926,12 @@ button {
     1px solid var(--border);
 
   padding-bottom: 20px;
+
 }
 
+
 .residence-list {
+
   margin-top: 100px;
 
   display: flex;
@@ -744,54 +939,79 @@ button {
   flex-direction: column;
 
   gap: 150px;
+
 }
 
+
 .residence-card {
+
   display: grid;
 
-  grid-template-columns:
-    1.15fr 0.85fr;
+  grid-template-columns: 1.15fr 0.85fr;
 
   gap: 8vw;
 
   align-items: center;
+
 }
+
 
 .residence-card.reverse {
-  grid-template-columns:
-    0.85fr 1.15fr;
+
+  grid-template-columns: 0.85fr 1.15fr;
+
 }
+
 
 .residence-card.reverse .residence-image {
+
   order: 2;
+
 }
+
 
 .residence-card.reverse .residence-info {
+
   order: 1;
+
 }
 
+
 .residence-image {
+
   height: 600px;
 
   overflow: hidden;
+
 }
 
+
 .residence-image .photo-placeholder {
+
   transition:
     transform 1.2s cubic-bezier(.22,1,.36,1);
+
 }
+
 
 .residence-card:hover
 .residence-image
 .photo-placeholder {
+
   transform: scale(1.04);
+
 }
+
 
 .residence-info {
+
   position: relative;
+
 }
 
+
 .residence-number {
+
   font-size: 8px;
 
   letter-spacing: 0.25em;
@@ -799,22 +1019,27 @@ button {
   color: #777168;
 
   margin-bottom: 30px;
+
 }
 
+
 .residence-info h3 {
+
   font-family: var(--serif);
 
-  font-size:
-    clamp(40px, 4.5vw, 70px);
+  font-size: clamp(40px, 4.5vw, 70px);
 
   line-height: 1;
 
   font-weight: 400;
 
   letter-spacing: -0.03em;
+
 }
 
+
 .residence-type {
+
   font-size: 8px;
 
   letter-spacing: 0.28em;
@@ -822,9 +1047,12 @@ button {
   margin-top: 18px;
 
   color: #756e64;
+
 }
 
+
 .residence-description {
+
   max-width: 400px;
 
   margin-top: 40px;
@@ -834,9 +1062,12 @@ button {
   line-height: 1.8;
 
   color: #5e5a53;
+
 }
 
+
 .residence-details {
+
   display: flex;
 
   flex-wrap: wrap;
@@ -844,9 +1075,12 @@ button {
   gap: 18px;
 
   margin-top: 35px;
+
 }
 
+
 .residence-details span {
+
   font-size: 7px;
 
   letter-spacing: 0.18em;
@@ -855,9 +1089,12 @@ button {
     1px solid var(--border);
 
   padding-top: 10px;
+
 }
 
+
 .discover-link {
+
   display: inline-flex;
 
   align-items: center;
@@ -875,12 +1112,15 @@ button {
 
   letter-spacing: 0.25em;
 
-  transition:
-    gap 0.4s ease;
+  transition: gap 0.4s ease;
+
 }
 
+
 .discover-link:hover {
+
   gap: 30px;
+
 }
 
 
@@ -889,6 +1129,7 @@ button {
 ========================================================= */
 
 .experience-section {
+
   position: relative;
 
   min-height: 100vh;
@@ -898,15 +1139,21 @@ button {
   overflow: hidden;
 
   background: var(--black);
+
 }
 
+
 .experience-image {
+
   position: absolute;
 
   inset: 0;
+
 }
 
+
 .experience-overlay {
+
   position: absolute;
 
   inset: 0;
@@ -917,30 +1164,37 @@ button {
       rgba(0,0,0,0.8),
       rgba(0,0,0,0.3)
     );
+
 }
 
+
 .experience-content {
+
   position: relative;
 
   z-index: 2;
 
-  padding:
-    9vw 8vw;
+  padding: 9vw 8vw;
+
 }
 
+
 .experience-label {
+
   font-size: 8px;
 
   letter-spacing: 0.3em;
 
   margin-top: 80px;
+
 }
 
+
 .experience-content h2 {
+
   font-family: var(--serif);
 
-  font-size:
-    clamp(55px, 7vw, 110px);
+  font-size: clamp(55px, 7vw, 110px);
 
   font-weight: 400;
 
@@ -949,26 +1203,34 @@ button {
   margin-top: 40px;
 
   letter-spacing: -0.03em;
+
 }
+
 
 .experience-content h2 em {
+
   font-style: italic;
+
 }
 
+
 .experience-features {
+
   display: grid;
 
-  grid-template-columns:
-    repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
 
   gap: 40px;
 
   max-width: 850px;
 
   margin-top: 100px;
+
 }
 
+
 .feature {
+
   display: flex;
 
   gap: 25px;
@@ -977,31 +1239,40 @@ button {
     1px solid rgba(255,255,255,0.35);
 
   padding-top: 20px;
+
 }
 
+
 .feature > span {
+
   font-size: 8px;
 
   opacity: 0.5;
+
 }
 
+
 .feature h4 {
+
   font-size: 9px;
 
   letter-spacing: 0.25em;
 
   font-weight: 400;
+
 }
 
+
 .feature p {
+
   margin-top: 14px;
 
   font-size: 11px;
 
   line-height: 1.7;
 
-  color:
-    rgba(255,255,255,0.65);
+  color: rgba(255,255,255,0.65);
+
 }
 
 
@@ -1010,32 +1281,36 @@ button {
 ========================================================= */
 
 .bologna-section {
+
   width: 100%;
 
-  padding:
-    10vw 8vw 13vw;
+  padding: 10vw 8vw 13vw;
 
   background: var(--ivory);
+
 }
 
+
 .bologna-grid {
+
   display: grid;
 
-  grid-template-columns:
-    0.8fr 1.2fr;
+  grid-template-columns: 0.8fr 1.2fr;
 
   gap: 10vw;
 
   align-items: center;
 
   margin-top: 90px;
+
 }
 
+
 .bologna-text h2 {
+
   font-family: var(--serif);
 
-  font-size:
-    clamp(55px, 6vw, 95px);
+  font-size: clamp(55px, 6vw, 95px);
 
   line-height: 0.95;
 
@@ -1044,13 +1319,19 @@ button {
   margin-top: 35px;
 
   letter-spacing: -0.04em;
+
 }
+
 
 .bologna-text h2 em {
+
   font-style: italic;
+
 }
 
+
 .bologna-text p {
+
   max-width: 390px;
 
   margin-top: 45px;
@@ -1060,25 +1341,38 @@ button {
   line-height: 1.8;
 
   color: #625d55;
+
 }
+
 
 .bologna-text p + p {
+
   margin-top: 15px;
+
 }
 
+
 .bologna-image {
+
   height: 700px;
 
   overflow: hidden;
+
 }
+
 
 .bologna-image .photo-placeholder {
+
   transition:
     transform 1.2s cubic-bezier(.22,1,.36,1);
+
 }
 
+
 .bologna-image:hover .photo-placeholder {
+
   transform: scale(1.03);
+
 }
 
 
@@ -1087,40 +1381,51 @@ button {
 ========================================================= */
 
 .cta-section {
+
   width: 100%;
 
   background: var(--black);
 
   color: white;
 
-  padding:
-    13vw 8vw;
+  padding: 13vw 8vw;
+
 }
+
 
 .cta-inner {
+
   max-width: 1000px;
+
 }
 
+
 .cta-inner h2 {
+
   font-family: var(--serif);
 
   font-weight: 400;
 
-  font-size:
-    clamp(65px, 9vw, 140px);
+  font-size: clamp(65px, 9vw, 140px);
 
   line-height: 0.9;
 
   letter-spacing: -0.045em;
 
   margin-top: 35px;
+
 }
+
 
 .cta-inner h2 em {
+
   font-style: italic;
+
 }
 
+
 .cta-button {
+
   display: inline-flex;
 
   align-items: center;
@@ -1142,14 +1447,18 @@ button {
     background 0.3s ease,
     color 0.3s ease,
     transform 0.3s ease;
+
 }
 
+
 .cta-button:hover {
+
   background: white;
 
   color: black;
 
   transform: translateY(-3px);
+
 }
 
 
@@ -1158,17 +1467,20 @@ button {
 ========================================================= */
 
 footer {
+
   width: 100%;
 
   background: var(--black);
 
   color: white;
 
-  padding:
-    0 8vw 35px;
+  padding: 0 8vw 35px;
+
 }
 
+
 .footer-top {
+
   border-top:
     1px solid rgba(255,255,255,0.15);
 
@@ -1178,19 +1490,24 @@ footer {
 
   display: grid;
 
-  grid-template-columns:
-    1fr 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
+
 }
 
+
 .footer-logo {
+
   font-family: var(--serif);
 
   font-size: 32px;
 
   letter-spacing: 0.08em;
+
 }
 
+
 .footer-subtitle {
+
   font-size: 7px;
 
   letter-spacing: 0.3em;
@@ -1198,40 +1515,57 @@ footer {
   margin-top: 8px;
 
   opacity: 0.5;
+
 }
 
+
 .footer-contact {
+
   display: flex;
 
   flex-direction: column;
 
   gap: 12px;
+
 }
 
+
 .footer-contact a {
+
   font-size: 11px;
 
   opacity: 0.7;
 
-  transition:
-    opacity 0.3s ease;
+  transition: opacity 0.3s ease;
+
 }
+
 
 .footer-contact a:hover {
+
   opacity: 1;
+
 }
+
 
 .footer-social {
+
   text-align: right;
+
 }
 
+
 .footer-social a {
+
   font-size: 8px;
 
   letter-spacing: 0.2em;
+
 }
 
+
 .footer-bottom {
+
   display: flex;
 
   justify-content: space-between;
@@ -1246,6 +1580,7 @@ footer {
   letter-spacing: 0.18em;
 
   opacity: 0.4;
+
 }
 
 
@@ -1254,9 +1589,11 @@ footer {
 ========================================================= */
 
 .whatsapp-button {
+
   position: fixed;
 
   right: 28px;
+
   bottom: 28px;
 
   z-index: 900;
@@ -1284,19 +1621,818 @@ footer {
 
   transition:
     transform 0.3s ease;
+
 }
+
 
 .whatsapp-button:hover {
+
   transform: translateY(-4px);
+
 }
 
+
 .whatsapp-dot {
+
   width: 6px;
+
   height: 6px;
 
   border-radius: 50%;
 
   background: #69d26f;
+
+}
+
+
+/* =========================================================
+   APARTMENT PAGES
+========================================================= */
+
+.apartment-page {
+
+  background: var(--ivory);
+
+  color: var(--black);
+
+}
+
+
+/* =========================================================
+   APARTMENT NAVIGATION
+========================================================= */
+
+.apartment-nav {
+
+  position: fixed;
+
+  top: 0;
+
+  left: 0;
+
+  width: 100%;
+
+  height: 92px;
+
+  z-index: 1000;
+
+  padding: 0 5vw;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  color: white;
+
+  mix-blend-mode: difference;
+
+}
+
+
+.apartment-nav-logo {
+
+  font-family: var(--serif);
+
+  font-size: 22px;
+
+  letter-spacing: 0.08em;
+
+}
+
+
+.apartment-nav-right {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 30px;
+
+}
+
+
+.apartment-nav-link {
+
+  font-size: 8px;
+
+  letter-spacing: 0.22em;
+
+}
+
+
+/* =========================================================
+   APARTMENT HERO
+========================================================= */
+
+.apartment-hero {
+
+  position: relative;
+
+  min-height: 82vh;
+
+  height: 82vh;
+
+  background: var(--black);
+
+  color: white;
+
+  overflow: hidden;
+
+  display: flex;
+
+  align-items: flex-end;
+
+}
+
+
+.apartment-hero-image {
+
+  position: absolute;
+
+  inset: 0;
+
+}
+
+
+.apartment-hero-image .photo-placeholder {
+
+  background:
+    linear-gradient(
+      135deg,
+      #383838,
+      #171717
+    );
+
+}
+
+
+.apartment-hero-overlay {
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,0.78),
+      rgba(0,0,0,0.25)
+    );
+
+}
+
+
+.apartment-back {
+
+  position: absolute;
+
+  left: 8vw;
+
+  top: 120px;
+
+  z-index: 5;
+
+  color: rgba(255,255,255,0.8);
+
+  font-size: 8px;
+
+  letter-spacing: 0.25em;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  transition:
+    gap 0.3s ease,
+    color 0.3s ease;
+
+}
+
+
+.apartment-back:hover {
+
+  gap: 18px;
+
+  color: white;
+
+}
+
+
+.apartment-hero-content {
+
+  position: relative;
+
+  z-index: 2;
+
+  padding: 0 8vw 10vh;
+
+  max-width: 1000px;
+
+}
+
+
+.apartment-eyebrow {
+
+  font-size: 8px;
+
+  letter-spacing: 0.32em;
+
+  opacity: 0.7;
+
+  margin-bottom: 25px;
+
+}
+
+
+.apartment-hero h1 {
+
+  font-family: var(--serif);
+
+  font-size: clamp(55px, 8vw, 120px);
+
+  line-height: 0.9;
+
+  font-weight: 400;
+
+  letter-spacing: -0.04em;
+
+}
+
+
+.apartment-hero h1 em {
+
+  font-style: italic;
+
+}
+
+
+.apartment-location {
+
+  margin-top: 30px;
+
+  font-size: 10px;
+
+  letter-spacing: 0.2em;
+
+  opacity: 0.65;
+
+}
+
+
+/* =========================================================
+   APARTMENT FACTS
+========================================================= */
+
+.apartment-facts {
+
+  padding: 55px 8vw;
+
+  background: var(--cream);
+
+  border-bottom:
+    1px solid var(--border);
+
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 30px;
+
+}
+
+
+.apartment-fact {
+
+  border-top:
+    1px solid var(--border);
+
+  padding-top: 16px;
+
+}
+
+
+.apartment-fact span {
+
+  display: block;
+
+  font-size: 7px;
+
+  letter-spacing: 0.2em;
+
+  color: #777168;
+
+}
+
+
+.apartment-fact strong {
+
+  display: block;
+
+  margin-top: 10px;
+
+  font-family: var(--serif);
+
+  font-size: 24px;
+
+  font-weight: 400;
+
+}
+
+
+/* =========================================================
+   APARTMENT INTRO
+========================================================= */
+
+.apartment-intro {
+
+  padding: 12vw 8vw;
+
+  background: var(--ivory);
+
+}
+
+
+.apartment-intro-grid {
+
+  display: grid;
+
+  grid-template-columns: 0.7fr 1.3fr;
+
+  gap: 10vw;
+
+}
+
+
+.apartment-section-label {
+
+  font-size: 8px;
+
+  letter-spacing: 0.3em;
+
+  padding-top: 10px;
+
+}
+
+
+.apartment-intro-text {
+
+  max-width: 780px;
+
+}
+
+
+.apartment-intro-text h2 {
+
+  font-family: var(--serif);
+
+  font-size: clamp(45px, 5.5vw, 82px);
+
+  font-weight: 400;
+
+  line-height: 0.95;
+
+  letter-spacing: -0.035em;
+
+}
+
+
+.apartment-intro-text h2 em {
+
+  font-style: italic;
+
+}
+
+
+.apartment-intro-text p {
+
+  max-width: 620px;
+
+  margin-top: 40px;
+
+  font-size: 14px;
+
+  line-height: 1.9;
+
+  color: #5e5a53;
+
+}
+
+
+.apartment-intro-text p + p {
+
+  margin-top: 18px;
+
+}
+
+
+/* =========================================================
+   GALLERY
+========================================================= */
+
+.apartment-gallery-section {
+
+  padding: 0 8vw 12vw;
+
+  background: var(--ivory);
+
+}
+
+
+.apartment-gallery-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  border-top:
+    1px solid var(--border);
+
+  padding-top: 20px;
+
+  margin-bottom: 40px;
+
+}
+
+
+.apartment-gallery-title {
+
+  font-size: 8px;
+
+  letter-spacing: 0.3em;
+
+}
+
+
+.apartment-gallery-counter {
+
+  font-size: 8px;
+
+  letter-spacing: 0.2em;
+
+  color: #777168;
+
+}
+
+
+.apartment-gallery {
+
+  position: relative;
+
+  width: 100%;
+
+  height: 72vh;
+
+  min-height: 500px;
+
+  overflow: hidden;
+
+  background: var(--black);
+
+}
+
+
+.apartment-slide {
+
+  position: absolute;
+
+  inset: 0;
+
+  opacity: 0;
+
+  visibility: hidden;
+
+  transition:
+    opacity 0.7s ease,
+    visibility 0.7s ease;
+
+}
+
+
+.apartment-slide.active {
+
+  opacity: 1;
+
+  visibility: visible;
+
+}
+
+
+.apartment-slide .photo-placeholder {
+
+  background:
+    linear-gradient(
+      135deg,
+      #393939,
+      #171717
+    );
+
+  transition:
+    transform 1.2s cubic-bezier(.22,1,.36,1);
+
+}
+
+
+.apartment-slide.active .photo-placeholder {
+
+  transform: scale(1.02);
+
+}
+
+
+.apartment-slide-label {
+
+  position: absolute;
+
+  left: 30px;
+
+  bottom: 25px;
+
+  color: rgba(255,255,255,0.65);
+
+  font-size: 7px;
+
+  letter-spacing: 0.25em;
+
+}
+
+
+.gallery-arrow {
+
+  position: absolute;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  z-index: 10;
+
+  width: 58px;
+
+  height: 58px;
+
+  border:
+    1px solid rgba(255,255,255,0.45);
+
+  background:
+    rgba(0,0,0,0.18);
+
+  color: white;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 20px;
+
+  transition:
+    background 0.3s ease;
+
+}
+
+
+.gallery-arrow:hover {
+
+  background: rgba(255,255,255,0.15);
+
+}
+
+
+.gallery-arrow.prev {
+
+  left: 25px;
+
+}
+
+
+.gallery-arrow.next {
+
+  right: 25px;
+
+}
+
+
+/* =========================================================
+   AMENITIES
+========================================================= */
+
+.apartment-amenities {
+
+  padding: 10vw 8vw;
+
+  background: var(--cream);
+
+}
+
+
+.apartment-amenities-grid {
+
+  display: grid;
+
+  grid-template-columns: 0.7fr 1.3fr;
+
+  gap: 10vw;
+
+}
+
+
+.apartment-amenities h2 {
+
+  font-family: var(--serif);
+
+  font-size: clamp(45px, 5vw, 75px);
+
+  line-height: 0.95;
+
+  font-weight: 400;
+
+  letter-spacing: -0.035em;
+
+}
+
+
+.amenities-list {
+
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 0 50px;
+
+}
+
+
+.amenity {
+
+  border-top:
+    1px solid var(--border);
+
+  padding: 20px 0;
+
+  font-size: 9px;
+
+  letter-spacing: 0.18em;
+
+  color: #4f4b45;
+
+}
+
+
+.amenity.placeholder {
+
+  color: #999188;
+
+}
+
+
+/* =========================================================
+   APARTMENT INFO
+========================================================= */
+
+.apartment-info {
+
+  padding: 11vw 8vw;
+
+  background: var(--ivory);
+
+}
+
+
+.apartment-info-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 60px;
+
+}
+
+
+.apartment-info-block {
+
+  border-top:
+    1px solid var(--border);
+
+  padding-top: 20px;
+
+}
+
+
+.apartment-info-block h4 {
+
+  font-size: 8px;
+
+  letter-spacing: 0.25em;
+
+  font-weight: 400;
+
+}
+
+
+.apartment-info-block p {
+
+  margin-top: 20px;
+
+  font-size: 12px;
+
+  line-height: 1.8;
+
+  color: #625d55;
+
+}
+
+
+/* =========================================================
+   APARTMENT BOOKING
+========================================================= */
+
+.apartment-booking {
+
+  padding: 13vw 8vw;
+
+  background: var(--black);
+
+  color: white;
+
+}
+
+
+.apartment-booking-inner {
+
+  max-width: 1000px;
+
+}
+
+
+.apartment-booking h2 {
+
+  font-family: var(--serif);
+
+  font-size: clamp(55px, 8vw, 120px);
+
+  font-weight: 400;
+
+  line-height: 0.9;
+
+  letter-spacing: -0.04em;
+
+  margin-top: 35px;
+
+}
+
+
+.apartment-booking h2 em {
+
+  font-style: italic;
+
+}
+
+
+.apartment-booking-button {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 25px;
+
+  margin-top: 60px;
+
+  padding: 18px 25px;
+
+  border:
+    1px solid rgba(255,255,255,0.5);
+
+  font-size: 8px;
+
+  letter-spacing: 0.25em;
+
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    transform 0.3s ease;
+
+}
+
+
+.apartment-booking-button:hover {
+
+  background: white;
+
+  color: black;
+
+  transform: translateY(-3px);
+
 }
 
 
@@ -1309,106 +2445,269 @@ footer {
   .desktop-nav,
   .language-switch,
   .book-button {
+
     display: none;
+
   }
+
 
   .menu-button {
+
     display: block;
+
   }
+
 
   .navbar {
+
     height: 75px;
 
-    padding:
-      0 6vw;
+    padding: 0 6vw;
+
   }
+
 
   .nav-logo {
+
     font-size: 20px;
+
   }
 
+
   .hero-content {
+
     left: 7vw;
+
     right: 7vw;
 
     bottom: 12vh;
+
   }
+
 
   .hero h1 {
+
     font-size:
       clamp(55px, 14vw, 90px);
+
   }
 
+
   .hero-description {
+
     font-size: 12px;
 
     max-width: 330px;
+
   }
+
 
   .hero-scroll {
+
     display: none;
+
   }
 
+
   .intro-grid {
+
     grid-template-columns: 1fr;
 
     gap: 45px;
+
   }
+
 
   .residence-card,
   .residence-card.reverse {
+
     grid-template-columns: 1fr;
 
     gap: 45px;
+
   }
+
 
   .residence-card.reverse .residence-image {
+
     order: 1;
+
   }
+
 
   .residence-card.reverse .residence-info {
+
     order: 2;
+
   }
+
 
   .residence-image {
+
     height: 480px;
+
   }
 
+
   .experience-features {
+
     grid-template-columns: 1fr;
 
     gap: 30px;
 
     max-width: 400px;
+
   }
 
+
   .bologna-grid {
+
     grid-template-columns: 1fr;
 
     gap: 60px;
+
   }
+
 
   .bologna-image {
+
     height: 500px;
+
   }
 
+
   .footer-top {
+
     grid-template-columns: 1fr;
 
     gap: 50px;
 
     padding-bottom: 70px;
+
   }
+
 
   .footer-social {
+
     text-align: left;
+
   }
 
+
   .footer-bottom {
+
     flex-direction: column;
 
     gap: 10px;
+
   }
+
+
+  .apartment-hero {
+
+    min-height: 78vh;
+
+    height: 78vh;
+
+  }
+
+
+  .apartment-hero-content {
+
+    padding: 0 7vw 10vh;
+
+  }
+
+
+  .apartment-back {
+
+    left: 7vw;
+
+    top: 95px;
+
+  }
+
+
+  .apartment-facts {
+
+    grid-template-columns: repeat(2, 1fr);
+
+    padding: 45px 7vw;
+
+  }
+
+
+  .apartment-intro {
+
+    padding: 18vw 7vw;
+
+  }
+
+
+  .apartment-intro-grid,
+  .apartment-amenities-grid {
+
+    grid-template-columns: 1fr;
+
+    gap: 55px;
+
+  }
+
+
+  .apartment-gallery-section {
+
+    padding: 0 7vw 18vw;
+
+  }
+
+
+  .apartment-gallery {
+
+    height: 60vh;
+
+    min-height: 400px;
+
+  }
+
+
+  .apartment-amenities {
+
+    padding: 18vw 7vw;
+
+  }
+
+
+  .apartment-info {
+
+    padding: 18vw 7vw;
+
+  }
+
+
+  .apartment-info-grid {
+
+    grid-template-columns: 1fr;
+
+    gap: 45px;
+
+  }
+
+
+  .apartment-booking {
+
+    padding: 20vw 7vw;
+
+  }
+
+
+  .apartment-nav {
+
+    height: 75px;
+
+    padding: 0 7vw;
+
+  }
+
 }
 
 
@@ -1419,127 +2718,309 @@ footer {
 @media (max-width: 600px) {
 
   .loader-logo {
+
     font-size: 52px;
+
   }
 
+
   .loader-subtitle {
+
     font-size: 7px;
 
     letter-spacing: 0.3em;
+
   }
 
+
   .scroll-enter {
+
     bottom: 35px;
 
     font-size: 7px;
+
   }
 
+
   .hero {
+
     min-height: 100svh;
 
     height: 100svh;
+
   }
+
 
   .hero-content {
+
     bottom: 13vh;
+
   }
+
 
   .hero-description {
+
     margin-top: 28px;
+
   }
+
 
   .hero-link {
+
     margin-top: 32px;
+
   }
+
 
   .intro-section {
-    padding:
-      25vw 7vw;
+
+    padding: 25vw 7vw;
+
   }
+
 
   .intro-grid {
+
     margin-top: 55px;
+
   }
+
 
   .intro-text h2 {
+
     font-size: 50px;
+
   }
+
 
   .residences-section {
-    padding:
-      18vw 7vw 25vw;
+
+    padding: 18vw 7vw 25vw;
+
   }
 
+
   .residence-list {
+
     margin-top: 65px;
 
     gap: 100px;
+
   }
+
 
   .residence-image {
+
     height: 400px;
+
   }
+
 
   .residence-info h3 {
+
     font-size: 48px;
+
   }
+
 
   .experience-content {
-    padding:
-      18vw 7vw;
+
+    padding: 18vw 7vw;
+
   }
+
 
   .experience-label {
+
     margin-top: 65px;
+
   }
+
 
   .experience-content h2 {
+
     font-size: 58px;
+
   }
+
 
   .experience-features {
+
     margin-top: 70px;
+
   }
+
 
   .bologna-section {
-    padding:
-      18vw 7vw 25vw;
+
+    padding: 18vw 7vw 25vw;
+
   }
+
 
   .bologna-grid {
+
     margin-top: 60px;
+
   }
+
 
   .bologna-text h2 {
+
     font-size: 58px;
+
   }
+
 
   .bologna-image {
+
     height: 420px;
+
   }
+
 
   .cta-section {
-    padding:
-      22vw 7vw;
+
+    padding: 22vw 7vw;
+
   }
+
 
   .cta-inner h2 {
+
     font-size: 68px;
+
   }
+
 
   .cta-button {
+
     margin-top: 50px;
+
   }
+
 
   footer {
+
     padding-left: 7vw;
+
     padding-right: 7vw;
+
   }
 
+
   .whatsapp-button {
+
     right: 18px;
+
     bottom: 18px;
+
   }
+
+
+  .apartment-hero {
+
+    min-height: 72svh;
+
+    height: 72svh;
+
+  }
+
+
+  .apartment-hero h1 {
+
+    font-size: 55px;
+
+  }
+
+
+  .apartment-location {
+
+    font-size: 8px;
+
+  }
+
+
+  .apartment-facts {
+
+    gap: 25px 15px;
+
+  }
+
+
+  .apartment-fact strong {
+
+    font-size: 20px;
+
+  }
+
+
+  .apartment-intro-text h2 {
+
+    font-size: 48px;
+
+  }
+
+
+  .apartment-gallery {
+
+    height: 55svh;
+
+    min-height: 350px;
+
+  }
+
+
+  .gallery-arrow {
+
+    width: 45px;
+
+    height: 45px;
+
+  }
+
+
+  .gallery-arrow.prev {
+
+    left: 12px;
+
+  }
+
+
+  .gallery-arrow.next {
+
+    right: 12px;
+
+  }
+
+
+  .amenities-list {
+
+    grid-template-columns: 1fr;
+
+  }
+
+
+  .apartment-booking h2 {
+
+    font-size: 60px;
+
+  }
+
+
+  .apartment-nav-right {
+
+    gap: 15px;
+
+  }
+
+
+  .apartment-nav-link {
+
+    font-size: 7px;
+
+  }
+
 }
 
 
@@ -1552,23 +3033,37 @@ body,
 main,
 section,
 footer {
+
   max-width: 100%;
+
 }
+
 
 main {
+
   width: 100%;
+
 }
+
 
 img {
+
   max-width: 100%;
+
 }
+
 
 .reveal {
+
   will-change: opacity, transform;
+
 }
 
+
 .photo-placeholder span {
+
   display: block;
+
 }
 
 
@@ -1579,14 +3074,22 @@ img {
 @media (prefers-reduced-motion: reduce) {
 
   html {
+
     scroll-behavior: auto;
+
   }
+
 
   *,
   *::before,
   *::after {
+
     animation-duration: 0.01ms !important;
+
     animation-iteration-count: 1 !important;
+
     transition-duration: 0.01ms !important;
+
   }
+
 }
