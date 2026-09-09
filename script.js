@@ -2,24 +2,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =====================================================
-     INTRO
-  ====================================================== */
+     FOOTER YEAR
+  ===================================================== */
 
-  const loader =
-    document.querySelector(".loader");
+  const year = document.querySelector("#year");
 
-  const scrollEnter =
-    document.querySelector(".scroll-enter");
+  if (year) {
+    year.textContent = new Date().getFullYear();
+  }
 
+
+  /* =====================================================
+     HOMEPAGE INTRO
+  ===================================================== */
+
+  const loader = document.querySelector(".loader");
+  const scrollEnter = document.querySelector(".scroll-enter");
 
   if (loader) {
 
     let introFinished = false;
-
     let introAnimating = false;
-
     let introStartTime = null;
-
 
     const INTRO_DURATION = 2200;
 
@@ -28,15 +32,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (introFinished) return;
 
-
       introFinished = true;
-
       introAnimating = false;
-
 
       loader.style.transform =
         "translate3d(0, -100%, 0)";
-
 
       if (scrollEnter) {
 
@@ -47,19 +47,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       }
 
-
       document.body.classList.remove(
         "intro-active"
       );
 
-
       document.body.style.overflow = "";
-
-
-      window.scrollTo({
-        top: 0,
-        behavior: "auto"
-      });
 
     }
 
@@ -68,17 +60,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (introFinished) return;
 
-
       if (!introStartTime) {
-
         introStartTime = timestamp;
-
       }
-
 
       const elapsed =
         timestamp - introStartTime;
-
 
       const progress =
         Math.min(
@@ -89,9 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const easedProgress =
         progress < 0.5
-
           ? 2 * progress * progress
-
           : 1 -
             Math.pow(
               -2 * progress + 2,
@@ -110,7 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
             0,
             1 - easedProgress * 3
           );
-
 
         scrollEnter.style.transform =
           `translate3d(-50%, ${easedProgress * 25}px, 0)`;
@@ -140,16 +124,11 @@ document.addEventListener("DOMContentLoaded", () => {
         introFinished ||
         introAnimating
       ) {
-
         return;
-
       }
 
-
       introAnimating = true;
-
       introStartTime = null;
-
 
       requestAnimationFrame(
         animateIntro
@@ -158,24 +137,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================
-       MOUSE / WHEEL
-    ========================== */
-
     window.addEventListener(
       "wheel",
       (event) => {
 
         if (introFinished) return;
 
-
         event.preventDefault();
 
-
         if (event.deltaY > 0) {
-
           startIntro();
-
         }
 
       },
@@ -185,10 +156,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* =========================
-       TOUCH
-    ========================== */
-
     let touchStart = 0;
 
 
@@ -197,7 +164,6 @@ document.addEventListener("DOMContentLoaded", () => {
       (event) => {
 
         if (introFinished) return;
-
 
         touchStart =
           event.touches[0].clientY;
@@ -215,14 +181,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (introFinished) return;
 
-
         const currentTouch =
           event.touches[0].clientY;
 
-
         const movement =
-          touchStart -
-          currentTouch;
+          touchStart - currentTouch;
 
 
         if (movement > 5) {
@@ -240,16 +203,11 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* =========================
-       KEYBOARD
-    ========================== */
-
     window.addEventListener(
       "keydown",
       (event) => {
 
         if (introFinished) return;
-
 
         if (
           event.key === "ArrowDown" ||
@@ -271,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =====================================================
      NAVBAR
-  ====================================================== */
+  ===================================================== */
 
   const navbar =
     document.querySelector(".navbar");
@@ -282,7 +240,6 @@ document.addEventListener("DOMContentLoaded", () => {
     () => {
 
       if (!navbar) return;
-
 
       if (window.scrollY > 50) {
 
@@ -304,13 +261,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =====================================================
      REVEAL ANIMATIONS
-  ====================================================== */
+  ===================================================== */
 
   const revealElements =
-    document.querySelectorAll(".reveal");
+    document.querySelectorAll(
+      ".reveal"
+    );
 
 
   if (
+    revealElements.length &&
     "IntersectionObserver" in window
   ) {
 
@@ -328,7 +288,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 entry.target.classList.add(
                   "visible"
                 );
-
 
                 revealObserver.unobserve(
                   entry.target
@@ -373,14 +332,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =====================================================
      MOBILE MENU
-  ====================================================== */
+  ===================================================== */
 
   const menuButton =
-    document.querySelector(".menu-button");
-
+    document.querySelector(
+      ".menu-button"
+    );
 
   const mobileMenu =
-    document.querySelector(".mobile-menu");
+    document.querySelector(
+      ".mobile-menu"
+    );
 
 
   if (
@@ -424,7 +386,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* =====================================================
      ANCHOR LINKS
-  ====================================================== */
+  ===================================================== */
 
   document
     .querySelectorAll(
@@ -442,14 +404,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 "href"
               );
 
-
             if (
               !targetId ||
               targetId === "#"
             ) {
-
               return;
-
             }
 
 
@@ -477,221 +436,411 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =====================================================
-     FOOTER YEAR
-  ====================================================== */
+     BOOKING PAGE
+  ===================================================== */
 
-  const year =
-    document.querySelector("#year");
+  const bookingCards =
+    document.querySelectorAll(
+      ".booking-residence-card"
+    );
+
+  const bookingForm =
+    document.querySelector(
+      "#bookingRequestForm"
+    );
+
+  const residenceInput =
+    document.querySelector(
+      "#residence"
+    );
+
+  const selectedResidenceText =
+    document.querySelector(
+      "#selectedResidenceText"
+    );
+
+  const bookingFormSection =
+    document.querySelector(
+      "#booking-form-section"
+    );
 
 
-  if (year) {
+  let selectedResidence = "";
 
-    year.textContent =
-      new Date().getFullYear();
+
+  /* =====================================================
+     SELECT RESIDENCE
+  ===================================================== */
+
+  bookingCards.forEach(
+    (card) => {
+
+      card.addEventListener(
+        "click",
+        (event) => {
+
+          event.preventDefault();
+
+
+          selectedResidence =
+            card.dataset.residence;
+
+
+          if (residenceInput) {
+
+            residenceInput.value =
+              selectedResidence;
+
+          }
+
+
+          if (
+            selectedResidenceText
+          ) {
+
+            selectedResidenceText.textContent =
+              selectedResidence;
+
+          }
+
+
+          bookingCards.forEach(
+            (item) => {
+
+              item.classList.remove(
+                "selected"
+              );
+
+            }
+          );
+
+
+          card.classList.add(
+            "selected"
+          );
+
+
+          if (bookingFormSection) {
+
+            bookingFormSection.scrollIntoView({
+              behavior: "smooth"
+            });
+
+          }
+
+        }
+      );
+
+    }
+  );
+
+
+  /* =====================================================
+     DATE RESTRICTIONS
+  ===================================================== */
+
+  const checkin =
+    document.querySelector(
+      "#checkin"
+    );
+
+  const checkout =
+    document.querySelector(
+      "#checkout"
+    );
+
+
+  function getToday() {
+
+    const date =
+      new Date();
+
+    const year =
+      date.getFullYear();
+
+    const month =
+      String(
+        date.getMonth() + 1
+      ).padStart(2, "0");
+
+    const day =
+      String(
+        date.getDate()
+      ).padStart(2, "0");
+
+
+    return `${year}-${month}-${day}`;
+
+  }
+
+
+  if (checkin) {
+
+    checkin.min =
+      getToday();
+
+  }
+
+
+  if (checkout) {
+
+    checkout.min =
+      getToday();
+
+  }
+
+
+  if (checkin && checkout) {
+
+    checkin.addEventListener(
+      "change",
+      () => {
+
+        checkout.min =
+          checkin.value;
+
+        if (
+          checkout.value &&
+          checkout.value <= checkin.value
+        ) {
+
+          checkout.value = "";
+
+        }
+
+      }
+    );
 
   }
 
 
   /* =====================================================
-     APARTMENT GALLERY
-  ====================================================== */
+     BOOKING FORM SUBMISSION
+  ===================================================== */
 
-  const galleries =
-    document.querySelectorAll(
-      ".apartment-gallery"
-    );
+  if (bookingForm) {
 
+    bookingForm.addEventListener(
+      "submit",
+      async (event) => {
 
-  galleries.forEach(
-    (gallery) => {
-
-      const slides =
-        gallery.querySelectorAll(
-          ".apartment-slide"
-        );
+        event.preventDefault();
 
 
-      const previousButton =
-        gallery.querySelector(
-          ".gallery-arrow.prev"
-        );
+        const bookingMessage =
+          document.querySelector(
+            "#bookingMessage"
+          );
 
 
-      const nextButton =
-        gallery.querySelector(
-          ".gallery-arrow.next"
-        );
+        if (!selectedResidence) {
 
+          if (bookingMessage) {
 
-      const gallerySection =
-        gallery.closest(
-          ".apartment-gallery-section"
-        );
+            bookingMessage.textContent =
+              "Please select a residence first.";
 
+            bookingMessage.className =
+              "booking-message error";
 
-      const counter =
-        gallerySection
-          ? gallerySection.querySelector(
-              ".apartment-gallery-counter"
-            )
-          : null;
+          }
 
-
-      if (!slides.length) return;
-
-
-      let currentSlide = 0;
-
-
-      function showSlide(index) {
-
-        if (index < 0) {
-
-          index =
-            slides.length - 1;
+          return;
 
         }
 
 
         if (
-          index >= slides.length
+          !checkin ||
+          !checkout ||
+          !checkin.value ||
+          !checkout.value
         ) {
 
-          index = 0;
+          if (bookingMessage) {
+
+            bookingMessage.textContent =
+              "Please select your check-in and check-out dates.";
+
+            bookingMessage.className =
+              "booking-message error";
+
+          }
+
+          return;
 
         }
 
 
-        currentSlide = index;
+        if (
+          checkout.value <=
+          checkin.value
+        ) {
 
+          if (bookingMessage) {
 
-        slides.forEach(
-          (slide, slideIndex) => {
+            bookingMessage.textContent =
+              "Check-out must be after check-in.";
 
-            slide.classList.toggle(
-              "active",
-              slideIndex === currentSlide
-            );
+            bookingMessage.className =
+              "booking-message error";
 
           }
-        );
 
-
-        if (counter) {
-
-          counter.textContent =
-            String(
-              currentSlide + 1
-            ).padStart(2, "0") +
-            " / " +
-            String(
-              slides.length
-            ).padStart(2, "0");
+          return;
 
         }
 
-      }
+
+        const submitButton =
+          bookingForm.querySelector(
+            ".booking-submit"
+          );
 
 
-      if (previousButton) {
+        if (submitButton) {
 
-        previousButton.addEventListener(
-          "click",
-          () => {
+          submitButton.disabled =
+            true;
 
-            showSlide(
-              currentSlide - 1
-            );
+          submitButton.classList.add(
+            "loading"
+          );
 
-          }
-        );
-
-      }
-
-
-      if (nextButton) {
-
-        nextButton.addEventListener(
-          "click",
-          () => {
-
-            showSlide(
-              currentSlide + 1
-            );
-
-          }
-        );
-
-      }
-
-
-      /* =========================
-         SWIPE
-      ========================== */
-
-      let galleryTouchStart = 0;
-
-
-      gallery.addEventListener(
-        "touchstart",
-        (event) => {
-
-          galleryTouchStart =
-            event.touches[0].clientX;
-
-        },
-        {
-          passive: true
         }
-      );
 
 
-      gallery.addEventListener(
-        "touchend",
-        (event) => {
+        if (bookingMessage) {
 
-          const galleryTouchEnd =
-            event.changedTouches[0].clientX;
+          bookingMessage.textContent =
+            "Sending your request...";
+
+          bookingMessage.className =
+            "booking-message";
+
+        }
 
 
-          const distance =
-            galleryTouchStart -
-            galleryTouchEnd;
+        const formData =
+          new FormData(
+            bookingForm
+          );
+
+
+        const data =
+          Object.fromEntries(
+            formData.entries()
+          );
+
+
+        try {
+
+          const response =
+            await fetch(
+              "/api/booking-request",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+                body:
+                  JSON.stringify(data)
+              }
+            );
+
+
+          const result =
+            await response.json();
+
+
+          if (!response.ok) {
+
+            throw new Error(
+              result.message ||
+              "Something went wrong."
+            );
+
+          }
+
+
+          bookingForm.reset();
+
+          selectedResidence = "";
+
+
+          if (residenceInput) {
+            residenceInput.value = "";
+          }
 
 
           if (
-            Math.abs(distance) < 40
+            selectedResidenceText
           ) {
 
-            return;
+            selectedResidenceText.textContent =
+              "Please select a residence above";
 
           }
 
 
-          if (distance > 0) {
+          bookingCards.forEach(
+            (card) => {
 
-            showSlide(
-              currentSlide + 1
-            );
+              card.classList.remove(
+                "selected"
+              );
 
-          } else {
+            }
+          );
 
-            showSlide(
-              currentSlide - 1
+
+          if (bookingMessage) {
+
+            bookingMessage.textContent =
+              "Your booking request has been sent successfully. We will contact you shortly.";
+
+            bookingMessage.className =
+              "booking-message success";
+
+          }
+
+        } catch (error) {
+
+          console.error(
+            "Booking request error:",
+            error
+          );
+
+
+          if (bookingMessage) {
+
+            bookingMessage.textContent =
+              "We could not send your request. Please try again or contact us on WhatsApp.";
+
+            bookingMessage.className =
+              "booking-message error";
+
+          }
+
+        } finally {
+
+          if (submitButton) {
+
+            submitButton.disabled =
+              false;
+
+            submitButton.classList.remove(
+              "loading"
             );
 
           }
 
-        },
-        {
-          passive: true
         }
-      );
 
+      }
+    );
 
-      showSlide(0);
-
-    }
-  );
+  }
 
 });
