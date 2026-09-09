@@ -4,11 +4,6 @@
    PREMIUM WEBSITE
 ========================================= */
 
-
-/* =========================================
-   RESET
-========================================= */
-
 * {
   margin: 0;
   padding: 0;
@@ -39,154 +34,105 @@ button {
   font-family: inherit;
 }
 
-
-/* =========================================
-   VARIABLES
-========================================= */
-
 :root {
-
   --black: #111111;
   --dark: #191919;
   --white: #ffffff;
-
   --ivory: #f3f0e9;
   --cream: #e9e4da;
-
   --gold: #b6a27a;
-
   --border: rgba(17, 17, 17, 0.16);
-
   --serif: "Playfair Display", serif;
   --sans: "DM Sans", sans-serif;
-
 }
 
 
 /* =========================================
-   INTRO / LOADER
+   INTRO
 ========================================= */
 
 .loader {
-
   position: fixed;
-
   inset: 0;
-
   z-index: 9999;
 
   background: var(--black);
-
   color: var(--white);
 
   display: flex;
-
   justify-content: center;
-
   align-items: center;
-
   flex-direction: column;
 
   transform: translate3d(0, 0, 0);
-
   will-change: transform;
-
 }
-
 
 .loader-content {
-
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
 }
-
 
 .loader-logo {
-
   font-family: var(--serif);
-
   font-size: clamp(48px, 8vw, 105px);
-
   font-weight: 400;
-
   letter-spacing: 0.08em;
-
   line-height: 1;
-
 }
-
 
 .loader-line {
-
   width: 70px;
-
   height: 1px;
-
   background: rgba(255,255,255,0.5);
-
   margin: 24px 0;
-
 }
-
 
 .loader-subtitle {
-
   font-size: 9px;
-
   letter-spacing: 0.42em;
-
   margin-left: 0.42em;
-
   opacity: 0.65;
-
 }
 
 
-.scroll-enter {
+/* =========================================
+   SCROLL TO ENTER
+========================================= */
 
+.scroll-enter {
   position: absolute;
 
-  bottom: 55px;
+  left: 50%;
+  bottom: 45px;
+
+  transform: translateX(-50%);
 
   font-size: 8px;
-
   letter-spacing: 0.28em;
+
+  white-space: nowrap;
 
   color: rgba(255,255,255,0.55);
 
-  animation:
-    scrollEnter 2s ease-in-out infinite;
+  animation: scrollEnterPulse 2s ease-in-out infinite;
 
   transition:
     opacity 0.4s ease,
     transform 0.4s ease;
-
 }
 
-
-@keyframes scrollEnter {
+@keyframes scrollEnterPulse {
 
   0%,
   100% {
-
-    transform: translateY(0);
-
     opacity: 0.45;
-
   }
 
   50% {
-
-    transform: translateY(7px);
-
     opacity: 1;
-
   }
-
 }
 
 
@@ -195,23 +141,17 @@ button {
 ========================================= */
 
 .navbar {
-
   position: fixed;
-
   top: 0;
-
   left: 0;
 
   width: 100%;
-
   height: 92px;
 
   z-index: 1000;
 
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
 
   padding: 0 5vw;
@@ -223,200 +163,136 @@ button {
   transition:
     height 0.5s ease,
     padding 0.5s ease;
-
 }
-
 
 .navbar.scrolled {
-
   height: 70px;
-
   padding-left: 3vw;
-
   padding-right: 3vw;
-
 }
 
-
 .nav-logo {
-
   display: flex;
-
   flex-direction: column;
 
   line-height: 1;
 
   font-family: var(--serif);
-
   font-size: 22px;
 
   letter-spacing: 0.08em;
-
 }
 
-
 .nav-logo span {
-
   font-family: var(--sans);
 
   font-size: 6px;
-
   letter-spacing: 0.28em;
 
   margin-top: 7px;
 
   opacity: 0.75;
-
 }
 
-
 .desktop-nav {
-
   display: flex;
 
   gap: 38px;
 
   margin-left: auto;
-
   margin-right: 42px;
-
 }
 
-
 .desktop-nav a {
-
   position: relative;
 
   font-size: 9px;
-
   letter-spacing: 0.2em;
 
   transition: opacity 0.3s ease;
-
 }
 
-
 .desktop-nav a::after {
-
   content: "";
 
   position: absolute;
 
   left: 0;
-
   bottom: -7px;
 
   width: 0;
-
   height: 1px;
 
   background: currentColor;
 
   transition: width 0.4s ease;
-
 }
-
 
 .desktop-nav a:hover::after {
-
   width: 100%;
-
 }
-
 
 .nav-right {
-
   display: flex;
-
   align-items: center;
-
   gap: 25px;
-
 }
 
-
 .language-switch {
-
   display: flex;
-
   gap: 9px;
 
   font-size: 8px;
-
   letter-spacing: 0.15em;
-
 }
-
 
 .language-switch span {
-
   opacity: 0.4;
-
 }
-
 
 .language-switch .active {
-
   opacity: 1;
-
 }
 
-
 .book-button {
-
   border: 1px solid rgba(255,255,255,0.6);
 
   padding: 13px 20px;
 
   font-size: 8px;
-
   letter-spacing: 0.2em;
 
   transition:
     background 0.3s ease,
     color 0.3s ease;
-
 }
-
 
 .book-button:hover {
-
   background: white;
-
   color: black;
-
 }
 
-
 .menu-button {
-
   display: none;
 
   border: 0;
-
   background: transparent;
 
   width: 35px;
-
   height: 30px;
 
   cursor: pointer;
-
 }
 
-
 .menu-button span {
-
   display: block;
 
   width: 25px;
-
   height: 1px;
 
   background: white;
 
   margin: 7px 0;
-
 }
 
 
@@ -425,29 +301,22 @@ button {
 ========================================= */
 
 .mobile-menu {
-
   position: fixed;
-
   inset: 0;
 
   z-index: 999;
 
   background: var(--black);
-
   color: white;
 
   display: flex;
-
   flex-direction: column;
-
   justify-content: center;
-
   align-items: center;
 
   gap: 30px;
 
   opacity: 0;
-
   visibility: hidden;
 
   transform: translateY(-20px);
@@ -456,40 +325,27 @@ button {
     opacity 0.4s ease,
     visibility 0.4s ease,
     transform 0.4s ease;
-
 }
 
-
 .mobile-menu.open {
-
   opacity: 1;
-
   visibility: visible;
 
   transform: translateY(0);
-
 }
-
 
 .mobile-menu a {
-
   font-family: var(--serif);
-
   font-size: 34px;
-
 }
 
-
 .mobile-menu a:last-child {
-
   font-family: var(--sans);
 
   font-size: 9px;
-
   letter-spacing: 0.25em;
 
   margin-top: 20px;
-
 }
 
 
@@ -498,41 +354,28 @@ button {
 ========================================= */
 
 .hero {
-
   position: relative;
 
   min-height: 100vh;
-
   height: 100vh;
 
   background: #222;
-
   color: white;
 
   overflow: hidden;
-
 }
-
 
 .hero-image {
-
   position: absolute;
-
   inset: 0;
-
 }
 
-
 .photo-placeholder {
-
   width: 100%;
-
   height: 100%;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   background:
@@ -545,16 +388,11 @@ button {
   color: rgba(255,255,255,0.65);
 
   font-size: 10px;
-
   letter-spacing: 0.35em;
-
 }
 
-
 .hero-overlay {
-
   position: absolute;
-
   inset: 0;
 
   background:
@@ -563,38 +401,27 @@ button {
       rgba(0,0,0,0.72),
       rgba(0,0,0,0.15)
     );
-
 }
 
-
 .hero-content {
-
   position: absolute;
 
   left: 8vw;
-
   bottom: 13vh;
 
   max-width: 750px;
-
 }
 
-
 .eyebrow {
-
   font-size: 9px;
-
   letter-spacing: 0.3em;
 
   margin-bottom: 30px;
 
   opacity: 0.75;
-
 }
 
-
 .hero h1 {
-
   font-family: var(--serif);
 
   font-size: clamp(58px, 8vw, 125px);
@@ -604,34 +431,24 @@ button {
   line-height: 0.92;
 
   letter-spacing: -0.035em;
-
 }
-
 
 .hero h1 em {
-
   font-weight: 400;
-
 }
 
-
 .hero-description {
-
   max-width: 390px;
 
   margin-top: 38px;
 
   font-size: 13px;
-
   line-height: 1.8;
 
   color: rgba(255,255,255,0.72);
-
 }
 
-
 .hero-link {
-
   display: inline-flex;
 
   align-items: center;
@@ -649,53 +466,39 @@ button {
   letter-spacing: 0.25em;
 
   transition: gap 0.4s ease;
-
 }
-
 
 .hero-link:hover {
-
   gap: 30px;
-
 }
 
-
 .hero-index {
-
   position: absolute;
 
   right: 5vw;
-
   bottom: 7vh;
 
   font-size: 9px;
-
   letter-spacing: 0.2em;
-
 }
 
-
 .hero-index span {
-
   opacity: 0.4;
 
   margin: 0 8px;
-
 }
 
-
 .hero-scroll {
-
   position: absolute;
 
   right: 5vw;
-
   top: 50%;
 
-  transform: translateY(-50%) rotate(90deg);
+  transform:
+    translateY(-50%)
+    rotate(90deg);
 
   font-size: 7px;
-
   letter-spacing: 0.35em;
 
   display: flex;
@@ -703,18 +506,13 @@ button {
   align-items: center;
 
   gap: 15px;
-
 }
 
-
 .hero-scroll span {
-
   width: 45px;
-
   height: 1px;
 
   background: rgba(255,255,255,0.6);
-
 }
 
 
@@ -723,7 +521,6 @@ button {
 ========================================= */
 
 .reveal {
-
   opacity: 0;
 
   transform: translateY(35px);
@@ -731,16 +528,12 @@ button {
   transition:
     opacity 1s cubic-bezier(.22,1,.36,1),
     transform 1s cubic-bezier(.22,1,.36,1);
-
 }
 
-
 .reveal.visible {
-
   opacity: 1;
 
   transform: translateY(0);
-
 }
 
 
@@ -749,22 +542,14 @@ button {
 ========================================= */
 
 .section-number {
-
   font-size: 8px;
-
   letter-spacing: 0.2em;
-
   opacity: 0.5;
-
 }
 
-
 .section-label {
-
   font-size: 8px;
-
   letter-spacing: 0.3em;
-
 }
 
 
@@ -773,16 +558,12 @@ button {
 ========================================= */
 
 .intro-section {
-
   padding: 17vw 8vw;
 
   background: var(--ivory);
-
 }
 
-
 .intro-grid {
-
   display: grid;
 
   grid-template-columns: 1fr 2fr;
@@ -790,30 +571,20 @@ button {
   gap: 8vw;
 
   margin-top: 70px;
-
 }
 
-
 .intro-label {
-
   font-size: 8px;
-
   letter-spacing: 0.25em;
 
   padding-top: 10px;
-
 }
-
 
 .intro-text {
-
   max-width: 780px;
-
 }
 
-
 .intro-text h2 {
-
   font-family: var(--serif);
 
   font-size: clamp(48px, 6vw, 90px);
@@ -823,12 +594,9 @@ button {
   font-weight: 400;
 
   letter-spacing: -0.03em;
-
 }
 
-
 .intro-text p {
-
   max-width: 530px;
 
   margin-top: 45px;
@@ -838,14 +606,10 @@ button {
   line-height: 1.9;
 
   color: #5e5a53;
-
 }
 
-
 .intro-text p + p {
-
   margin-top: 18px;
-
 }
 
 
@@ -854,16 +618,12 @@ button {
 ========================================= */
 
 .residences-section {
-
   background: var(--cream);
 
   padding: 9vw 8vw 15vw;
-
 }
 
-
 .section-header {
-
   display: flex;
 
   justify-content: space-between;
@@ -871,12 +631,9 @@ button {
   border-bottom: 1px solid var(--border);
 
   padding-bottom: 20px;
-
 }
 
-
 .residence-list {
-
   margin-top: 100px;
 
   display: flex;
@@ -884,12 +641,9 @@ button {
   flex-direction: column;
 
   gap: 150px;
-
 }
 
-
 .residence-card {
-
   display: grid;
 
   grid-template-columns: 1.15fr 0.85fr;
@@ -897,65 +651,42 @@ button {
   gap: 8vw;
 
   align-items: center;
-
 }
-
 
 .residence-card.reverse {
-
   grid-template-columns: 0.85fr 1.15fr;
-
 }
-
 
 .residence-card.reverse .residence-image {
-
   order: 2;
-
 }
-
 
 .residence-card.reverse .residence-info {
-
   order: 1;
-
 }
 
-
 .residence-image {
-
   height: 600px;
 
   overflow: hidden;
-
 }
-
 
 .residence-image .photo-placeholder {
-
-  transition: transform 1.2s cubic-bezier(.22,1,.36,1);
-
+  transition:
+    transform 1.2s cubic-bezier(.22,1,.36,1);
 }
-
 
 .residence-card:hover
 .residence-image
 .photo-placeholder {
-
   transform: scale(1.04);
-
 }
-
 
 .residence-info {
-
   position: relative;
-
 }
 
-
 .residence-number {
-
   font-size: 8px;
 
   letter-spacing: 0.25em;
@@ -963,12 +694,9 @@ button {
   color: #777168;
 
   margin-bottom: 30px;
-
 }
 
-
 .residence-info h3 {
-
   font-family: var(--serif);
 
   font-size: clamp(40px, 4.5vw, 70px);
@@ -978,12 +706,9 @@ button {
   font-weight: 400;
 
   letter-spacing: -0.03em;
-
 }
 
-
 .residence-type {
-
   font-size: 8px;
 
   letter-spacing: 0.28em;
@@ -991,12 +716,9 @@ button {
   margin-top: 18px;
 
   color: #756e64;
-
 }
 
-
 .residence-description {
-
   max-width: 400px;
 
   margin-top: 40px;
@@ -1006,12 +728,9 @@ button {
   line-height: 1.8;
 
   color: #5e5a53;
-
 }
 
-
 .residence-details {
-
   display: flex;
 
   flex-wrap: wrap;
@@ -1019,12 +738,9 @@ button {
   gap: 18px;
 
   margin-top: 35px;
-
 }
 
-
 .residence-details span {
-
   font-size: 7px;
 
   letter-spacing: 0.18em;
@@ -1032,12 +748,9 @@ button {
   border-top: 1px solid var(--border);
 
   padding-top: 10px;
-
 }
 
-
 .discover-link {
-
   display: inline-flex;
 
   align-items: center;
@@ -1055,14 +768,10 @@ button {
   letter-spacing: 0.25em;
 
   transition: gap 0.4s ease;
-
 }
 
-
 .discover-link:hover {
-
   gap: 30px;
-
 }
 
 
@@ -1071,7 +780,6 @@ button {
 ========================================= */
 
 .experience-section {
-
   position: relative;
 
   min-height: 100vh;
@@ -1079,21 +787,15 @@ button {
   color: white;
 
   overflow: hidden;
-
 }
 
-
 .experience-image {
-
   position: absolute;
 
   inset: 0;
-
 }
 
-
 .experience-overlay {
-
   position: absolute;
 
   inset: 0;
@@ -1104,34 +806,25 @@ button {
       rgba(0,0,0,0.8),
       rgba(0,0,0,0.3)
     );
-
 }
 
-
 .experience-content {
-
   position: relative;
 
   z-index: 2;
 
   padding: 9vw 8vw;
-
 }
 
-
 .experience-label {
-
   font-size: 8px;
 
   letter-spacing: 0.3em;
 
   margin-top: 80px;
-
 }
 
-
 .experience-content h2 {
-
   font-family: var(--serif);
 
   font-size: clamp(55px, 7vw, 110px);
@@ -1143,12 +836,9 @@ button {
   margin-top: 40px;
 
   letter-spacing: -0.03em;
-
 }
 
-
 .experience-features {
-
   display: grid;
 
   grid-template-columns: repeat(3, 1fr);
@@ -1158,12 +848,9 @@ button {
   max-width: 850px;
 
   margin-top: 100px;
-
 }
 
-
 .feature {
-
   display: flex;
 
   gap: 25px;
@@ -1171,32 +858,23 @@ button {
   border-top: 1px solid rgba(255,255,255,0.35);
 
   padding-top: 20px;
-
 }
 
-
 .feature > span {
-
   font-size: 8px;
 
   opacity: 0.5;
-
 }
 
-
 .feature h4 {
-
   font-size: 9px;
 
   letter-spacing: 0.25em;
 
   font-weight: 400;
-
 }
 
-
 .feature p {
-
   margin-top: 14px;
 
   font-size: 11px;
@@ -1204,7 +882,6 @@ button {
   line-height: 1.7;
 
   color: rgba(255,255,255,0.65);
-
 }
 
 
@@ -1213,16 +890,12 @@ button {
 ========================================= */
 
 .bologna-section {
-
   padding: 10vw 8vw 13vw;
 
   background: var(--ivory);
-
 }
 
-
 .bologna-grid {
-
   display: grid;
 
   grid-template-columns: 0.8fr 1.2fr;
@@ -1232,12 +905,9 @@ button {
   align-items: center;
 
   margin-top: 90px;
-
 }
 
-
 .bologna-text h2 {
-
   font-family: var(--serif);
 
   font-size: clamp(55px, 6vw, 95px);
@@ -1249,12 +919,9 @@ button {
   margin-top: 35px;
 
   letter-spacing: -0.04em;
-
 }
 
-
 .bologna-text p {
-
   max-width: 390px;
 
   margin-top: 45px;
@@ -1264,23 +931,16 @@ button {
   line-height: 1.8;
 
   color: #625d55;
-
 }
-
 
 .bologna-text p + p {
-
   margin-top: 15px;
-
 }
 
-
 .bologna-image {
-
   height: 700px;
 
   overflow: hidden;
-
 }
 
 
@@ -1289,25 +949,18 @@ button {
 ========================================= */
 
 .cta-section {
-
   background: var(--black);
 
   color: white;
 
   padding: 13vw 8vw;
-
 }
-
 
 .cta-inner {
-
   max-width: 1000px;
-
 }
 
-
 .cta-inner h2 {
-
   font-family: var(--serif);
 
   font-weight: 400;
@@ -1319,12 +972,9 @@ button {
   letter-spacing: -0.045em;
 
   margin-top: 35px;
-
 }
 
-
 .cta-button {
-
   display: inline-flex;
 
   align-items: center;
@@ -1344,16 +994,12 @@ button {
   transition:
     background 0.3s ease,
     color 0.3s ease;
-
 }
 
-
 .cta-button:hover {
-
   background: white;
 
   color: black;
-
 }
 
 
@@ -1362,18 +1008,14 @@ button {
 ========================================= */
 
 footer {
-
   background: var(--black);
 
   color: white;
 
   padding: 0 8vw 35px;
-
 }
 
-
 .footer-top {
-
   border-top: 1px solid rgba(255,255,255,0.15);
 
   padding-top: 45px;
@@ -1383,23 +1025,17 @@ footer {
   display: grid;
 
   grid-template-columns: 1fr 1fr 1fr;
-
 }
 
-
 .footer-logo {
-
   font-family: var(--serif);
 
   font-size: 32px;
 
   letter-spacing: 0.08em;
-
 }
 
-
 .footer-subtitle {
-
   font-size: 7px;
 
   letter-spacing: 0.3em;
@@ -1407,57 +1043,39 @@ footer {
   margin-top: 8px;
 
   opacity: 0.5;
-
 }
 
-
 .footer-contact {
-
   display: flex;
 
   flex-direction: column;
 
   gap: 12px;
-
 }
 
-
 .footer-contact a {
-
   font-size: 11px;
 
   opacity: 0.7;
 
   transition: opacity 0.3s ease;
-
 }
-
 
 .footer-contact a:hover {
-
   opacity: 1;
-
 }
-
 
 .footer-social {
-
   text-align: right;
-
 }
 
-
 .footer-social a {
-
   font-size: 8px;
 
   letter-spacing: 0.2em;
-
 }
 
-
 .footer-bottom {
-
   display: flex;
 
   justify-content: space-between;
@@ -1471,7 +1089,6 @@ footer {
   letter-spacing: 0.18em;
 
   opacity: 0.4;
-
 }
 
 
@@ -1480,11 +1097,9 @@ footer {
 ========================================= */
 
 .whatsapp-button {
-
   position: fixed;
 
   right: 28px;
-
   bottom: 28px;
 
   z-index: 900;
@@ -1512,27 +1127,19 @@ footer {
 
   transition:
     transform 0.3s ease;
-
 }
-
 
 .whatsapp-button:hover {
-
   transform: translateY(-4px);
-
 }
 
-
 .whatsapp-dot {
-
   width: 6px;
-
   height: 6px;
 
   border-radius: 50%;
 
   background: #69d26f;
-
 }
 
 
@@ -1545,366 +1152,228 @@ footer {
   .desktop-nav,
   .language-switch,
   .book-button {
-
     display: none;
-
   }
-
 
   .menu-button {
-
     display: block;
-
   }
 
-
   .navbar {
-
     height: 75px;
 
     padding: 0 6vw;
-
   }
-
 
   .nav-logo {
-
     font-size: 20px;
-
   }
 
-
   .hero-content {
-
     left: 7vw;
-
     right: 7vw;
 
     bottom: 12vh;
-
   }
-
 
   .hero h1 {
-
     font-size: clamp(55px, 14vw, 90px);
-
   }
 
-
   .hero-description {
-
     font-size: 12px;
 
     max-width: 330px;
-
   }
-
 
   .hero-scroll {
-
     display: none;
-
   }
 
-
   .intro-grid {
-
     grid-template-columns: 1fr;
 
     gap: 45px;
-
   }
-
 
   .residence-card,
   .residence-card.reverse {
-
     grid-template-columns: 1fr;
 
     gap: 45px;
-
   }
-
 
   .residence-card.reverse .residence-image {
-
     order: 1;
-
   }
-
 
   .residence-card.reverse .residence-info {
-
     order: 2;
-
   }
-
 
   .residence-image {
-
     height: 480px;
-
   }
 
-
   .experience-features {
-
     grid-template-columns: 1fr;
 
     gap: 30px;
 
     max-width: 400px;
-
   }
 
-
   .bologna-grid {
-
     grid-template-columns: 1fr;
 
     gap: 60px;
-
   }
-
 
   .bologna-image {
-
     height: 500px;
-
   }
 
-
   .footer-top {
-
     grid-template-columns: 1fr;
 
     gap: 50px;
 
     padding-bottom: 70px;
-
   }
-
 
   .footer-social {
-
     text-align: left;
-
   }
 
-
   .footer-bottom {
-
     flex-direction: column;
 
     gap: 10px;
-
   }
-
 }
 
 
 @media (max-width: 600px) {
 
   .loader-logo {
-
     font-size: 52px;
-
   }
 
-
   .loader-subtitle {
-
     font-size: 7px;
 
     letter-spacing: 0.3em;
-
   }
 
-
   .scroll-enter {
-
     bottom: 35px;
 
     font-size: 7px;
 
+    letter-spacing: 0.22em;
   }
 
-
   .hero {
-
     min-height: 100svh;
 
     height: 100svh;
-
   }
-
 
   .hero-content {
-
     bottom: 13vh;
-
   }
-
 
   .hero-description {
-
     margin-top: 28px;
-
   }
-
 
   .hero-link {
-
     margin-top: 32px;
-
   }
-
 
   .intro-section {
-
     padding: 25vw 7vw;
-
   }
-
 
   .intro-grid {
-
     margin-top: 55px;
-
   }
-
 
   .intro-text h2 {
-
     font-size: 50px;
-
   }
-
 
   .residences-section {
-
     padding: 18vw 7vw 25vw;
-
   }
 
-
   .residence-list {
-
     margin-top: 65px;
 
     gap: 100px;
-
   }
-
 
   .residence-image {
-
     height: 400px;
-
   }
-
 
   .residence-info h3 {
-
     font-size: 48px;
-
   }
-
 
   .experience-content {
-
     padding: 18vw 7vw;
-
   }
-
 
   .experience-label {
-
     margin-top: 65px;
-
   }
-
 
   .experience-content h2 {
-
     font-size: 58px;
-
   }
-
 
   .experience-features {
-
     margin-top: 70px;
-
   }
-
 
   .bologna-section {
-
     padding: 18vw 7vw 25vw;
-
   }
-
 
   .bologna-grid {
-
     margin-top: 60px;
-
   }
-
 
   .bologna-text h2 {
-
     font-size: 58px;
-
   }
-
 
   .bologna-image {
-
     height: 420px;
-
   }
-
 
   .cta-section {
-
     padding: 22vw 7vw;
-
   }
-
 
   .cta-inner h2 {
-
     font-size: 68px;
-
   }
-
 
   .cta-button {
-
     margin-top: 50px;
-
   }
-
 
   footer {
-
     padding-left: 7vw;
-
     padding-right: 7vw;
-
   }
 
-
   .whatsapp-button {
-
     right: 18px;
 
     bottom: 18px;
-
   }
-
 }
 ```
