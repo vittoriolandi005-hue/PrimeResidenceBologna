@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let animationFrame = null;
 
+
   function animateIntro() {
 
     if (introFinished) return;
@@ -74,17 +75,13 @@ document.addEventListener("DOMContentLoaded", () => {
       "translate3d(0, -100%, 0)";
 
     document.body.classList.remove("intro-active");
+
     document.body.style.overflow = "";
 
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);
       animationFrame = null;
     }
-
-    // Avvia le animazioni della pagina
-    requestAnimationFrame(() => {
-      updatePremiumScroll();
-    });
   }
 
 
@@ -211,110 +208,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // =====================================================
-  // NAVBAR PREMIUM
+  // NAVBAR
   // =====================================================
 
   const navbar =
     document.querySelector(".navbar");
+
 
   function updateNavbar() {
 
     if (!navbar) return;
 
     if (window.scrollY > 50) {
+
       navbar.classList.add("scrolled");
+
     } else {
+
       navbar.classList.remove("scrolled");
+
     }
-  }
-
-
-  // =====================================================
-  // PREMIUM PARALLAX
-  // =====================================================
-
-  const parallaxImages =
-    document.querySelectorAll(
-      ".hero-image, .experience-image, .residence-image img, .bologna-image img"
-    );
-
-  let ticking = false;
-
-  function updateParallax() {
-
-    const viewportHeight =
-      window.innerHeight;
-
-    parallaxImages.forEach((image) => {
-
-      const rect =
-        image.getBoundingClientRect();
-
-      // Ignora immagini molto lontane dalla viewport
-      if (
-        rect.bottom < -100 ||
-        rect.top > viewportHeight + 100
-      ) {
-        return;
-      }
-
-      const center =
-        rect.top + rect.height / 2;
-
-      const distance =
-        (center - viewportHeight / 2) /
-        viewportHeight;
-
-      const movement =
-        distance * -18;
-
-      image.style.transform =
-        `translate3d(0, ${movement}px, 0)`;
-    });
-  }
-
-
-  function updatePremiumScroll() {
-
-    updateNavbar();
-    updateParallax();
-
-    ticking = false;
   }
 
 
   window.addEventListener(
     "scroll",
-    () => {
-
-      if (!ticking) {
-
-        window.requestAnimationFrame(
-          updatePremiumScroll
-        );
-
-        ticking = true;
-      }
-
-    },
-    { passive: true }
-  );
-
-
-  window.addEventListener(
-    "resize",
-    () => {
-
-      if (!ticking) {
-
-        window.requestAnimationFrame(
-          updatePremiumScroll
-        );
-
-        ticking = true;
-      }
-
-    },
+    updateNavbar,
     { passive: true }
   );
 
@@ -325,6 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const revealElements =
     document.querySelectorAll(".reveal");
+
 
   const revealObserver =
     new IntersectionObserver(
@@ -346,23 +266,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
       },
       {
-        threshold: 0.12,
+        threshold: 0.15,
         rootMargin: "0px 0px -5% 0px"
       }
     );
 
 
   revealElements.forEach((element) => {
+
     revealObserver.observe(element);
+
   });
 
 
   // =====================================================
-  // RESIDENCE CARDS - PREMIUM REVEAL
+  // RESIDENCE CARDS
   // =====================================================
 
   const residenceCards =
     document.querySelectorAll(".residence-card");
+
 
   const residenceObserver =
     new IntersectionObserver(
@@ -386,13 +309,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
       },
       {
-        threshold: 0.18
+        threshold: 0.15,
+        rootMargin: "0px 0px -5% 0px"
       }
     );
 
 
   residenceCards.forEach((card) => {
+
     residenceObserver.observe(card);
+
   });
 
 
@@ -423,7 +349,9 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    // Chiudi menu quando si clicca un link
+    // Chiude il menu quando viene
+    // selezionata una voce
+
     mobileMenu
       .querySelectorAll("a")
       .forEach((link) => {
@@ -448,7 +376,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // =====================================================
-  // SMOOTH ANCHOR LINKS
+  // SMOOTH LINKS
   // =====================================================
 
   document
@@ -487,18 +415,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const year =
     document.querySelector("#year");
 
+
   if (year) {
+
     year.textContent =
       new Date().getFullYear();
+
   }
 
 
   // =====================================================
-  // INITIAL UPDATE
+  // INITIAL NAVBAR STATE
   // =====================================================
 
-  window.requestAnimationFrame(() => {
-    updatePremiumScroll();
-  });
+  updateNavbar();
 
 });
