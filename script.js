@@ -12,9 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const loader = document.querySelector(".loader");
 
   if (loader) {
-    setTimeout(() => {
-      loader.classList.add("hide");
-    }, 1400);
+    setTimeout(() => loader.classList.add("hide"), 1400);
   }
 
   /* =======================================================
@@ -25,12 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateNavbar() {
     if (!navbar) return;
-
-    if (window.scrollY > 50) {
-      navbar.classList.add("scrolled");
-    } else {
-      navbar.classList.remove("scrolled");
-    }
+    navbar.classList.toggle("scrolled", window.scrollY > 50);
   }
 
   updateNavbar();
@@ -45,18 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (menuToggle && mobileMenu) {
 
-    menuToggle.setAttribute("aria-expanded", "false");
-
     menuToggle.addEventListener("click", () => {
 
       const open = menuToggle.classList.toggle("active");
 
       mobileMenu.classList.toggle("active", open);
-
-      menuToggle.setAttribute(
-        "aria-expanded",
-        open ? "true" : "false"
-      );
 
       document.body.style.overflow = open ? "hidden" : "";
 
@@ -68,7 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         menuToggle.classList.remove("active");
         mobileMenu.classList.remove("active");
-        menuToggle.setAttribute("aria-expanded", "false");
         document.body.style.overflow = "";
 
       });
@@ -78,19 +63,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =======================================================
-     04. PREMIUM FIRST SCROLL (2200ms)
+     04. FIRST CINEMATIC SCROLL (2200ms)
+
+     Primo scroll dalla cima → "Stay beautifully"
   ======================================================= */
 
   const hero = document.querySelector(".hero");
 
-  if (hero && hero.nextElementSibling) {
+  if (hero) {
 
-    const intro = hero.nextElementSibling;
+    const stayTitle = hero.querySelector("h1");
+
+    let introDone = false;
+    let introRunning = false;
 
     const DURATION = 2200;
-
-    let introFinished = false;
-    let introAnimating = false;
 
     function ease(t) {
 
@@ -100,114 +87,101 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-    function startIntro() {
+    function runIntroScroll() {
 
-      if (introFinished || introAnimating) return;
+      if (introDone || introRunning) return;
       if (window.scrollY > 5) return;
 
-      introAnimating = true;
+      introRunning = true;
 
-      const startY = window.scrollY;
-      const targetY = intro.offsetTop;
+      const start = window.scrollY;
+
+      const target = stayTitle
+        ? stayTitle.getBoundingClientRect().top + window.scrollY - 80
+        : hero.offsetHeight * 0.35;
+
       const startTime = performance.now();
 
-      function animate(now) {
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
 
-        const elapsed = now - startTime;
+      function frame(now) {
 
-        const progress = Math.min(elapsed / DURATION, 1);
+        const progress = Math.min((now - startTime) / DURATION, 1);
 
-        const y = startY + (targetY - startY) * ease(progress);
+        const y = start + (target - start) * ease(progress);
 
         window.scrollTo(0, y);
 
         if (progress < 1) {
 
-          requestAnimationFrame(animate);
+          requestAnimationFrame(frame);
 
         } else {
 
-          window.scrollTo(0, targetY);
+          window.scrollTo(0, target);
 
-          introAnimating = false;
-          introFinished = true;
+          document.documentElement.style.overflow = "";
+          document.body.style.overflow = "";
+
+          introRunning = false;
+          introDone = true;
 
         }
 
       }
 
-      requestAnimationFrame(animate);
+      requestAnimationFrame(frame);
 
     }
 
-    /* ---------- Mouse ---------- */
+    window.addEventListener("wheel", (e) => {
 
-    window.addEventListener("wheel", (event) => {
+      if (introDone) return;
 
-      if (introAnimating) {
-        event.preventDefault();
-        return;
-      }
+      if (window.scrollY <= 5 && e.deltaY > 0) {
 
-      if (
-        !introFinished &&
-        window.scrollY <= 5 &&
-        event.deltaY > 0
-      ) {
-
-        event.preventDefault();
-        startIntro();
+        e.preventDefault();
+        runIntroScroll();
 
       }
 
     }, { passive: false });
-
-    /* ---------- Touch ---------- */
 
     let touchStartY = 0;
 
-    window.addEventListener("touchstart", (event) => {
+    window.addEventListener("touchstart", e => {
 
-      touchStartY = event.touches[0].clientY;
+      touchStartY = e.touches[0].clientY;
 
     }, { passive: true });
 
-    window.addEventListener("touchmove", (event) => {
+    window.addEventListener("touchmove", e => {
 
-      if (introAnimating) {
-        event.preventDefault();
-        return;
-      }
+      if (introDone) return;
 
-      if (introFinished) return;
-      if (window.scrollY > 5) return;
+      const diff = touchStartY - e.touches[0].clientY;
 
-      const move = touchStartY - event.touches[0].clientY;
+      if (window.scrollY <= 5 && diff > 8) {
 
-      if (move > 8) {
-
-        event.preventDefault();
-        startIntro();
+        e.preventDefault();
+        runIntroScroll();
 
       }
 
     }, { passive: false });
 
-    /* ---------- Keyboard ---------- */
+    window.addEventListener("keydown", e => {
 
-    window.addEventListener("keydown", (event) => {
-
-      if (introAnimating || introFinished) return;
-      if (window.scrollY > 5) return;
+      if (introDone) return;
 
       if (
-        event.key === "ArrowDown" ||
-        event.key === "PageDown" ||
-        event.key === " "
+        window.scrollY <= 5 &&
+        (e.key === "ArrowDown" || e.key === "PageDown" || e.key === " ")
       ) {
 
-        event.preventDefault();
-        startIntro();
+        e.preventDefault();
+        runIntroScroll();
 
       }
 
@@ -216,21 +190,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =======================================================
-     05. REVEAL ANIMATIONS
+     05. REVEAL
   ======================================================= */
 
   const revealElements = document.querySelectorAll(".reveal");
 
   if (revealElements.length) {
 
-    const observer = new IntersectionObserver((entries, obs) => {
+    const observer = new IntersectionObserver((entries) => {
 
       entries.forEach(entry => {
 
         if (entry.isIntersecting) {
 
           entry.target.classList.add("visible");
-          obs.unobserve(entry.target);
+          observer.unobserve(entry.target);
 
         }
 
@@ -243,27 +217,22 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =======================================================
-     06. ANCHOR LINKS
+     06. SMOOTH ANCHORS
   ======================================================= */
 
   document.querySelectorAll('a[href^="#"]').forEach(link => {
 
-    link.addEventListener("click", event => {
+    link.addEventListener("click", e => {
 
       const id = link.getAttribute("href");
-
-      if (!id || id === "#") return;
-
       const target = document.querySelector(id);
 
-      if (!target) return;
+      if (!target || id === "#") return;
 
-      event.preventDefault();
-
-      const offset = navbar ? navbar.offsetHeight : 0;
+      e.preventDefault();
 
       window.scrollTo({
-        top: target.offsetTop - offset,
+        top: target.offsetTop - (navbar ? navbar.offsetHeight : 0),
         behavior: "smooth"
       });
 
@@ -283,10 +252,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const checkin = document.querySelector("#checkin");
   const checkout = document.querySelector("#checkout");
   const bookingMessage = document.querySelector("#bookingMessage");
-  const submit = document.querySelector(".booking-submit");
+  const submitButton = document.querySelector(".booking-submit");
 
   function today() {
-    return new Date().toISOString().split("T")[0];
+
+    const d = new Date();
+
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+
   }
 
   if (checkin) checkin.min = today();
@@ -300,10 +273,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       card.classList.add("selected");
 
-      const name = card.dataset.residence || "";
+      residenceInput.value = card.dataset.residence;
 
-      if (residenceInput) residenceInput.value = name;
-      if (selectedResidenceText) selectedResidenceText.textContent = name;
+      if (selectedResidenceText)
+        selectedResidenceText.textContent = card.dataset.residence;
 
       bookingFormSection?.scrollIntoView({
         behavior: "smooth"
@@ -319,9 +292,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       checkout.min = checkin.value;
 
-      if (checkout.value <= checkin.value) {
+      if (checkout.value && checkout.value <= checkin.value)
         checkout.value = "";
-      }
 
     });
 
@@ -333,69 +305,67 @@ document.addEventListener("DOMContentLoaded", () => {
 
     bookingMessage.textContent = text;
     bookingMessage.className = `booking-message ${type}`;
-    bookingMessage.style.display = "block";
 
   }
 
   if (bookingForm) {
 
-    bookingForm.addEventListener("submit", async event => {
+    bookingForm.addEventListener("submit", async e => {
 
-      event.preventDefault();
+      e.preventDefault();
 
-      if (!residenceInput?.value) {
-        showMessage("Seleziona una residence.", "error");
-        return;
-      }
+      if (!residenceInput.value)
+        return showMessage("Please select a residence first.","error");
 
-      if (!checkin?.value || !checkout?.value) {
-        showMessage("Inserisci check-in e check-out.", "error");
-        return;
-      }
+      if (!checkin.value || !checkout.value)
+        return showMessage("Please select check-in and check-out.","error");
 
-      if (checkout.value <= checkin.value) {
-        showMessage("Il check-out deve essere successivo al check-in.", "error");
-        return;
-      }
+      if (checkout.value <= checkin.value)
+        return showMessage("Check-out must be after check-in.","error");
 
-      if (submit) {
-        submit.disabled = true;
-        submit.classList.add("loading");
-      }
-
-      const data = Object.fromEntries(new FormData(bookingForm).entries());
+      submitButton.disabled = true;
+      submitButton.classList.add("loading");
 
       try {
 
-        const response = await fetch("/api/booking-request", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
+        const data = Object.fromEntries(new FormData(bookingForm));
+
+        const res = await fetch("/api/booking-request",{
+
+          method:"POST",
+
+          headers:{
+            "Content-Type":"application/json"
           },
-          body: JSON.stringify(data)
+
+          body:JSON.stringify(data)
+
         });
 
-        const result = await response.json();
+        const json = await res.json();
 
-        if (!response.ok) throw new Error(result.message || "Errore");
+        if(!res.ok)
+          throw new Error(json.message);
 
         bookingForm.reset();
 
-        if (residenceInput) residenceInput.value = data.residence;
-        if (selectedResidenceText) selectedResidenceText.textContent = data.residence;
+        residenceInput.value = "";
 
-        showMessage("Richiesta inviata con successo.", "success");
+        bookingCards.forEach(c=>c.classList.remove("selected"));
 
-      } catch {
+        if(selectedResidenceText)
+          selectedResidenceText.textContent="Please select a residence above";
 
-        showMessage("Invio non riuscito.", "error");
+        showMessage("Booking request sent successfully.","success");
 
-      } finally {
+      } catch(err){
 
-        if (submit) {
-          submit.disabled = false;
-          submit.classList.remove("loading");
-        }
+        showMessage("Unable to send your request.","error");
+
+      } finally{
+
+        submitButton.disabled=false;
+        submitButton.classList.remove("loading");
 
       }
 
@@ -404,53 +374,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =======================================================
-     08. ESCAPE
+     08. ESC
   ======================================================= */
 
-  document.addEventListener("keydown", event => {
+  document.addEventListener("keydown", e => {
 
-    if (
-      event.key === "Escape" &&
-      mobileMenu?.classList.contains("active")
-    ) {
+    if (e.key === "Escape") {
 
-      mobileMenu.classList.remove("active");
       menuToggle?.classList.remove("active");
+      mobileMenu?.classList.remove("active");
       document.body.style.overflow = "";
 
     }
 
   });
 
-  /* =======================================================
-     09. RESIZE
-  ======================================================= */
-
-  window.addEventListener("resize", () => {
-
-    if (
-      window.innerWidth > 700 &&
-      mobileMenu?.classList.contains("active")
-    ) {
-
-      mobileMenu.classList.remove("active");
-      menuToggle?.classList.remove("active");
-      document.body.style.overflow = "";
-
-    }
-
-  });
-
-  /* =======================================================
-     10. FOOTER YEAR
-  ======================================================= */
-
-  const year = document.querySelector("#year");
-
-  if (year) {
-    year.textContent = new Date().getFullYear();
-  }
-
-  console.log("Prime Residence Bologna — premium ready.");
+  console.log("Prime Residence Bologna ready.");
 
 });
