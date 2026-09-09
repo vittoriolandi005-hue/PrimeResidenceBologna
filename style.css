@@ -16,7 +16,6 @@
 html {
   width: 100%;
   min-height: 100%;
-  scroll-behavior: smooth;
   overflow-x: hidden;
 }
 
@@ -76,6 +75,7 @@ button {
 
 .loader {
   position: fixed;
+
   inset: 0;
 
   z-index: 9999;
@@ -1546,8 +1546,6 @@ footer {
    EXTRA FIXES
 ========================================================= */
 
-/* Evita qualsiasi bordo/spazio bianco laterale */
-
 html,
 body,
 main,
@@ -1564,22 +1562,18 @@ img {
   max-width: 100%;
 }
 
-
-/* Migliora il comportamento delle animazioni */
-
 .reveal {
   will-change: opacity, transform;
 }
-
-
-/* Mantiene il testo centrato correttamente */
 
 .photo-placeholder span {
   display: block;
 }
 
 
-/* Riduzione animazioni per utenti che la preferiscono */
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
 
