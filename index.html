@@ -43,9 +43,11 @@
 
 
   <style>
+
     /* =====================================================
        LOADER — SCROLL TO DISCOVER
-       Solo indicazione visiva: non modifica la logica JS
+       Solo indicazione visiva
+       NON modifica la logica JS dello scroll
     ====================================================== */
 
     .loader-scroll-hint {
@@ -58,7 +60,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 15px;
 
       width: max-content;
 
@@ -66,8 +68,10 @@
       text-align: center;
 
       transform: translateX(-50%);
+
       pointer-events: none;
     }
+
 
     .loader-scroll-text {
       display: block;
@@ -75,82 +79,180 @@
       font-size: 8px;
       font-weight: 600;
       line-height: 1;
+
       letter-spacing: 0.32em;
       text-transform: uppercase;
       white-space: nowrap;
 
-      opacity: 0.88;
+      opacity: 0.9;
     }
 
-    .loader-scroll-indicator {
+
+    /* =====================================================
+       OPEN ARROW
+    ====================================================== */
+
+    .loader-scroll-arrow {
       position: relative;
 
       display: block;
 
-      width: 1px;
-      height: 34px;
+      width: 26px;
+      height: 18px;
 
-      overflow: hidden;
+      opacity: 0.95;
 
-      background: rgba(182, 155, 103, 0.22);
+      animation:
+        loaderArrowMove 1.8s ease-in-out infinite;
     }
 
-    .loader-scroll-indicator::after {
+
+    .loader-scroll-arrow::before,
+    .loader-scroll-arrow::after {
       content: "";
 
       position: absolute;
-      top: -100%;
-      left: 0;
+      top: 8px;
 
-      width: 1px;
-      height: 100%;
+      width: 16px;
+      height: 1px;
 
       background: #b69b67;
 
-      animation: loaderScrollIndicator 1.8s ease-in-out infinite;
+      box-shadow:
+        0 0 5px rgba(182, 155, 103, 0.25);
+
+      transform-origin: center;
     }
 
-    @keyframes loaderScrollIndicator {
+
+    .loader-scroll-arrow::before {
+      left: 0;
+
+      transform:
+        rotate(-32deg);
+    }
+
+
+    .loader-scroll-arrow::after {
+      right: 0;
+
+      transform:
+        rotate(32deg);
+    }
+
+
+    /* =====================================================
+       LIGHT GLOW
+       MOVIMENTO DAL BASSO VERSO L'ALTO
+    ====================================================== */
+
+    .loader-scroll-glow {
+      position: absolute;
+      left: 50%;
+      bottom: -10px;
+
+      width: 5px;
+      height: 5px;
+
+      border-radius: 50%;
+
+      background: #b69b67;
+
+      box-shadow:
+        0 0 7px rgba(182, 155, 103, 0.7),
+        0 0 14px rgba(182, 155, 103, 0.35);
+
+      transform:
+        translateX(-50%);
+
+      animation:
+        loaderGlowUp 1.8s ease-in-out infinite;
+    }
+
+
+    @keyframes loaderArrowMove {
+
       0% {
-        transform: translateY(0);
-        opacity: 0;
+        transform: translateY(5px);
+        opacity: 0.45;
       }
 
-      20% {
-        opacity: 1;
-      }
-
-      70% {
+      45% {
         opacity: 1;
       }
 
       100% {
-        transform: translateY(200%);
-        opacity: 0;
+        transform: translateY(-5px);
+        opacity: 0.45;
       }
+
     }
 
+
+    @keyframes loaderGlowUp {
+
+      0% {
+        transform:
+          translate(-50%, 12px);
+
+        opacity: 0;
+      }
+
+      20% {
+        opacity: 0.9;
+      }
+
+      70% {
+        opacity: 0.9;
+      }
+
+      100% {
+        transform:
+          translate(-50%, -22px);
+
+        opacity: 0;
+      }
+
+    }
+
+
     @media (max-width: 700px) {
+
       .loader-scroll-hint {
         top: calc(50% + 108px);
-        gap: 10px;
+        gap: 13px;
       }
+
 
       .loader-scroll-text {
         font-size: 7px;
         letter-spacing: 0.28em;
       }
 
-      .loader-scroll-indicator {
-        height: 30px;
+
+      .loader-scroll-arrow {
+        width: 24px;
+        height: 17px;
       }
+
+
+      .loader-scroll-arrow::before,
+      .loader-scroll-arrow::after {
+        width: 15px;
+      }
+
     }
 
+
     @media (max-height: 600px) {
+
       .loader-scroll-hint {
         top: calc(50% + 95px);
       }
+
     }
+
   </style>
 
 </head>
@@ -189,7 +291,12 @@
         SCROLL TO DISCOVER
       </span>
 
-      <span class="loader-scroll-indicator"></span>
+
+      <span class="loader-scroll-arrow">
+
+        <span class="loader-scroll-glow"></span>
+
+      </span>
 
     </div>
 
@@ -1183,10 +1290,6 @@
   >
 
 
-    <!-- ===================================================
-         AUTOMATIC HOME BANNER
-    ==================================================== -->
-
     <div
       class="prime-assistant-prompt"
       aria-hidden="true"
@@ -1244,10 +1347,6 @@
     </div>
 
 
-    <!-- ===================================================
-         CHAT LAUNCHER
-    ==================================================== -->
-
     <button
       class="prime-assistant-launcher"
       type="button"
@@ -1267,18 +1366,12 @@
     </button>
 
 
-    <!-- ===================================================
-         CHAT WINDOW
-    ==================================================== -->
-
     <section
       class="prime-assistant-window"
       aria-label="Prime Residence virtual assistant"
       aria-hidden="true"
     >
 
-
-      <!-- HEADER -->
 
       <div class="prime-assistant-header">
 
@@ -1320,8 +1413,6 @@
       </div>
 
 
-      <!-- CONVERSATION -->
-
       <div
         class="prime-assistant-messages"
         aria-live="polite"
@@ -1349,8 +1440,6 @@
 
       </div>
 
-
-      <!-- QUICK QUESTIONS -->
 
       <div class="prime-assistant-suggestions">
 
@@ -1403,8 +1492,6 @@
       </div>
 
 
-      <!-- INPUT -->
-
       <form
         class="prime-assistant-form"
         autocomplete="off"
@@ -1439,8 +1526,6 @@
 
       </form>
 
-
-      <!-- CONTACT -->
 
       <div class="prime-assistant-contact">
 
