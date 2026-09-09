@@ -1,79 +1,200 @@
+```html
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Prime Residence Bologna — premium apartments in Bologna."
+  >
 
   <title>Prime Residence Bologna</title>
-  <meta name="description" content="Prime Residence Bologna — elegant apartments for your stay in Bologna.">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
 
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
 
-  <link rel="stylesheet" href="style.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Playfair+Display:wght@400;500&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
 </head>
 
-<body>
 
-  <!-- LOADER -->
+<body class="intro-active">
+
+
+  <!-- =========================================
+       INTRO
+  ========================================== -->
+
   <div class="loader">
-    <div class="loader-logo">PRIME</div>
-    <div class="loader-line"></div>
-    <div class="loader-subtitle">RESIDENCE BOLOGNA</div>
-  </div>
 
-  <!-- NAVIGATION -->
-  <header class="navbar">
-    <a href="#" class="logo">
-      <span>PRIME</span>
-      <small>RESIDENCE BOLOGNA</small>
-    </a>
+    <div class="loader-content">
 
-    <nav class="desktop-nav">
-      <a href="#residences">Apartments</a>
-      <a href="#experience">Experience</a>
-      <a href="#bologna">Bologna</a>
-      <a href="#contact">Contact</a>
-    </nav>
-
-    <div class="nav-right">
-      <div class="language">
-        <span class="active">IT</span>
-        <span>EN</span>
+      <div class="loader-logo">
+        PRIME
       </div>
 
-      <a href="#residences" class="nav-button">
-        BOOK NOW
-      </a>
+      <div class="loader-line"></div>
+
+      <div class="loader-subtitle">
+        RESIDENCE BOLOGNA
+      </div>
+
     </div>
 
-    <button class="menu-button" aria-label="Apri menu">
-      <span></span>
-      <span></span>
-    </button>
-  </header>
 
-  <!-- MOBILE MENU -->
-  <div class="mobile-menu">
-    <a href="#residences">Apartments</a>
-    <a href="#experience">Experience</a>
-    <a href="#bologna">Bologna</a>
-    <a href="#contact">Contact</a>
+    <div class="scroll-enter">
+      SCROLL TO ENTER ↓
+    </div>
+
   </div>
 
-  <!-- HERO -->
-  <main>
 
-    <section class="hero">
 
-      <div class="hero-image placeholder">
-        <span>PHOTO 01</span>
-        <small>HERO IMAGE</small>
+  <!-- =========================================
+       NAVIGATION
+  ========================================== -->
+
+  <header class="navbar">
+
+    <a
+      href="#home"
+      class="nav-logo"
+    >
+      PRIME
+      <span>RESIDENCE BOLOGNA</span>
+    </a>
+
+
+    <nav class="desktop-nav">
+
+      <a href="#residences">
+        RESIDENCES
+      </a>
+
+      <a href="#experience">
+        EXPERIENCE
+      </a>
+
+      <a href="#bologna">
+        BOLOGNA
+      </a>
+
+      <a href="#contact">
+        CONTACT
+      </a>
+
+    </nav>
+
+
+    <div class="nav-right">
+
+      <div class="language-switch">
+        <span class="active">EN</span>
+        <span>IT</span>
       </div>
 
+      <a
+        href="https://www.booking.com/"
+        target="_blank"
+        class="book-button"
+      >
+        BOOK NOW
+      </a>
+
+      <button
+        class="menu-button"
+        aria-label="Open menu"
+      >
+        <span></span>
+        <span></span>
+      </button>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- =========================================
+       MOBILE MENU
+  ========================================== -->
+
+  <div class="mobile-menu">
+
+    <a href="#residences">
+      RESIDENCES
+    </a>
+
+    <a href="#experience">
+      EXPERIENCE
+    </a>
+
+    <a href="#bologna">
+      BOLOGNA
+    </a>
+
+    <a href="#contact">
+      CONTACT
+    </a>
+
+    <a
+      href="https://www.booking.com/"
+      target="_blank"
+    >
+      BOOK NOW
+    </a>
+
+  </div>
+
+
+
+  <main>
+
+
+    <!-- =========================================
+         HERO
+    ========================================== -->
+
+    <section
+      id="home"
+      class="hero"
+    >
+
+      <div class="hero-image">
+
+        <div class="photo-placeholder">
+          PHOTO 01
+        </div>
+
+      </div>
+
+
       <div class="hero-overlay"></div>
+
 
       <div class="hero-content">
 
@@ -82,55 +203,98 @@
         </div>
 
         <h1 class="reveal">
-          Your home<br>
+
+          Your home
+          <br>
+
           <em>in Bologna.</em>
+
         </h1>
 
+
         <p class="hero-description reveal">
-          Elegant spaces, authentic Bologna and an experience
-          designed around your stay.
+
+          Contemporary residences designed
+          for living, staying and discovering
+          Bologna with comfort and style.
+
         </p>
 
-        <a href="#residences" class="hero-link reveal">
-          <span>DISCOVER OUR RESIDENCES</span>
-          <span class="arrow">↓</span>
+
+        <a
+          href="#residences"
+          class="hero-link reveal"
+        >
+
+          DISCOVER OUR RESIDENCES
+
+          <span>↓</span>
+
         </a>
 
       </div>
 
-      <div class="hero-number">
-        01 / 05
+
+      <div class="hero-index">
+        01 <span>/</span> 05
+      </div>
+
+
+      <div class="hero-scroll">
+        SCROLL
+        <span></span>
       </div>
 
     </section>
 
 
-    <!-- INTRO -->
-    <section class="intro section">
 
-      <div class="section-label reveal">
-        01 — PRIME RESIDENCE
+    <!-- =========================================
+         INTRO
+    ========================================== -->
+
+    <section class="intro-section">
+
+      <div class="section-number">
+        01
       </div>
 
-      <div class="intro-content">
 
-        <h2 class="reveal">
-          A different way<br>
-          to <em>stay.</em>
-        </h2>
+      <div class="intro-grid">
 
-        <div class="intro-text reveal">
-          <p>
-            Prime Residence Bologna offers carefully selected
-            apartments where contemporary comfort meets the
-            character of the city.
+        <div class="intro-label reveal">
+          PRIME RESIDENCE
+        </div>
+
+
+        <div class="intro-text">
+
+          <h2 class="reveal">
+
+            A different way
+            <br>
+            <em>to stay.</em>
+
+          </h2>
+
+
+          <p class="reveal">
+
+            Prime Residence Bologna offers
+            carefully selected apartments where
+            contemporary design meets the
+            authentic character of the city.
+
           </p>
 
-          <p>
-            Whether you're visiting Bologna for business,
-            leisure or a special occasion, everything is designed
-            to make you feel at home.
+
+          <p class="reveal">
+
+            More space. More privacy.
+            A place that feels like your own.
+
           </p>
+
         </div>
 
       </div>
@@ -138,54 +302,99 @@
     </section>
 
 
-    <!-- RESIDENCES -->
-    <section id="residences" class="residences section">
 
-      <div class="section-heading">
+    <!-- =========================================
+         RESIDENCES
+    ========================================== -->
 
-        <div class="section-label reveal">
-          02 — OUR RESIDENCES
+    <section
+      id="residences"
+      class="residences-section"
+    >
+
+      <div class="section-header">
+
+        <div class="section-number">
+          02
         </div>
 
-        <h2 class="reveal">
-          Choose your<br>
-          <em>space.</em>
-        </h2>
+        <div class="section-label">
+          OUR RESIDENCES
+        </div>
 
       </div>
 
 
-      <div class="residence-grid">
+      <div class="residence-list">
 
-        <!-- GASTONE -->
-        <article class="residence-card residence-large reveal">
 
-          <div class="residence-image placeholder">
-            <span>PHOTO 02</span>
-            <small>GASTONE ROSSI 12</small>
+        <!-- Residence 1 -->
+
+        <article class="residence-card">
+
+          <div class="residence-image">
+
+            <div class="photo-placeholder">
+              PHOTO 02
+            </div>
+
           </div>
+
 
           <div class="residence-info">
 
-            <div>
-              <span class="residence-number">01</span>
-
-              <h3>
-                Gastone Rossi 12
-              </h3>
-
-              <p>
-                3 bedrooms · 2 bathrooms · up to 6 guests
-              </p>
+            <div class="residence-number">
+              01
             </div>
+
+
+            <h3>
+              Gastone Rossi 12
+            </h3>
+
+
+            <p class="residence-type">
+              PRIME RESIDENCE
+            </p>
+
+
+            <p class="residence-description">
+
+              A spacious contemporary residence
+              designed for longer stays,
+              families and groups looking
+              for comfort in Bologna.
+
+            </p>
+
+
+            <div class="residence-details">
+
+              <span>
+                3 BEDROOMS
+              </span>
+
+              <span>
+                2 BATHROOMS
+              </span>
+
+              <span>
+                UP TO 6 GUESTS
+              </span>
+
+            </div>
+
 
             <a
               href="https://www.booking.com/hotel/it/gastone-rossi-12-1-prime-residence.it.html"
               target="_blank"
-              rel="noopener"
-              class="card-link"
+              class="discover-link"
             >
-              BOOK THIS RESIDENCE →
+
+              DISCOVER RESIDENCE
+
+              <span>↗</span>
+
             </a>
 
           </div>
@@ -193,35 +402,74 @@
         </article>
 
 
-        <!-- BARONTINI -->
-        <article class="residence-card reveal">
 
-          <div class="residence-image placeholder">
-            <span>PHOTO 03</span>
-            <small>BARONTINI 8</small>
+        <!-- Residence 2 -->
+
+        <article class="residence-card reverse">
+
+          <div class="residence-image">
+
+            <div class="photo-placeholder">
+              PHOTO 03
+            </div>
+
           </div>
+
 
           <div class="residence-info">
 
-            <div>
-              <span class="residence-number">02</span>
-
-              <h3>
-                Barontini 8
-              </h3>
-
-              <p>
-                2 bedrooms · 1 bathroom · up to 6 guests
-              </p>
+            <div class="residence-number">
+              02
             </div>
+
+
+            <h3>
+              Barontini 8
+            </h3>
+
+
+            <p class="residence-type">
+              PRIME RESIDENCE
+            </p>
+
+
+            <p class="residence-description">
+
+              A refined two-bedroom apartment
+              offering privacy, practical spaces
+              and an ideal base for experiencing
+              Bologna.
+
+            </p>
+
+
+            <div class="residence-details">
+
+              <span>
+                2 BEDROOMS
+              </span>
+
+              <span>
+                1 BATHROOM
+              </span>
+
+              <span>
+                UP TO 6 GUESTS
+              </span>
+
+            </div>
+
 
             <a
               href="https://www.booking.com/hotel/it/barontini-8-prime-residence.it.html"
               target="_blank"
-              rel="noopener"
-              class="card-link"
+              class="discover-link"
             >
-              BOOK THIS RESIDENCE →
+
+              DISCOVER RESIDENCE
+
+              <span>↗</span>
+
             </a>
 
           </div>
@@ -233,59 +481,175 @@
     </section>
 
 
-    <!-- EXPERIENCE -->
-    <section id="experience" class="experience section">
 
-      <div class="section-label reveal">
-        03 — THE PRIME EXPERIENCE
-      </div>
+    <!-- =========================================
+         EXPERIENCE
+    ========================================== -->
 
-      <div class="experience-grid">
+    <section
+      id="experience"
+      class="experience-section"
+    >
 
-        <div class="experience-image placeholder reveal">
-          <span>PHOTO 04</span>
-          <small>THE PRIME EXPERIENCE</small>
+      <div class="experience-image">
+
+        <div class="photo-placeholder">
+          PHOTO 04
         </div>
 
-        <div class="experience-content">
+      </div>
 
-          <h2 class="reveal">
-            Designed for<br>
-            <em>living.</em>
+
+      <div class="experience-overlay"></div>
+
+
+      <div class="experience-content">
+
+        <div class="section-number">
+          03
+        </div>
+
+
+        <div class="experience-label">
+          THE EXPERIENCE
+        </div>
+
+
+        <h2>
+
+          Designed
+          <br>
+          <em>around you.</em>
+
+        </h2>
+
+
+        <div class="experience-features">
+
+
+          <div class="feature">
+
+            <span>01</span>
+
+            <div>
+
+              <h4>
+                SPACE
+              </h4>
+
+              <p>
+                Room to live, relax
+                and feel at home.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="feature">
+
+            <span>02</span>
+
+            <div>
+
+              <h4>
+                COMFORT
+              </h4>
+
+              <p>
+                Everything you need
+                for a seamless stay.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="feature">
+
+            <span>03</span>
+
+            <div>
+
+              <h4>
+                LOCATION
+              </h4>
+
+              <p>
+                Bologna within easy reach.
+              </p>
+
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =========================================
+         BOLOGNA
+    ========================================== -->
+
+    <section
+      id="bologna"
+      class="bologna-section"
+    >
+
+      <div class="section-number">
+        04
+      </div>
+
+
+      <div class="bologna-grid">
+
+        <div class="bologna-text">
+
+          <div class="section-label">
+            THE CITY
+          </div>
+
+
+          <h2>
+
+            Bologna,
+            <br>
+            <em>your way.</em>
+
           </h2>
 
-          <p class="reveal">
-            More than a place to sleep. Prime Residence combines
-            privacy, comfort and carefully considered details to
-            create a stay that feels effortless.
+
+          <p>
+
+            Historic streets, porticoes,
+            extraordinary food and a city
+            full of energy.
+
           </p>
 
-          <div class="features">
 
-            <div class="feature reveal">
-              <span>01</span>
-              <div>
-                <h4>SPACE</h4>
-                <p>Generous interiors designed for longer stays.</p>
-              </div>
-            </div>
+          <p>
 
-            <div class="feature reveal">
-              <span>02</span>
-              <div>
-                <h4>COMFORT</h4>
-                <p>Everything you need, exactly where you need it.</p>
-              </div>
-            </div>
+            Stay close to everything
+            while enjoying the privacy
+            of your own residence.
 
-            <div class="feature reveal">
-              <span>03</span>
-              <div>
-                <h4>LOCATION</h4>
-                <p>Discover Bologna while staying close to everything.</p>
-              </div>
-            </div>
+          </p>
 
+        </div>
+
+
+        <div class="bologna-image">
+
+          <div class="photo-placeholder">
+            PHOTO 05
           </div>
 
         </div>
@@ -295,34 +659,39 @@
     </section>
 
 
-    <!-- BOLOGNA -->
-    <section id="bologna" class="bologna section">
 
-      <div class="bologna-image placeholder reveal">
-        <span>PHOTO 05</span>
-        <small>BOLOGNA</small>
-      </div>
+    <!-- =========================================
+         FINAL CTA
+    ========================================== -->
 
-      <div class="bologna-overlay"></div>
+    <section class="cta-section">
 
-      <div class="bologna-content">
+      <div class="cta-inner">
 
-        <div class="section-label reveal">
-          04 — THE CITY
+        <div class="section-label">
+          PRIME RESIDENCE BOLOGNA
         </div>
 
-        <h2 class="reveal">
-          Bologna,<br>
-          <em>your way.</em>
+
+        <h2>
+
+          Your stay
+          <br>
+          <em>starts here.</em>
+
         </h2>
 
-        <p class="reveal">
-          Historic streets, porticoes, exceptional food and
-          a city that rewards curiosity at every turn.
-        </p>
 
-        <a href="#contact" class="outline-button reveal">
-          DISCOVER MORE
+        <a
+          href="https://www.booking.com/"
+          target="_blank"
+          class="cta-button"
+        >
+
+          BOOK YOUR RESIDENCE
+
+          <span>↗</span>
+
         </a>
 
       </div>
@@ -330,65 +699,57 @@
     </section>
 
 
-    <!-- FINAL CTA -->
-    <section class="final-cta section">
-
-      <div class="section-label reveal">
-        05 — YOUR STAY
-      </div>
-
-      <h2 class="reveal">
-        Your next stay<br>
-        <em>starts here.</em>
-      </h2>
-
-      <a href="#residences" class="dark-button reveal">
-        EXPLORE RESIDENCES
-      </a>
-
-    </section>
 
   </main>
 
 
-  <!-- FOOTER -->
+
+  <!-- =========================================
+       FOOTER
+  ========================================== -->
+
   <footer id="contact">
 
     <div class="footer-top">
 
       <div class="footer-brand">
-        <div class="logo footer-logo">
-          <span>PRIME</span>
-          <small>RESIDENCE BOLOGNA</small>
+
+        <div class="footer-logo">
+          PRIME
         </div>
 
-        <p>
-          Elegant residences<br>
-          in the heart of Bologna.
-        </p>
+        <div class="footer-subtitle">
+          RESIDENCE BOLOGNA
+        </div>
+
       </div>
 
 
-      <div class="footer-column">
-        <span>EXPLORE</span>
-        <a href="#residences">Apartments</a>
-        <a href="#experience">Experience</a>
-        <a href="#bologna">Bologna</a>
-      </div>
+      <div class="footer-contact">
 
-
-      <div class="footer-column">
-        <span>CONTACT</span>
         <a href="mailto:vittoriolandi005@gmail.com">
-          Email
+          vittoriolandi005@gmail.com
         </a>
+
         <a
           href="https://wa.me/393917055625"
           target="_blank"
-          rel="noopener"
         >
-          WhatsApp
+          +39 391 705 5625
         </a>
+
+      </div>
+
+
+      <div class="footer-social">
+
+        <a
+          href="https://wa.me/393917055625"
+          target="_blank"
+        >
+          WHATSAPP ↗
+        </a>
+
       </div>
 
     </div>
@@ -397,11 +758,12 @@
     <div class="footer-bottom">
 
       <span>
-        © <span id="year"></span> Prime Residence Bologna
+        © <span id="year"></span>
+        PRIME RESIDENCE BOLOGNA
       </span>
 
       <span>
-        Made in Bologna
+        BOLOGNA · ITALY
       </span>
 
     </div>
@@ -409,20 +771,29 @@
   </footer>
 
 
-  <!-- WHATSAPP -->
+
+  <!-- =========================================
+       WHATSAPP
+  ========================================== -->
+
   <a
     href="https://wa.me/393917055625"
     target="_blank"
-    rel="noopener"
-    class="whatsapp"
-    aria-label="Contattaci su WhatsApp"
+    class="whatsapp-button"
+    aria-label="Contact Prime Residence Bologna on WhatsApp"
   >
-    <span>WhatsApp</span>
-    <strong>↗</strong>
+
+    <span class="whatsapp-dot"></span>
+
+    WHATSAPP
+
   </a>
+
 
 
   <script src="script.js"></script>
 
 </body>
+
 </html>
+```
