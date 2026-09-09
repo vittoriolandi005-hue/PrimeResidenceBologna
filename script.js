@@ -188,14 +188,18 @@ if(counter)counter.textContent=`${String(current+1).padStart(2,"0")} / ${String(
 }
 
 const nextSlide=()=>showSlide(current+1),previousSlide=()=>showSlide(current-1);
+
 function stopAutoplay(){if(autoplay){clearInterval(autoplay);autoplay=null;}}
 function startAutoplay(){stopAutoplay();autoplay=setInterval(nextSlide,5000);}
-function handleSwipe(start,end){const diff=start-end;if(Math.abs(diff)<45)return;diff>0?nextSlide():previousSlide();startAutoplay();}
+function handleSwipe(start,end){const d=start-end;if(Math.abs(d)<45)return;d>0?nextSlide():previousSlide();startAutoplay();}
 
 gallery.addEventListener("touchstart",e=>touchStartX=e.touches[0].clientX,{passive:true});
 gallery.addEventListener("touchend",e=>{touchEndX=e.changedTouches[0].clientX;handleSwipe(touchStartX,touchEndX);},{passive:true});
 
-gallery.addEventListener("mousedown",e=>{dragging=true;mouseStartX=e.clientX;mouseEndX=e.clientX;gallery.style.userSelect="none";});
+gallery.addEventListener("mousedown",e=>{
+dragging=true;mouseStartX=e.clientX;mouseEndX=e.clientX;gallery.style.userSelect="none";
+});
+
 gallery.addEventListener("mousemove",e=>{if(dragging)mouseEndX=e.clientX;});
 
 gallery.addEventListener("mouseup",e=>{
@@ -210,236 +214,411 @@ dragging=false;gallery.style.userSelect="";
 handleSwipe(mouseStartX,mouseEndX);
 });
 
-showSlide(0);startAutoplay();
+showSlide(0);
+startAutoplay();
 });
 
 /* =========================================================
-   07. BOOKING + LIVE CALENDAR AVAILABILITY
+   07. BOOKING CALENDAR
 ========================================================= */
 
 const bookingCards=document.querySelectorAll(".booking-residence-card"),
 bookingForm=document.querySelector("#bookingRequestForm"),
 residenceInput=document.querySelector("#residence"),
 calendarResidence=document.querySelector("#calendarResidence"),
-selectedResidenceText=document.querySelector("#selectedResidenceText"),
-bookingFormSection=document.querySelector("#booking-form-section"),
 checkinInput=document.querySelector("#checkin"),
 checkoutInput=document.querySelector("#checkout"),
 guestsInput=document.querySelector("#guests"),
+selectedResidenceText=document.querySelector("#selectedResidenceText"),
+bookingFormSection=document.querySelector("#booking-form-section"),
 bookingMessage=document.querySelector("#bookingMessage"),
 bookingSubmit=document.querySelector(".booking-submit"),
-availabilityBox=document.querySelector("#availabilityCheck"),
-availabilityStatusText=document.querySelector("#availabilityStatusText"),
-availabilityTitle=document.querySelector("#availabilityTitle"),
-availabilityDescription=document.querySelector("#availabilityDescription"),
-availabilityResidence=document.querySelector("#availabilityResidence"),
-availabilityDates=document.querySelector("#availabilityDates"),
-availabilityNights=document.querySelector("#availabilityNights");
 
-let availabilityVerified=false,availabilityIsAvailable=false,availabilityRequestId=0;
+primeCalendar=document.querySelector("#primeCalendar"),
+calendarGrid=document.querySelector("#calendarGrid"),
+calendarMonthLabel=document.querySelector("#calendarMonthLabel"),
+calendarPrev=document.querySelector("#calendarPrev"),
+calendarNext=document.querySelector("#calendarNext"),
+calendarResidenceTitle=document.querySelector("#calendarResidenceTitle"),
+calendarLiveStatus=document.querySelector("#calendarLiveStatus"),
+calendarLiveText=document.querySelector("#calendarLiveText"),
+calendarLoadingMessage=document.querySelector("#calendarLoadingMessage"),
+calendarMessage=document.querySelector("#calendarMessage"),
 
-function localToday(){
-const d=new Date(),y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
-return `${y}-${m}-${day}`;
-}
+selectedStay=document.querySelector("#selectedStay"),
+selectedStayResidence=document.querySelector("#selectedStayResidence"),
+selectedStayCheckin=document.querySelector("#selectedStayCheckin"),
+selectedStayCheckout=document.querySelector("#selectedStayCheckout"),
+selectedStayNights=document.querySelector("#selectedStayNights"),
+selectedStayClear=document.querySelector("#selectedStayClear");
 
-function parseDateOnly(value){
+let calendarEvents=[],selectedStart="",selectedEnd="",previewEnd="",calendarLoaded=false,currentCalendarKey="",calendarRequestId=0;
+let dragActive=false,dragStart="",dragMoved=false,suppressClick=false;
+
+const todayISO=()=>{
+const d=new Date();
+return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+};
+
+const parseISO=value=>{
 const [y,m,d]=value.split("-").map(Number);
 return new Date(y,m-1,d);
+};
+
+const dateISO=date=>`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+
+const addDays=(value,days)=>{
+const d=parseISO(value);
+d.setDate(d.getDate()+days);
+return dateISO(d);
+};
+
+const prettyDate=value=>parseISO(value).toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}).toUpperCase();
+
+const nightsBetween=(start,end)=>Math.round((parseISO(end)-parseISO(start))/86400000);
+
+let displayMonth=new Date();
+displayMonth=new Date(displayMonth.getFullYear(),displayMonth.getMonth(),1);
+
+function isBooked(day){
+return calendarEvents.some(event=>event.start&&event.end&&day>=event.start&&day<event.end);
 }
 
-function nightsBetween(start,end){
-return Math.round((parseDateOnly(end)-parseDateOnly(start))/86400000);
+function isPast(day){
+return day<todayISO();
 }
 
-function prettyDate(value){
-return parseDateOnly(value).toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}).toUpperCase();
+function rangeHasConflict(start,end){
+if(!start||!end||end<=start)return true;
+for(let day=start;day<end;day=addDays(day,1)){
+if(isBooked(day))return true;
+}
+return false;
 }
 
-function setSubmitLocked(text="Select Dates First"){
+function validCheckout(start,end){
+return !!start&&!!end&&end>start&&!rangeHasConflict(start,end);
+}
+
+function clearCalendarMessage(){
+if(!calendarMessage)return;
+calendarMessage.className="calendar-message";
+calendarMessage.textContent="";
+}
+
+function showCalendarMessage(text,type="info"){
+if(!calendarMessage)return;
+calendarMessage.textContent=text;
+calendarMessage.className=`calendar-message visible ${type}`;
+}
+
+function lockSubmit(text="Select Your Stay"){
 if(!bookingSubmit)return;
 bookingSubmit.disabled=true;
 bookingSubmit.classList.add("availability-locked");
 bookingSubmit.textContent=text;
 }
 
-function setSubmitReady(){
+function unlockSubmit(){
 if(!bookingSubmit)return;
 bookingSubmit.disabled=false;
 bookingSubmit.classList.remove("availability-locked");
 bookingSubmit.textContent="Send Booking Request";
 }
 
-function setAvailabilityState(state,status,title,description){
-if(!availabilityBox)return;
-availabilityBox.classList.remove("checking","available","unavailable","error");
-if(state)availabilityBox.classList.add(state);
-if(availabilityStatusText)availabilityStatusText.textContent=status;
-if(availabilityTitle)availabilityTitle.textContent=title;
-if(availabilityDescription)availabilityDescription.textContent=description;
+function clearStay(render=true){
+selectedStart="";
+selectedEnd="";
+previewEnd="";
+
+if(checkinInput)checkinInput.value="";
+if(checkoutInput)checkoutInput.value="";
+if(selectedStay)selectedStay.classList.remove("visible");
+
+lockSubmit();
+
+if(render)renderCalendar();
 }
 
-function resetAvailability(){
-availabilityRequestId++;
-availabilityVerified=false;
-availabilityIsAvailable=false;
-setSubmitLocked();
-
-if(availabilityResidence)availabilityResidence.textContent="—";
-if(availabilityDates)availabilityDates.textContent="—";
-if(availabilityNights)availabilityNights.textContent="—";
-
-setAvailabilityState(
-"",
-"WAITING FOR DATES",
-"Select a residence and your dates.",
-"We will compare your selected stay with the current Booking.com calendar before the request can be sent."
-);
-}
-
-function stayOverlapsEvent(checkin,checkout,eventStart,eventEnd){
-return checkin<eventEnd&&checkout>eventStart;
-}
-
-async function checkAvailability(){
-if(!bookingForm||!residenceInput||!calendarResidence||!checkinInput||!checkoutInput)return;
-
-const residence=residenceInput.value.trim();
-const calendar=calendarResidence.value.trim();
-const checkin=checkinInput.value;
-const checkout=checkoutInput.value;
-
-availabilityVerified=false;
-availabilityIsAvailable=false;
-setSubmitLocked("Checking Availability...");
-
-if(!residence||!calendar){
-setAvailabilityState("","SELECT RESIDENCE","Select a residence first.","Choose Gastone Rossi 12 or Barontini 8 before selecting your stay.");
-setSubmitLocked("Select Residence First");
+function updateSelectedStay(){
+if(!selectedStart||!selectedEnd||!validCheckout(selectedStart,selectedEnd)){
+if(selectedStay)selectedStay.classList.remove("visible");
+lockSubmit();
 return;
 }
 
-if(!checkin||!checkout){
-setAvailabilityState("","WAITING FOR DATES",residence,"Choose both check-in and check-out to verify calendar availability.");
-setSubmitLocked("Select Dates First");
+if(checkinInput)checkinInput.value=selectedStart;
+if(checkoutInput)checkoutInput.value=selectedEnd;
+
+if(selectedStayResidence)selectedStayResidence.textContent=residenceInput?residenceInput.value:"";
+if(selectedStayCheckin)selectedStayCheckin.textContent=prettyDate(selectedStart);
+if(selectedStayCheckout)selectedStayCheckout.textContent=prettyDate(selectedEnd);
+if(selectedStayNights)selectedStayNights.textContent=String(nightsBetween(selectedStart,selectedEnd));
+
+if(selectedStay)selectedStay.classList.add("visible");
+
+unlockSubmit();
+}
+
+function selectionBounds(){
+if(selectedStart&&selectedEnd)return[selectedStart,selectedEnd];
+if(selectedStart&&previewEnd&&previewEnd>selectedStart&&validCheckout(selectedStart,previewEnd))return[selectedStart,previewEnd];
+return[selectedStart,""];
+}
+
+function renderCalendar(){
+if(!calendarGrid||!calendarMonthLabel)return;
+
+calendarGrid.innerHTML="";
+
+calendarMonthLabel.textContent=displayMonth.toLocaleDateString("en-GB",{month:"long",year:"numeric"});
+
+const y=displayMonth.getFullYear(),m=displayMonth.getMonth();
+const first=new Date(y,m,1),daysInMonth=new Date(y,m+1,0).getDate();
+const leading=(first.getDay()+6)%7;
+
+if(calendarPrev){
+const now=new Date();
+const currentMonth=new Date(now.getFullYear(),now.getMonth(),1);
+calendarPrev.disabled=displayMonth<=currentMonth;
+}
+
+for(let i=0;i<leading;i++){
+const empty=document.createElement("div");
+empty.className="calendar-empty";
+calendarGrid.appendChild(empty);
+}
+
+const [rangeStart,rangeEnd]=selectionBounds();
+
+for(let day=1;day<=daysInMonth;day++){
+const date=new Date(y,m,day),iso=dateISO(date),button=document.createElement("button");
+const booked=isBooked(iso),past=isPast(iso);
+
+button.type="button";
+button.className="booking-calendar-day";
+button.dataset.date=iso;
+button.textContent=String(day);
+button.setAttribute("aria-label",`${prettyDate(iso)} ${booked?"fully booked":"available"}`);
+
+if(past){
+button.classList.add("past");
+button.disabled=true;
+}else{
+button.classList.add(booked?"booked":"available");
+}
+
+if(iso===todayISO())button.classList.add("today");
+
+if(rangeStart&&iso===rangeStart)button.classList.add("checkin");
+if(rangeEnd&&iso===rangeEnd)button.classList.add("checkout");
+if(rangeStart&&rangeEnd&&iso>rangeStart&&iso<rangeEnd)button.classList.add("in-range");
+
+button.addEventListener("click",()=>handleDayClick(iso));
+button.addEventListener("mousedown",e=>startCalendarDrag(e,iso));
+
+calendarGrid.appendChild(button);
+}
+}
+
+function handleDayClick(day){
+if(suppressClick){
+suppressClick=false;
 return;
 }
 
-if(checkout<=checkin){
-setAvailabilityState("error","INVALID DATES","Check-out must be after check-in.","Please choose a check-out date later than your check-in date.");
-setSubmitLocked("Check Your Dates");
+clearCalendarMessage();
+
+if(isPast(day))return;
+
+if(!selectedStart||selectedEnd){
+
+if(isBooked(day)){
+showCalendarMessage("This date is fully booked. Please choose an available check-in date.","info");
 return;
 }
 
-const requestId=++availabilityRequestId;
+selectedStart=day;
+selectedEnd="";
+previewEnd="";
 
-setAvailabilityState(
-"checking",
-"CHECKING",
-"Checking current availability...",
-"Please wait while we compare your dates with the latest calendar data."
-);
+if(checkinInput)checkinInput.value=day;
+if(checkoutInput)checkoutInput.value="";
+
+if(selectedStay)selectedStay.classList.remove("visible");
+
+lockSubmit("Select Check-out");
+
+renderCalendar();
+return;
+}
+
+if(day===selectedStart){
+clearStay();
+return;
+}
+
+if(day<selectedStart){
+if(isBooked(day)){
+showCalendarMessage("This date is fully booked. Please choose an available check-in date.","info");
+return;
+}
+
+selectedStart=day;
+selectedEnd="";
+previewEnd="";
+
+if(checkinInput)checkinInput.value=day;
+
+renderCalendar();
+return;
+}
+
+if(!validCheckout(selectedStart,day)){
+showCalendarMessage("Your selected stay crosses a fully booked date. Please choose another check-out date.","error");
+return;
+}
+
+selectedEnd=day;
+previewEnd="";
+
+clearCalendarMessage();
+updateSelectedStay();
+renderCalendar();
+}
+
+function startCalendarDrag(e,day){
+if(e.button!==0||isPast(day)||isBooked(day))return;
+
+dragActive=true;
+dragMoved=false;
+dragStart=day;
+selectedStart=day;
+selectedEnd="";
+previewEnd=day;
+
+if(checkinInput)checkinInput.value=day;
+if(checkoutInput)checkoutInput.value="";
+
+if(selectedStay)selectedStay.classList.remove("visible");
+
+lockSubmit("Select Check-out");
+
+document.body.style.userSelect="none";
+
+renderCalendar();
+}
+
+document.addEventListener("mouseover",e=>{
+if(!dragActive)return;
+
+const cell=e.target.closest(".booking-calendar-day");
+if(!cell||!cell.dataset.date)return;
+
+const day=cell.dataset.date;
+
+if(day===dragStart)return;
+
+dragMoved=true;
+
+if(day>dragStart&&validCheckout(dragStart,day)){
+previewEnd=day;
+renderCalendar();
+}
+});
+
+document.addEventListener("mouseup",()=>{
+if(!dragActive)return;
+
+dragActive=false;
+document.body.style.userSelect="";
+
+if(dragMoved&&previewEnd&&previewEnd>dragStart&&validCheckout(dragStart,previewEnd)){
+selectedStart=dragStart;
+selectedEnd=previewEnd;
+previewEnd="";
+suppressClick=true;
+
+clearCalendarMessage();
+updateSelectedStay();
+renderCalendar();
+}else{
+previewEnd="";
+renderCalendar();
+}
+});
+
+async function loadCalendar(calendarKey,residenceName){
+if(!primeCalendar)return;
+
+const requestId=++calendarRequestId;
+
+currentCalendarKey=calendarKey;
+calendarLoaded=false;
+calendarEvents=[];
+
+clearStay(false);
+clearCalendarMessage();
+
+primeCalendar.classList.remove("disabled");
+
+if(calendarResidenceTitle)calendarResidenceTitle.textContent=residenceName;
+if(calendarLiveText)calendarLiveText.textContent="LOADING";
+if(calendarLiveStatus)calendarLiveStatus.classList.add("loading");
+if(calendarLoadingMessage)calendarLoadingMessage.classList.add("visible");
+
+lockSubmit("Loading Availability...");
+
+const now=new Date();
+displayMonth=new Date(now.getFullYear(),now.getMonth(),1);
+
+renderCalendar();
 
 try{
-const response=await fetch(`/api/availability?residence=${encodeURIComponent(calendar)}`,{cache:"no-store"});
+const response=await fetch(`/api/availability?residence=${encodeURIComponent(calendarKey)}`,{cache:"no-store"});
 const result=await response.json();
 
-if(requestId!==availabilityRequestId)return;
+if(requestId!==calendarRequestId)return;
 if(!response.ok||!result.success)throw new Error(result.error||"Unable to retrieve calendar.");
 
-const selectedStart=checkin;
-const selectedEnd=checkout;
+calendarEvents=Array.isArray(result.events)?result.events.filter(event=>event.start&&event.end):[];
+calendarLoaded=true;
 
-const conflict=(Array.isArray(result.events)?result.events:[]).some(event=>{
-if(!event.start||!event.end)return false;
-return stayOverlapsEvent(selectedStart,selectedEnd,event.start,event.end);
-});
+if(calendarLiveText)calendarLiveText.textContent="LIVE";
+if(calendarLiveStatus)calendarLiveStatus.classList.remove("loading");
+if(calendarLoadingMessage)calendarLoadingMessage.classList.remove("visible");
 
-availabilityVerified=true;
-availabilityIsAvailable=!conflict;
+lockSubmit("Select Your Stay");
 
-if(conflict){
-setAvailabilityState(
-"unavailable",
-"NOT AVAILABLE",
-`${residence} is not available for these dates.`,
-"Part of the selected stay overlaps with an unavailable period. Please choose different dates."
-);
-setSubmitLocked("Dates Not Available");
-return;
-}
-
-const nights=nightsBetween(checkin,checkout);
-
-if(availabilityResidence)availabilityResidence.textContent=residence;
-if(availabilityDates)availabilityDates.textContent=`${prettyDate(checkin)} — ${prettyDate(checkout)}`;
-if(availabilityNights)availabilityNights.textContent=String(nights);
-
-setAvailabilityState(
-"available",
-"AVAILABLE",
-`${residence} is currently available.`,
-"Your selected dates do not overlap with any unavailable period currently reported by the Booking.com calendar. Final confirmation is still required."
-);
-
-setSubmitReady();
+renderCalendar();
 
 }catch(error){
-if(requestId!==availabilityRequestId)return;
+if(requestId!==calendarRequestId)return;
 
-availabilityVerified=false;
-availabilityIsAvailable=false;
+calendarLoaded=false;
 
-setAvailabilityState(
-"error",
-"UNABLE TO CHECK",
-"We could not verify availability right now.",
-"Please try again in a moment. The booking request cannot be sent until the calendar check succeeds."
-);
+if(calendarLiveText)calendarLiveText.textContent="UNAVAILABLE";
+if(calendarLiveStatus)calendarLiveStatus.classList.remove("loading");
+if(calendarLoadingMessage)calendarLoadingMessage.classList.remove("visible");
 
-setSubmitLocked("Availability Unavailable");
+showCalendarMessage("We could not load availability at the moment. Please try again shortly.","error");
+
+primeCalendar.classList.add("disabled");
+lockSubmit("Availability Unavailable");
 }
 }
-
-let availabilityTimer=null;
-
-function scheduleAvailabilityCheck(){
-availabilityVerified=false;
-availabilityIsAvailable=false;
-setSubmitLocked();
-
-clearTimeout(availabilityTimer);
-availabilityTimer=setTimeout(checkAvailability,250);
-}
-
-if(checkinInput)checkinInput.min=localToday();
-if(checkoutInput)checkoutInput.min=localToday();
-
-if(checkinInput&&checkoutInput){
-checkinInput.addEventListener("change",()=>{
-checkoutInput.min=checkinInput.value||localToday();
-if(checkoutInput.value&&checkoutInput.value<=checkinInput.value)checkoutInput.value="";
-scheduleAvailabilityCheck();
-});
-
-checkoutInput.addEventListener("change",scheduleAvailabilityCheck);
-}
-
-if(guestsInput)guestsInput.addEventListener("change",()=>{
-/* Guests do not change iCal availability, so no new calendar fetch is required. */
-});
 
 function selectResidence(card){
 bookingCards.forEach(c=>c.classList.remove("selected"));
 card.classList.add("selected");
 
-if(residenceInput)residenceInput.value=card.dataset.residence||"";
-if(calendarResidence)calendarResidence.value=card.dataset.calendar||"";
-if(selectedResidenceText)selectedResidenceText.textContent=card.dataset.residence||"";
+const residence=card.dataset.residence||"",calendar=card.dataset.calendar||"";
 
-resetAvailability();
+if(residenceInput)residenceInput.value=residence;
+if(calendarResidence)calendarResidence.value=calendar;
+if(selectedResidenceText)selectedResidenceText.textContent=residence;
 
-if(checkinInput&&checkoutInput&&checkinInput.value&&checkoutInput.value)scheduleAvailabilityCheck();
+loadCalendar(calendar,residence);
 
 if(bookingFormSection)bookingFormSection.scrollIntoView({behavior:"smooth"});
 }
@@ -455,6 +634,26 @@ selectResidence(card);
 });
 });
 
+if(calendarPrev)calendarPrev.addEventListener("click",()=>{
+const now=new Date(),currentMonth=new Date(now.getFullYear(),now.getMonth(),1);
+const previous=new Date(displayMonth.getFullYear(),displayMonth.getMonth()-1,1);
+
+if(previous>=currentMonth){
+displayMonth=previous;
+renderCalendar();
+}
+});
+
+if(calendarNext)calendarNext.addEventListener("click",()=>{
+displayMonth=new Date(displayMonth.getFullYear(),displayMonth.getMonth()+1,1);
+renderCalendar();
+});
+
+if(selectedStayClear)selectedStayClear.addEventListener("click",()=>{
+clearStay();
+clearCalendarMessage();
+});
+
 function showMessage(text,type){
 if(!bookingMessage)return;
 bookingMessage.textContent=text;
@@ -466,8 +665,26 @@ function hideMessage(){
 if(bookingMessage)bookingMessage.style.display="none";
 }
 
+async function verifyStayAgain(){
+if(!currentCalendarKey||!selectedStart||!selectedEnd)return false;
+
+const response=await fetch(`/api/availability?residence=${encodeURIComponent(currentCalendarKey)}&t=${Date.now()}`,{cache:"no-store"});
+const result=await response.json();
+
+if(!response.ok||!result.success)throw new Error("Unable to verify availability.");
+
+const latestEvents=Array.isArray(result.events)?result.events.filter(event=>event.start&&event.end):[];
+
+return !latestEvents.some(event=>{
+for(let day=selectedStart;day<selectedEnd;day=addDays(day,1)){
+if(day>=event.start&&day<event.end)return true;
+}
+return false;
+});
+}
+
 if(bookingForm){
-resetAvailability();
+lockSubmit();
 
 bookingForm.addEventListener("submit",async e=>{
 e.preventDefault();
@@ -478,39 +695,18 @@ showMessage("Please select a residence first.","error");
 return;
 }
 
-if(!checkinInput.value||!checkoutInput.value){
-showMessage("Please select your dates.","error");
+if(!calendarLoaded){
+showMessage("Availability is not currently available. Please try again.","error");
 return;
 }
 
-if(checkoutInput.value<=checkinInput.value){
-showMessage("Check-out must be after check-in.","error");
+if(!selectedStart||!selectedEnd){
+showMessage("Please select your check-in and check-out dates from the calendar.","error");
 return;
 }
 
-if(!availabilityVerified){
-showMessage("Please wait until availability has been checked.","error");
-scheduleAvailabilityCheck();
-return;
-}
-
-if(!availabilityIsAvailable){
-showMessage("The selected residence is not available for these dates.","error");
-return;
-}
-
-/* RICONTROLLO FINALE SUBITO PRIMA DELL'INVIO */
-setSubmitLocked("Rechecking...");
-
-try{
-await checkAvailability();
-
-if(!availabilityVerified||!availabilityIsAvailable){
-showMessage("Availability has changed or could not be confirmed. Please review your dates.","error");
-return;
-}
-}catch{
-showMessage("Unable to verify availability right now. Please try again.","error");
+if(!validCheckout(selectedStart,selectedEnd)){
+showMessage("The selected stay is not available.","error");
 return;
 }
 
@@ -518,11 +714,32 @@ const privacy=document.querySelector("#privacy");
 
 if(privacy&&!privacy.checked){
 showMessage("Please accept the privacy policy.","error");
-setSubmitReady();
 return;
 }
 
-setSubmitLocked("Sending...");
+lockSubmit("Rechecking Availability...");
+
+try{
+const stillAvailable=await verifyStayAgain();
+
+if(!stillAvailable){
+showMessage("Availability has changed and these dates are no longer available. Please select another stay.","error");
+
+await loadCalendar(
+calendarResidence.value,
+residenceInput.value
+);
+
+return;
+}
+
+}catch(error){
+showMessage("We could not verify availability right now. Please try again in a moment.","error");
+unlockSubmit();
+return;
+}
+
+lockSubmit("Sending...");
 
 const data=Object.fromEntries(new FormData(bookingForm).entries());
 
@@ -537,28 +754,29 @@ const result=await response.json();
 
 if(!response.ok)throw new Error(result.message||"Unable to send request.");
 
-showMessage(result.message||"Booking request sent successfully.","success");
+showMessage(
+result.message||
+"Booking request sent successfully. We will contact you shortly to confirm your stay.",
+"success"
+);
 
-const selectedResidence=residenceInput.value;
-const selectedCalendar=calendarResidence.value;
+const residence=residenceInput.value;
+const calendar=calendarResidence.value;
 
 bookingForm.reset();
 
-residenceInput.value=selectedResidence;
-calendarResidence.value=selectedCalendar;
+residenceInput.value=residence;
+calendarResidence.value=calendar;
 
-if(selectedResidenceText)selectedResidenceText.textContent=selectedResidence;
+clearStay(false);
 
-if(checkinInput)checkinInput.min=localToday();
-if(checkoutInput)checkoutInput.min=localToday();
+if(selectedResidenceText)selectedResidenceText.textContent=residence;
 
-resetAvailability();
+await loadCalendar(calendar,residence);
 
-}catch(err){
-showMessage(err.message||"Unable to send request.","error");
-
-if(availabilityVerified&&availabilityIsAvailable)setSubmitReady();
-else setSubmitLocked();
+}catch(error){
+showMessage(error.message||"Unable to send request.","error");
+unlockSubmit();
 }
 });
 }
@@ -584,8 +802,8 @@ suggestionButtons=assistant.querySelectorAll(".assistant-suggestion"),
 promptStorageKey=`primeAssistantPromptClosed_${page}`;
 
 const residences={
-gastone:{name:"Gastone Rossi 12",bedrooms:3,bathrooms:2,guests:6,address:"Via Gastone Rossi 12, Bologna",description:"Gastone Rossi 12 is a spacious residence in Bologna with 3 bedrooms, 2 bathrooms and space for up to 6 guests."},
-barontini:{name:"Barontini 8",bedrooms:2,bathrooms:1,guests:6,address:"Via Barontini 8, Bologna",description:"Barontini 8 is a refined two-bedroom residence in Bologna with 1 bathroom and space for up to 6 guests."}
+gastone:{name:"Gastone Rossi 12",bedrooms:3,bathrooms:2,guests:6,address:"Via Gastone Rossi 12, Bologna"},
+barontini:{name:"Barontini 8",bedrooms:2,bathrooms:1,guests:6,address:"Via Barontini 8, Bologna"}
 };
 
 function isItalian(text){
@@ -593,7 +811,9 @@ const q=text.toLowerCase();
 return["ciao","salve","buongiorno","buonasera","cos'è","cosa è","che cos","appartamento","camere","camera","bagni","bagno","ospiti","prenot","prezzo","quanto","dove","indirizzo","parcheggio","animali","famiglia","persone","grazie","contatt"].some(w=>q.includes(w));
 }
 
-function scrollMessages(){if(messages)requestAnimationFrame(()=>messages.scrollTop=messages.scrollHeight);}
+function scrollMessages(){
+if(messages)requestAnimationFrame(()=>messages.scrollTop=messages.scrollHeight);
+}
 
 function addMessage(text,type="bot",actions=[]){
 if(!messages)return;
@@ -640,7 +860,6 @@ function openChat(){
 if(!chatWindow)return;
 
 hidePrompt();
-
 assistant.classList.add("chat-open");
 chatWindow.classList.add("open");
 chatWindow.setAttribute("aria-hidden","false");
@@ -676,7 +895,9 @@ let promptClosed=false;
 try{promptClosed=sessionStorage.getItem(promptStorageKey)==="1";}catch{}
 
 if(prompt&&!promptClosed){
+
 if(page==="home"){
+
 let homePromptScheduled=false;
 
 window.addEventListener("primeIntroStarted",()=>{
@@ -686,119 +907,105 @@ setTimeout(showPrompt,4000);
 },{once:true});
 
 }else{
+
 setTimeout(showPrompt,2500);
+
 }
 }
 
 function getResponse(original){
 const question=original.toLowerCase().trim(),italian=isItalian(original),current=residences[page]||null,actions=[];
 
-if(question.includes("about-prime")||question.includes("what is prime")||question.includes("what's prime")||question.includes("tell me about prime")||question.includes("what do you offer")||question.includes("who are you")||question.includes("cos'è prime")||question.includes("cosa è prime")||question.includes("che cos'è prime")){
-return{text:italian?"Prime Residence Bologna è una collezione di residence privati e raffinati pensati per chi desidera vivere Bologna con il comfort, la privacy e la libertà di una casa propria. Le nostre strutture combinano spazi contemporanei, posizioni selezionate e assistenza diretta durante il soggiorno.":"Prime Residence Bologna is a collection of refined private residences designed for guests who want to experience Bologna with the comfort, privacy and freedom of their own space. Our residences combine contemporary living, carefully selected locations and direct assistance throughout your stay.",actions:[{label:italian?"SCOPRI I RESIDENCE →":"DISCOVER THE RESIDENCES →",href:"index.html#residences"}]};
+if(question.includes("what is prime")||question.includes("about-prime")||question.includes("tell me about prime")||question.includes("cos'è prime")){
+return{
+text:italian
+?"Prime Residence Bologna è una collezione di residence privati e raffinati pensati per chi desidera vivere Bologna con il comfort, la privacy e la libertà di una casa propria."
+:"Prime Residence Bologna is a collection of refined private residences designed for guests who want to experience Bologna with the comfort, privacy and freedom of their own space.",
+actions:[{label:"DISCOVER THE RESIDENCES →",href:"index.html#residences"}]
+};
 }
 
-if(/^(hi|hello|hey|ciao|salve|buongiorno|buonasera)\b/.test(question)){
-return{text:italian?"Benvenuto a Prime Residence Bologna. Posso aiutarti con i residence, la prenotazione, la posizione e le informazioni sul soggiorno.":"Welcome to Prime Residence Bologna. I can help with our residences, booking, location and information about your stay.",actions};
-}
-
-if(question.includes("thank")||question.includes("grazie")){
-return{text:italian?"È un piacere. Se vuoi sapere altro su Prime Residence Bologna, chiedimi pure.":"You're very welcome. If there's anything else you'd like to know about Prime Residence Bologna, just ask.",actions};
-}
-
-if(question.includes("which residences")||question.includes("what residences")||question.includes("the residences")||question.includes("quali appartamenti")||question.includes("quali residence")){
-return{text:italian?"Prime Residence Bologna dispone di due residence: Gastone Rossi 12 e Barontini 8. Posso aiutarti anche a confrontarli.":"Prime Residence Bologna currently offers two residences: Gastone Rossi 12 and Barontini 8. I can also help you compare them.",actions};
-}
-
-if(current&&(question.includes("residence-details")||question.includes("this residence")||question.includes("this apartment")||question.includes("questo appartamento")||question.includes("questa struttura"))){
-return{text:italian?`${current.name} dispone di ${current.bedrooms} camere da letto, ${current.bathrooms} ${current.bathrooms===1?"bagno":"bagni"} e può ospitare fino a ${current.guests} persone.`:`${current.name} has ${current.bedrooms} bedrooms, ${current.bathrooms} ${current.bathrooms===1?"bathroom":"bathrooms"} and can accommodate up to ${current.guests} guests.`,actions};
-}
-
-if(question.includes("bedroom")||question.includes("camera")||question.includes("camere")){
-let target=current;
-if(question.includes("gastone"))target=residences.gastone;
-if(question.includes("barontini"))target=residences.barontini;
-
-if(target)return{text:italian?`${target.name} dispone di ${target.bedrooms} camere da letto.`:`${target.name} has ${target.bedrooms} bedrooms.`,actions};
-
-return{text:italian?"Gastone Rossi 12 dispone di 3 camere da letto, mentre Barontini 8 ne dispone di 2.":"Gastone Rossi 12 has 3 bedrooms, while Barontini 8 has 2.",actions};
-}
-
-if(question.includes("bathroom")||question.includes("bagno")||question.includes("bagni")){
-let target=current;
-if(question.includes("gastone"))target=residences.gastone;
-if(question.includes("barontini"))target=residences.barontini;
-
-if(target)return{text:italian?`${target.name} dispone di ${target.bathrooms} ${target.bathrooms===1?"bagno":"bagni"}.`:`${target.name} has ${target.bathrooms} ${target.bathrooms===1?"bathroom":"bathrooms"}.`,actions};
-
-return{text:italian?"Gastone Rossi 12 dispone di 2 bagni, mentre Barontini 8 dispone di 1 bagno.":"Gastone Rossi 12 has 2 bathrooms, while Barontini 8 has 1.",actions};
-}
-
-if(question.includes("guest")||question.includes("ospiti")||question.includes("persone")||question.includes("people")){
-if(current)return{text:italian?`${current.name} può ospitare fino a ${current.guests} persone.`:`${current.name} can accommodate up to ${current.guests} guests.`,actions};
-
-return{text:italian?"Entrambi i residence Prime Residence possono ospitare fino a 6 persone.":"Both Prime Residence apartments can accommodate up to 6 guests.",actions};
-}
-
-if(question.includes("compare")||question.includes("difference")||question.includes("which is better")||question.includes("differenza")||question.includes("quale scegliere")){
-return{text:italian?"Gastone Rossi 12 offre 3 camere da letto e 2 bagni, mentre Barontini 8 offre 2 camere da letto e 1 bagno. Entrambi possono ospitare fino a 6 persone. Se desideri più camere separate e un bagno aggiuntivo, Gastone Rossi 12 può essere la soluzione più comoda.":"Gastone Rossi 12 offers 3 bedrooms and 2 bathrooms, while Barontini 8 offers 2 bedrooms and 1 bathroom. Both accommodate up to 6 guests. If you prefer more separate bedrooms and an additional bathroom, Gastone Rossi 12 may be the more convenient choice.",actions};
-}
-
-if(question.includes("location")||question.includes("address")||question.includes("where")||question.includes("dove")||question.includes("indirizzo")){
-let target=current;
-if(question.includes("gastone"))target=residences.gastone;
-if(question.includes("barontini"))target=residences.barontini;
-
-if(target)return{text:italian?`${target.name} si trova in ${target.address}. Nella pagina del residence trovi anche la mappa interattiva.`:`${target.name} is located at ${target.address}. The residence page also includes an interactive map.`,actions};
-
-return{text:italian?"Entrambi i Prime Residence si trovano a Bologna: Gastone Rossi 12 in Via Gastone Rossi 12 e Barontini 8 in Via Barontini 8.":"Both Prime Residence properties are located in Bologna: Gastone Rossi 12 at Via Gastone Rossi 12 and Barontini 8 at Via Barontini 8.",actions};
-}
-
-if(question.includes("booking")||question.includes("book")||question.includes("reserve")||question.includes("prenot")){
-return{text:italian?"Puoi inviare una richiesta direttamente tramite la pagina Book Your Stay scegliendo il residence, le date e inserendo i tuoi dati. La richiesta non costituisce una conferma automatica.":"You can submit a request directly through the Book Your Stay page by selecting the residence, dates and entering your details. A request is not an automatic booking confirmation.",actions:[{label:"BOOK YOUR STAY →",href:"booking.html"}]};
+if(question.includes("booking")||question.includes("book")||question.includes("prenot")){
+return{
+text:italian
+?"Puoi scegliere il residence, controllare la disponibilità sul calendario e inviare una richiesta tramite la pagina Book Your Stay."
+:"You can choose a residence, check real-time availability on the calendar and submit your request through the Book Your Stay page.",
+actions:[{label:"BOOK YOUR STAY →",href:"booking.html"}]
+};
 }
 
 if(question.includes("available")||question.includes("availability")||question.includes("disponibil")){
-return{text:italian?"La disponibilità dipende dalle date richieste. Nella pagina Book Your Stay puoi selezionare residence e date per controllare il calendario corrente prima di inviare la richiesta.":"Availability depends on your requested dates. On the Book Your Stay page you can select a residence and dates to check the current calendar before submitting your request.",actions:[{label:"CHECK AVAILABILITY →",href:"booking.html"}]};
+return{
+text:italian
+?"Nella pagina Book Your Stay puoi vedere la disponibilità sul calendario e selezionare direttamente le date del soggiorno."
+:"The Book Your Stay page displays real-time availability on the calendar so you can select your stay directly.",
+actions:[{label:"CHECK AVAILABILITY →",href:"booking.html"}]
+};
 }
 
-if(question.includes("price")||question.includes("cost")||question.includes("prezzo")||question.includes("quanto costa")){
-return{text:italian?"Le tariffe possono variare in base al residence, alle date e alla durata del soggiorno. Il calendario attuale controlla la disponibilità; le informazioni sul prezzo vengono confermate con la richiesta.":"Rates can vary depending on the residence, dates and length of stay. The current calendar checks availability; pricing information is confirmed with your request.",actions:[{label:"BOOK YOUR STAY →",href:"booking.html"}]};
-}
+if(question.includes("location")||question.includes("address")||question.includes("where")||question.includes("dove")){
+let target=current;
 
-if(question.includes("checkin")||question.includes("check-in")||question.includes("check in")||question.includes("arrivo")){
-return{text:italian?"Le informazioni e le istruzioni precise per il check-in vengono comunicate agli ospiti prima dell'arrivo. Per richieste particolari contatta direttamente Prime Residence.":"Exact check-in details and arrival instructions are provided to guests before arrival. For special requests, please contact Prime Residence directly.",actions};
-}
+if(question.includes("gastone"))target=residences.gastone;
+if(question.includes("barontini"))target=residences.barontini;
 
-if(question.includes("parking")||question.includes("parcheggio")){
-return{text:italian?"Non dispongo ancora di informazioni confermate sul parcheggio. Per evitare informazioni inesatte, contatta direttamente Prime Residence.":"I don't currently have confirmed parking information. To avoid giving you inaccurate information, please contact Prime Residence directly.",actions};
+if(target){
+return{
+text:italian
+?`${target.name} si trova in ${target.address}.`
+:`${target.name} is located at ${target.address}.`,
+actions
+};
+}
 }
 
 if(question.includes("contact")||question.includes("whatsapp")||question.includes("email")||question.includes("contatt")){
-return{text:italian?"Puoi contattare direttamente Prime Residence tramite WhatsApp o email.":"You can contact Prime Residence directly via WhatsApp or email.",actions:[{label:"WHATSAPP ↗",href:"https://wa.me/393917055625",external:true},{label:"EMAIL ↗",href:"mailto:vittoriolandi005@gmail.com"}]};
+return{
+text:italian
+?"Puoi contattare direttamente Prime Residence tramite WhatsApp o email."
+:"You can contact Prime Residence directly via WhatsApp or email.",
+actions:[
+{label:"WHATSAPP ↗",href:"https://wa.me/393917055625",external:true},
+{label:"EMAIL ↗",href:"mailto:vittoriolandi005@gmail.com"}
+]
+};
 }
 
-return{text:italian?"Non dispongo ancora di informazioni confermate su questo argomento. Preferisco non darti una risposta inesatta. Puoi contattare direttamente Prime Residence tramite WhatsApp o email.":"I don't have confirmed information about that yet, and I prefer not to give you an inaccurate answer. You can contact Prime Residence directly via WhatsApp or email.",actions:[{label:"WHATSAPP ↗",href:"https://wa.me/393917055625",external:true},{label:"EMAIL ↗",href:"mailto:vittoriolandi005@gmail.com"}]};
+return{
+text:italian
+?"Posso aiutarti con informazioni sui residence, disponibilità, prenotazioni e posizione."
+:"I can help with our residences, availability, booking and location.",
+actions
+};
 }
 
 function processQuestion(question){
 if(!question||!question.trim())return;
+
 const clean=question.trim();
+
 addMessage(clean,"user");
+
 const response=getResponse(clean);
+
 setTimeout(()=>addMessage(response.text,"bot",response.actions),320);
 }
 
 if(form&&input){
 form.addEventListener("submit",e=>{
 e.preventDefault();
+
 const question=input.value;
+
 input.value="";
+
 processQuestion(question);
 });
 }
 
 suggestionButtons.forEach(button=>button.addEventListener("click",()=>{
 const type=button.dataset.question||"";
+
 let question="";
 
 switch(type){
@@ -808,7 +1015,6 @@ case"residence-details":question="Tell me about this residence";break;
 case"compare":question="What is the difference between the two apartments?";break;
 case"booking":question="How can I book?";break;
 case"location":question=page==="gastone"?"Where is Gastone Rossi 12?":page==="barontini"?"Where is Barontini 8?":"Where are the residences?";break;
-case"checkin":question="How does check-in work?";break;
 default:question=type;
 }
 
@@ -826,6 +1032,7 @@ if(e.key==="Escape"&&assistant.classList.contains("chat-open"))closeAssistant();
 
 document.addEventListener("keydown",e=>{
 if(e.key==="Escape"&&mobileMenu&&mobileMenu.classList.contains("active")){
+
 mobileMenu.classList.remove("active");
 
 if(menuToggle){
@@ -842,6 +1049,7 @@ document.body.style.overflow="";
 ========================================================= */
 
 const year=document.querySelector("#year");
+
 if(year)year.textContent=new Date().getFullYear();
 
 console.log("Prime Residence Bologna — website ready.");
