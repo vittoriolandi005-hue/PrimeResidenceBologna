@@ -1,7 +1,7 @@
 /* =========================================================
    PRIME RESIDENCE BOLOGNA
-   COMPLETE WEBSITE JAVASCRIPT
-   Homepage + Residence Pages + Booking Page
+   PREMIUM WEBSITE JAVASCRIPT
+   Homepage + Premium Scroll + Booking
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (loader) {
     setTimeout(() => {
       loader.classList.add("hide");
-    }, 1200);
+    }, 1400);
   }
 
 
@@ -25,19 +25,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const navbar = document.querySelector(".navbar");
 
-  function handleNavbar() {
+  function updateNavbar() {
+
     if (!navbar) return;
 
-    if (window.scrollY > 40) {
+    if (window.scrollY > 50) {
       navbar.classList.add("scrolled");
     } else {
       navbar.classList.remove("scrolled");
     }
   }
 
-  handleNavbar();
+  updateNavbar();
 
-  window.addEventListener("scroll", handleNavbar, {
+  window.addEventListener("scroll", updateNavbar, {
     passive: true
   });
 
@@ -46,266 +47,233 @@ document.addEventListener("DOMContentLoaded", () => {
      03. MOBILE MENU
   ======================================================= */
 
-  const menuToggle = document.querySelector(".menu-toggle");
-  const mobileMenu = document.querySelector(".mobile-menu");
+  const menuToggle =
+    document.querySelector(".menu-toggle");
+
+  const mobileMenu =
+    document.querySelector(".mobile-menu");
 
   if (menuToggle && mobileMenu) {
 
+    menuToggle.setAttribute(
+      "aria-expanded",
+      "false"
+    );
+
     menuToggle.addEventListener("click", () => {
 
-      const isOpen = menuToggle.classList.toggle("active");
+      const open =
+        menuToggle.classList.toggle("active");
 
-      mobileMenu.classList.toggle("active", isOpen);
+      mobileMenu.classList.toggle(
+        "active",
+        open
+      );
 
       menuToggle.setAttribute(
         "aria-expanded",
-        isOpen ? "true" : "false"
+        open ? "true" : "false"
       );
 
-      document.body.style.overflow = isOpen ? "hidden" : "";
-    });
-
-
-    const mobileLinks = mobileMenu.querySelectorAll("a");
-
-    mobileLinks.forEach((link) => {
-
-      link.addEventListener("click", () => {
-
-        menuToggle.classList.remove("active");
-        mobileMenu.classList.remove("active");
-
-        menuToggle.setAttribute(
-          "aria-expanded",
-          "false"
-        );
-
-        document.body.style.overflow = "";
-
-      });
+      document.body.style.overflow =
+        open ? "hidden" : "";
 
     });
-  }
 
 
-  /* =======================================================
-     04. REVEAL ANIMATIONS
-  ======================================================= */
+    mobileMenu
+      .querySelectorAll("a")
+      .forEach((link) => {
 
-  const revealElements = document.querySelectorAll(".reveal");
+        link.addEventListener("click", () => {
 
-  if (revealElements.length > 0) {
+          menuToggle.classList.remove(
+            "active"
+          );
 
-    const revealObserver = new IntersectionObserver(
-      (entries, observer) => {
+          mobileMenu.classList.remove(
+            "active"
+          );
 
-        entries.forEach((entry) => {
+          menuToggle.setAttribute(
+            "aria-expanded",
+            "false"
+          );
 
-          if (entry.isIntersecting) {
-
-            entry.target.classList.add("visible");
-
-            observer.unobserve(entry.target);
-
-          }
+          document.body.style.overflow = "";
 
         });
 
-      },
-      {
-        threshold: 0.12
-      }
-    );
+      });
 
-    revealElements.forEach((element) => {
-      revealObserver.observe(element);
-    });
   }
 
 
   /* =======================================================
-     05. SMOOTH ANCHOR LINKS
+     04. PREMIUM HERO SCROLL
   ======================================================= */
 
-  const anchorLinks = document.querySelectorAll(
-    'a[href^="#"]'
-  );
-
-  anchorLinks.forEach((link) => {
-
-    link.addEventListener("click", (event) => {
-
-      const targetId = link.getAttribute("href");
-
-      if (!targetId || targetId === "#") {
-        return;
-      }
-
-      const target = document.querySelector(targetId);
-
-      if (!target) {
-        return;
-      }
-
-      event.preventDefault();
-
-      const navbarHeight = navbar
-        ? navbar.offsetHeight
-        : 0;
-
-      const targetPosition =
-        target.getBoundingClientRect().top +
-        window.scrollY -
-        navbarHeight;
-
-      window.scrollTo({
-        top: targetPosition,
-        behavior: "smooth"
-      });
-
-    });
-
-  });
-
-
-  /* =======================================================
-     06. HOMEPAGE — STAY BEAUTIFULLY TRANSITION
-  ======================================================= */
-
-  const hero = document.querySelector(".hero");
-
-  /*
-     When the user starts scrolling from the hero,
-     create a smooth editorial transition into
-     the "Stay Beautifully" section.
-
-     The effect works together with the existing
-     CSS reveal animations.
-  */
+  const hero =
+    document.querySelector(".hero");
 
   if (hero) {
 
-    let heroTransitionActive = false;
+    const nextSection =
+      hero.nextElementSibling;
 
-    function handleHeroScroll() {
+    const heroImage =
+      hero.querySelector(".hero-image");
 
-      const scrollY = window.scrollY;
+    const heroOverlay =
+      hero.querySelector(".hero-overlay");
 
-      const heroHeight = hero.offsetHeight;
+    const heroContent =
+      hero.querySelector(".hero-content");
 
-      /*
-         Start the transition only while the user
-         is moving away from the hero.
-      */
-
-      if (
-        scrollY > 20 &&
-        scrollY < heroHeight
-      ) {
-
-        if (!heroTransitionActive) {
-          heroTransitionActive = true;
-          document.body.classList.add(
-            "hero-transition-active"
-          );
-        }
-
-      } else {
-
-        if (heroTransitionActive) {
-          heroTransitionActive = false;
-          document.body.classList.remove(
-            "hero-transition-active"
-          );
-        }
-
-      }
-
-    }
-
-    handleHeroScroll();
-
-    window.addEventListener(
-      "scroll",
-      handleHeroScroll,
-      { passive: true }
-    );
+    const heroScroll =
+      hero.querySelector(".hero-scroll");
 
 
     /*
-       If the first section after the hero exists,
-       reveal it progressively as it enters the screen.
+       Create premium transition classes.
     */
 
-    const nextSection = hero.nextElementSibling;
+    hero.classList.add(
+      "premium-hero"
+    );
 
     if (nextSection) {
-
       nextSection.classList.add(
-        "hero-next-section"
+        "premium-next-section"
       );
-
-      const nextSectionObserver =
-        new IntersectionObserver(
-          (entries, observer) => {
-
-            entries.forEach((entry) => {
-
-              if (entry.isIntersecting) {
-
-                entry.target.classList.add(
-                  "hero-next-section-visible"
-                );
-
-                observer.unobserve(
-                  entry.target
-                );
-
-              }
-
-            });
-
-          },
-          {
-            threshold: 0.15
-          }
-        );
-
-      nextSectionObserver.observe(nextSection);
     }
 
-  }
+
+    function premiumHeroScroll() {
+
+      const scroll =
+        window.scrollY;
+
+      const heroHeight =
+        hero.offsetHeight;
+
+      /*
+         Progress goes from 0 → 1
+         while leaving the hero.
+      */
+
+      let progress =
+        scroll / (heroHeight * 0.85);
+
+      progress =
+        Math.max(
+          0,
+          Math.min(1, progress)
+        );
 
 
-  /* =======================================================
-     07. PARALLAX HERO
-  ======================================================= */
+      /* ---------------------------------------------------
+         HERO IMAGE
+      --------------------------------------------------- */
 
-  const heroImage =
-    document.querySelector(".hero-image");
+      if (heroImage) {
 
-  if (heroImage) {
+        const scale =
+          1 + progress * 0.10;
 
-    function heroParallax() {
-
-      const scrollY = window.scrollY;
-
-      if (scrollY <= window.innerHeight) {
-
-        const movement = scrollY * 0.18;
+        const translateY =
+          progress * 55;
 
         heroImage.style.transform =
-          `translateY(${movement}px)`;
+          `scale(${scale}) translateY(${translateY}px)`;
 
+        heroImage.style.opacity =
+          String(1 - progress * 0.45);
+      }
+
+
+      /* ---------------------------------------------------
+         DARK OVERLAY
+      --------------------------------------------------- */
+
+      if (heroOverlay) {
+
+        const opacity =
+          0.15 + progress * 0.60;
+
+        heroOverlay.style.opacity =
+          opacity;
+      }
+
+
+      /* ---------------------------------------------------
+         HERO TEXT
+      --------------------------------------------------- */
+
+      if (heroContent) {
+
+        const translateY =
+          progress * -90;
+
+        const opacity =
+          1 - progress * 1.15;
+
+        heroContent.style.transform =
+          `translateY(${translateY}px)`;
+
+        heroContent.style.opacity =
+          Math.max(0, opacity);
+      }
+
+
+      /* ---------------------------------------------------
+         SCROLL INDICATOR
+      --------------------------------------------------- */
+
+      if (heroScroll) {
+
+        heroScroll.style.opacity =
+          String(1 - progress * 2);
+
+        heroScroll.style.transform =
+          `translateY(${progress * 30}px)`;
+      }
+
+
+      /* ---------------------------------------------------
+         NEXT SECTION
+      --------------------------------------------------- */
+
+      if (nextSection) {
+
+        const sectionProgress =
+          Math.max(
+            0,
+            Math.min(
+              1,
+              (scroll - heroHeight * 0.45) /
+              (heroHeight * 0.55)
+            )
+          );
+
+        nextSection.style.transform =
+          `translateY(${(1 - sectionProgress) * 90}px)`;
+
+        nextSection.style.opacity =
+          String(
+            0.55 +
+            sectionProgress * 0.45
+          );
       }
 
     }
 
-    heroParallax();
+
+    premiumHeroScroll();
 
     window.addEventListener(
       "scroll",
-      heroParallax,
+      premiumHeroScroll,
       { passive: true }
     );
 
@@ -313,82 +281,188 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     08. BOOKING PAGE
+     05. REVEAL ANIMATIONS
   ======================================================= */
 
-  const bookingCards = document.querySelectorAll(
-    ".booking-residence-card"
-  );
+  const revealElements =
+    document.querySelectorAll(".reveal");
 
-  const bookingForm = document.querySelector(
-    "#bookingRequestForm"
-  );
+  if (revealElements.length) {
 
-  const residenceInput = document.querySelector(
-    "#residence"
-  );
+    const revealObserver =
+      new IntersectionObserver(
+        (entries, observer) => {
 
-  const selectedResidenceText = document.querySelector(
-    "#selectedResidenceText"
-  );
+          entries.forEach((entry) => {
 
-  const bookingFormSection = document.querySelector(
-    "#booking-form-section"
-  );
+            if (entry.isIntersecting) {
 
-  const checkinInput = document.querySelector(
-    "#checkin"
-  );
+              entry.target.classList.add(
+                "visible"
+              );
 
-  const checkoutInput = document.querySelector(
-    "#checkout"
-  );
+              observer.unobserve(
+                entry.target
+              );
 
-  const bookingMessage = document.querySelector(
-    "#bookingMessage"
-  );
+            }
 
-  const bookingSubmit = document.querySelector(
-    ".booking-submit"
-  );
+          });
+
+        },
+        {
+          threshold: 0.12
+        }
+      );
+
+
+    revealElements.forEach((element) => {
+
+      revealObserver.observe(element);
+
+    });
+
+  }
 
 
   /* =======================================================
-     09. TODAY'S DATE
+     06. ANCHOR LINKS
+  ======================================================= */
+
+  document
+    .querySelectorAll('a[href^="#"]')
+    .forEach((link) => {
+
+      link.addEventListener(
+        "click",
+        (event) => {
+
+          const id =
+            link.getAttribute("href");
+
+          if (!id || id === "#") {
+            return;
+          }
+
+          const target =
+            document.querySelector(id);
+
+          if (!target) {
+            return;
+          }
+
+          event.preventDefault();
+
+          const navbarHeight =
+            navbar
+              ? navbar.offsetHeight
+              : 0;
+
+          const position =
+            target.getBoundingClientRect().top +
+            window.scrollY -
+            navbarHeight;
+
+          window.scrollTo({
+            top: position,
+            behavior: "smooth"
+          });
+
+        }
+      );
+
+    });
+
+
+  /* =======================================================
+     07. BOOKING PAGE
+  ======================================================= */
+
+  const bookingCards =
+    document.querySelectorAll(
+      ".booking-residence-card"
+    );
+
+  const bookingForm =
+    document.querySelector(
+      "#bookingRequestForm"
+    );
+
+  const residenceInput =
+    document.querySelector(
+      "#residence"
+    );
+
+  const selectedResidenceText =
+    document.querySelector(
+      "#selectedResidenceText"
+    );
+
+  const bookingFormSection =
+    document.querySelector(
+      "#booking-form-section"
+    );
+
+  const checkinInput =
+    document.querySelector(
+      "#checkin"
+    );
+
+  const checkoutInput =
+    document.querySelector(
+      "#checkout"
+    );
+
+  const bookingMessage =
+    document.querySelector(
+      "#bookingMessage"
+    );
+
+  const bookingSubmit =
+    document.querySelector(
+      ".booking-submit"
+    );
+
+
+  /* =======================================================
+     08. LOCAL DATE
   ======================================================= */
 
   function getLocalDateString() {
 
-    const today = new Date();
+    const today =
+      new Date();
 
-    const year = today.getFullYear();
+    const year =
+      today.getFullYear();
 
-    const month = String(
-      today.getMonth() + 1
-    ).padStart(2, "0");
+    const month =
+      String(
+        today.getMonth() + 1
+      ).padStart(2, "0");
 
-    const day = String(
-      today.getDate()
-    ).padStart(2, "0");
+    const day =
+      String(
+        today.getDate()
+      ).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
   }
 
 
-  const todayString = getLocalDateString();
-
-
   if (checkinInput) {
-    checkinInput.min = todayString;
+    checkinInput.min =
+      getLocalDateString();
   }
 
   if (checkoutInput) {
-    checkoutInput.min = todayString;
+    checkoutInput.min =
+      getLocalDateString();
   }
 
 
   /* =======================================================
-     10. RESIDENCE SELECTION
+     09. SELECT RESIDENCE
   ======================================================= */
 
   function selectResidence(card) {
@@ -402,21 +476,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     bookingCards.forEach((item) => {
-      item.classList.remove("selected");
+
+      item.classList.remove(
+        "selected"
+      );
+
     });
 
 
-    card.classList.add("selected");
+    card.classList.add(
+      "selected"
+    );
 
 
     if (residenceInput) {
-      residenceInput.value = residence;
+
+      residenceInput.value =
+        residence;
+
     }
 
 
     if (selectedResidenceText) {
+
       selectedResidenceText.textContent =
         residence;
+
     }
 
 
@@ -438,90 +523,104 @@ document.addEventListener("DOMContentLoaded", () => {
 
   bookingCards.forEach((card) => {
 
-    card.addEventListener("click", () => {
-      selectResidence(card);
-    });
-
-
-    card.addEventListener("keydown", (event) => {
-
-      if (
-        event.key === "Enter" ||
-        event.key === " "
-      ) {
-
-        event.preventDefault();
-
+    card.addEventListener(
+      "click",
+      () => {
         selectResidence(card);
+      }
+    );
+
+
+    card.addEventListener(
+      "keydown",
+      (event) => {
+
+        if (
+          event.key === "Enter" ||
+          event.key === " "
+        ) {
+
+          event.preventDefault();
+
+          selectResidence(card);
+
+        }
 
       }
-
-    });
+    );
 
   });
 
 
   /* =======================================================
-     11. CHECK-IN / CHECK-OUT
+     10. CHECK-IN / CHECK-OUT
   ======================================================= */
 
-  if (checkinInput && checkoutInput) {
+  if (
+    checkinInput &&
+    checkoutInput
+  ) {
 
-    checkinInput.addEventListener("change", () => {
+    checkinInput.addEventListener(
+      "change",
+      () => {
 
-      const checkinDate =
-        checkinInput.value;
+        const checkin =
+          checkinInput.value;
 
-      if (!checkinDate) {
-        return;
-      }
+        if (!checkin) return;
 
-      checkoutInput.min = checkinDate;
+        checkoutInput.min =
+          checkin;
 
+        if (
+          checkoutInput.value &&
+          checkoutInput.value <= checkin
+        ) {
 
-      if (
-        checkoutInput.value &&
-        checkoutInput.value <= checkinDate
-      ) {
+          checkoutInput.value =
+            "";
 
-        checkoutInput.value = "";
-
-      }
-
-    });
-
-
-    checkoutInput.addEventListener("change", () => {
-
-      const checkinDate =
-        checkinInput.value;
-
-      const checkoutDate =
-        checkoutInput.value;
-
-
-      if (
-        checkinDate &&
-        checkoutDate &&
-        checkoutDate <= checkinDate
-      ) {
-
-        showBookingMessage(
-          "Il check-out deve essere successivo al check-in.",
-          "error"
-        );
-
-        checkoutInput.value = "";
+        }
 
       }
+    );
 
-    });
+
+    checkoutInput.addEventListener(
+      "change",
+      () => {
+
+        const checkin =
+          checkinInput.value;
+
+        const checkout =
+          checkoutInput.value;
+
+        if (
+          checkin &&
+          checkout &&
+          checkout <= checkin
+        ) {
+
+          showBookingMessage(
+            "Il check-out deve essere successivo al check-in.",
+            "error"
+          );
+
+          checkoutInput.value =
+            "";
+
+        }
+
+      }
+    );
 
   }
 
 
   /* =======================================================
-     12. BOOKING MESSAGE
+     11. BOOKING MESSAGE
   ======================================================= */
 
   function showBookingMessage(
@@ -531,12 +630,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!bookingMessage) return;
 
-    bookingMessage.textContent = message;
+    bookingMessage.textContent =
+      message;
 
     bookingMessage.className =
       `booking-message ${type}`;
 
-    bookingMessage.style.display = "block";
+    bookingMessage.style.display =
+      "block";
 
     bookingMessage.scrollIntoView({
       behavior: "smooth",
@@ -550,18 +651,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!bookingMessage) return;
 
-    bookingMessage.textContent = "";
+    bookingMessage.textContent =
+      "";
 
     bookingMessage.className =
       "booking-message";
 
-    bookingMessage.style.display = "none";
+    bookingMessage.style.display =
+      "none";
 
   }
 
 
   /* =======================================================
-     13. BOOKING FORM SUBMISSION
+     12. BOOKING SUBMIT
   ======================================================= */
 
   if (bookingForm) {
@@ -585,20 +688,8 @@ document.addEventListener("DOMContentLoaded", () => {
             "error"
           );
 
-          const residenceSection =
-            document.querySelector(
-              ".booking-choice"
-            );
-
-          if (residenceSection) {
-
-            residenceSection.scrollIntoView({
-              behavior: "smooth"
-            });
-
-          }
-
           return;
+
         }
 
 
@@ -618,6 +709,7 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             return;
+
           }
 
 
@@ -632,17 +724,20 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             return;
+
           }
 
         }
 
 
-        const privacyCheckbox =
-          document.querySelector("#privacy");
+        const privacy =
+          document.querySelector(
+            "#privacy"
+          );
 
         if (
-          privacyCheckbox &&
-          !privacyCheckbox.checked
+          privacy &&
+          !privacy.checked
         ) {
 
           showBookingMessage(
@@ -651,12 +746,14 @@ document.addEventListener("DOMContentLoaded", () => {
           );
 
           return;
+
         }
 
 
         if (bookingSubmit) {
 
-          bookingSubmit.disabled = true;
+          bookingSubmit.disabled =
+            true;
 
           bookingSubmit.classList.add(
             "loading"
@@ -672,7 +769,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         const formData =
-          new FormData(bookingForm);
+          new FormData(
+            bookingForm
+          );
 
         const data =
           Object.fromEntries(
@@ -682,17 +781,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
 
-          const response = await fetch(
-            "/api/booking-request",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type":
-                  "application/json"
-              },
-              body: JSON.stringify(data)
-            }
-          );
+          const response =
+            await fetch(
+              "/api/booking-request",
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body:
+                  JSON.stringify(data)
+              }
+            );
 
 
           let result = {};
@@ -702,7 +805,7 @@ document.addEventListener("DOMContentLoaded", () => {
             result =
               await response.json();
 
-          } catch (jsonError) {
+          } catch (error) {
 
             result = {};
 
@@ -733,26 +836,31 @@ document.addEventListener("DOMContentLoaded", () => {
           bookingForm.reset();
 
 
-          if (residenceInput) {
-            residenceInput.value =
-              selectedResidence;
-          }
+          residenceInput.value =
+            selectedResidence;
 
 
           if (selectedResidenceText) {
+
             selectedResidenceText.textContent =
               selectedResidence;
+
           }
 
 
           if (checkinInput) {
+
             checkinInput.min =
               getLocalDateString();
+
           }
 
+
           if (checkoutInput) {
+
             checkoutInput.min =
               getLocalDateString();
+
           }
 
 
@@ -774,7 +882,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (bookingSubmit) {
 
-            bookingSubmit.disabled = false;
+            bookingSubmit.disabled =
+              false;
 
             bookingSubmit.classList.remove(
               "loading"
@@ -795,102 +904,126 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     14. BOOKING FORM VALIDATION
+     13. FORM ERROR RESET
   ======================================================= */
 
-  const bookingInputs = document.querySelectorAll(
-    "#bookingRequestForm input, #bookingRequestForm select, #bookingRequestForm textarea"
-  );
+  document
+    .querySelectorAll(
+      "#bookingRequestForm input, #bookingRequestForm select, #bookingRequestForm textarea"
+    )
+    .forEach((input) => {
 
+      input.addEventListener(
+        "input",
+        () => {
 
-  bookingInputs.forEach((input) => {
+          if (
+            bookingMessage &&
+            bookingMessage.classList.contains(
+              "error"
+            )
+          ) {
 
-    input.addEventListener("input", () => {
+            hideBookingMessage();
 
-      if (
-        bookingMessage &&
-        bookingMessage.classList.contains("error")
-      ) {
+          }
 
-        hideBookingMessage();
-
-      }
+        }
+      );
 
     });
 
-  });
-
 
   /* =======================================================
-     15. ESC KEY
+     14. ESCAPE
   ======================================================= */
 
-  document.addEventListener("keydown", (event) => {
+  document.addEventListener(
+    "keydown",
+    (event) => {
 
-    if (
-      event.key === "Escape" &&
-      mobileMenu &&
-      mobileMenu.classList.contains("active")
-    ) {
+      if (
+        event.key === "Escape" &&
+        mobileMenu &&
+        mobileMenu.classList.contains(
+          "active"
+        )
+      ) {
 
-      mobileMenu.classList.remove("active");
-
-      if (menuToggle) {
-
-        menuToggle.classList.remove("active");
-
-        menuToggle.setAttribute(
-          "aria-expanded",
-          "false"
+        mobileMenu.classList.remove(
+          "active"
         );
+
+        if (menuToggle) {
+
+          menuToggle.classList.remove(
+            "active"
+          );
+
+          menuToggle.setAttribute(
+            "aria-expanded",
+            "false"
+          );
+
+        }
+
+        document.body.style.overflow =
+          "";
 
       }
 
-      document.body.style.overflow = "";
-
     }
-
-  });
+  );
 
 
   /* =======================================================
-     16. RESIZE
+     15. RESIZE
   ======================================================= */
 
-  window.addEventListener("resize", () => {
+  window.addEventListener(
+    "resize",
+    () => {
 
-    if (
-      window.innerWidth > 700 &&
-      mobileMenu &&
-      mobileMenu.classList.contains("active")
-    ) {
+      if (
+        window.innerWidth > 700 &&
+        mobileMenu &&
+        mobileMenu.classList.contains(
+          "active"
+        )
+      ) {
 
-      mobileMenu.classList.remove("active");
-
-      if (menuToggle) {
-
-        menuToggle.classList.remove("active");
-
-        menuToggle.setAttribute(
-          "aria-expanded",
-          "false"
+        mobileMenu.classList.remove(
+          "active"
         );
+
+        if (menuToggle) {
+
+          menuToggle.classList.remove(
+            "active"
+          );
+
+          menuToggle.setAttribute(
+            "aria-expanded",
+            "false"
+          );
+
+        }
+
+        document.body.style.overflow =
+          "";
 
       }
 
-      document.body.style.overflow = "";
-
     }
-
-  });
+  );
 
 
   /* =======================================================
-     17. CONSOLE
+     16. READY
   ======================================================= */
 
   console.log(
-    "Prime Residence Bologna website loaded successfully."
+    "Prime Residence Bologna — premium experience ready."
   );
 
 });
