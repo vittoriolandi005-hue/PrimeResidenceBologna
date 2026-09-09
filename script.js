@@ -8,27 +8,27 @@ document.addEventListener("DOMContentLoaded", () => {
   let progress = 0;
   let introFinished = false;
 
-  // Più alto = intro più lento
-  const SCROLL_DISTANCE = 1800;
+  // Più basso = scroll più veloce
+  const SCROLL_DISTANCE = 1000;
 
   function updateIntro() {
 
     progress = Math.max(0, Math.min(1, progress));
 
-    // Sposta gradualmente la schermata verso l'alto
+    // Movimento progressivo della schermata iniziale
     loader.style.transform =
       `translate3d(0, ${-progress * 100}%, 0)`;
 
-    // Fa scomparire gradualmente la scritta
+    // Scomparsa progressiva della scritta
     if (scrollEnter) {
+
       scrollEnter.style.opacity =
         Math.max(0, 1 - progress * 3);
 
       scrollEnter.style.transform =
-        `translateX(-50%) translateY(${progress * 30}px)`;
+        `translateX(-50%) translateY(${progress * 25}px)`;
     }
 
-    // Fine intro
     if (progress >= 1) {
       finishIntro();
     }
@@ -46,9 +46,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.body.classList.remove("intro-active");
 
-    // Permette nuovamente lo scroll normale
     document.body.style.overflow = "";
   }
+
 
   // =========================
   // MOUSE WHEEL
@@ -56,40 +56,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener(
     "wheel",
-    function(event) {
+    (event) => {
 
       if (introFinished) return;
 
       event.preventDefault();
 
-      // Scroll verso il basso
-      if (event.deltaY > 0) {
-        progress += event.deltaY / SCROLL_DISTANCE;
-      }
-
-      // Scroll verso l'alto
-      if (event.deltaY < 0) {
-        progress += event.deltaY / SCROLL_DISTANCE;
-      }
+      progress += event.deltaY / SCROLL_DISTANCE;
 
       updateIntro();
 
     },
-    {
-      passive: false
-    }
+    { passive: false }
   );
 
 
   // =========================
-  // TOUCH
+  // TOUCH / MOBILE
   // =========================
 
   let touchStart = 0;
 
   window.addEventListener(
     "touchstart",
-    function(event) {
+    (event) => {
 
       if (introFinished) return;
 
@@ -101,18 +91,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener(
     "touchmove",
-    function(event) {
+    (event) => {
 
       if (introFinished) return;
 
-      const currentTouch = event.touches[0].clientY;
-      const movement = touchStart - currentTouch;
+      const currentTouch =
+        event.touches[0].clientY;
+
+      const movement =
+        touchStart - currentTouch;
 
       if (Math.abs(movement) > 1) {
 
         event.preventDefault();
 
-        progress += movement / 1200;
+        progress += movement / 1000;
 
         touchStart = currentTouch;
 
@@ -130,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener(
     "keydown",
-    function(event) {
+    (event) => {
 
       if (introFinished) return;
 
@@ -142,16 +135,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
         event.preventDefault();
 
-        progress += 0.12;
+        progress += 0.15;
 
         updateIntro();
       }
 
-      if (event.key === "ArrowUp" || event.key === "PageUp") {
+      if (
+        event.key === "ArrowUp" ||
+        event.key === "PageUp"
+      ) {
 
         event.preventDefault();
 
-        progress -= 0.12;
+        progress -= 0.15;
 
         updateIntro();
       }
@@ -164,7 +160,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // NAVBAR
   // =========================
 
-  const navbar = document.querySelector(".navbar");
+  const navbar =
+    document.querySelector(".navbar");
 
   window.addEventListener("scroll", () => {
 
@@ -235,30 +232,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // =========================
-  // SMOOTH ANCHOR LINKS
+  // SMOOTH LINKS
   // =========================
 
-  document.querySelectorAll('a[href^="#"]').forEach(link => {
+  document
+    .querySelectorAll('a[href^="#"]')
+    .forEach((link) => {
 
-    link.addEventListener("click", function(event) {
+      link.addEventListener("click", function(event) {
 
-      const targetId =
-        this.getAttribute("href");
+        const targetId =
+          this.getAttribute("href");
 
-      const target =
-        document.querySelector(targetId);
+        const target =
+          document.querySelector(targetId);
 
-      if (!target) return;
+        if (!target) return;
 
-      event.preventDefault();
+        event.preventDefault();
 
-      target.scrollIntoView({
-        behavior: "smooth"
+        target.scrollIntoView({
+          behavior: "smooth"
+        });
+
       });
 
     });
-
-  });
 
 
   // =========================
