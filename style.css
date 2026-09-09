@@ -1,7 +1,7 @@
 /* =========================================================
    PRIME RESIDENCE BOLOGNA
    COMPLETE WEBSITE STYLESHEET
-   Homepage + Booking Page
+   Homepage + Residence Pages + Booking Page
 ========================================================= */
 
 
@@ -47,12 +47,14 @@ button {
 
 img {
   display: block;
+  width: 100%;
   max-width: 100%;
+  object-fit: cover;
 }
 
 ::selection {
   background: #b69b67;
-  color: #fff;
+  color: #ffffff;
 }
 
 
@@ -82,7 +84,8 @@ img {
 
 h1,
 h2,
-h3 {
+h3,
+h4 {
   font-family: "Playfair Display", serif;
   font-weight: 400;
 }
@@ -106,6 +109,46 @@ h3 {
 
 p {
   line-height: 1.7;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 28px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition:
+    background .3s ease,
+    color .3s ease,
+    transform .3s ease,
+    border-color .3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background: #171614;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: #b69b67;
+}
+
+.btn-outline {
+  border: 1px solid #171614;
+  color: #171614;
+}
+
+.btn-outline:hover {
+  background: #171614;
+  color: #ffffff;
 }
 
 
@@ -172,20 +215,20 @@ p {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
   z-index: 1000;
-  color: #fff;
+  width: 100%;
+  color: #ffffff;
   transition:
     background .4s ease,
     color .4s ease,
-    padding .4s ease;
+    box-shadow .4s ease;
 }
 
 .navbar.scrolled {
   background: rgba(243, 239, 231, .96);
   color: #171614;
-  backdrop-filter: blur(12px);
   box-shadow: 0 1px 0 rgba(23, 22, 20, .08);
+  backdrop-filter: blur(12px);
 }
 
 .nav-container {
@@ -195,11 +238,6 @@ p {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: height .4s ease;
-}
-
-.navbar.scrolled .nav-container {
-  height: 76px;
 }
 
 .logo {
@@ -210,8 +248,8 @@ p {
 
 .logo-main {
   font-family: "Playfair Display", serif;
-  font-size: 26px;
-  letter-spacing: 5px;
+  font-size: 24px;
+  letter-spacing: 1px;
 }
 
 .logo-sub {
@@ -219,23 +257,25 @@ p {
   font-size: 7px;
   font-weight: 600;
   letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #b69b67;
 }
 
 .desktop-nav {
   display: flex;
   align-items: center;
-  gap: 42px;
+  gap: 40px;
 }
 
 .desktop-nav a {
   position: relative;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 1.5px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2px;
   text-transform: uppercase;
 }
 
-.desktop-nav a:not(.nav-book)::after {
+.desktop-nav a::after {
   content: "";
   position: absolute;
   left: 0;
@@ -246,99 +286,96 @@ p {
   transition: width .3s ease;
 }
 
-.desktop-nav a:not(.nav-book):hover::after {
+.desktop-nav a:hover::after {
   width: 100%;
 }
 
 .nav-book {
-  padding: 13px 22px;
+  padding: 12px 18px;
   border: 1px solid currentColor;
-  transition:
-    background .3s ease,
-    color .3s ease;
+}
+
+.nav-book::after {
+  display: none;
 }
 
 .nav-book:hover {
   background: #171614;
-  color: #f3efe7;
+  color: #ffffff;
 }
 
 .menu-toggle {
   display: none;
-  width: 36px;
-  height: 28px;
-  position: relative;
+  width: 35px;
+  height: 35px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .menu-toggle span {
-  position: absolute;
-  right: 0;
-  width: 28px;
+  display: block;
+  width: 24px;
   height: 1px;
   background: currentColor;
   transition: transform .3s ease;
 }
 
-.menu-toggle span:first-child {
-  top: 9px;
-}
-
-.menu-toggle span:last-child {
-  top: 18px;
-}
-
 .menu-toggle.active span:first-child {
-  transform: translateY(4.5px) rotate(45deg);
+  transform: translateY(3.5px) rotate(45deg);
 }
 
 .menu-toggle.active span:last-child {
-  transform: translateY(-4.5px) rotate(-45deg);
+  transform: translateY(-3.5px) rotate(-45deg);
 }
-
-
-/* =========================================================
-   05. MOBILE MENU
-========================================================= */
 
 .mobile-menu {
   position: fixed;
-  inset: 0;
-  z-index: -1;
+  top: 0;
+  right: 0;
+  z-index: 999;
+  width: 100%;
+  height: 100vh;
+  padding-top: 100px;
   background: #171614;
   color: #f3efe7;
   opacity: 0;
   visibility: hidden;
+  transform: translateY(-20px);
   transition:
-    opacity .4s ease,
-    visibility .4s ease;
+    opacity .35s ease,
+    visibility .35s ease,
+    transform .35s ease;
 }
 
 .mobile-menu.active {
   opacity: 1;
   visibility: visible;
+  transform: translateY(0);
 }
 
 .mobile-menu-inner {
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 28px;
+  gap: 35px;
+  height: 80%;
 }
 
-.mobile-menu-inner a {
+.mobile-menu a {
   font-family: "Playfair Display", serif;
-  font-size: 38px;
+  font-size: 42px;
 }
 
 .mobile-book {
   margin-top: 15px;
-  padding: 14px 30px;
+  padding: 14px 24px;
   border: 1px solid #b69b67;
-  color: #b69b67;
+  color: #b69b67 !important;
   font-family: "DM Sans", sans-serif !important;
-  font-size: 10px !important;
+  font-size: 9px !important;
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -346,133 +383,123 @@ p {
 
 
 /* =========================================================
-   06. HERO
+   05. HERO
 ========================================================= */
 
 .hero {
   position: relative;
   min-height: 100vh;
-  height: 100vh;
   display: flex;
-  align-items: center;
-  color: #fff;
+  align-items: flex-end;
   overflow: hidden;
+  background: #24221f;
+  color: #ffffff;
 }
 
-.hero-background {
+.hero-image {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(
-      120deg,
-      #40392f 0%,
-      #6a5d4c 45%,
-      #332f2a 100%
-    );
-  transform: scale(1.03);
+  z-index: 0;
+}
+
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background:
     linear-gradient(
-      90deg,
-      rgba(0,0,0,.62),
-      rgba(0,0,0,.18)
+      to top,
+      rgba(0, 0, 0, .72),
+      rgba(0, 0, 0, .08) 70%
     );
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
-  width: min(900px, calc(100% - 80px));
-  margin-left: max(40px, calc((100vw - 1240px) / 2));
+  width: min(1240px, calc(100% - 80px));
+  margin: 0 auto;
+  padding: 0 0 90px;
 }
 
-.hero-content .eyebrow {
-  color: #d0b77f;
+.hero-content h1 {
+  max-width: 1000px;
 }
 
 .hero-description {
-  max-width: 510px;
-  margin-top: 35px;
-  color: rgba(255,255,255,.82);
-  font-size: 15px;
+  max-width: 520px;
+  margin-top: 30px;
+  color: rgba(255, 255, 255, .78);
+  font-size: 14px;
 }
 
 .hero-actions {
   display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-top: 42px;
+  gap: 15px;
+  margin-top: 35px;
 }
 
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 52px;
-  padding: 0 30px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  transition:
-    background .3s ease,
-    color .3s ease,
-    border-color .3s ease,
-    transform .3s ease;
-}
-
-.btn:hover {
-  transform: translateY(-2px);
-}
-
-.btn-primary {
-  background: #b69b67;
-  border: 1px solid #b69b67;
-  color: #fff;
-}
-
-.btn-primary:hover {
-  background: #a48650;
-  border-color: #a48650;
-}
-
-.btn-secondary {
-  border: 1px solid rgba(255,255,255,.55);
-  color: #fff;
-}
-
-.btn-secondary:hover {
-  background: #fff;
+.hero .btn-primary {
+  background: #f3efe7;
   color: #171614;
+}
+
+.hero .btn-primary:hover {
+  background: #b69b67;
+  color: #ffffff;
 }
 
 .hero-scroll {
   position: absolute;
-  z-index: 3;
-  bottom: 38px;
   right: 40px;
+  bottom: 50px;
+  z-index: 3;
   display: flex;
   align-items: center;
-  gap: 14px;
-  color: rgba(255,255,255,.7);
-  font-size: 9px;
+  gap: 12px;
+  color: rgba(255, 255, 255, .7);
+  font-size: 8px;
   letter-spacing: 2px;
   text-transform: uppercase;
-}
-
-.scroll-line {
-  width: 60px;
-  height: 1px;
-  background: rgba(255,255,255,.55);
+  writing-mode: vertical-rl;
 }
 
 
 /* =========================================================
-   07. INTRO
+   06. PHOTO PLACEHOLDERS
+========================================================= */
+
+.photo-placeholder {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      135deg,
+      #d8d0c2,
+      #bdb3a3
+    );
+  color: rgba(23, 22, 20, .45);
+}
+
+.photo-placeholder span {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   07. INTRO / ABOUT
 ========================================================= */
 
 .intro {
@@ -481,38 +508,38 @@ p {
 
 .intro-grid {
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 80px;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 100px;
+  align-items: start;
 }
 
-.intro-label {
-  display: flex;
-  align-items: flex-start;
-  gap: 18px;
-  padding-top: 12px;
-  color: #8b8172;
+.intro-title {
+  max-width: 500px;
+}
+
+.intro-text {
+  max-width: 650px;
+  padding-top: 10px;
+}
+
+.intro-text p {
+  color: #615b53;
+  font-size: 16px;
+}
+
+.intro-text p + p {
+  margin-top: 20px;
+}
+
+.intro-link {
+  display: inline-flex;
+  margin-top: 35px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #171614;
   font-size: 9px;
+  font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
-}
-
-.intro-label span:first-child {
-  color: #b69b67;
-}
-
-.intro-content {
-  max-width: 850px;
-}
-
-.intro-content h2 {
-  margin-bottom: 42px;
-}
-
-.intro-content p {
-  max-width: 680px;
-  margin-bottom: 20px;
-  color: #615c54;
-  font-size: 15px;
 }
 
 
@@ -521,310 +548,274 @@ p {
 ========================================================= */
 
 .residences {
-  background: #eae4d9;
+  background: #e5ded1;
 }
 
-.section-heading {
+.residences-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 50px;
+  margin-bottom: 65px;
+}
+
+.residences-heading-text {
+  max-width: 750px;
+}
+
+.residences-heading-description {
+  max-width: 350px;
+  color: #686157;
+  font-size: 13px;
+}
+
+.residence-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 100px;
-  align-items: end;
-  margin-bottom: 100px;
-}
-
-.section-heading p {
-  max-width: 430px;
-  color: #655f56;
-  font-size: 14px;
+  gap: 25px;
 }
 
 .residence-card {
-  display: grid;
-  grid-template-columns: 1.15fr .85fr;
-  min-height: 610px;
-  margin-bottom: 100px;
-}
-
-.residence-card:last-child {
-  margin-bottom: 0;
-}
-
-.residence-card-reverse {
-  grid-template-columns: .85fr 1.15fr;
-}
-
-.residence-card-reverse .residence-image {
-  order: 2;
-}
-
-.residence-card-reverse .residence-info {
-  order: 1;
-}
-
-.residence-image {
   position: relative;
-  min-height: 550px;
   overflow: hidden;
-  background: #d5cec0;
+  background: #d0c8ba;
 }
 
-.photo-placeholder {
+.residence-card-image {
+  position: relative;
+  height: 600px;
+  overflow: hidden;
+}
+
+.residence-card-image .photo-placeholder {
   width: 100%;
   height: 100%;
-  min-height: inherit;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background:
-    linear-gradient(
-      135deg,
-      #bdb3a2,
-      #ddd5c7
-    );
-  color: rgba(23,22,20,.45);
-  font-size: 11px;
-  letter-spacing: 4px;
+  transition: transform .8s ease;
 }
 
-.residence-number {
+.residence-card:hover .photo-placeholder {
+  transform: scale(1.04);
+}
+
+.residence-card-overlay {
   position: absolute;
-  top: 28px;
-  right: 28px;
-  color: rgba(255,255,255,.9);
+  inset: 0;
+  background:
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, .72),
+      rgba(0, 0, 0, .05) 70%
+    );
+}
+
+.residence-card-content {
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  bottom: 40px;
+  color: #ffffff;
+}
+
+.residence-card-number {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  color: rgba(255, 255, 255, .85);
   font-family: "Playfair Display", serif;
   font-size: 22px;
 }
 
-.residence-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 70px;
-  background: #f7f3eb;
-}
-
-.residence-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 30px;
-}
-
-.residence-top h3 {
-  margin-top: 5px;
-}
-
-.residence-location {
-  padding-top: 6px;
-  color: #8c8478;
-  font-size: 10px;
-  letter-spacing: 1.5px;
+.residence-card-label {
+  display: block;
+  margin-bottom: 12px;
+  color: #d0b77f;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  white-space: nowrap;
 }
 
-.residence-description {
-  max-width: 480px;
-  margin-top: 35px;
-  color: #666056;
-  font-size: 14px;
+.residence-card-content h3 {
+  font-size: clamp(38px, 4vw, 52px);
 }
 
-.residence-details {
+.residence-card-details {
   display: flex;
-  gap: 45px;
-  margin-top: 50px;
-  padding-top: 25px;
-  border-top: 1px solid #d9d2c5;
-}
-
-.residence-details div {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.residence-details strong {
-  font-family: "Playfair Display", serif;
-  font-size: 26px;
-  font-weight: 400;
-}
-
-.residence-details span {
-  color: #8c8478;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 18px;
+  color: rgba(255, 255, 255, .72);
   font-size: 9px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 
-.text-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 15px;
-  width: fit-content;
-  margin-top: 48px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #171614;
-  font-size: 10px;
+.residence-card-arrow {
+  display: inline-block;
+  margin-top: 27px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid rgba(255, 255, 255, .7);
+  font-size: 9px;
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
-  transition: gap .3s ease;
+  transition: transform .3s ease;
 }
 
-.text-link:hover {
-  gap: 23px;
+.residence-card:hover .residence-card-arrow {
+  transform: translateX(7px);
 }
 
 
 /* =========================================================
-   09. EXPERIENCE
+   09. FEATURE / EDITORIAL SECTION
 ========================================================= */
 
-.experience {
+.feature {
   background: #171614;
   color: #f3efe7;
 }
 
-.experience-grid {
+.feature-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.1fr .9fr;
   gap: 100px;
   align-items: center;
 }
 
-.experience-image {
-  min-height: 680px;
+.feature-image {
+  min-height: 650px;
 }
 
-.experience-image .photo-placeholder {
-  min-height: 680px;
-  background:
-    linear-gradient(
-      145deg,
-      #51493d,
-      #2c2925
-    );
-  color: rgba(255,255,255,.4);
+.feature-image .photo-placeholder {
+  width: 100%;
+  height: 650px;
 }
 
-.experience-content h2 {
-  margin-bottom: 35px;
+.feature-content {
+  max-width: 550px;
 }
 
-.experience-content > p {
-  max-width: 520px;
-  color: #aaa49b;
+.feature-content p {
+  margin-top: 30px;
+  color: #aaa39a;
   font-size: 14px;
 }
 
-.experience-list {
-  margin-top: 55px;
+.feature-list {
+  margin-top: 40px;
 }
 
-.experience-item {
-  display: grid;
-  grid-template-columns: 45px 1fr;
-  gap: 20px;
-  padding: 25px 0;
-  border-top: 1px solid rgba(255,255,255,.13);
-}
-
-.experience-item:last-child {
-  border-bottom: 1px solid rgba(255,255,255,.13);
-}
-
-.experience-item > span {
-  color: #b69b67;
-  font-size: 10px;
-  letter-spacing: 1px;
-}
-
-.experience-item h4 {
-  margin-bottom: 7px;
-  font-family: "Playfair Display", serif;
-  font-size: 22px;
-  font-weight: 400;
-}
-
-.experience-item p {
-  color: #8e8981;
-  font-size: 12px;
-}
-
-
-/* =========================================================
-   10. BOLOGNA
-========================================================= */
-
-.bologna {
-  min-height: 680px;
+.feature-list-item {
   display: flex;
-  align-items: center;
-  overflow: hidden;
-  color: #fff;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px 0;
+  border-top: 1px solid rgba(255, 255, 255, .12);
 }
 
-.bologna-background {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(
-      120deg,
-      #725f48,
-      #302b26
-    );
+.feature-list-item:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, .12);
 }
 
-.bologna-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,.3);
+.feature-list-number {
+  color: #b69b67;
+  font-size: 9px;
+  letter-spacing: 2px;
 }
 
-.bologna-content {
-  position: relative;
-  z-index: 2;
-  max-width: 750px;
-}
-
-.bologna-content .eyebrow {
-  color: #d0b77f;
-}
-
-.bologna-content p {
-  max-width: 520px;
-  margin-top: 35px;
-  color: rgba(255,255,255,.78);
-  font-size: 14px;
+.feature-list-text {
+  font-size: 12px;
+  color: #d0cbc3;
 }
 
 
 /* =========================================================
-   11. VISUAL SECTION
+   10. GALLERY
 ========================================================= */
 
-.visual-section {
+.gallery {
   background: #f3efe7;
 }
 
-.visual-grid {
+.gallery-heading {
+  margin-bottom: 55px;
+}
+
+.gallery-grid {
   display: grid;
-  grid-template-columns: 1.5fr .8fr;
-  gap: 25px;
-  align-items: stretch;
+  grid-template-columns: 1.4fr .8fr .8fr;
+  grid-template-rows: 300px 300px;
+  gap: 15px;
 }
 
-.visual-item {
-  min-height: 520px;
+.gallery-item {
+  position: relative;
+  overflow: hidden;
 }
 
-.visual-large {
-  min-height: 700px;
+.gallery-item.large {
+  grid-row: 1 / 3;
 }
 
-.visual-item .photo-placeholder {
-  min-height: inherit;
+.gallery-item .photo-placeholder {
+  width: 100%;
+  height: 100%;
+  transition: transform .7s ease;
+}
+
+.gallery-item:hover .photo-placeholder {
+  transform: scale(1.04);
+}
+
+
+/* =========================================================
+   11. EXPERIENCE
+========================================================= */
+
+.experience {
+  background: #e5ded1;
+}
+
+.experience-inner {
+  max-width: 950px;
+}
+
+.experience-text {
+  max-width: 720px;
+  margin-top: 30px;
+  color: #625c54;
+  font-size: 15px;
+}
+
+.experience-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  margin-top: 70px;
+  background: #cbc2b3;
+}
+
+.experience-item {
+  padding: 40px 30px;
+  background: #e5ded1;
+}
+
+.experience-number {
+  color: #b69b67;
+  font-family: "Playfair Display", serif;
+  font-size: 38px;
+}
+
+.experience-item h3 {
+  margin-top: 20px;
+  font-size: 28px;
+}
+
+.experience-item p {
+  margin-top: 15px;
+  color: #70685e;
+  font-size: 12px;
 }
 
 
@@ -833,20 +824,41 @@ p {
 ========================================================= */
 
 .cta {
-  background: #e5ded1;
+  padding: 150px 0;
+  background: #171614;
+  color: #f3efe7;
   text-align: center;
 }
 
-.cta-content {
-  max-width: 850px;
+.cta-inner {
+  max-width: 900px;
   margin: 0 auto;
 }
 
-.cta-content p {
-  max-width: 500px;
-  margin: 30px auto 40px;
-  color: #686157;
+.cta h2 {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.cta p {
+  max-width: 550px;
+  margin: 30px auto 0;
+  color: #aaa39a;
   font-size: 14px;
+}
+
+.cta .btn {
+  margin-top: 40px;
+}
+
+.cta .btn-primary {
+  background: #f3efe7;
+  color: #171614;
+}
+
+.cta .btn-primary:hover {
+  background: #b69b67;
+  color: #ffffff;
 }
 
 
@@ -855,26 +867,31 @@ p {
 ========================================================= */
 
 .footer {
-  padding: 85px 0 30px;
+  padding: 80px 0 35px;
   background: #171614;
   color: #f3efe7;
 }
 
-.footer-top {
+.footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 60px;
-  padding-bottom: 75px;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 70px;
+  padding-bottom: 70px;
 }
 
-.footer-brand p {
-  margin-top: 25px;
-  color: #8e8981;
-  font-size: 12px;
+.footer-logo {
+  font-family: "Playfair Display", serif;
+  font-size: 34px;
 }
 
-.footer-title {
-  display: block;
+.footer-description {
+  max-width: 330px;
+  margin-top: 20px;
+  color: #8f8980;
+  font-size: 11px;
+}
+
+.footer-column-title {
   margin-bottom: 20px;
   color: #b69b67;
   font-size: 9px;
@@ -883,30 +900,27 @@ p {
   text-transform: uppercase;
 }
 
-.footer-column {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.footer-column a {
-  width: fit-content;
-  color: #aaa49b;
-  font-size: 12px;
-  transition: color .3s ease;
+.footer-column a,
+.footer-column p {
+  display: block;
+  margin-bottom: 10px;
+  color: #b8b2aa;
+  font-size: 11px;
 }
 
 .footer-column a:hover {
-  color: #fff;
+  color: #ffffff;
 }
 
 .footer-bottom {
   display: flex;
+  align-items: center;
   justify-content: space-between;
+  gap: 30px;
   padding-top: 25px;
-  border-top: 1px solid rgba(255,255,255,.1);
-  color: #716c64;
-  font-size: 9px;
+  border-top: 1px solid rgba(255, 255, 255, .1);
+  color: #68635c;
+  font-size: 8px;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
@@ -921,20 +935,18 @@ p {
   right: 25px;
   bottom: 25px;
   z-index: 900;
+  width: 54px;
+  height: 54px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 125px;
-  height: 48px;
-  padding: 0 20px;
+  border-radius: 50%;
   background: #171614;
-  color: #fff;
-  border: 1px solid rgba(255,255,255,.15);
-  box-shadow: 0 10px 30px rgba(0,0,0,.15);
-  font-size: 9px;
+  color: #ffffff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .2);
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+  letter-spacing: 1px;
   transition:
     transform .3s ease,
     background .3s ease;
@@ -942,20 +954,20 @@ p {
 
 .whatsapp-button:hover {
   transform: translateY(-4px);
-  background: #25231f;
+  background: #b69b67;
 }
 
 
 /* =========================================================
-   15. REVEAL ANIMATIONS
+   15. ANIMATIONS / REVEALS
 ========================================================= */
 
 .reveal {
   opacity: 0;
   transform: translateY(35px);
   transition:
-    opacity .9s ease,
-    transform .9s ease;
+    opacity .8s ease,
+    transform .8s ease;
 }
 
 .reveal.visible {
@@ -963,9 +975,98 @@ p {
   transform: translateY(0);
 }
 
+.reveal-delay-1 {
+  transition-delay: .1s;
+}
+
+.reveal-delay-2 {
+  transition-delay: .2s;
+}
+
+.reveal-delay-3 {
+  transition-delay: .3s;
+}
+
+.reveal-delay-4 {
+  transition-delay: .4s;
+}
+
 
 /* =========================================================
-   16. BOOKING PAGE
+   16. RESIDENCE DETAIL PAGES
+========================================================= */
+
+.residence-page {
+  background: #f3efe7;
+}
+
+.residence-page .navbar {
+  background: #f3efe7;
+  color: #171614;
+  box-shadow: 0 1px 0 rgba(23, 22, 20, .08);
+}
+
+.residence-detail-hero {
+  padding: 150px 0 90px;
+  background: #e5ded1;
+}
+
+.residence-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 70px;
+  align-items: end;
+}
+
+.residence-detail-heading h1 {
+  max-width: 650px;
+}
+
+.residence-detail-description {
+  max-width: 470px;
+  margin-top: 30px;
+  color: #655f56;
+  font-size: 14px;
+}
+
+.residence-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.residence-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.residence-meta-label {
+  color: #9b8155;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.residence-meta-value {
+  font-family: "Playfair Display", serif;
+  font-size: 22px;
+}
+
+.residence-detail-image {
+  height: 650px;
+}
+
+.residence-detail-image .photo-placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+
+/* =========================================================
+   17. BOOKING PAGE NAVBAR
 ========================================================= */
 
 .booking-page {
@@ -973,14 +1074,11 @@ p {
   color: #171614;
 }
 
-
-/* Booking navbar */
-
 .booking-navbar {
   position: relative;
   background: #f3efe7;
   color: #171614;
-  box-shadow: 0 1px 0 rgba(23,22,20,.08);
+  box-shadow: 0 1px 0 rgba(23, 22, 20, .08);
 }
 
 .booking-navbar .nav-container {
@@ -988,129 +1086,165 @@ p {
 }
 
 
-/* Booking hero */
+/* =========================================================
+   18. BOOKING HERO
+========================================================= */
 
 .booking-hero {
-  padding: 155px 0 95px;
+  padding: 155px 0 100px;
   background: #e5ded1;
 }
 
-.booking-hero-content {
+.booking-hero-inner {
   max-width: 900px;
 }
 
 .booking-hero h1 {
   max-width: 900px;
-  font-size: clamp(52px, 7vw, 90px);
 }
 
 .booking-hero-description {
   max-width: 570px;
-  margin-top: 30px;
+  margin-top: 32px;
   color: #696258;
   font-size: 15px;
 }
 
 
 /* =========================================================
-   17. RESIDENCE CHOICE
+   19. BOOKING RESIDENCE CHOICE
 ========================================================= */
 
 .booking-choice {
-  padding: 110px 0;
+  padding: 120px 0;
   background: #f3efe7;
 }
 
-.booking-choice-heading {
-  margin-bottom: 55px;
+.booking-section-heading {
+  margin-bottom: 60px;
 }
 
-.booking-choice-heading h2 {
-  font-size: clamp(40px, 5vw, 65px);
+.booking-section-heading h2 {
+  max-width: 800px;
 }
 
-.residence-choice-grid {
+.booking-residence-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 25px;
 }
 
-.residence-choice {
+.booking-residence-card {
   position: relative;
-  min-height: 540px;
+  min-height: 560px;
   overflow: hidden;
   cursor: pointer;
   background: #d7d0c3;
+  outline: none;
 }
 
-.residence-choice-image {
+.booking-card-image {
   position: absolute;
   inset: 0;
 }
 
-.residence-choice-image .photo-placeholder {
+.booking-card-image .photo-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 560px;
   transition: transform .8s ease;
 }
 
-.residence-choice:hover .photo-placeholder {
+.booking-residence-card:hover .photo-placeholder {
   transform: scale(1.04);
 }
 
-.residence-choice-overlay {
+.booking-card-number {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  z-index: 3;
+  color: rgba(255, 255, 255, .9);
+  font-family: "Playfair Display", serif;
+  font-size: 22px;
+}
+
+.booking-card-overlay {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background:
     linear-gradient(
       to top,
-      rgba(0,0,0,.75),
-      rgba(0,0,0,.05) 65%
+      rgba(0, 0, 0, .78),
+      rgba(0, 0, 0, .08) 70%
     );
 }
 
-.residence-choice-content {
+.booking-card-content {
   position: absolute;
   z-index: 2;
   left: 40px;
   right: 40px;
   bottom: 40px;
-  color: #fff;
+  color: #ffffff;
 }
 
-.residence-choice-number {
-  margin-bottom: 12px;
+.booking-card-label {
+  display: block;
+  margin-bottom: 13px;
   color: #d0b77f;
   font-size: 9px;
+  font-weight: 600;
   letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
-.residence-choice-content h3 {
-  font-size: 42px;
+.booking-card-content h3 {
+  font-size: clamp(36px, 4vw, 50px);
 }
 
-.residence-choice-details {
+.booking-card-details {
   display: flex;
+  flex-wrap: wrap;
   gap: 22px;
-  margin-top: 18px;
-  color: rgba(255,255,255,.75);
+  margin-top: 20px;
+  color: rgba(255, 255, 255, .75);
   font-size: 9px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 
-.residence-choice.selected {
+.booking-card-arrow {
+  display: inline-block;
+  margin-top: 30px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid rgba(255, 255, 255, .7);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: transform .3s ease;
+}
+
+.booking-residence-card:hover .booking-card-arrow {
+  transform: translateX(7px);
+}
+
+.booking-residence-card.selected {
   outline: 2px solid #b69b67;
   outline-offset: -2px;
 }
 
-.residence-choice.selected::after {
+.booking-residence-card.selected::after {
   content: "SELECTED";
   position: absolute;
   top: 25px;
   right: 25px;
-  z-index: 4;
+  z-index: 5;
   padding: 9px 13px;
   background: #b69b67;
-  color: #fff;
+  color: #ffffff;
   font-size: 8px;
   font-weight: 600;
   letter-spacing: 1.5px;
@@ -1118,7 +1252,7 @@ p {
 
 
 /* =========================================================
-   18. BOOKING FORM
+   20. BOOKING FORM
 ========================================================= */
 
 .booking-form-section {
@@ -1131,16 +1265,16 @@ p {
   margin: 0 auto;
 }
 
-.booking-form-heading {
+.booking-form-intro {
   margin-bottom: 55px;
 }
 
-.booking-form-heading h2 {
-  font-size: clamp(42px, 5vw, 68px);
+.booking-form-intro h2 {
+  max-width: 800px;
 }
 
 .selected-residence-display {
-  margin-top: 20px;
+  margin-top: 22px;
   color: #9b8155;
   font-size: 11px;
   font-weight: 600;
@@ -1151,6 +1285,14 @@ p {
 .booking-form {
   padding: 55px;
   background: #f7f3eb;
+}
+
+.form-section {
+  margin-bottom: 50px;
+}
+
+.form-section:last-of-type {
+  margin-bottom: 0;
 }
 
 .form-section-title {
@@ -1164,22 +1306,22 @@ p {
   text-transform: uppercase;
 }
 
-.form-grid {
+.form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 25px;
 }
 
-.form-group {
+.form-field {
   display: flex;
   flex-direction: column;
 }
 
-.form-group.full-width {
+.form-field.full-width {
   grid-column: 1 / -1;
 }
 
-.form-group label {
+.form-field label {
   margin-bottom: 9px;
   color: #575148;
   font-size: 10px;
@@ -1188,11 +1330,10 @@ p {
   text-transform: uppercase;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
+.form-field input,
+.form-field select,
+.form-field textarea {
   width: 100%;
-  padding: 15px 16px;
   border: 1px solid #d2c9bb;
   border-radius: 0;
   outline: none;
@@ -1204,61 +1345,59 @@ p {
     box-shadow .3s ease;
 }
 
-.form-group input,
-.form-group select {
+.form-field input,
+.form-field select {
   height: 52px;
+  padding: 0 16px;
 }
 
-.form-group textarea {
+.form-field textarea {
   min-height: 135px;
+  padding: 15px 16px;
   resize: vertical;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
   border-color: #b69b67;
   box-shadow: 0 0 0 1px #b69b67;
 }
 
-.form-group input::placeholder,
-.form-group textarea::placeholder {
+.form-field input::placeholder,
+.form-field textarea::placeholder {
   color: #aaa39a;
 }
 
 
 /* =========================================================
-   19. PRIVACY
+   21. BOOKING PRIVACY
 ========================================================= */
 
-.booking-privacy {
+.privacy-check {
   display: flex;
   align-items: flex-start;
   gap: 12px;
   margin-top: 35px;
 }
 
-.booking-privacy input {
+.privacy-check input {
   width: 16px;
   height: 16px;
   margin-top: 2px;
+  flex-shrink: 0;
   accent-color: #b69b67;
 }
 
-.booking-privacy label {
+.privacy-check label {
   color: #777067;
   font-size: 11px;
   line-height: 1.6;
 }
 
-.booking-privacy a {
-  color: #171614;
-  text-decoration: underline;
-}
-
 
 /* =========================================================
-   20. BOOKING SUBMIT
+   22. BOOKING SUBMIT
 ========================================================= */
 
 .booking-submit-wrapper {
@@ -1273,6 +1412,7 @@ p {
 
 .booking-submit {
   min-width: 240px;
+  flex-shrink: 0;
 }
 
 .booking-submit:disabled {
@@ -1281,48 +1421,38 @@ p {
   transform: none;
 }
 
-.booking-form-message {
+.booking-submit.loading {
+  opacity: .65;
+  pointer-events: none;
+}
+
+.booking-note {
+  max-width: 500px;
+  color: #81786d;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.booking-message {
   display: none;
+  margin-top: 25px;
   padding: 15px 18px;
   font-size: 12px;
   line-height: 1.6;
 }
 
-.booking-form-message.success {
+.booking-message.success {
   display: block;
   background: #e2eadf;
   color: #3d5a38;
   border: 1px solid #bdceb8;
 }
 
-.booking-form-message.error {
+.booking-message.error {
   display: block;
   background: #f0dfda;
   color: #743c32;
   border: 1px solid #d8b7af;
-}
-
-
-/* =========================================================
-   21. BOOKING NOTE
-========================================================= */
-
-.booking-note {
-  max-width: 950px;
-  margin: 30px auto 0;
-  color: #81786d;
-  font-size: 11px;
-  line-height: 1.7;
-  text-align: center;
-}
-
-
-/* =========================================================
-   22. BOOKING FOOTER
-========================================================= */
-
-.booking-page .footer {
-  margin-top: 0;
 }
 
 
@@ -1341,7 +1471,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 
 /* =========================================================
-   24. RESPONSIVE - TABLET
+   24. BOOKING FOCUS
+========================================================= */
+
+.booking-residence-card:focus-visible {
+  outline: 2px solid #b69b67;
+  outline-offset: 4px;
+}
+
+
+/* =========================================================
+   25. TABLET
 ========================================================= */
 
 @media (max-width: 1000px) {
@@ -1360,81 +1500,94 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
   .intro-grid {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 45px;
   }
 
-  .section-heading {
-    grid-template-columns: 1fr;
-    gap: 35px;
-  }
-
-  .residence-card,
-  .residence-card-reverse {
-    grid-template-columns: 1fr;
-  }
-
-  .residence-card-reverse .residence-image {
-    order: 1;
-  }
-
-  .residence-card-reverse .residence-info {
-    order: 2;
-  }
-
-  .residence-image {
-    min-height: 500px;
-  }
-
-  .residence-info {
-    min-height: 500px;
-    padding: 55px;
-  }
-
-  .experience-grid {
+  .feature-grid {
     grid-template-columns: 1fr;
     gap: 60px;
   }
 
-  .experience-image,
-  .experience-image .photo-placeholder {
-    min-height: 550px;
+  .feature-image,
+  .feature-image .photo-placeholder {
+    min-height: 500px;
+    height: 500px;
   }
 
-  .footer-top {
-    grid-template-columns: 2fr 1fr 1fr;
+  .residences-heading {
+    display: block;
   }
 
-  .footer-column:last-child {
-    grid-column: 2;
+  .residences-heading-description {
+    margin-top: 25px;
   }
 
-  .residence-choice-grid {
+  .residence-card-image {
+    height: 500px;
+  }
+
+  .gallery-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 300px 300px 300px;
+  }
+
+  .gallery-item.large {
+    grid-row: 1 / 3;
+  }
+
+  .experience-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-grid > :first-child {
+    grid-column: 1 / -1;
+  }
+
+  .residence-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+
+  .booking-residence-grid {
     gap: 18px;
   }
 
-  .residence-choice {
-    min-height: 460px;
+  .booking-residence-card {
+    min-height: 480px;
   }
 
+  .booking-card-image .photo-placeholder {
+    min-height: 480px;
+  }
+
+  .booking-card-content {
+    left: 30px;
+    right: 30px;
+    bottom: 30px;
+  }
 }
 
 
 /* =========================================================
-   25. RESPONSIVE - MOBILE
+   26. MOBILE
 ========================================================= */
 
 @media (max-width: 700px) {
 
   .container {
-    width: calc(100% - 36px);
+    width: calc(100% - 40px);
   }
 
   .section {
-    padding: 90px 0;
+    padding: 85px 0;
   }
 
   h1 {
-    font-size: clamp(48px, 15vw, 70px);
+    font-size: clamp(48px, 14vw, 72px);
     letter-spacing: -2px;
   }
 
@@ -1443,16 +1596,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     letter-spacing: -1.5px;
   }
 
-
-  /* NAV */
-
-  .nav-container {
-    width: calc(100% - 36px);
-    height: 80px;
+  h3 {
+    font-size: 36px;
   }
 
-  .navbar.scrolled .nav-container {
-    height: 70px;
+
+  /* NAVIGATION */
+
+  .nav-container {
+    width: calc(100% - 40px);
+    height: 80px;
   }
 
   .desktop-nav {
@@ -1460,16 +1613,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .menu-toggle {
-    display: block;
+    display: flex;
   }
 
   .logo-main {
-    font-size: 22px;
-  }
-
-  .logo-sub {
-    font-size: 6px;
-    letter-spacing: 2.5px;
+    font-size: 21px;
   }
 
 
@@ -1477,40 +1625,25 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
   .hero {
     min-height: 100svh;
-    height: 100svh;
   }
 
   .hero-content {
-    width: calc(100% - 36px);
-    margin: 0 18px;
+    width: calc(100% - 40px);
+    padding-bottom: 70px;
   }
 
   .hero-description {
-    max-width: 360px;
-    margin-top: 25px;
+    max-width: 400px;
     font-size: 13px;
   }
 
   .hero-actions {
     flex-direction: column;
-    align-items: stretch;
-    max-width: 300px;
-    gap: 10px;
-    margin-top: 32px;
-  }
-
-  .btn {
-    min-height: 50px;
+    align-items: flex-start;
   }
 
   .hero-scroll {
-    right: 18px;
-    bottom: 24px;
-    font-size: 7px;
-  }
-
-  .scroll-line {
-    width: 35px;
+    display: none;
   }
 
 
@@ -1520,156 +1653,122 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     gap: 35px;
   }
 
-  .intro-content h2 {
-    margin-bottom: 30px;
-  }
-
-  .intro-content p {
-    font-size: 13px;
+  .intro-text p {
+    font-size: 14px;
   }
 
 
   /* RESIDENCES */
 
-  .section-heading {
-    margin-bottom: 60px;
+  .residences-heading {
+    margin-bottom: 40px;
   }
 
-  .section-heading p {
-    font-size: 13px;
+  .residence-grid {
+    grid-template-columns: 1fr;
   }
 
-  .residence-card {
-    margin-bottom: 55px;
+  .residence-card-image {
+    height: 450px;
   }
 
-  .residence-image {
-    min-height: 390px;
+  .residence-card-content {
+    left: 25px;
+    right: 25px;
+    bottom: 28px;
   }
 
-  .residence-info {
-    min-height: auto;
-    padding: 40px 25px 45px;
+  .residence-card-number {
+    top: 25px;
+    right: 25px;
   }
 
-  .residence-top {
-    flex-direction: column;
-    gap: 15px;
+  .residence-card-details {
+    gap: 12px;
   }
 
-  .residence-top h3 {
-    font-size: 38px;
+
+  /* FEATURE */
+
+  .feature-image,
+  .feature-image .photo-placeholder {
+    min-height: 430px;
+    height: 430px;
   }
 
-  .residence-location {
-    white-space: normal;
+
+  /* GALLERY */
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(5, 250px);
   }
 
-  .residence-description {
-    margin-top: 25px;
-    font-size: 13px;
-  }
-
-  .residence-details {
-    gap: 25px;
-    margin-top: 35px;
-  }
-
-  .residence-details strong {
-    font-size: 23px;
-  }
-
-  .text-link {
-    margin-top: 35px;
+  .gallery-item.large {
+    grid-row: auto;
   }
 
 
   /* EXPERIENCE */
 
   .experience-grid {
-    gap: 45px;
+    margin-top: 45px;
   }
 
-  .experience-image,
-  .experience-image .photo-placeholder {
-    min-height: 400px;
-  }
-
-  .experience-content > p {
-    font-size: 13px;
-  }
-
-
-  /* BOLOGNA */
-
-  .bologna {
-    min-height: 570px;
-  }
-
-  .bologna-content p {
-    font-size: 13px;
-  }
-
-
-  /* VISUAL */
-
-  .visual-grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-
-  .visual-item,
-  .visual-large {
-    min-height: 400px;
+  .experience-item {
+    padding: 30px 25px;
   }
 
 
   /* CTA */
 
-  .cta-content p {
-    font-size: 13px;
+  .cta {
+    padding: 95px 0;
   }
 
 
   /* FOOTER */
 
   .footer {
-    padding: 65px 0 25px;
+    padding-top: 65px;
   }
 
-  .footer-top {
-    grid-template-columns: 1fr 1fr;
-    gap: 45px 25px;
-    padding-bottom: 55px;
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
   }
 
-  .footer-brand {
-    grid-column: 1 / -1;
-  }
-
-  .footer-column:last-child {
+  .footer-grid > :first-child {
     grid-column: auto;
   }
 
   .footer-bottom {
     flex-direction: column;
-    gap: 10px;
+    align-items: flex-start;
   }
 
 
-  /* WHATSAPP */
+  /* RESIDENCE DETAIL */
 
-  .whatsapp-button {
-    right: 15px;
-    bottom: 15px;
-    min-width: 105px;
-    height: 44px;
-    padding: 0 15px;
-    font-size: 8px;
+  .residence-detail-hero {
+    padding: 120px 0 70px;
+  }
+
+  .residence-detail-image {
+    height: 450px;
+  }
+
+  .residence-detail-meta {
+    gap: 20px;
   }
 
 
   /* BOOKING */
+
+  .booking-navbar .nav-container {
+    height: 80px;
+  }
 
   .booking-hero {
     padding: 120px 0 75px;
@@ -1680,6 +1779,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 
   .booking-hero-description {
+    margin-top: 25px;
     font-size: 13px;
   }
 
@@ -1687,26 +1787,38 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding: 75px 0;
   }
 
-  .booking-choice-heading {
+  .booking-section-heading {
     margin-bottom: 40px;
   }
 
-  .residence-choice-grid {
+  .booking-section-heading h2 {
+    font-size: clamp(40px, 12vw, 58px);
+  }
+
+  .booking-residence-grid {
     grid-template-columns: 1fr;
   }
 
-  .residence-choice {
+  .booking-residence-card {
     min-height: 430px;
   }
 
-  .residence-choice-content {
+  .booking-card-image .photo-placeholder {
+    min-height: 430px;
+  }
+
+  .booking-card-content {
     left: 25px;
     right: 25px;
     bottom: 28px;
   }
 
-  .residence-choice-content h3 {
+  .booking-card-content h3 {
     font-size: 37px;
+  }
+
+  .booking-card-details {
+    gap: 12px;
   }
 
   .booking-form-section {
@@ -1717,12 +1829,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding: 30px 20px;
   }
 
-  .form-grid {
+  .form-row {
     grid-template-columns: 1fr;
     gap: 20px;
   }
 
-  .form-group.full-width {
+  .form-field.full-width {
     grid-column: auto;
   }
 
@@ -1735,15 +1847,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     width: 100%;
   }
 
-  .booking-form-message {
-    width: 100%;
+  .booking-note {
+    max-width: none;
+    order: 2;
   }
-
 }
 
 
 /* =========================================================
-   26. SMALL MOBILE
+   27. SMALL MOBILE
 ========================================================= */
 
 @media (max-width: 420px) {
@@ -1758,43 +1870,30 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
   .hero-content {
     width: calc(100% - 30px);
-    margin: 0 15px;
-  }
-
-  .hero-actions {
-    max-width: 100%;
-  }
-
-  .residence-info {
-    padding: 35px 20px 40px;
-  }
-
-  .residence-top h3 {
-    font-size: 34px;
-  }
-
-  .residence-details {
-    gap: 20px;
-  }
-
-  .residence-choice-content h3 {
-    font-size: 33px;
   }
 
   .booking-form {
     padding: 25px 16px;
   }
 
-}
+  .booking-card-content h3 {
+    font-size: 33px;
+  }
 
+  .booking-card-details {
+    font-size: 8px;
+  }
 
-/* =========================================================
-   27. ACCESSIBILITY
-========================================================= */
+  .booking-submit {
+    min-width: 0;
+  }
 
-:focus-visible {
-  outline: 2px solid #b69b67;
-  outline-offset: 4px;
+  .whatsapp-button {
+    right: 15px;
+    bottom: 15px;
+    width: 48px;
+    height: 48px;
+  }
 }
 
 
@@ -1815,5 +1914,4 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
-
 }
