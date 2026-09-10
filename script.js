@@ -9,290 +9,1064 @@ document.addEventListener("DOMContentLoaded",()=>{
    00. LANGUAGE SYSTEM — EN / IT
 ========================================================= */
 
-const PRIME_TRANSLATIONS={"Prime Residence Bologna | Luxury Short Stay Apartments":"Prime Residence Bologna | Appartamenti di pregio per soggiorni a Bologna","Prime Residence Bologna offers refined apartments for short stays in Bologna, Italy.":"Prime Residence Bologna offre appartamenti raffinati per soggiorni a Bologna, Italia.","SCROLL UP TO DISCOVER":"SCORRI VERSO L’ALTO PER ENTRARE","Residences":"Residence","Experience":"Esperienza","Book now":"Prenota ora","Book Now":"Prenota ora","Book Your Stay":"Prenota il tuo soggiorno","Stay beautifully.":"Soggiorna con stile.","Live Bologna.":"Vivi Bologna.","Refined apartments designed for exceptional stays in the heart of Bologna.":"Appartamenti raffinati pensati per soggiorni eccezionali nel cuore di Bologna.","Book your stay":"Prenota il tuo soggiorno","Explore residences":"Scopri i residence","SCROLL TO EXPLORE":"SCORRI PER ESPLORARE","THE EXPERIENCE":"L’ESPERIENZA","MORE THAN A STAY":"PIÙ DI UN SOGGIORNO","A refined way to":"Un modo raffinato di","experience Bologna.":"vivere Bologna.","Prime Residence Bologna combines the independence of a private home with the elegance and attention expected from a premium hospitality experience.":"Prime Residence Bologna unisce l’indipendenza di una casa privata all’eleganza e all’attenzione di un’esperienza di ospitalità premium.","Every residence has been selected to offer comfort, privacy and a distinctive connection with the city. Whether you are visiting Bologna for business, culture or leisure, your stay begins here.":"Ogni residence è stato selezionato per offrire comfort, privacy e un legame autentico con la città. Che tu sia a Bologna per lavoro, cultura o piacere, il tuo soggiorno inizia qui.","OUR RESIDENCES":"I NOSTRI RESIDENCE","Designed for":"Pensati per","living well.":"vivere bene.","Two carefully selected residences, each offering a different interpretation of contemporary Bologna living.":"Due residence accuratamente selezionati, ognuno con una diversa interpretazione dell’abitare contemporaneo a Bologna.","BOLOGNA · ITALY":"BOLOGNA · ITALIA","BOLOGNA · ITALIA":"BOLOGNA · ITALIA","A spacious residence created for guests looking for comfort, privacy and generous living spaces.":"Un residence spazioso pensato per chi cerca comfort, privacy e ambienti generosi.","3 Bedrooms":"3 Camere","2 Bathrooms":"2 Bagni","Up to 6 Guests":"Fino a 6 Ospiti","Discover residence":"Scopri il residence","An elegant and functional residence, ideal for discovering Bologna while enjoying the comfort of a private home.":"Un residence elegante e funzionale, ideale per scoprire Bologna con il comfort di una casa privata.","2 Bedrooms":"2 Camere","1 Bathroom":"1 Bagno","Your own space.":"Il tuo spazio.","Your own rhythm.":"Il tuo ritmo.","Forget the constraints of a traditional hotel. Our residences give you the freedom to live Bologna at your own pace.":"Dimentica i vincoli di un hotel tradizionale. I nostri residence ti danno la libertà di vivere Bologna secondo i tuoi ritmi.","Privacy":"Privacy","Your own private residence throughout your stay.":"Un residence tutto per te per l’intera durata del soggiorno.","Comfort":"Comfort","Generous spaces designed for short and extended stays.":"Spazi ampi pensati per soggiorni brevi e prolungati.","Location":"Posizione","Carefully selected locations to experience Bologna.":"Posizioni selezionate con cura per vivere Bologna.","DISCOVER THE CITY":"SCOPRI LA CITTÀ","Bologna,":"Bologna,","beautifully authentic.":"autentica, naturalmente.","Medieval streets, historic porticoes, extraordinary food and a vibrant cultural scene. Bologna is a city best experienced slowly.":"Strade medievali, portici storici, gastronomia straordinaria e una scena culturale vivace. Bologna è una città da vivere senza fretta.","Plan your stay":"Organizza il tuo soggiorno","THE PRIME STANDARD":"LO STANDARD PRIME","Details make":"I dettagli fanno","the difference.":"la differenza.","From the first moment to the last, every element of your stay is designed to feel effortless.":"Dal primo all’ultimo momento, ogni elemento del soggiorno è pensato per essere semplice e naturale.","YOUR NEXT STAY":"IL TUO PROSSIMO SOGGIORNO","Bologna is waiting.":"Bologna ti aspetta.","Make yourself at home.":"Sentiti a casa.","Refined short stays in Bologna, Italy.":"Soggiorni raffinati a Bologna, Italia.","EXPLORE":"ESPLORA","RESIDENCES":"RESIDENCE","CONTACT":"CONTATTI","Email us":"Scrivici","Prime Residence Bologna. All rights reserved.":"Prime Residence Bologna. Tutti i diritti riservati.","Bologna · Italy":"Bologna · Italia","What would you like to know about Prime Residence Bologna?":"Cosa vorresti sapere su Prime Residence Bologna?","Discover our residences, the experience and how to plan your stay.":"Scopri i nostri residence, l’esperienza e come organizzare il tuo soggiorno.","Welcome to Prime Residence Bologna. What would you like to know about us?":"Benvenuto a Prime Residence Bologna. Cosa vorresti sapere su di noi?","WHAT IS PRIME?":"COS’È PRIME?","THE RESIDENCES":"I RESIDENCE","COMPARE":"CONFRONTA","BOOKING":"PRENOTAZIONE","LOCATION":"POSIZIONE","Ask Prime Residence Assistant a question":"Fai una domanda a Prime Assistant","NEED PERSONAL ASSISTANCE?":"HAI BISOGNO DI ASSISTENZA PERSONALE?","EMAIL ↗":"EMAIL ↗","WHATSAPP ↗":"WHATSAPP ↗","← BACK TO RESIDENCES":"← TORNA AI RESIDENCE","BEDROOMS":"CAMERE","BATHROOMS":"BAGNI","GUESTS":"OSPITI","RESIDENCE":"RESIDENCE","THE RESIDENCE":"IL RESIDENCE","A refined stay,":"Un soggiorno raffinato,","your own space.":"il tuo spazio.","Barontini 8 is a refined two-bedroom apartment offering privacy, practical spaces and an ideal base for experiencing Bologna.":"Barontini 8 è un raffinato appartamento con due camere da letto che offre privacy, spazi funzionali e una base ideale per vivere Bologna.","Designed for up to six guests, the residence combines the independence of a private apartment with a convenient base from which to discover the city.":"Pensato per ospitare fino a sei persone, il residence unisce l’indipendenza di un appartamento privato a una posizione comoda da cui scoprire la città.","Space to live,":"Spazio da vivere,","room to stay.":"spazio per soggiornare.","Gastone Rossi 12 is a spacious contemporary residence designed for longer stays, families and groups looking for comfort in Bologna.":"Gastone Rossi 12 è un residence contemporaneo e spazioso, pensato per soggiorni più lunghi, famiglie e gruppi in cerca di comfort a Bologna.","With three bedrooms, two bathrooms and space for up to six guests, the residence offers the freedom and privacy of a home while keeping Bologna within easy reach.":"Con tre camere da letto, due bagni e spazio per un massimo di sei ospiti, il residence offre la libertà e la privacy di una casa mantenendo Bologna a portata di mano.","GALLERY":"GALLERIA","MASTER BEDROOM":"CAMERA MATRIMONIALE","BEDROOM":"CAMERA","TWIN BEDROOM":"CAMERA DOPPIA","BEDROOM DETAIL":"DETTAGLIO CAMERA","BATHROOM":"BAGNO","KITCHEN & DINING":"CUCINA E ZONA PRANZO","KITCHEN":"CUCINA","DINING AREA":"ZONA PRANZO","LIVING AREA":"ZONA GIORNO","PRIVATE PATIO":"PATIO PRIVATO","GARDEN":"GIARDINO","GARDEN DETAIL":"DETTAGLIO GIARDINO","RESIDENCE EXTERIOR":"ESTERNO DEL RESIDENCE","SWIPE TO SWITCH PHOTO":"SCORRI PER CAMBIARE FOTO","Your place":"Il tuo spazio","in Bologna.":"a Bologna.","CLICK TO EXPAND":"CLICCA PER ESPANDERE","AROUND THE RESIDENCE":"NEI DINTORNI DEL RESIDENCE","Dintorni":"Dintorni","della struttura.":"della struttura.","EXHIBITION DISTRICT":"QUARTIERE FIERISTICO","ART · CULTURE":"ARTE · CULTURA","UNIVERSITY · CULTURE":"UNIVERSITÀ · CULTURA","LANDMARK · HISTORY":"MONUMENTO · STORIA","RAILWAY STATION":"STAZIONE FERROVIARIA","HISTORIC CENTRE":"CENTRO STORICO","SQUARE · HISTORY":"PIAZZA · STORIA","PARK · NATURE":"PARCO · NATURA","DISTANCES ARE APPROXIMATE FROM THE RESIDENCE":"LE DISTANZE SONO APPROSSIMATIVE DAL RESIDENCE","AMENITIES":"SERVIZI","Everything":"Tutto ciò","you need.":"che ti serve.","2 BEDROOMS":"2 CAMERE","1 BATHROOM":"1 BAGNO","3 BEDROOMS":"3 CAMERE","2 BATHROOMS":"2 BAGNI","UP TO 6 GUESTS":"FINO A 6 OSPITI","ADD AMENITY":"AGGIUNGI SERVIZIO","Bologna, Italy.":"Bologna, Italia.","Exact location details can be added here.":"Qui possono essere aggiunti i dettagli esatti sulla posizione.","CHECK-IN":"CHECK-IN","Check-in information and arrival instructions can be added here.":"Qui possono essere aggiunte le informazioni sul check-in e le istruzioni per l’arrivo.","HOUSE RULES":"REGOLE DELLA CASA","House rules and important guest information can be added here.":"Qui possono essere aggiunte le regole della casa e le informazioni importanti per gli ospiti.","Your stay":"Il tuo soggiorno","starts here.":"inizia qui.","BOOK YOUR STAY":"PRENOTA IL TUO SOGGIORNO","RESIDENCE BOLOGNA":"RESIDENCE BOLOGNA","What would you like to know about Barontini 8?":"Cosa vorresti sapere su Barontini 8?","What would you like to know about Gastone Rossi 12?":"Cosa vorresti sapere su Gastone Rossi 12?","Ask about the apartment, location, booking or your stay.":"Chiedi informazioni sull’appartamento, la posizione, la prenotazione o il soggiorno.","You're viewing Barontini 8. What would you like to know about this residence?":"Stai visitando Barontini 8. Cosa vorresti sapere su questo residence?","You're viewing Gastone Rossi 12. What would you like to know about this residence?":"Stai visitando Gastone Rossi 12. Cosa vorresti sapere su questo residence?","Book Your Stay | Prime Residence Bologna":"Prenota il tuo soggiorno | Prime Residence Bologna","Book your stay at Prime Residence Bologna. Choose your residence, check real-time availability and submit your booking request.":"Prenota il tuo soggiorno a Prime Residence Bologna. Scegli il residence, controlla la disponibilità in tempo reale e invia la tua richiesta di prenotazione.","Book your stay.":"Prenota il tuo soggiorno.","Choose your residence, explore real-time availability and select your stay directly from the calendar. Then send us your booking request.":"Scegli il residence, consulta la disponibilità in tempo reale e seleziona il soggiorno direttamente dal calendario. Poi inviaci la tua richiesta di prenotazione.","01 — SELECT YOUR RESIDENCE":"01 — SCEGLI IL RESIDENCE","Choose where":"Scegli dove","you would like to stay.":"vorresti soggiornare.","Select Residence →":"Seleziona Residence →","02 — YOUR STAY":"02 — IL TUO SOGGIORNO","Select your":"Seleziona il tuo","stay.":"soggiorno.","Please select a residence above":"Seleziona prima un residence qui sopra","Real-time availability":"Disponibilità in tempo reale","REAL-TIME AVAILABILITY":"DISPONIBILITÀ IN TEMPO REALE","Select a residence":"Seleziona un residence","Availability is based on the latest calendar data. Final confirmation follows your booking request.":"La disponibilità si basa sui dati più recenti del calendario. La conferma finale avverrà dopo la tua richiesta di prenotazione.","WAITING":"IN ATTESA","MON":"LUN","TUE":"MAR","WED":"MER","THU":"GIO","FRI":"VEN","SAT":"SAB","SUN":"DOM","Available":"Disponibile","Fully booked":"Al completo","Click once to select your check-in and again to select your check-out. On desktop you can also click and drag across the calendar.":"Clicca una volta per selezionare il check-in e una seconda volta per il check-out. Da computer puoi anche cliccare e trascinare sul calendario.","Loading current availability...":"Caricamento disponibilità attuale...","SELECTED STAY":"SOGGIORNO SELEZIONATO","AVAILABLE":"DISPONIBILE","Check-in":"Check-in","Check-out":"Check-out","Nights":"Notti","Change dates":"Cambia date","Guests":"Ospiti","Number of guests":"Numero di ospiti","Select":"Seleziona","1 Guest":"1 Ospite","2 Guests":"2 Ospiti","3 Guests":"3 Ospiti","4 Guests":"4 Ospiti","5 Guests":"5 Ospiti","6 Guests":"6 Ospiti","Guest details":"Dati dell’ospite","First name":"Nome","Last name":"Cognome","Date of birth":"Data di nascita","Email":"Email","Phone":"Telefono","Notes":"Note","I agree to the processing of my personal data for the purpose of handling this booking request.":"Acconsento al trattamento dei miei dati personali ai fini della gestione di questa richiesta di prenotazione.","Real-time availability is based on the latest calendar information. Sending this form does not constitute a confirmed reservation. We will contact you to confirm your stay.":"La disponibilità in tempo reale si basa sulle informazioni più recenti del calendario. L’invio del modulo non costituisce una prenotazione confermata. Ti contatteremo per confermare il soggiorno.","Select Your Stay":"Seleziona il soggiorno","Contemporary residences in Bologna, designed for a refined and comfortable stay.":"Residence contemporanei a Bologna, pensati per un soggiorno raffinato e confortevole.","Explore":"Esplora","Contact":"Contatti","← Home":"← Home","Prime Residence":"Prime Residence","Qui inseriremo la galleria fotografica originale di Booking.":"Qui inseriremo la galleria fotografica originale di Booking.","Select Check-out":"Seleziona il check-out","LOADING":"CARICAMENTO","LIVE":"LIVE","UNAVAILABLE":"NON DISPONIBILE","Availability Unavailable":"Disponibilità non disponibile","Loading Availability...":"Caricamento disponibilità...","This date is fully booked. Please choose an available check-in date.":"Questa data è al completo. Scegli una data di check-in disponibile.","Your selected stay crosses a fully booked date. Please choose another check-out date.":"Il soggiorno selezionato include una data al completo. Scegli un altro check-out.","We could not load availability at the moment. Please try again shortly.":"Non riusciamo a caricare la disponibilità in questo momento. Riprova tra poco.","Please select a residence first.":"Seleziona prima un residence.","Availability is not currently available. Please try again.":"La disponibilità non è al momento disponibile. Riprova.","Please select your check-in and check-out dates from the calendar.":"Seleziona le date di check-in e check-out dal calendario.","The selected stay is not available.":"Il soggiorno selezionato non è disponibile.","Please accept the privacy policy.":"Accetta l’informativa sulla privacy.","Rechecking Availability...":"Ricontrollo disponibilità...","Availability has changed and these dates are no longer available. Please select another stay.":"La disponibilità è cambiata e queste date non sono più disponibili. Seleziona un altro soggiorno.","We could not verify availability right now. Please try again in a moment.":"Non riusciamo a verificare la disponibilità in questo momento. Riprova tra poco.","Sending...":"Invio in corso...","Booking request sent successfully. We will contact you shortly to confirm your stay.":"Richiesta di prenotazione inviata con successo. Ti contatteremo a breve per confermare il soggiorno.","Unable to send request.":"Impossibile inviare la richiesta.","Send Booking Request":"Invia richiesta di prenotazione","fully booked":"al completo","available":"disponibile","Please complete all required fields.":"Compila tutti i campi obbligatori.","Invalid residence.":"Residence non valido.","Invalid booking dates.":"Date di prenotazione non valide.","Booking system is not configured yet.":"Il sistema di prenotazione non è ancora configurato.","Booking request sent successfully.":"Richiesta di prenotazione inviata con successo."};
-const PRIME_LANG_KEY="primeResidenceLanguage";
-let primeLanguage=(()=>{try{return localStorage.getItem(PRIME_LANG_KEY)==="it"?"it":"en"}catch{return"en"}})();
-const primeOriginalText=new WeakMap(),primeOriginalAttrs=new WeakMap();
-const primeNorm=s=>String(s||"").replace(/\s+/g," ").trim();
-const primeTranslate=s=>primeLanguage==="it"?(PRIME_TRANSLATIONS[primeNorm(s)]||s):s;
+const PRIME_TRANSLATIONS={
+"Prime Residence Bologna | Luxury Short Stay Apartments":"Prime Residence Bologna | Appartamenti di pregio per soggiorni a Bologna",
+"Prime Residence Bologna offers refined apartments for short stays in Bologna, Italy.":"Prime Residence Bologna offre appartamenti raffinati per soggiorni a Bologna, Italia.",
+"SCROLL UP TO DISCOVER":"SCORRI VERSO L’ALTO PER ENTRARE",
+"Residences":"Residence",
+"Experience":"Esperienza",
+"Book now":"Prenota ora",
+"Book Now":"Prenota ora",
+"Book Your Stay":"Prenota il tuo soggiorno",
+"Stay beautifully.":"Soggiorna con stile.",
+"Live Bologna.":"Vivi Bologna.",
+"Refined apartments designed for exceptional stays in the heart of Bologna.":"Appartamenti raffinati pensati per soggiorni eccezionali nel cuore di Bologna.",
+"Book your stay":"Prenota il tuo soggiorno",
+"Explore residences":"Scopri i residence",
+"SCROLL TO EXPLORE":"SCORRI PER ESPLORARE",
+"THE EXPERIENCE":"L’ESPERIENZA",
+"MORE THAN A STAY":"PIÙ DI UN SOGGIORNO",
+"A refined way to":"Un modo raffinato di",
+"experience Bologna.":"vivere Bologna.",
+"Prime Residence Bologna combines the independence of a private home with the elegance and attention expected from a premium hospitality experience.":"Prime Residence Bologna unisce l’indipendenza di una casa privata all’eleganza e all’attenzione di un’esperienza di ospitalità premium.",
+"Every residence has been selected to offer comfort, privacy and a distinctive connection with the city. Whether you are visiting Bologna for business, culture or leisure, your stay begins here.":"Ogni residence è stato selezionato per offrire comfort, privacy e un legame autentico con la città. Che tu sia a Bologna per lavoro, cultura o piacere, il tuo soggiorno inizia qui.",
+"OUR RESIDENCES":"I NOSTRI RESIDENCE",
+"Designed for":"Pensati per",
+"living well.":"vivere bene.",
+"Two carefully selected residences, each offering a different interpretation of contemporary Bologna living.":"Due residence accuratamente selezionati, ognuno con una diversa interpretazione dell’abitare contemporaneo a Bologna.",
+"BOLOGNA · ITALY":"BOLOGNA · ITALIA",
+"A spacious residence created for guests looking for comfort, privacy and generous living spaces.":"Un residence spazioso pensato per chi cerca comfort, privacy e ambienti generosi.",
+"3 Bedrooms":"3 Camere",
+"2 Bathrooms":"2 Bagni",
+"Up to 6 Guests":"Fino a 6 Ospiti",
+"Discover residence":"Scopri il residence",
+"An elegant and functional residence, ideal for discovering Bologna while enjoying the comfort of a private home.":"Un residence elegante e funzionale, ideale per scoprire Bologna con il comfort di una casa privata.",
+"2 Bedrooms":"2 Camere",
+"1 Bathroom":"1 Bagno",
+"Your own space.":"Il tuo spazio.",
+"Your own rhythm.":"Il tuo ritmo.",
+"Forget the constraints of a traditional hotel. Our residences give you the freedom to live Bologna at your own pace.":"Dimentica i vincoli di un hotel tradizionale. I nostri residence ti danno la libertà di vivere Bologna secondo i tuoi ritmi.",
+"Privacy":"Privacy",
+"Your own private residence throughout your stay.":"Un residence tutto per te per l’intera durata del soggiorno.",
+"Comfort":"Comfort",
+"Generous spaces designed for short and extended stays.":"Spazi ampi pensati per soggiorni brevi e prolungati.",
+"Location":"Posizione",
+"Carefully selected locations to experience Bologna.":"Posizioni selezionate con cura per vivere Bologna.",
+"DISCOVER THE CITY":"SCOPRI LA CITTÀ",
+"Bologna,":"Bologna,",
+"beautifully authentic.":"autentica, naturalmente.",
+"Medieval streets, historic porticoes, extraordinary food and a vibrant cultural scene. Bologna is a city best experienced slowly.":"Strade medievali, portici storici, gastronomia straordinaria e una scena culturale vivace. Bologna è una città da vivere senza fretta.",
+"Plan your stay":"Organizza il tuo soggiorno",
+"THE PRIME STANDARD":"LO STANDARD PRIME",
+"Details make":"I dettagli fanno",
+"the difference.":"la differenza.",
+"From the first moment to the last, every element of your stay is designed to feel effortless.":"Dal primo all’ultimo momento, ogni elemento del soggiorno è pensato per essere semplice e naturale.",
+"YOUR NEXT STAY":"IL TUO PROSSIMO SOGGIORNO",
+"Bologna is waiting.":"Bologna ti aspetta.",
+"Make yourself at home.":"Sentiti a casa.",
+"Refined short stays in Bologna, Italy.":"Soggiorni raffinati a Bologna, Italia.",
+"EXPLORE":"ESPLORA",
+"RESIDENCES":"RESIDENCE",
+"CONTACT":"CONTATTI",
+"Email us":"Scrivici",
+"Prime Residence Bologna. All rights reserved.":"Prime Residence Bologna. Tutti i diritti riservati.",
+"Bologna · Italy":"Bologna · Italia",
+"What would you like to know about Prime Residence Bologna?":"Cosa vorresti sapere su Prime Residence Bologna?",
+"Discover our residences, the experience and how to plan your stay.":"Scopri i nostri residence, l’esperienza e come organizzare il tuo soggiorno.",
+"Welcome to Prime Residence Bologna. What would you like to know about us?":"Benvenuto a Prime Residence Bologna. Cosa vorresti sapere su di noi?",
+"WHAT IS PRIME?":"COS’È PRIME?",
+"THE RESIDENCES":"I RESIDENCE",
+"COMPARE":"CONFRONTA",
+"BOOKING":"PRENOTAZIONE",
+"LOCATION":"POSIZIONE",
+"Ask Prime Residence Assistant a question":"Fai una domanda a Prime Assistant",
+"NEED PERSONAL ASSISTANCE?":"HAI BISOGNO DI ASSISTENZA PERSONALE?",
+"← BACK TO RESIDENCES":"← TORNA AI RESIDENCE",
+"BEDROOMS":"CAMERE",
+"BATHROOMS":"BAGNI",
+"GUESTS":"OSPITI",
+"THE RESIDENCE":"IL RESIDENCE",
+"A refined stay,":"Un soggiorno raffinato,",
+"your own space.":"il tuo spazio.",
+"Barontini 8 is a refined two-bedroom apartment offering privacy, practical spaces and an ideal base for experiencing Bologna.":"Barontini 8 è un raffinato appartamento con due camere da letto che offre privacy, spazi funzionali e una base ideale per vivere Bologna.",
+"Designed for up to six guests, the residence combines the independence of a private apartment with a convenient base from which to discover the city.":"Pensato per ospitare fino a sei persone, il residence unisce l’indipendenza di un appartamento privato a una posizione comoda da cui scoprire la città.",
+"Space to live,":"Spazio da vivere,",
+"room to stay.":"spazio per soggiornare.",
+"Gastone Rossi 12 is a spacious contemporary residence designed for longer stays, families and groups looking for comfort in Bologna.":"Gastone Rossi 12 è un residence contemporaneo e spazioso, pensato per soggiorni più lunghi, famiglie e gruppi in cerca di comfort a Bologna.",
+"With three bedrooms, two bathrooms and space for up to six guests, the residence offers the freedom and privacy of a home while keeping Bologna within easy reach.":"Con tre camere da letto, due bagni e spazio per un massimo di sei ospiti, il residence offre la libertà e la privacy di una casa mantenendo Bologna a portata di mano.",
+"GALLERY":"GALLERIA",
+"MASTER BEDROOM":"CAMERA MATRIMONIALE",
+"BEDROOM":"CAMERA",
+"TWIN BEDROOM":"CAMERA DOPPIA",
+"BEDROOM DETAIL":"DETTAGLIO CAMERA",
+"BATHROOM":"BAGNO",
+"KITCHEN & DINING":"CUCINA E ZONA PRANZO",
+"KITCHEN":"CUCINA",
+"DINING AREA":"ZONA PRANZO",
+"LIVING AREA":"ZONA GIORNO",
+"PRIVATE PATIO":"PATIO PRIVATO",
+"GARDEN":"GIARDINO",
+"GARDEN DETAIL":"DETTAGLIO GIARDINO",
+"RESIDENCE EXTERIOR":"ESTERNO DEL RESIDENCE",
+"SWIPE TO SWITCH PHOTO":"SCORRI PER CAMBIARE FOTO",
+"Your place":"Il tuo spazio",
+"in Bologna.":"a Bologna.",
+"CLICK TO EXPAND":"CLICCA PER ESPANDERE",
+"AROUND THE RESIDENCE":"NEI DINTORNI DEL RESIDENCE",
+"EXHIBITION DISTRICT":"QUARTIERE FIERISTICO",
+"ART · CULTURE":"ARTE · CULTURA",
+"UNIVERSITY · CULTURE":"UNIVERSITÀ · CULTURA",
+"LANDMARK · HISTORY":"MONUMENTO · STORIA",
+"RAILWAY STATION":"STAZIONE FERROVIARIA",
+"HISTORIC CENTRE":"CENTRO STORICO",
+"SQUARE · HISTORY":"PIAZZA · STORIA",
+"PARK · NATURE":"PARCO · NATURA",
+"DISTANCES ARE APPROXIMATE FROM THE RESIDENCE":"LE DISTANZE SONO APPROSSIMATIVE DAL RESIDENCE",
+"AMENITIES":"SERVIZI",
+"Everything":"Tutto ciò",
+"you need.":"che ti serve.",
+"2 BEDROOMS":"2 CAMERE",
+"1 BATHROOM":"1 BAGNO",
+"3 BEDROOMS":"3 CAMERE",
+"2 BATHROOMS":"2 BAGNI",
+"UP TO 6 GUESTS":"FINO A 6 OSPITI",
+"ADD AMENITY":"AGGIUNGI SERVIZIO",
+"Bologna, Italy.":"Bologna, Italia.",
+"CHECK-IN":"CHECK-IN",
+"HOUSE RULES":"REGOLE DELLA CASA",
+"Your stay":"Il tuo soggiorno",
+"starts here.":"inizia qui.",
+"BOOK YOUR STAY":"PRENOTA IL TUO SOGGIORNO",
+"What would you like to know about Barontini 8?":"Cosa vorresti sapere su Barontini 8?",
+"What would you like to know about Gastone Rossi 12?":"Cosa vorresti sapere su Gastone Rossi 12?",
+"Ask about the apartment, location, booking or your stay.":"Chiedi informazioni sull’appartamento, la posizione, la prenotazione o il soggiorno.",
+"Book Your Stay | Prime Residence Bologna":"Prenota il tuo soggiorno | Prime Residence Bologna",
+"Book your stay.":"Prenota il tuo soggiorno.",
+"Choose your residence, explore real-time availability and select your stay directly from the calendar. Then send us your booking request.":"Scegli il residence, consulta la disponibilità in tempo reale e seleziona direttamente dal calendario le date del soggiorno. Poi inviaci la tua richiesta di prenotazione.",
+"01 — SELECT YOUR RESIDENCE":"01 — SELEZIONA IL RESIDENCE",
+"Choose where":"Scegli dove",
+"you would like to stay.":"vorresti soggiornare.",
+"Select Residence →":"Seleziona residence →",
+"02 — YOUR STAY":"02 — IL TUO SOGGIORNO",
+"Select your":"Seleziona il tuo",
+"stay.":"soggiorno.",
+"Please select a residence above":"Seleziona prima un residence",
+"Real-time availability":"Disponibilità in tempo reale",
+"REAL-TIME AVAILABILITY":"DISPONIBILITÀ IN TEMPO REALE",
+"Select a residence":"Seleziona un residence",
+"Availability is based on the latest calendar data. Final confirmation follows your booking request.":"La disponibilità si basa sui dati più recenti del calendario. La conferma definitiva avviene dopo la richiesta di prenotazione.",
+"WAITING":"IN ATTESA",
+"Available":"Disponibile",
+"Fully booked":"Al completo",
+"AVAILABLE":"DISPONIBILE",
+"FULLY BOOKED":"AL COMPLETO",
+"Loading current availability...":"Caricamento disponibilità attuale...",
+"SELECTED STAY":"SOGGIORNO SELEZIONATO",
+"Check-in":"Check-in",
+"Check-out":"Check-out",
+"Nights":"Notti",
+"Change dates":"Cambia date",
+"Guests":"Ospiti",
+"Number of guests":"Numero di ospiti",
+"Select":"Seleziona",
+"1 Guest":"1 Ospite",
+"2 Guests":"2 Ospiti",
+"3 Guests":"3 Ospiti",
+"4 Guests":"4 Ospiti",
+"5 Guests":"5 Ospiti",
+"6 Guests":"6 Ospiti",
+"Guest details":"Dati dell’ospite",
+"First name":"Nome",
+"Last name":"Cognome",
+"Date of birth":"Data di nascita",
+"Phone":"Telefono",
+"Notes":"Note",
+"Tell us anything we should know about your stay...":"Dicci qualsiasi informazione utile sul tuo soggiorno...",
+"I agree to the processing of my personal data for the purpose of handling this booking request.":"Acconsento al trattamento dei miei dati personali per la gestione di questa richiesta di prenotazione.",
+"Select Your Stay":"Seleziona il soggiorno",
+"Send Booking Request":"Invia richiesta di prenotazione",
+"This date is fully booked. Please choose an available check-in date.":"Questa data è al completo. Scegli una data di check-in disponibile.",
+"Your selected stay crosses a fully booked date. Please choose another check-out date.":"Il soggiorno selezionato comprende una data al completo. Scegli un altro check-out.",
+"We could not load availability at the moment. Please try again shortly.":"Non è stato possibile caricare la disponibilità. Riprova tra poco.",
+"Availability Unavailable":"Disponibilità non disponibile",
+"Loading Availability...":"Caricamento disponibilità...",
+"Select Check-out":"Seleziona il check-out",
+"Please select a residence first.":"Seleziona prima un residence.",
+"Availability is not currently available. Please try again.":"La disponibilità non è al momento disponibile. Riprova.",
+"Please select your check-in and check-out dates from the calendar.":"Seleziona le date di check-in e check-out dal calendario.",
+"The selected stay is not available.":"Il soggiorno selezionato non è disponibile.",
+"Please accept the privacy policy.":"Accetta l’informativa sulla privacy.",
+"Rechecking Availability...":"Nuovo controllo disponibilità...",
+"Availability has changed and these dates are no longer available. Please select another stay.":"La disponibilità è cambiata e queste date non sono più disponibili. Seleziona un altro soggiorno.",
+"We could not verify availability right now. Please try again in a moment.":"Non è stato possibile verificare la disponibilità. Riprova tra poco.",
+"Sending...":"Invio in corso...",
+"Booking request sent successfully. We will contact you shortly to confirm your stay.":"Richiesta di prenotazione inviata con successo. Ti contatteremo a breve per confermare il soggiorno.",
+"Unable to send request.":"Impossibile inviare la richiesta."
+};
 
-function primeTranslateTextNode(node){if(!node||node.nodeType!==3)return;if(!primeOriginalText.has(node))primeOriginalText.set(node,node.nodeValue);const original=primeOriginalText.get(node),n=primeNorm(original);if(!n)return;const translated=primeLanguage==="it"?PRIME_TRANSLATIONS[n]:null;const desired=translated!==undefined?original.replace(n,translated):original;if(node.nodeValue!==desired)node.nodeValue=desired;}
-function primeTranslateElement(el){if(!el||el.nodeType!==1||["SCRIPT","STYLE"].includes(el.tagName))return;["placeholder","aria-label","title"].forEach(attr=>{if(!el.hasAttribute(attr))return;let store=primeOriginalAttrs.get(el)||{};if(!(attr in store))store[attr]=el.getAttribute(attr);primeOriginalAttrs.set(el,store);const original=store[attr],translated=primeLanguage==="it"?PRIME_TRANSLATIONS[primeNorm(original)]:null;el.setAttribute(attr,translated!==undefined?translated:original);});for(const child of el.childNodes)child.nodeType===3?primeTranslateTextNode(child):primeTranslateElement(child);}
-function primeUpdateLanguageButtons(){document.querySelectorAll(".language-switcher button[data-lang]").forEach(btn=>btn.classList.toggle("active",btn.dataset.lang===primeLanguage));}
-function primeApplyLanguage(){document.documentElement.lang=primeLanguage;primeTranslateElement(document.body);const titleOriginal=document.documentElement.dataset.primeOriginalTitle||(document.documentElement.dataset.primeOriginalTitle=document.title);document.title=primeLanguage==="it"?(PRIME_TRANSLATIONS[primeNorm(titleOriginal)]||titleOriginal):titleOriginal;const meta=document.querySelector('meta[name="description"]');if(meta){const original=meta.dataset.primeOriginal||meta.content;meta.dataset.primeOriginal=original;meta.content=primeLanguage==="it"?(PRIME_TRANSLATIONS[primeNorm(original)]||original):original;}primeUpdateLanguageButtons();window.dispatchEvent(new CustomEvent("primeLanguageChanged",{detail:{lang:primeLanguage}}));}
-function primeSetLanguage(lang){primeLanguage=lang==="it"?"it":"en";try{localStorage.setItem(PRIME_LANG_KEY,primeLanguage)}catch{}primeApplyLanguage();}
-function primeCreateSwitcher(){const make=cls=>{const wrap=document.createElement("div");wrap.className=`language-switcher ${cls||""}`.trim();wrap.setAttribute("aria-label","Language / Lingua");wrap.innerHTML='<button type="button" data-lang="en">EN</button><span class="language-switcher-separator">/</span><button type="button" data-lang="it">IT</button>';wrap.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>primeSetLanguage(b.dataset.lang)));return wrap;};const desktop=document.querySelector(".desktop-nav");if(desktop){const sw=make();const book=desktop.querySelector(".nav-book");book?desktop.insertBefore(sw,book):desktop.appendChild(sw);const navContainer=document.querySelector(".nav-container");const toggle=navContainer&&navContainer.querySelector(".menu-toggle");if(navContainer&&toggle)navContainer.insertBefore(make("language-switcher-mobile"),toggle);}else{const apartmentRight=document.querySelector(".apartment-nav-right");if(apartmentRight)apartmentRight.insertBefore(make(),apartmentRight.firstChild);}primeUpdateLanguageButtons();}
+const PRIME_LANG_KEY="primeResidenceLanguage";
+
+let primeLanguage=(()=>{
+try{
+return localStorage.getItem(PRIME_LANG_KEY)==="it"?"it":"en";
+}catch{
+return"en";
+}
+})();
+
+const primeOriginalText=new WeakMap();
+const primeOriginalAttrs=new WeakMap();
+
+const primeNorm=s=>
+String(s||"")
+.replace(/\s+/g," ")
+.trim();
+
+function primeTranslateTextNode(node){
+
+if(!node||node.nodeType!==3)return;
+
+if(!primeOriginalText.has(node)){
+primeOriginalText.set(node,node.nodeValue);
+}
+
+const original=primeOriginalText.get(node);
+const normalized=primeNorm(original);
+
+if(!normalized)return;
+
+const translated=
+primeLanguage==="it"
+?PRIME_TRANSLATIONS[normalized]
+:undefined;
+
+const desired=
+translated!==undefined
+?original.replace(normalized,translated)
+:original;
+
+if(node.nodeValue!==desired){
+node.nodeValue=desired;
+}
+
+}
+
+function primeTranslateElement(el){
+
+if(
+!el||
+el.nodeType!==1||
+["SCRIPT","STYLE"].includes(el.tagName)
+)return;
+
+["placeholder","aria-label","title"].forEach(attr=>{
+
+if(!el.hasAttribute(attr))return;
+
+let store=
+primeOriginalAttrs.get(el)||{};
+
+if(!(attr in store)){
+store[attr]=el.getAttribute(attr);
+}
+
+primeOriginalAttrs.set(el,store);
+
+const original=store[attr];
+
+const translated=
+primeLanguage==="it"
+?PRIME_TRANSLATIONS[primeNorm(original)]
+:undefined;
+
+el.setAttribute(
+attr,
+translated!==undefined
+?translated
+:original
+);
+
+});
+
+for(const child of el.childNodes){
+
+if(child.nodeType===3){
+primeTranslateTextNode(child);
+}else{
+primeTranslateElement(child);
+}
+
+}
+
+}
+
+function primeUpdateLanguageButtons(){
+
+document
+.querySelectorAll(".language-switcher button[data-lang]")
+.forEach(btn=>{
+
+btn.classList.toggle(
+"active",
+btn.dataset.lang===primeLanguage
+);
+
+});
+
+}
+
+function primeApplyLanguage(){
+
+document.documentElement.lang=
+primeLanguage;
+
+primeTranslateElement(
+document.body
+);
+
+const titleOriginal=
+document.documentElement.dataset.primeOriginalTitle||
+(
+document.documentElement.dataset.primeOriginalTitle=
+document.title
+);
+
+document.title=
+primeLanguage==="it"
+?(
+PRIME_TRANSLATIONS[primeNorm(titleOriginal)]||
+titleOriginal
+)
+:titleOriginal;
+
+const meta=
+document.querySelector('meta[name="description"]');
+
+if(meta){
+
+const original=
+meta.dataset.primeOriginal||
+meta.content;
+
+meta.dataset.primeOriginal=
+original;
+
+meta.content=
+primeLanguage==="it"
+?(
+PRIME_TRANSLATIONS[primeNorm(original)]||
+original
+)
+:original;
+
+}
+
+primeUpdateLanguageButtons();
+
+window.dispatchEvent(
+new CustomEvent(
+"primeLanguageChanged",
+{
+detail:{
+lang:primeLanguage
+}
+}
+)
+);
+
+}
+
+function primeSetLanguage(lang){
+
+primeLanguage=
+lang==="it"
+?"it"
+:"en";
+
+try{
+localStorage.setItem(
+PRIME_LANG_KEY,
+primeLanguage
+);
+}catch{}
+
+primeApplyLanguage();
+
+}
+
+function primeCreateSwitcher(){
+
+const make=cls=>{
+
+const wrap=
+document.createElement("div");
+
+wrap.className=
+`language-switcher ${cls||""}`.trim();
+
+wrap.setAttribute(
+"aria-label",
+"Language / Lingua"
+);
+
+wrap.innerHTML=
+'<button type="button" data-lang="en">EN</button><span class="language-switcher-separator">/</span><button type="button" data-lang="it">IT</button>';
+
+wrap
+.querySelectorAll("button")
+.forEach(button=>{
+
+button.addEventListener(
+"click",
+()=>primeSetLanguage(
+button.dataset.lang
+)
+);
+
+});
+
+return wrap;
+
+};
+
+const desktop=
+document.querySelector(".desktop-nav");
+
+if(desktop){
+
+const switcher=
+make();
+
+const book=
+desktop.querySelector(".nav-book");
+
+book
+?desktop.insertBefore(
+switcher,
+book
+)
+:desktop.appendChild(
+switcher
+);
+
+const navContainer=
+document.querySelector(".nav-container");
+
+const toggle=
+navContainer&&
+navContainer.querySelector(".menu-toggle");
+
+if(navContainer&&toggle){
+
+navContainer.insertBefore(
+make("language-switcher-mobile"),
+toggle
+);
+
+}
+
+}else{
+
+const apartmentRight=
+document.querySelector(".apartment-nav-right");
+
+if(apartmentRight){
+
+apartmentRight.insertBefore(
+make(),
+apartmentRight.firstChild
+);
+
+}
+
+}
+
+primeUpdateLanguageButtons();
+
+}
 
 primeCreateSwitcher();
 primeApplyLanguage();
 
-const primeLanguageObserver=new MutationObserver(mutations=>{for(const m of mutations){if(m.type==="childList")m.addedNodes.forEach(n=>{if(n.nodeType===3)primeTranslateTextNode(n);else if(n.nodeType===1)primeTranslateElement(n);});else if(m.type==="characterData")primeTranslateTextNode(m.target);}});
-primeLanguageObserver.observe(document.body,{subtree:true,childList:true,characterData:true});
+const primeLanguageObserver=
+new MutationObserver(
+mutations=>{
+
+for(const mutation of mutations){
+
+if(mutation.type==="childList"){
+
+mutation.addedNodes.forEach(node=>{
+
+if(node.nodeType===3){
+primeTranslateTextNode(node);
+}else if(node.nodeType===1){
+primeTranslateElement(node);
+}
+
+});
+
+}else if(
+mutation.type==="characterData"
+){
+
+primeTranslateTextNode(
+mutation.target
+);
+
+}
+
+}
+
+}
+);
+
+primeLanguageObserver.observe(
+document.body,
+{
+subtree:true,
+childList:true,
+characterData:true
+}
+);
 
 
 /* =========================================================
    01. PREMIUM INTRO
 ========================================================= */
 
-const loader=document.querySelector(".loader"),hero=document.querySelector(".hero");
+const loader=
+document.querySelector(".loader");
+
+const hero=
+document.querySelector(".hero");
 
 if(loader&&hero){
+
 const INTRO_DURATION=2200;
-let introFinished=false,introAnimating=false,startTime=null,touchStartY=0,mouseStartY=0,mouseCurrentY=0,mouseDragging=false;
 
-document.body.style.overflow="hidden";
-loader.style.transform="translate3d(0,0,0)";
-loader.style.willChange="transform";
+let introFinished=false;
+let introAnimating=false;
+let startTime=null;
+let touchStartY=0;
+let mouseStartY=0;
+let mouseCurrentY=0;
+let mouseDragging=false;
 
-const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+document.body.style.overflow=
+"hidden";
+
+loader.style.transform=
+"translate3d(0,0,0)";
+
+loader.style.willChange=
+"transform";
+
+const ease=t=>
+t<.5
+?4*t*t*t
+:1-Math.pow(-2*t+2,3)/2;
 
 function finishIntro(){
-introFinished=true;introAnimating=false;
-loader.style.transform="translate3d(0,-100%,0)";
-loader.classList.add("hide");
-loader.classList.remove("mouse-dragging");
-document.body.style.userSelect="";
-document.body.style.overflow="";
+
+introFinished=true;
+introAnimating=false;
+
+loader.style.transform=
+"translate3d(0,-100%,0)";
+
+loader.classList.add(
+"hide"
+);
+
+loader.classList.remove(
+"mouse-dragging"
+);
+
+document.body.style.userSelect=
+"";
+
+document.body.style.overflow=
+"";
+
 }
 
 function animate(now){
-if(!startTime)startTime=now;
-const progress=Math.min((now-startTime)/INTRO_DURATION,1);
-loader.style.transform=`translate3d(0,${-ease(progress)*100}%,0)`;
-progress<1?requestAnimationFrame(animate):finishIntro();
+
+if(!startTime){
+startTime=now;
+}
+
+const progress=
+Math.min(
+(now-startTime)/
+INTRO_DURATION,
+1
+);
+
+loader.style.transform=
+`translate3d(0,${-ease(progress)*100}%,0)`;
+
+progress<1
+?requestAnimationFrame(
+animate
+)
+:finishIntro();
+
 }
 
 function startIntro(){
-if(introFinished||introAnimating)return;
-introAnimating=true;startTime=null;
-window.dispatchEvent(new CustomEvent("primeIntroStarted"));
-requestAnimationFrame(animate);
+
+if(
+introFinished||
+introAnimating
+)return;
+
+introAnimating=true;
+startTime=null;
+
+window.dispatchEvent(
+new CustomEvent(
+"primeIntroStarted"
+)
+);
+
+requestAnimationFrame(
+animate
+);
+
 }
 
-/* ROTELLA / TRACKPAD VERSO L'ALTO */
-window.addEventListener("wheel",e=>{
+window.addEventListener(
+"wheel",
+e=>{
+
 if(introFinished)return;
-e.preventDefault();
-if(e.deltaY<0)startIntro();
-},{passive:false});
 
-/* TOUCH DAL BASSO VERSO L'ALTO */
-window.addEventListener("touchstart",e=>{
-if(introFinished||introAnimating)return;
-touchStartY=e.touches[0].clientY;
-},{passive:true});
-
-window.addEventListener("touchmove",e=>{
-if(introFinished||introAnimating)return;
-if(touchStartY-e.touches[0].clientY>12){
 e.preventDefault();
+
+if(e.deltaY<0){
 startIntro();
 }
-},{passive:false});
 
-/* MOUSE DRAG DAL BASSO VERSO L'ALTO */
-loader.addEventListener("mousedown",e=>{
-if(introFinished||introAnimating||e.button!==0)return;
+},
+{
+passive:false
+}
+);
+
+window.addEventListener(
+"touchstart",
+e=>{
+
+if(
+introFinished||
+introAnimating
+)return;
+
+touchStartY=
+e.touches[0].clientY;
+
+},
+{
+passive:true
+}
+);
+
+window.addEventListener(
+"touchmove",
+e=>{
+
+if(
+introFinished||
+introAnimating
+)return;
+
+if(
+touchStartY-
+e.touches[0].clientY>
+12
+){
+
+e.preventDefault();
+
+startIntro();
+
+}
+
+},
+{
+passive:false
+}
+);
+
+loader.addEventListener(
+"mousedown",
+e=>{
+
+if(
+introFinished||
+introAnimating||
+e.button!==0
+)return;
+
 mouseDragging=true;
 mouseStartY=e.clientY;
 mouseCurrentY=e.clientY;
-loader.classList.add("mouse-dragging");
-document.body.style.userSelect="none";
-});
 
-window.addEventListener("mousemove",e=>{
-if(!mouseDragging||introFinished||introAnimating)return;
+loader.classList.add(
+"mouse-dragging"
+);
+
+document.body.style.userSelect=
+"none";
+
+}
+);
+
+window.addEventListener(
+"mousemove",
+e=>{
+
+if(
+!mouseDragging||
+introFinished||
+introAnimating
+)return;
+
 mouseCurrentY=e.clientY;
 
-if(mouseStartY-mouseCurrentY>=35){
-mouseDragging=false;
-loader.classList.remove("mouse-dragging");
-document.body.style.userSelect="";
-startIntro();
-}
-});
+if(
+mouseStartY-
+mouseCurrentY>=35
+){
 
-window.addEventListener("mouseup",e=>{
+mouseDragging=false;
+
+loader.classList.remove(
+"mouse-dragging"
+);
+
+document.body.style.userSelect=
+"";
+
+startIntro();
+
+}
+
+}
+);
+
+window.addEventListener(
+"mouseup",
+e=>{
+
 if(!mouseDragging)return;
 
 mouseDragging=false;
 mouseCurrentY=e.clientY;
-loader.classList.remove("mouse-dragging");
-document.body.style.userSelect="";
 
-if(mouseStartY-mouseCurrentY>=35)startIntro();
-});
+loader.classList.remove(
+"mouse-dragging"
+);
 
-loader.addEventListener("dragstart",e=>e.preventDefault());
+document.body.style.userSelect=
+"";
 
-window.addEventListener("keydown",e=>{
-if(introFinished)return;
-
-if(e.key==="ArrowUp"||e.key==="PageUp"){
-e.preventDefault();
+if(
+mouseStartY-
+mouseCurrentY>=35
+){
 startIntro();
 }
-});
+
 }
+);
+
+loader.addEventListener(
+"dragstart",
+e=>e.preventDefault()
+);
+
+window.addEventListener(
+"keydown",
+e=>{
+
+if(introFinished)return;
+
+if(
+e.key==="ArrowUp"||
+e.key==="PageUp"
+){
+
+e.preventDefault();
+
+startIntro();
+
+}
+
+}
+);
+
+}
+
 
 /* =========================================================
    02. NAVBAR
 ========================================================= */
 
-const navbar=document.querySelector(".navbar");
+const navbar=
+document.querySelector(".navbar");
 
 function updateNavbar(){
+
 if(!navbar)return;
+
 window.scrollY>50
-?navbar.classList.add("scrolled")
-:navbar.classList.remove("scrolled");
+?navbar.classList.add(
+"scrolled"
+)
+:navbar.classList.remove(
+"scrolled"
+);
+
 }
 
 updateNavbar();
-window.addEventListener("scroll",updateNavbar,{passive:true});
+
+window.addEventListener(
+"scroll",
+updateNavbar,
+{
+passive:true
+}
+);
+
 
 /* =========================================================
    03. MOBILE MENU
 ========================================================= */
 
-const menuToggle=document.querySelector(".menu-toggle"),mobileMenu=document.querySelector(".mobile-menu");
+const menuToggle=
+document.querySelector(".menu-toggle");
 
-if(menuToggle&&mobileMenu){
+const mobileMenu=
+document.querySelector(".mobile-menu");
 
-menuToggle.setAttribute("aria-expanded","false");
-
-menuToggle.addEventListener("click",()=>{
-
-const open=menuToggle.classList.toggle("active");
-
-mobileMenu.classList.toggle("active",open);
+if(
+menuToggle&&
+mobileMenu
+){
 
 menuToggle.setAttribute(
 "aria-expanded",
-open?"true":"false"
+"false"
+);
+
+menuToggle.addEventListener(
+"click",
+()=>{
+
+const open=
+menuToggle.classList.toggle(
+"active"
+);
+
+mobileMenu.classList.toggle(
+"active",
+open
+);
+
+menuToggle.setAttribute(
+"aria-expanded",
+open
+?"true"
+:"false"
 );
 
 document.body.style.overflow=
-open?"hidden":"";
+open
+?"hidden"
+:"";
 
-});
+}
+);
 
-mobileMenu.querySelectorAll("a").forEach(link=>{
+mobileMenu
+.querySelectorAll("a")
+.forEach(link=>{
 
-link.addEventListener("click",()=>{
+link.addEventListener(
+"click",
+()=>{
 
-menuToggle.classList.remove("active");
-mobileMenu.classList.remove("active");
-menuToggle.setAttribute("aria-expanded","false");
-document.body.style.overflow="";
+menuToggle.classList.remove(
+"active"
+);
 
-});
+mobileMenu.classList.remove(
+"active"
+);
+
+menuToggle.setAttribute(
+"aria-expanded",
+"false"
+);
+
+document.body.style.overflow=
+"";
+
+}
+);
 
 });
 
 }
+
 
 /* =========================================================
    04. REVEAL
 ========================================================= */
 
-const revealElements=document.querySelectorAll(".reveal");
+const revealElements=
+document.querySelectorAll(
+".reveal"
+);
 
 if(revealElements.length){
 
-const observer=new IntersectionObserver(entries=>{
+const observer=
+new IntersectionObserver(
+entries=>{
 
-entries.forEach(entry=>{
+entries.forEach(
+entry=>{
 
 if(entry.isIntersecting){
 
-entry.target.classList.add("visible");
-observer.unobserve(entry.target);
+entry.target.classList.add(
+"visible"
+);
+
+observer.unobserve(
+entry.target
+);
 
 }
 
-});
+}
+);
 
-},{threshold:.12});
+},
+{
+threshold:.12
+}
+);
 
-revealElements.forEach(el=>observer.observe(el));
+revealElements.forEach(
+el=>observer.observe(el)
+);
 
 }
+
 
 /* =========================================================
    05. PREMIUM AUTOMATIC PAGE SCROLL
-
-   RESIDENCES / EXPERIENCE / BOLOGNA
-   E TUTTI GLI ANCORAGGI INTERNI
-
-   NESSUN OVERLAY
-   LA PAGINA SCORRE REALMENTE
 ========================================================= */
 
-let premiumScrollAnimation=null;
+let premiumScrollAnimation=
+null;
 
 function premiumEase(t){
 
 return t<.5
 ?4*t*t*t
-:1-Math.pow(-2*t+2,3)/2;
+:1-Math.pow(
+-2*t+2,
+3
+)/2;
 
 }
 
-function premiumScrollTo(target,duration=1400){
+function premiumScrollTo(
+target,
+duration=1400
+){
 
 if(!target)return;
 
-/* FERMA EVENTUALE ANIMAZIONE PRECEDENTE */
-
 if(premiumScrollAnimation){
-cancelAnimationFrame(premiumScrollAnimation);
-premiumScrollAnimation=null;
+
+cancelAnimationFrame(
+premiumScrollAnimation
+);
+
+premiumScrollAnimation=
+null;
+
 }
 
-const navOffset=navbar?navbar.offsetHeight:0;
+const navOffset=
+navbar
+?navbar.offsetHeight
+:0;
 
-const startY=window.scrollY;
+const startY=
+window.scrollY;
 
-const targetY=Math.max(
+const targetY=
+Math.max(
 0,
 target.getBoundingClientRect().top+
 window.scrollY-
 navOffset
 );
 
-const distance=targetY-startY;
+const distance=
+targetY-startY;
 
-if(Math.abs(distance)<2)return;
+if(
+Math.abs(distance)<2
+)return;
 
-let startTime=null;
+let startTime=
+null;
 
 function scrollFrame(time){
 
-if(!startTime)startTime=time;
+if(!startTime){
+startTime=time;
+}
 
-const elapsed=time-startTime;
+const elapsed=
+time-startTime;
 
-const progress=Math.min(
+const progress=
+Math.min(
 elapsed/duration,
 1
 );
 
-const eased=premiumEase(progress);
+const eased=
+premiumEase(progress);
 
 window.scrollTo(
 0,
-startY+(distance*eased)
+startY+
+(distance*eased)
 );
 
 if(progress<1){
 
 premiumScrollAnimation=
-requestAnimationFrame(scrollFrame);
+requestAnimationFrame(
+scrollFrame
+);
 
 }else{
 
-premiumScrollAnimation=null;
+premiumScrollAnimation=
+null;
 
 window.scrollTo(
 0,
@@ -304,39 +1078,57 @@ targetY
 }
 
 premiumScrollAnimation=
-requestAnimationFrame(scrollFrame);
+requestAnimationFrame(
+scrollFrame
+);
 
 }
 
+document
+.querySelectorAll(
+'a[href^="#"]'
+)
+.forEach(link=>{
 
-/* INTERCETTA LINK INTERNI */
+link.addEventListener(
+"click",
+e=>{
 
-document.querySelectorAll('a[href^="#"]').forEach(link=>{
+const id=
+link.getAttribute(
+"href"
+);
 
-link.addEventListener("click",e=>{
+if(
+!id||
+id==="#"
+)return;
 
-const id=link.getAttribute("href");
-
-if(!id||id==="#")return;
-
-const target=document.querySelector(id);
+const target=
+document.querySelector(
+id
+);
 
 if(!target)return;
 
 e.preventDefault();
 
-/* CHIUDE MENU MOBILE SE APERTO */
-
 if(
 mobileMenu&&
-mobileMenu.classList.contains("active")
+mobileMenu.classList.contains(
+"active"
+)
 ){
 
-mobileMenu.classList.remove("active");
+mobileMenu.classList.remove(
+"active"
+);
 
 if(menuToggle){
 
-menuToggle.classList.remove("active");
+menuToggle.classList.remove(
+"active"
+);
 
 menuToggle.setAttribute(
 "aria-expanded",
@@ -345,19 +1137,21 @@ menuToggle.setAttribute(
 
 }
 
-document.body.style.overflow="";
+document.body.style.overflow=
+"";
 
 }
 
-
-/* PICCOLISSIMO RITARDO SOLO SE CHIUDE IL MENU */
-
 setTimeout(
-()=>premiumScrollTo(target,1400),
+()=>premiumScrollTo(
+target,
+1400
+),
 20
 );
 
-});
+}
+);
 
 });
 
@@ -367,72 +1161,470 @@ setTimeout(
    SWIPE TOUCH + MOUSE + AUTOPLAY
 ========================================================= */
 
-document.querySelectorAll(".apartment-gallery").forEach(gallery=>{
-const slides=[...gallery.querySelectorAll(".apartment-slide")];if(slides.length<2)return;
-const section=gallery.closest(".apartment-gallery-section"),counter=section?section.querySelector(".apartment-gallery-counter"):null;
-let current=0,autoplay=null,pointerDown=false,pointerId=null,startX=0,startY=0,currentX=0,currentY=0;const SWIPE_THRESHOLD=45;
-gallery.style.touchAction="pan-y";gallery.style.cursor="grab";gallery.style.userSelect="none";gallery.querySelectorAll("img").forEach(img=>{img.draggable=false;img.setAttribute("draggable","false");img.addEventListener("dragstart",e=>e.preventDefault());});
-function showSlide(index){if(index<0)index=slides.length-1;if(index>=slides.length)index=0;slides.forEach((slide,i)=>slide.classList.toggle("active",i===index));current=index;if(counter)counter.textContent=`${String(current+1).padStart(2,"0")} / ${String(slides.length).padStart(2,"0")}`;}
-const nextSlide=()=>showSlide(current+1),previousSlide=()=>showSlide(current-1);function stopAutoplay(){if(autoplay){clearInterval(autoplay);autoplay=null;}}function startAutoplay(){stopAutoplay();autoplay=setInterval(nextSlide,5000);}function finishSwipe(){if(!pointerDown)return;const dx=currentX-startX,dy=currentY-startY;pointerDown=false;pointerId=null;gallery.style.cursor="grab";if(Math.abs(dx)>=SWIPE_THRESHOLD&&Math.abs(dx)>Math.abs(dy)){dx<0?nextSlide():previousSlide();}startAutoplay();}
-gallery.addEventListener("pointerdown",e=>{if(e.pointerType==="mouse"&&e.button!==0)return;pointerDown=true;pointerId=e.pointerId;startX=currentX=e.clientX;startY=currentY=e.clientY;gallery.style.cursor="grabbing";stopAutoplay();try{gallery.setPointerCapture(e.pointerId)}catch{}});
-gallery.addEventListener("pointermove",e=>{if(!pointerDown||e.pointerId!==pointerId)return;currentX=e.clientX;currentY=e.clientY;const dx=currentX-startX,dy=currentY-startY;if(Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy)&&e.cancelable)e.preventDefault();});
-gallery.addEventListener("pointerup",e=>{if(!pointerDown||e.pointerId!==pointerId)return;currentX=e.clientX;currentY=e.clientY;finishSwipe();try{gallery.releasePointerCapture(e.pointerId)}catch{}});
-gallery.addEventListener("pointercancel",()=>{pointerDown=false;pointerId=null;gallery.style.cursor="grab";startAutoplay();});gallery.addEventListener("lostpointercapture",()=>{if(pointerDown)finishSwipe();});gallery.addEventListener("mouseenter",stopAutoplay);gallery.addEventListener("mouseleave",()=>{if(!pointerDown)startAutoplay();});showSlide(0);startAutoplay();
+document
+.querySelectorAll(
+".apartment-gallery"
+)
+.forEach(gallery=>{
+
+const slides=[
+...gallery.querySelectorAll(
+".apartment-slide"
+)
+];
+
+if(slides.length<2)return;
+
+const section=
+gallery.closest(
+".apartment-gallery-section"
+);
+
+const counter=
+section
+?section.querySelector(
+".apartment-gallery-counter"
+)
+:null;
+
+let current=0;
+let autoplay=null;
+
+let pointerDown=false;
+let pointerId=null;
+let startX=0;
+let startY=0;
+let currentX=0;
+let currentY=0;
+
+const SWIPE_THRESHOLD=45;
+
+gallery.style.touchAction=
+"pan-y";
+
+gallery.style.cursor=
+"grab";
+
+gallery.style.userSelect=
+"none";
+
+gallery
+.querySelectorAll("img")
+.forEach(img=>{
+
+img.draggable=false;
+
+img.setAttribute(
+"draggable",
+"false"
+);
+
+img.addEventListener(
+"dragstart",
+e=>e.preventDefault()
+);
+
 });
+
+function showSlide(index){
+
+if(index<0){
+index=slides.length-1;
+}
+
+if(index>=slides.length){
+index=0;
+}
+
+slides.forEach(
+(slide,i)=>{
+
+slide.classList.toggle(
+"active",
+i===index
+);
+
+}
+);
+
+current=index;
+
+if(counter){
+
+counter.textContent=
+`${String(current+1).padStart(2,"0")} / ${String(slides.length).padStart(2,"0")}`;
+
+}
+
+}
+
+function nextSlide(){
+showSlide(
+current+1
+);
+}
+
+function previousSlide(){
+showSlide(
+current-1
+);
+}
+
+function stopAutoplay(){
+
+if(!autoplay)return;
+
+clearInterval(
+autoplay
+);
+
+autoplay=null;
+
+}
+
+function startAutoplay(){
+
+stopAutoplay();
+
+autoplay=
+setInterval(
+nextSlide,
+5000
+);
+
+}
+
+function finishSwipe(){
+
+if(!pointerDown)return;
+
+const deltaX=
+currentX-startX;
+
+const deltaY=
+currentY-startY;
+
+pointerDown=false;
+pointerId=null;
+
+gallery.style.cursor=
+"grab";
+
+if(
+Math.abs(deltaX)>=
+SWIPE_THRESHOLD&&
+Math.abs(deltaX)>
+Math.abs(deltaY)
+){
+
+if(deltaX<0){
+nextSlide();
+}else{
+previousSlide();
+}
+
+}
+
+startAutoplay();
+
+}
+
+gallery.addEventListener(
+"pointerdown",
+e=>{
+
+if(
+e.pointerType==="mouse"&&
+e.button!==0
+)return;
+
+pointerDown=true;
+pointerId=e.pointerId;
+
+startX=
+currentX=
+e.clientX;
+
+startY=
+currentY=
+e.clientY;
+
+gallery.style.cursor=
+"grabbing";
+
+stopAutoplay();
+
+try{
+
+gallery.setPointerCapture(
+e.pointerId
+);
+
+}catch{}
+
+}
+);
+
+gallery.addEventListener(
+"pointermove",
+e=>{
+
+if(
+!pointerDown||
+e.pointerId!==pointerId
+)
+return;
+
+currentX=e.clientX;
+currentY=e.clientY;
+
+const deltaX=
+currentX-startX;
+
+const deltaY=
+currentY-startY;
+
+if(
+Math.abs(deltaX)>10&&
+Math.abs(deltaX)>
+Math.abs(deltaY)&&
+e.cancelable
+){
+
+e.preventDefault();
+
+}
+
+}
+);
+
+gallery.addEventListener(
+"pointerup",
+e=>{
+
+if(
+!pointerDown||
+e.pointerId!==pointerId
+)
+return;
+
+currentX=e.clientX;
+currentY=e.clientY;
+
+finishSwipe();
+
+try{
+
+gallery.releasePointerCapture(
+e.pointerId
+);
+
+}catch{}
+
+}
+);
+
+gallery.addEventListener(
+"pointercancel",
+()=>{
+
+pointerDown=false;
+pointerId=null;
+
+gallery.style.cursor=
+"grab";
+
+startAutoplay();
+
+}
+);
+
+gallery.addEventListener(
+"lostpointercapture",
+()=>{
+
+if(pointerDown){
+finishSwipe();
+}
+
+}
+);
+
+gallery.addEventListener(
+"mouseenter",
+()=>{
+stopAutoplay();
+}
+);
+
+gallery.addEventListener(
+"mouseleave",
+()=>{
+
+if(!pointerDown){
+startAutoplay();
+}
+
+}
+);
+
+showSlide(0);
+startAutoplay();
+
+});
+
 
 /* =========================================================
    07. BOOKING CALENDAR
 ========================================================= */
 
-const bookingCards=document.querySelectorAll(".booking-residence-card"),
-bookingForm=document.querySelector("#bookingRequestForm"),
-residenceInput=document.querySelector("#residence"),
-calendarResidence=document.querySelector("#calendarResidence"),
-checkinInput=document.querySelector("#checkin"),
-checkoutInput=document.querySelector("#checkout"),
-selectedResidenceText=document.querySelector("#selectedResidenceText"),
-bookingFormSection=document.querySelector("#booking-form-section"),
-bookingMessage=document.querySelector("#bookingMessage"),
-bookingSubmit=document.querySelector(".booking-submit"),
+const bookingCards=
+document.querySelectorAll(
+".booking-residence-card"
+);
 
-primeCalendar=document.querySelector("#primeCalendar"),
-calendarGrid=document.querySelector("#calendarGrid"),
-calendarMonthLabel=document.querySelector("#calendarMonthLabel"),
-calendarPrev=document.querySelector("#calendarPrev"),
-calendarNext=document.querySelector("#calendarNext"),
-calendarResidenceTitle=document.querySelector("#calendarResidenceTitle"),
-calendarLiveStatus=document.querySelector("#calendarLiveStatus"),
-calendarLiveText=document.querySelector("#calendarLiveText"),
-calendarLoadingMessage=document.querySelector("#calendarLoadingMessage"),
-calendarMessage=document.querySelector("#calendarMessage"),
+const bookingForm=
+document.querySelector(
+"#bookingRequestForm"
+);
 
-selectedStay=document.querySelector("#selectedStay"),
-selectedStayResidence=document.querySelector("#selectedStayResidence"),
-selectedStayCheckin=document.querySelector("#selectedStayCheckin"),
-selectedStayCheckout=document.querySelector("#selectedStayCheckout"),
-selectedStayNights=document.querySelector("#selectedStayNights"),
-selectedStayClear=document.querySelector("#selectedStayClear");
-window.addEventListener("primeLanguageChanged",()=>{
-if(typeof renderCalendar==="function"&&calendarGrid)renderCalendar();
-});
+const residenceInput=
+document.querySelector(
+"#residence"
+);
 
+const calendarResidence=
+document.querySelector(
+"#calendarResidence"
+);
 
-let calendarEvents=[],
-selectedStart="",
-selectedEnd="",
-previewEnd="",
-calendarLoaded=false,
-currentCalendarKey="",
-calendarRequestId=0;
+const checkinInput=
+document.querySelector(
+"#checkin"
+);
 
-let dragActive=false,
-dragStart="",
-dragMoved=false,
-suppressClick=false;
+const checkoutInput=
+document.querySelector(
+"#checkout"
+);
+
+const selectedResidenceText=
+document.querySelector(
+"#selectedResidenceText"
+);
+
+const bookingFormSection=
+document.querySelector(
+"#booking-form-section"
+);
+
+const bookingMessage=
+document.querySelector(
+"#bookingMessage"
+);
+
+const bookingSubmit=
+document.querySelector(
+".booking-submit"
+);
+
+const primeCalendar=
+document.querySelector(
+"#primeCalendar"
+);
+
+const calendarGrid=
+document.querySelector(
+"#calendarGrid"
+);
+
+const calendarMonthLabel=
+document.querySelector(
+"#calendarMonthLabel"
+);
+
+const calendarPrev=
+document.querySelector(
+"#calendarPrev"
+);
+
+const calendarNext=
+document.querySelector(
+"#calendarNext"
+);
+
+const calendarResidenceTitle=
+document.querySelector(
+"#calendarResidenceTitle"
+);
+
+const calendarLiveStatus=
+document.querySelector(
+"#calendarLiveStatus"
+);
+
+const calendarLiveText=
+document.querySelector(
+"#calendarLiveText"
+);
+
+const calendarLoadingMessage=
+document.querySelector(
+"#calendarLoadingMessage"
+);
+
+const calendarMessage=
+document.querySelector(
+"#calendarMessage"
+);
+
+const selectedStay=
+document.querySelector(
+"#selectedStay"
+);
+
+const selectedStayResidence=
+document.querySelector(
+"#selectedStayResidence"
+);
+
+const selectedStayCheckin=
+document.querySelector(
+"#selectedStayCheckin"
+);
+
+const selectedStayCheckout=
+document.querySelector(
+"#selectedStayCheckout"
+);
+
+const selectedStayNights=
+document.querySelector(
+"#selectedStayNights"
+);
+
+const selectedStayClear=
+document.querySelector(
+"#selectedStayClear"
+);
+
+let calendarEvents=[];
+let selectedStart="";
+let selectedEnd="";
+let previewEnd="";
+let calendarLoaded=false;
+let currentCalendarKey="";
+let calendarRequestId=0;
+
+let dragActive=false;
+let dragStart="";
+let dragMoved=false;
+let suppressClick=false;
 
 const todayISO=()=>{
 
-const d=new Date();
+const d=
+new Date();
 
 return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 
@@ -441,7 +1633,9 @@ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.
 const parseISO=value=>{
 
 const[y,m,d]=
-value.split("-").map(Number);
+value
+.split("-")
+.map(Number);
 
 return new Date(
 y,
@@ -456,7 +1650,8 @@ const dateISO=date=>
 
 const addDays=(value,days)=>{
 
-const d=parseISO(value);
+const d=
+parseISO(value);
 
 d.setDate(
 d.getDate()+days
@@ -469,7 +1664,9 @@ return dateISO(d);
 const prettyDate=value=>
 parseISO(value)
 .toLocaleDateString(
-primeLanguage==="it"?"it-IT":"en-GB",
+primeLanguage==="it"
+?"it-IT"
+:"en-GB",
 {
 day:"2-digit",
 month:"short",
@@ -480,11 +1677,15 @@ year:"numeric"
 
 const nightsBetween=(start,end)=>
 Math.round(
-(parseISO(end)-parseISO(start))
-/86400000
+(
+parseISO(end)-
+parseISO(start)
+)/
+86400000
 );
 
-let displayMonth=new Date();
+let displayMonth=
+new Date();
 
 displayMonth=
 new Date(
@@ -507,11 +1708,15 @@ day<event.end
 
 function isPast(day){
 
-return day<todayISO();
+return day<
+todayISO();
 
 }
 
-function rangeHasConflict(start,end){
+function rangeHasConflict(
+start,
+end
+){
 
 if(
 !start||
@@ -537,13 +1742,19 @@ return false;
 
 }
 
-function validCheckout(start,end){
+function validCheckout(
+start,
+end
+){
 
 return(
 !!start&&
 !!end&&
 end>start&&
-!rangeHasConflict(start,end)
+!rangeHasConflict(
+start,
+end
+)
 );
 
 }
@@ -555,7 +1766,8 @@ if(!calendarMessage)return;
 calendarMessage.className=
 "calendar-message";
 
-calendarMessage.textContent="";
+calendarMessage.textContent=
+"";
 
 }
 
@@ -602,7 +1814,9 @@ bookingSubmit.classList.remove(
 );
 
 bookingSubmit.textContent=
-primeTranslate("Send Booking Request");
+primeTranslate(
+"Send Booking Request"
+);
 
 }
 
@@ -683,14 +1897,18 @@ residenceInput
 if(selectedStayCheckin){
 
 selectedStayCheckin.textContent=
-prettyDate(selectedStart);
+prettyDate(
+selectedStart
+);
 
 }
 
 if(selectedStayCheckout){
 
 selectedStayCheckout.textContent=
-prettyDate(selectedEnd);
+prettyDate(
+selectedEnd
+);
 
 }
 
@@ -761,15 +1979,16 @@ function renderCalendar(){
 if(
 !calendarGrid||
 !calendarMonthLabel
-){
-return;
-}
+)return;
 
-calendarGrid.innerHTML="";
+calendarGrid.innerHTML=
+"";
 
 calendarMonthLabel.textContent=
 displayMonth.toLocaleDateString(
-primeLanguage==="it"?"it-IT":"en-GB",
+primeLanguage==="it"
+?"it-IT"
+:"en-GB",
 {
 month:"long",
 year:"numeric"
@@ -783,7 +2002,11 @@ const m=
 displayMonth.getMonth();
 
 const first=
-new Date(y,m,1);
+new Date(
+y,
+m,
+1
+);
 
 const daysInMonth=
 new Date(
@@ -808,7 +2031,8 @@ now.getMonth(),
 );
 
 calendarPrev.disabled=
-displayMonth<=currentMonth;
+displayMonth<=
+currentMonth;
 
 }
 
@@ -819,7 +2043,9 @@ i++
 ){
 
 const empty=
-document.createElement("div");
+document.createElement(
+"div"
+);
 
 empty.className=
 "calendar-empty";
@@ -876,7 +2102,7 @@ String(day);
 
 button.setAttribute(
 "aria-label",
-`${prettyDate(iso)} ${booked?"fully booked":"available"}`
+`${prettyDate(iso)} ${booked?primeTranslate("fully booked"):primeTranslate("available")}`
 );
 
 if(past){
@@ -885,7 +2111,8 @@ button.classList.add(
 "past"
 );
 
-button.disabled=true;
+button.disabled=
+true;
 
 }else{
 
@@ -898,7 +2125,8 @@ booked
 }
 
 if(
-iso===todayISO()
+iso===
+todayISO()
 ){
 
 button.classList.add(
@@ -944,7 +2172,9 @@ button.classList.add(
 
 button.addEventListener(
 "click",
-()=>handleDayClick(iso)
+()=>handleDayClick(
+iso
+)
 );
 
 button.addEventListener(
@@ -963,10 +2193,6 @@ button
 
 }
 
-/* =========================================================
-   CLICK CALENDAR
-========================================================= */
-
 function handleDayClick(day){
 
 if(suppressClick){
@@ -979,9 +2205,6 @@ return;
 clearCalendarMessage();
 
 if(isPast(day))return;
-
-
-/* PRIMO CLICK */
 
 if(!selectedStart){
 
@@ -1025,9 +2248,6 @@ renderCalendar();
 return;
 
 }
-
-
-/* RANGE GIÀ COMPLETATO */
 
 if(
 selectedStart&&
@@ -1075,11 +2295,9 @@ return;
 
 }
 
-
-/* STESSO GIORNO */
-
 if(
-day===selectedStart
+day===
+selectedStart
 ){
 
 clearStay();
@@ -1088,11 +2306,9 @@ return;
 
 }
 
-
-/* DATA PRECEDENTE */
-
 if(
-day<selectedStart
+day<
+selectedStart
 ){
 
 if(isBooked(day)){
@@ -1128,11 +2344,9 @@ return;
 
 }
 
-
-/* SECONDO CLICK */
-
 if(
-day>selectedStart
+day>
+selectedStart
 ){
 
 if(
@@ -1151,8 +2365,11 @@ return;
 
 }
 
-selectedEnd=day;
-previewEnd="";
+selectedEnd=
+day;
+
+previewEnd=
+"";
 
 clearCalendarMessage();
 
@@ -1164,10 +2381,6 @@ renderCalendar();
 
 }
 
-/* =========================================================
-   DRAG CALENDAR
-========================================================= */
-
 function startCalendarDrag(
 e,
 day
@@ -1177,9 +2390,8 @@ if(
 e.button!==0||
 isPast(day)||
 isBooked(day)
-){
+)
 return;
-}
 
 dragActive=true;
 dragMoved=false;
@@ -1205,16 +2417,16 @@ e.target.closest(
 if(
 !cell||
 !cell.dataset.date
-){
+)
 return;
-}
 
 const day=
 cell.dataset.date;
 
-if(day===dragStart){
+if(
+day===dragStart
+)
 return;
-}
 
 dragMoved=true;
 
@@ -1229,7 +2441,8 @@ day
 selectedStart=
 dragStart;
 
-selectedEnd="";
+selectedEnd=
+"";
 
 previewEnd=
 day;
@@ -1249,8 +2462,8 @@ if(!dragActive)return;
 
 dragActive=false;
 
-document.body.style.userSelect="";
-
+document.body.style.userSelect=
+"";
 
 if(
 dragMoved&&
@@ -1268,9 +2481,11 @@ dragStart;
 selectedEnd=
 previewEnd;
 
-previewEnd="";
+previewEnd=
+"";
 
-suppressClick=true;
+suppressClick=
+true;
 
 clearCalendarMessage();
 
@@ -1282,19 +2497,14 @@ return;
 
 }
 
+previewEnd=
+"";
 
-/* SEMPLICE CLICK:
-   NON RIDISEGNARE QUI */
-
-previewEnd="";
-dragMoved=false;
+dragMoved=
+false;
 
 }
 );
-
-/* =========================================================
-   LOAD AVAILABILITY
-========================================================= */
 
 async function loadCalendar(
 calendarKey,
@@ -1309,8 +2519,11 @@ const requestId=
 currentCalendarKey=
 calendarKey;
 
-calendarLoaded=false;
-calendarEvents=[];
+calendarLoaded=
+false;
+
+calendarEvents=
+[];
 
 clearStay(false);
 clearCalendarMessage();
@@ -1329,7 +2542,9 @@ residenceName;
 if(calendarLiveText){
 
 calendarLiveText.textContent=
-primeTranslate("LOADING");
+primeTranslate(
+"LOADING"
+);
 
 }
 
@@ -1381,9 +2596,8 @@ await response.json();
 if(
 requestId!==
 calendarRequestId
-){
+)
 return;
-}
 
 if(
 !response.ok||
@@ -1408,12 +2622,13 @@ event.end
 )
 :[];
 
-calendarLoaded=true;
+calendarLoaded=
+true;
 
 if(calendarLiveText){
 
 calendarLiveText.textContent=
-primeTranslate("LIVE");
+"LIVE";
 
 }
 
@@ -1444,16 +2659,16 @@ renderCalendar();
 if(
 requestId!==
 calendarRequestId
-){
+)
 return;
-}
 
-calendarLoaded=false;
+calendarLoaded=
+false;
 
 if(calendarLiveText){
 
 calendarLiveText.textContent=
-primeTranslate("UNAVAILABLE");
+"UNAVAILABLE";
 
 }
 
@@ -1490,10 +2705,6 @@ lockSubmit(
 
 }
 
-/* =========================================================
-   SELECT RESIDENCE
-========================================================= */
-
 function selectResidence(card){
 
 bookingCards.forEach(
@@ -1515,17 +2726,13 @@ card.dataset.calendar||
 "";
 
 if(residenceInput){
-
 residenceInput.value=
 residence;
-
 }
 
 if(calendarResidence){
-
 calendarResidence.value=
 calendar;
-
 }
 
 if(selectedResidenceText){
@@ -1550,11 +2757,14 @@ behavior:"smooth"
 
 }
 
-bookingCards.forEach(card=>{
+bookingCards.forEach(
+card=>{
 
 card.addEventListener(
 "click",
-()=>selectResidence(card)
+()=>selectResidence(
+card
+)
 );
 
 card.addEventListener(
@@ -1568,18 +2778,17 @@ e.key===" "
 
 e.preventDefault();
 
-selectResidence(card);
+selectResidence(
+card
+);
 
 }
 
 }
 );
 
-});
-
-/* =========================================================
-   MONTH NAVIGATION
-========================================================= */
+}
+);
 
 if(calendarPrev){
 
@@ -1656,8 +2865,27 @@ clearCalendarMessage();
 
 }
 
+window.addEventListener(
+"primeLanguageChanged",
+()=>{
+
+if(calendarGrid){
+renderCalendar();
+}
+
+if(
+selectedStart&&
+selectedEnd
+){
+updateSelectedStay();
+}
+
+}
+);
+
+
 /* =========================================================
-   FORM MESSAGE
+   BOOKING FORM
 ========================================================= */
 
 function showMessage(
@@ -1689,19 +2917,14 @@ bookingMessage.style.display=
 
 }
 
-/* =========================================================
-   FINAL AVAILABILITY CHECK
-========================================================= */
-
 async function verifyStayAgain(){
 
 if(
 !currentCalendarKey||
 !selectedStart||
 !selectedEnd
-){
+)
 return false;
-}
 
 const response=
 await fetch(
@@ -1762,10 +2985,6 @@ return false;
 );
 
 }
-
-/* =========================================================
-   BOOKING SUBMIT
-========================================================= */
 
 if(bookingForm){
 
@@ -1902,7 +3121,8 @@ bookingForm
 ).entries()
 );
 
-data.lang=primeLanguage;
+data.lang=
+primeLanguage;
 
 try{
 
@@ -1983,6 +3203,7 @@ unlockSubmit();
 
 }
 
+
 /* =========================================================
    08. PRIME ASSISTANT
 ========================================================= */
@@ -1996,59 +3217,59 @@ if(assistant){
 
 const page=
 assistant.dataset.assistantPage||
-"home",
+"home";
 
-launcher=
+const launcher=
 assistant.querySelector(
 ".prime-assistant-launcher"
-),
+);
 
-chatWindow=
+const chatWindow=
 assistant.querySelector(
 ".prime-assistant-window"
-),
+);
 
-closeChat=
+const closeChat=
 assistant.querySelector(
 ".prime-assistant-close"
-),
+);
 
-prompt=
+const prompt=
 assistant.querySelector(
 ".prime-assistant-prompt"
-),
+);
 
-promptMain=
+const promptMain=
 assistant.querySelector(
 ".assistant-prompt-main"
-),
+);
 
-promptClose=
+const promptClose=
 assistant.querySelector(
 ".assistant-prompt-close"
-),
+);
 
-messages=
+const messages=
 assistant.querySelector(
 ".prime-assistant-messages"
-),
+);
 
-form=
+const form=
 assistant.querySelector(
 ".prime-assistant-form"
-),
+);
 
-input=
+const input=
 assistant.querySelector(
 ".prime-assistant-input"
-),
+);
 
-suggestionButtons=
+const suggestionButtons=
 assistant.querySelectorAll(
 ".assistant-suggestion"
-),
+);
 
-promptStorageKey=
+const promptStorageKey=
 `primeAssistantPromptClosed_${page}`;
 
 const residences={
@@ -2073,7 +3294,10 @@ address:"Via Barontini 8, Bologna"
 
 function isItalian(text){
 
-if(primeLanguage==="it")return true;
+if(
+primeLanguage==="it"
+)
+return true;
 
 const q=
 text.toLowerCase();
@@ -2131,13 +3355,19 @@ actions=[]
 if(!messages)return;
 
 const wrap=
-document.createElement("div"),
+document.createElement(
+"div"
+);
 
-label=
-document.createElement("span"),
+const label=
+document.createElement(
+"span"
+);
 
-p=
-document.createElement("p");
+const p=
+document.createElement(
+"p"
+);
 
 wrap.className=
 `assistant-message assistant-message-${type}`;
@@ -2162,7 +3392,9 @@ actions.forEach(
 action=>{
 
 const a=
-document.createElement("a");
+document.createElement(
+"a"
+);
 
 a.href=
 action.href;
@@ -2180,7 +3412,9 @@ a.rel=
 
 }
 
-wrap.appendChild(a);
+wrap.appendChild(
+a
+);
 
 }
 );
@@ -2215,9 +3449,8 @@ if(
 assistant.classList.contains(
 "chat-open"
 )
-){
+)
 return;
-}
 
 prompt.classList.add(
 "visible"
@@ -2344,7 +3577,8 @@ promptStorageKey,
 
 }
 
-let promptClosed=false;
+let promptClosed=
+false;
 
 try{
 
@@ -2360,7 +3594,9 @@ prompt&&
 !promptClosed
 ){
 
-if(page==="home"){
+if(
+page==="home"
+){
 
 let homePromptScheduled=
 false;
@@ -2403,16 +3639,18 @@ original
 ){
 
 const question=
-original.toLowerCase().trim(),
+original
+.toLowerCase()
+.trim();
 
-italian=
-isItalian(original),
+const italian=
+isItalian(original);
 
-current=
+const current=
 residences[page]||
-null,
+null;
 
-actions=[];
+const actions=[];
 
 if(
 question.includes(
@@ -2439,7 +3677,9 @@ italian
 actions:[
 {
 label:
-"DISCOVER THE RESIDENCES →",
+italian
+?"SCOPRI I RESIDENCE →"
+:"DISCOVER THE RESIDENCES →",
 href:
 "index.html#residences"
 }
@@ -2465,13 +3705,15 @@ return{
 
 text:
 italian
-?"Puoi scegliere il residence, controllare la disponibilità sul calendario e inviare una richiesta tramite la pagina Book Your Stay."
+?"Puoi scegliere il residence, controllare la disponibilità sul calendario e inviare una richiesta tramite la pagina Prenota il tuo soggiorno."
 :"You can choose a residence, check real-time availability on the calendar and submit your request through the Book Your Stay page.",
 
 actions:[
 {
 label:
-"BOOK YOUR STAY →",
+italian
+?"PRENOTA IL TUO SOGGIORNO →"
+:"BOOK YOUR STAY →",
 href:
 "booking.html"
 }
@@ -2497,13 +3739,15 @@ return{
 
 text:
 italian
-?"Nella pagina Book Your Stay puoi vedere la disponibilità sul calendario e selezionare direttamente le date del soggiorno."
+?"Nella pagina Prenota il tuo soggiorno puoi vedere la disponibilità sul calendario e selezionare direttamente le date del soggiorno."
 :"The Book Your Stay page displays real-time availability on the calendar so you can select your stay directly.",
 
 actions:[
 {
 label:
-"CHECK AVAILABILITY →",
+italian
+?"CONTROLLA DISPONIBILITÀ →"
+:"CHECK AVAILABILITY →",
 href:
 "booking.html"
 }
@@ -2528,7 +3772,8 @@ question.includes(
 )
 ){
 
-let target=current;
+let target=
+current;
 
 if(
 question.includes(
@@ -2631,9 +3876,8 @@ question
 if(
 !question||
 !question.trim()
-){
+)
 return;
-}
 
 const clean=
 question.trim();
@@ -2644,7 +3888,9 @@ clean,
 );
 
 const response=
-getResponse(clean);
+getResponse(
+clean
+);
 
 setTimeout(
 ()=>addMessage(
@@ -2671,7 +3917,8 @@ e.preventDefault();
 const question=
 input.value;
 
-input.value="";
+input.value=
+"";
 
 processQuestion(
 question
@@ -2683,7 +3930,8 @@ question
 }
 
 suggestionButtons.forEach(
-button=>
+button=>{
+
 button.addEventListener(
 "click",
 ()=>{
@@ -2698,42 +3946,65 @@ switch(type){
 
 case"about-prime":
 question=
-"What is Prime Residence Bologna?";
+primeLanguage==="it"
+?"Cos'è Prime Residence Bologna?"
+:"What is Prime Residence Bologna?";
 break;
 
 case"residences":
 question=
-"Which residences do you have?";
+primeLanguage==="it"
+?"Quali residence avete?"
+:"Which residences do you have?";
 break;
 
 case"residence-details":
 question=
-"Tell me about this residence";
+primeLanguage==="it"
+?"Parlami di questo residence"
+:"Tell me about this residence";
 break;
 
 case"compare":
 question=
-"What is the difference between the two apartments?";
+primeLanguage==="it"
+?"Qual è la differenza tra i due appartamenti?"
+:"What is the difference between the two apartments?";
 break;
 
 case"booking":
 question=
-"How can I book?";
+primeLanguage==="it"
+?"Come posso prenotare?"
+:"How can I book?";
 break;
 
 case"location":
 
 question=
 page==="gastone"
-?"Where is Gastone Rossi 12?"
+?(
+primeLanguage==="it"
+?"Dove si trova Gastone Rossi 12?"
+:"Where is Gastone Rossi 12?"
+)
 :page==="barontini"
-?"Where is Barontini 8?"
-:"Where are the residences?";
+?(
+primeLanguage==="it"
+?"Dove si trova Barontini 8?"
+:"Where is Barontini 8?"
+)
+:(
+primeLanguage==="it"
+?"Dove si trovano i residence?"
+:"Where are the residences?"
+);
 
 break;
 
 default:
-question=type;
+question=
+type;
 
 }
 
@@ -2742,7 +4013,9 @@ question
 );
 
 }
-)
+);
+
+}
 );
 
 document.addEventListener(
@@ -2764,6 +4037,7 @@ closeAssistant();
 );
 
 }
+
 
 /* =========================================================
    09. ESC MOBILE MENU
@@ -2798,12 +4072,14 @@ menuToggle.setAttribute(
 
 }
 
-document.body.style.overflow="";
+document.body.style.overflow=
+"";
 
 }
 
 }
 );
+
 
 /* =========================================================
    10. YEAR
@@ -2817,7 +4093,8 @@ document.querySelector(
 if(year){
 
 year.textContent=
-new Date().getFullYear();
+new Date()
+.getFullYear();
 
 }
 
