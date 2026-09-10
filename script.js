@@ -201,7 +201,11 @@ const PRIME_TRANSLATIONS={
 "We could not verify availability right now. Please try again in a moment.":"Non è stato possibile verificare la disponibilità. Riprova tra poco.",
 "Sending...":"Invio in corso...",
 "Booking request sent successfully. We will contact you shortly to confirm your stay.":"Richiesta di prenotazione inviata con successo. Ti contatteremo a breve per confermare il soggiorno.",
-"Unable to send request.":"Impossibile inviare la richiesta."
+"Unable to send request.":"Impossibile inviare la richiesta.",
+"LOADING":"CARICAMENTO",
+"UNAVAILABLE":"NON DISPONIBILE",
+"fully booked":"al completo",
+"available":"disponibile"
 };
 
 const PRIME_LANG_KEY="primeResidenceLanguage";
@@ -217,10 +221,16 @@ return"en";
 const primeOriginalText=new WeakMap();
 const primeOriginalAttrs=new WeakMap();
 
-const primeNorm=s=>
-String(s||"")
-.replace(/\s+/g," ")
-.trim();
+const primeNorm=s=>String(s||"").replace(/\s+/g," ").trim();
+
+/* QUESTA FUNZIONE È IMPORTANTE PER CALENDARIO E FORM */
+
+const primeTranslate=s=>{
+const text=String(s??"");
+return primeLanguage==="it"
+?(PRIME_TRANSLATIONS[primeNorm(text)]||text)
+:text;
+};
 
 function primeTranslateTextNode(node){
 
@@ -263,8 +273,7 @@ el.nodeType!==1||
 
 if(!el.hasAttribute(attr))return;
 
-let store=
-primeOriginalAttrs.get(el)||{};
+let store=primeOriginalAttrs.get(el)||{};
 
 if(!(attr in store)){
 store[attr]=el.getAttribute(attr);
@@ -317,12 +326,9 @@ btn.dataset.lang===primeLanguage
 
 function primeApplyLanguage(){
 
-document.documentElement.lang=
-primeLanguage;
+document.documentElement.lang=primeLanguage;
 
-primeTranslateElement(
-document.body
-);
+primeTranslateElement(document.body);
 
 const titleOriginal=
 document.documentElement.dataset.primeOriginalTitle||
@@ -348,8 +354,7 @@ const original=
 meta.dataset.primeOriginal||
 meta.content;
 
-meta.dataset.primeOriginal=
-original;
+meta.dataset.primeOriginal=original;
 
 meta.content=
 primeLanguage==="it"
@@ -367,9 +372,7 @@ window.dispatchEvent(
 new CustomEvent(
 "primeLanguageChanged",
 {
-detail:{
-lang:primeLanguage
-}
+detail:{lang:primeLanguage}
 }
 )
 );
@@ -398,8 +401,7 @@ function primeCreateSwitcher(){
 
 const make=cls=>{
 
-const wrap=
-document.createElement("div");
+const wrap=document.createElement("div");
 
 wrap.className=
 `language-switcher ${cls||""}`.trim();
@@ -418,9 +420,7 @@ wrap
 
 button.addEventListener(
 "click",
-()=>primeSetLanguage(
-button.dataset.lang
-)
+()=>primeSetLanguage(button.dataset.lang)
 );
 
 });
@@ -434,20 +434,14 @@ document.querySelector(".desktop-nav");
 
 if(desktop){
 
-const switcher=
-make();
+const switcher=make();
 
 const book=
 desktop.querySelector(".nav-book");
 
 book
-?desktop.insertBefore(
-switcher,
-book
-)
-:desktop.appendChild(
-switcher
-);
+?desktop.insertBefore(switcher,book)
+:desktop.appendChild(switcher);
 
 const navContainer=
 document.querySelector(".nav-container");
@@ -506,9 +500,7 @@ primeTranslateElement(node);
 
 });
 
-}else if(
-mutation.type==="characterData"
-){
+}else if(mutation.type==="characterData"){
 
 primeTranslateTextNode(
 mutation.target
@@ -535,11 +527,8 @@ characterData:true
    01. PREMIUM INTRO
 ========================================================= */
 
-const loader=
-document.querySelector(".loader");
-
-const hero=
-document.querySelector(".hero");
+const loader=document.querySelector(".loader");
+const hero=document.querySelector(".hero");
 
 if(loader&&hero){
 
@@ -553,19 +542,12 @@ let mouseStartY=0;
 let mouseCurrentY=0;
 let mouseDragging=false;
 
-document.body.style.overflow=
-"hidden";
+document.body.style.overflow="hidden";
 
-loader.style.transform=
-"translate3d(0,0,0)";
+loader.style.transform="translate3d(0,0,0)";
+loader.style.willChange="transform";
 
-loader.style.willChange=
-"transform";
-
-const ease=t=>
-t<.5
-?4*t*t*t
-:1-Math.pow(-2*t+2,3)/2;
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
 
 function finishIntro(){
 
@@ -575,19 +557,11 @@ introAnimating=false;
 loader.style.transform=
 "translate3d(0,-100%,0)";
 
-loader.classList.add(
-"hide"
-);
+loader.classList.add("hide");
+loader.classList.remove("mouse-dragging");
 
-loader.classList.remove(
-"mouse-dragging"
-);
-
-document.body.style.userSelect=
-"";
-
-document.body.style.overflow=
-"";
+document.body.style.userSelect="";
+document.body.style.overflow="";
 
 }
 
@@ -599,8 +573,7 @@ startTime=now;
 
 const progress=
 Math.min(
-(now-startTime)/
-INTRO_DURATION,
+(now-startTime)/INTRO_DURATION,
 1
 );
 
@@ -608,9 +581,7 @@ loader.style.transform=
 `translate3d(0,${-ease(progress)*100}%,0)`;
 
 progress<1
-?requestAnimationFrame(
-animate
-)
+?requestAnimationFrame(animate)
 :finishIntro();
 
 }
@@ -626,14 +597,10 @@ introAnimating=true;
 startTime=null;
 
 window.dispatchEvent(
-new CustomEvent(
-"primeIntroStarted"
-)
+new CustomEvent("primeIntroStarted")
 );
 
-requestAnimationFrame(
-animate
-);
+requestAnimationFrame(animate);
 
 }
 
@@ -689,7 +656,6 @@ e.touches[0].clientY>
 ){
 
 e.preventDefault();
-
 startIntro();
 
 }
@@ -734,7 +700,8 @@ introFinished||
 introAnimating
 )return;
 
-mouseCurrentY=e.clientY;
+mouseCurrentY=
+e.clientY;
 
 if(
 mouseStartY-
@@ -747,8 +714,7 @@ loader.classList.remove(
 "mouse-dragging"
 );
 
-document.body.style.userSelect=
-"";
+document.body.style.userSelect="";
 
 startIntro();
 
@@ -770,8 +736,7 @@ loader.classList.remove(
 "mouse-dragging"
 );
 
-document.body.style.userSelect=
-"";
+document.body.style.userSelect="";
 
 if(
 mouseStartY-
@@ -800,7 +765,6 @@ e.key==="PageUp"
 ){
 
 e.preventDefault();
-
 startIntro();
 
 }
@@ -823,12 +787,8 @@ function updateNavbar(){
 if(!navbar)return;
 
 window.scrollY>50
-?navbar.classList.add(
-"scrolled"
-)
-:navbar.classList.remove(
-"scrolled"
-);
+?navbar.classList.add("scrolled")
+:navbar.classList.remove("scrolled");
 
 }
 
@@ -853,10 +813,7 @@ document.querySelector(".menu-toggle");
 const mobileMenu=
 document.querySelector(".mobile-menu");
 
-if(
-menuToggle&&
-mobileMenu
-){
+if(menuToggle&&mobileMenu){
 
 menuToggle.setAttribute(
 "aria-expanded",
@@ -868,9 +825,7 @@ menuToggle.addEventListener(
 ()=>{
 
 const open=
-menuToggle.classList.toggle(
-"active"
-);
+menuToggle.classList.toggle("active");
 
 mobileMenu.classList.toggle(
 "active",
@@ -879,15 +834,11 @@ open
 
 menuToggle.setAttribute(
 "aria-expanded",
-open
-?"true"
-:"false"
+open?"true":"false"
 );
 
 document.body.style.overflow=
-open
-?"hidden"
-:"";
+open?"hidden":"";
 
 }
 );
@@ -913,8 +864,7 @@ menuToggle.setAttribute(
 "false"
 );
 
-document.body.style.overflow=
-"";
+document.body.style.overflow="";
 
 }
 );
@@ -929,9 +879,7 @@ document.body.style.overflow=
 ========================================================= */
 
 const revealElements=
-document.querySelectorAll(
-".reveal"
-);
+document.querySelectorAll(".reveal");
 
 if(revealElements.length){
 
@@ -974,17 +922,13 @@ el=>observer.observe(el)
    05. PREMIUM AUTOMATIC PAGE SCROLL
 ========================================================= */
 
-let premiumScrollAnimation=
-null;
+let premiumScrollAnimation=null;
 
 function premiumEase(t){
 
 return t<.5
 ?4*t*t*t
-:1-Math.pow(
--2*t+2,
-3
-)/2;
+:1-Math.pow(-2*t+2,3)/2;
 
 }
 
@@ -1001,8 +945,7 @@ cancelAnimationFrame(
 premiumScrollAnimation
 );
 
-premiumScrollAnimation=
-null;
+premiumScrollAnimation=null;
 
 }
 
@@ -1025,12 +968,9 @@ navOffset
 const distance=
 targetY-startY;
 
-if(
-Math.abs(distance)<2
-)return;
+if(Math.abs(distance)<2)return;
 
-let startTime=
-null;
+let startTime=null;
 
 function scrollFrame(time){
 
@@ -1065,8 +1005,7 @@ scrollFrame
 
 }else{
 
-premiumScrollAnimation=
-null;
+premiumScrollAnimation=null;
 
 window.scrollTo(
 0,
@@ -1095,9 +1034,7 @@ link.addEventListener(
 e=>{
 
 const id=
-link.getAttribute(
-"href"
-);
+link.getAttribute("href");
 
 if(
 !id||
@@ -1105,9 +1042,7 @@ id==="#"
 )return;
 
 const target=
-document.querySelector(
-id
-);
+document.querySelector(id);
 
 if(!target)return;
 
@@ -1137,8 +1072,7 @@ menuToggle.setAttribute(
 
 }
 
-document.body.style.overflow=
-"";
+document.body.style.overflow="";
 
 }
 
@@ -1158,7 +1092,6 @@ target,
 
 /* =========================================================
    06. APARTMENT GALLERY
-   SWIPE TOUCH + MOUSE + AUTOPLAY
 ========================================================= */
 
 document
@@ -1199,14 +1132,9 @@ let currentY=0;
 
 const SWIPE_THRESHOLD=45;
 
-gallery.style.touchAction=
-"pan-y";
-
-gallery.style.cursor=
-"grab";
-
-gallery.style.userSelect=
-"none";
+gallery.style.touchAction="pan-y";
+gallery.style.cursor="grab";
+gallery.style.userSelect="none";
 
 gallery
 .querySelectorAll("img")
@@ -1259,25 +1187,18 @@ counter.textContent=
 }
 
 function nextSlide(){
-showSlide(
-current+1
-);
+showSlide(current+1);
 }
 
 function previousSlide(){
-showSlide(
-current-1
-);
+showSlide(current-1);
 }
 
 function stopAutoplay(){
 
 if(!autoplay)return;
 
-clearInterval(
-autoplay
-);
-
+clearInterval(autoplay);
 autoplay=null;
 
 }
@@ -1341,13 +1262,8 @@ e.button!==0
 pointerDown=true;
 pointerId=e.pointerId;
 
-startX=
-currentX=
-e.clientX;
-
-startY=
-currentY=
-e.clientY;
+startX=currentX=e.clientX;
+startY=currentY=e.clientY;
 
 gallery.style.cursor=
 "grabbing";
@@ -1355,11 +1271,9 @@ gallery.style.cursor=
 stopAutoplay();
 
 try{
-
 gallery.setPointerCapture(
 e.pointerId
 );
-
 }catch{}
 
 }
@@ -1372,8 +1286,7 @@ e=>{
 if(
 !pointerDown||
 e.pointerId!==pointerId
-)
-return;
+)return;
 
 currentX=e.clientX;
 currentY=e.clientY;
@@ -1405,8 +1318,7 @@ e=>{
 if(
 !pointerDown||
 e.pointerId!==pointerId
-)
-return;
+)return;
 
 currentX=e.clientX;
 currentY=e.clientY;
@@ -1414,11 +1326,9 @@ currentY=e.clientY;
 finishSwipe();
 
 try{
-
 gallery.releasePointerCapture(
 e.pointerId
 );
-
 }catch{}
 
 }
@@ -1623,8 +1533,7 @@ let suppressClick=false;
 
 const todayISO=()=>{
 
-const d=
-new Date();
+const d=new Date();
 
 return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 
@@ -1708,8 +1617,7 @@ day<event.end
 
 function isPast(day){
 
-return day<
-todayISO();
+return day<todayISO();
 
 }
 
@@ -1981,8 +1889,7 @@ if(
 !calendarMonthLabel
 )return;
 
-calendarGrid.innerHTML=
-"";
+calendarGrid.innerHTML="";
 
 calendarMonthLabel.textContent=
 displayMonth.toLocaleDateString(
@@ -2206,6 +2113,9 @@ clearCalendarMessage();
 
 if(isPast(day))return;
 
+
+/* PRIMO CLICK */
+
 if(!selectedStart){
 
 if(isBooked(day)){
@@ -2248,6 +2158,9 @@ renderCalendar();
 return;
 
 }
+
+
+/* NUOVA SELEZIONE DOPO RANGE COMPLETO */
 
 if(
 selectedStart&&
@@ -2295,6 +2208,9 @@ return;
 
 }
 
+
+/* CLICK SULLO STESSO GIORNO */
+
 if(
 day===
 selectedStart
@@ -2305,6 +2221,9 @@ clearStay();
 return;
 
 }
+
+
+/* CLICK PRIMA DEL CHECK-IN */
 
 if(
 day<
@@ -2344,6 +2263,9 @@ return;
 
 }
 
+
+/* SECONDO CLICK = CHECK-OUT */
+
 if(
 day>
 selectedStart
@@ -2365,11 +2287,8 @@ return;
 
 }
 
-selectedEnd=
-day;
-
-previewEnd=
-"";
+selectedEnd=day;
+previewEnd="";
 
 clearCalendarMessage();
 
@@ -2380,6 +2299,11 @@ renderCalendar();
 }
 
 }
+
+
+/* =========================================================
+   DRAG CALENDAR
+========================================================= */
 
 function startCalendarDrag(
 e,
@@ -2441,8 +2365,7 @@ day
 selectedStart=
 dragStart;
 
-selectedEnd=
-"";
+selectedEnd="";
 
 previewEnd=
 day;
@@ -2462,8 +2385,7 @@ if(!dragActive)return;
 
 dragActive=false;
 
-document.body.style.userSelect=
-"";
+document.body.style.userSelect="";
 
 if(
 dragMoved&&
@@ -2481,11 +2403,9 @@ dragStart;
 selectedEnd=
 previewEnd;
 
-previewEnd=
-"";
+previewEnd="";
 
-suppressClick=
-true;
+suppressClick=true;
 
 clearCalendarMessage();
 
@@ -2497,14 +2417,18 @@ return;
 
 }
 
-previewEnd=
-"";
+/* SEMPLICE CLICK: NON RIDISEGNARE QUI */
 
-dragMoved=
-false;
+previewEnd="";
+dragMoved=false;
 
 }
 );
+
+
+/* =========================================================
+   LOAD AVAILABILITY
+========================================================= */
 
 async function loadCalendar(
 calendarKey,
@@ -2519,11 +2443,8 @@ const requestId=
 currentCalendarKey=
 calendarKey;
 
-calendarLoaded=
-false;
-
-calendarEvents=
-[];
+calendarLoaded=false;
+calendarEvents=[];
 
 clearStay(false);
 clearCalendarMessage();
@@ -2560,6 +2481,11 @@ if(calendarLoadingMessage){
 
 calendarLoadingMessage.classList.add(
 "visible"
+);
+
+calendarLoadingMessage.textContent=
+primeTranslate(
+"Loading current availability..."
 );
 
 }
@@ -2668,7 +2594,9 @@ false;
 if(calendarLiveText){
 
 calendarLiveText.textContent=
-"UNAVAILABLE";
+primeTranslate(
+"UNAVAILABLE"
+);
 
 }
 
@@ -2705,7 +2633,14 @@ lockSubmit(
 
 }
 
+
+/* =========================================================
+   SELECT RESIDENCE
+========================================================= */
+
 function selectResidence(card){
+
+if(!card)return;
 
 bookingCards.forEach(
 c=>c.classList.remove(
@@ -2742,6 +2677,8 @@ residence;
 
 }
 
+/* IMPORTANTE: CARICA IL CALENDARIO DEL RESIDENCE SCELTO */
+
 loadCalendar(
 calendar,
 residence
@@ -2749,9 +2686,14 @@ residence
 
 if(bookingFormSection){
 
+setTimeout(()=>{
+
 bookingFormSection.scrollIntoView({
-behavior:"smooth"
+behavior:"smooth",
+block:"start"
 });
+
+},100);
 
 }
 
@@ -2789,6 +2731,11 @@ card
 
 }
 );
+
+
+/* =========================================================
+   MONTH NAVIGATION
+========================================================= */
 
 if(calendarPrev){
 
@@ -2857,13 +2804,17 @@ selectedStayClear.addEventListener(
 ()=>{
 
 clearStay();
-
 clearCalendarMessage();
 
 }
 );
 
 }
+
+
+/* =========================================================
+   UPDATE CALENDAR WHEN LANGUAGE CHANGES
+========================================================= */
 
 window.addEventListener(
 "primeLanguageChanged",
@@ -3132,8 +3083,7 @@ await fetch(
 {
 method:"POST",
 headers:{
-"Content-Type":
-"application/json"
+"Content-Type":"application/json"
 },
 body:
 JSON.stringify(data)
@@ -3294,10 +3244,9 @@ address:"Via Barontini 8, Bologna"
 
 function isItalian(text){
 
-if(
-primeLanguage==="it"
-)
+if(primeLanguage==="it"){
 return true;
+}
 
 const q=
 text.toLowerCase();
@@ -3577,8 +3526,7 @@ promptStorageKey,
 
 }
 
-let promptClosed=
-false;
+let promptClosed=false;
 
 try{
 
@@ -3609,8 +3557,7 @@ if(homePromptScheduled){
 return;
 }
 
-homePromptScheduled=
-true;
+homePromptScheduled=true;
 
 setTimeout(
 showPrompt,
@@ -3917,8 +3864,7 @@ e.preventDefault();
 const question=
 input.value;
 
-input.value=
-"";
+input.value="";
 
 processQuestion(
 question
@@ -3945,38 +3891,48 @@ let question="";
 switch(type){
 
 case"about-prime":
+
 question=
 primeLanguage==="it"
 ?"Cos'è Prime Residence Bologna?"
 :"What is Prime Residence Bologna?";
+
 break;
 
 case"residences":
+
 question=
 primeLanguage==="it"
 ?"Quali residence avete?"
 :"Which residences do you have?";
+
 break;
 
 case"residence-details":
+
 question=
 primeLanguage==="it"
 ?"Parlami di questo residence"
 :"Tell me about this residence";
+
 break;
 
 case"compare":
+
 question=
 primeLanguage==="it"
 ?"Qual è la differenza tra i due appartamenti?"
 :"What is the difference between the two apartments?";
+
 break;
 
 case"booking":
+
 question=
 primeLanguage==="it"
 ?"Come posso prenotare?"
 :"How can I book?";
+
 break;
 
 case"location":
@@ -4003,8 +3959,7 @@ primeLanguage==="it"
 break;
 
 default:
-question=
-type;
+question=type;
 
 }
 
@@ -4072,8 +4027,7 @@ menuToggle.setAttribute(
 
 }
 
-document.body.style.overflow=
-"";
+document.body.style.overflow="";
 
 }
 
@@ -4093,8 +4047,7 @@ document.querySelector(
 if(year){
 
 year.textContent=
-new Date()
-.getFullYear();
+new Date().getFullYear();
 
 }
 
