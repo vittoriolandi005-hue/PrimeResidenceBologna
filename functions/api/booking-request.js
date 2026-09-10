@@ -16,9 +16,12 @@ export async function onRequestPost(context) {
       birthDate,
       email,
       phone,
-      message
+      message,
+      lang
     } = request;
 
+    const isItalian = lang === "it";
+    const apiMessage = (en, it) => isItalian ? it : en;
 
     if (
       !residence ||
@@ -35,7 +38,7 @@ export async function onRequestPost(context) {
       return new Response(
         JSON.stringify({
           message:
-            "Please complete all required fields."
+            apiMessage("Please complete all required fields.", "Compila tutti i campi obbligatori.")
         }),
         {
           status: 400,
@@ -64,7 +67,7 @@ export async function onRequestPost(context) {
       return new Response(
         JSON.stringify({
           message:
-            "Invalid residence."
+            apiMessage("Invalid residence.", "Residence non valido.")
         }),
         {
           status: 400,
@@ -98,7 +101,7 @@ export async function onRequestPost(context) {
       return new Response(
         JSON.stringify({
           message:
-            "Invalid booking dates."
+            apiMessage("Invalid booking dates.", "Date di prenotazione non valide.")
         }),
         {
           status: 400,
@@ -153,7 +156,7 @@ export async function onRequestPost(context) {
       return new Response(
         JSON.stringify({
           message:
-            "Booking system is not configured yet."
+            apiMessage("Booking system is not configured yet.", "Il sistema di prenotazione non è ancora configurato.")
         }),
         {
           status: 500,
