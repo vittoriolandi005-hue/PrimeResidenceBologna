@@ -707,6 +707,7 @@
 <input id="calendarResidence" type="hidden" value=""/>
 <input id="checkin" name="checkin" type="hidden" value=""/>
 <input id="checkout" name="checkout" type="hidden" value=""/>
+<input id="estimatedTotal" name="estimatedTotal" type="hidden" value=""/>
 <!-- =================================================
                  REAL-TIME AVAILABILITY
             ================================================== -->
@@ -872,12 +873,22 @@
                     </option>
 </select>
 </div>
+
+<div class="stay-price-banner" id="stayPriceBanner" aria-live="polite">
+  <div class="stay-price-copy">
+    <span class="stay-price-label">TOTAL STAY</span>
+    <strong class="stay-price-total" id="stayPriceTotal">—</strong>
+    <span class="stay-price-meta" id="stayPriceMeta">—</span>
+  </div>
+  <button class="stay-price-action" id="requestBookingButton" type="button">REQUEST TO BOOK →</button>
+</div>
+
 </div>
 </div>
 <!-- =================================================
                  PERSONAL DETAILS
             ================================================== -->
-<div class="form-section">
+<div class="form-section" id="guest-details-section">
 <div class="form-section-title">
                 Guest details
               </div>
