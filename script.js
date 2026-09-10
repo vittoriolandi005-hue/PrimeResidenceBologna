@@ -44,14 +44,12 @@ window.dispatchEvent(new CustomEvent("primeIntroStarted"));
 requestAnimationFrame(animate);
 }
 
-/* ROTELLA / TRACKPAD VERSO L'ALTO */
 window.addEventListener("wheel",e=>{
 if(introFinished)return;
 e.preventDefault();
 if(e.deltaY<0)startIntro();
 },{passive:false});
 
-/* TOUCH DAL BASSO VERSO L'ALTO */
 window.addEventListener("touchstart",e=>{
 if(introFinished||introAnimating)return;
 touchStartY=e.touches[0].clientY;
@@ -65,7 +63,6 @@ startIntro();
 }
 },{passive:false});
 
-/* MOUSE DRAG DAL BASSO VERSO L'ALTO */
 loader.addEventListener("mousedown",e=>{
 if(introFinished||introAnimating||e.button!==0)return;
 mouseDragging=true;
@@ -196,29 +193,19 @@ revealElements.forEach(el=>observer.observe(el));
 
 /* =========================================================
    05. PREMIUM AUTOMATIC PAGE SCROLL
-
-   RESIDENCES / EXPERIENCE / BOLOGNA
-   E TUTTI GLI ANCORAGGI INTERNI
-
-   NESSUN OVERLAY
-   LA PAGINA SCORRE REALMENTE
 ========================================================= */
 
 let premiumScrollAnimation=null;
 
 function premiumEase(t){
-
 return t<.5
 ?4*t*t*t
 :1-Math.pow(-2*t+2,3)/2;
-
 }
 
 function premiumScrollTo(target,duration=1400){
 
 if(!target)return;
-
-/* FERMA EVENTUALE ANIMAZIONE PRECEDENTE */
 
 if(premiumScrollAnimation){
 cancelAnimationFrame(premiumScrollAnimation);
@@ -226,7 +213,6 @@ premiumScrollAnimation=null;
 }
 
 const navOffset=navbar?navbar.offsetHeight:0;
-
 const startY=window.scrollY;
 
 const targetY=Math.max(
@@ -283,9 +269,6 @@ requestAnimationFrame(scrollFrame);
 
 }
 
-
-/* INTERCETTA LINK INTERNI */
-
 document.querySelectorAll('a[href^="#"]').forEach(link=>{
 
 link.addEventListener("click",e=>{
@@ -299,8 +282,6 @@ const target=document.querySelector(id);
 if(!target)return;
 
 e.preventDefault();
-
-/* CHIUDE MENU MOBILE SE APERTO */
 
 if(
 mobileMenu&&
@@ -324,9 +305,6 @@ document.body.style.overflow="";
 
 }
 
-
-/* PICCOLISSIMO RITARDO SOLO SE CHIUDE IL MENU */
-
 setTimeout(
 ()=>premiumScrollTo(target,1400),
 20
@@ -336,45 +314,59 @@ setTimeout(
 
 });
 
-
 /* =========================================================
    06. APARTMENT GALLERY
+   SWIPE TOUCH + MOUSE + AUTOPLAY
 ========================================================= */
 
 document.querySelectorAll(".apartment-gallery").forEach(gallery=>{
 
-const slides=[
-...gallery.querySelectorAll(".apartment-slide")
-];
+const slides=[...gallery.querySelectorAll(".apartment-slide")];
 
 if(slides.length<2)return;
 
-const section=
-gallery.closest(".apartment-gallery-section");
+const section=gallery.closest(".apartment-gallery-section");
 
-const counter=
-section
+const counter=section
 ?section.querySelector(".apartment-gallery-counter")
 :null;
 
-let current=0,
-autoplay=null,
-touchStartX=0,
-touchEndX=0,
-mouseStartX=0,
-mouseEndX=0,
-dragging=false;
+let current=0;
+let autoplay=null;
+
+let pointerDown=false;
+let pointerId=null;
+let startX=0;
+let startY=0;
+let currentX=0;
+let currentY=0;
+let horizontalGesture=false;
+
+const SWIPE_THRESHOLD=45;
+
+gallery.style.touchAction="pan-y";
+gallery.style.cursor="grab";
+gallery.style.userSelect="none";
+
+gallery.querySelectorAll("img").forEach(img=>{
+img.draggable=false;
+img.setAttribute("draggable","false");
+img.addEventListener("dragstart",e=>e.preventDefault());
+});
 
 function showSlide(index){
 
-if(index<0)index=slides.length-1;
-if(index>=slides.length)index=0;
+if(index<0){
+index=slides.length-1;
+}
 
-slides.forEach(
-slide=>slide.classList.remove("active")
-);
+if(index>=slides.length){
+index=0;
+}
 
-slides[index].classList.add("active");
+slides.forEach((slide,i)=>{
+slide.classList.toggle("active",i===index);
+});
 
 current=index;
 
@@ -387,20 +379,20 @@ counter.textContent=
 
 }
 
-const nextSlide=
-()=>showSlide(current+1);
+function nextSlide(){
+showSlide(current+1);
+}
 
-const previousSlide=
-()=>showSlide(current-1);
+function previousSlide(){
+showSlide(current-1);
+}
 
 function stopAutoplay(){
 
-if(autoplay){
+if(!autoplay)return;
 
 clearInterval(autoplay);
 autoplay=null;
-
-}
 
 }
 
@@ -408,112 +400,165 @@ function startAutoplay(){
 
 stopAutoplay();
 
-autoplay=
-setInterval(
+autoplay=setInterval(
 nextSlide,
 5000
 );
 
 }
 
-function handleSwipe(start,end){
+function restartAutoplay(){
 
-const d=start-end;
+stopAutoplay();
 
-if(Math.abs(d)<45)return;
+setTimeout(
+startAutoplay,
+350
+);
 
-d>0
-?nextSlide()
-:previousSlide();
+}
+
+function finishSwipe(){
+
+if(!pointerDown)return;
+
+const deltaX=currentX-startX;
+const deltaY=currentY-startY;
+
+pointerDown=false;
+pointerId=null;
+
+gallery.style.cursor="grab";
+
+if(
+Math.abs(deltaX)>=SWIPE_THRESHOLD&&
+Math.abs(deltaX)>Math.abs(deltaY)
+){
+
+if(deltaX<0){
+nextSlide();
+}else{
+previousSlide();
+}
+
+restartAutoplay();
+
+}else{
 
 startAutoplay();
 
 }
 
-gallery.addEventListener(
-"touchstart",
-e=>touchStartX=e.touches[0].clientX,
-{passive:true}
-);
-
-gallery.addEventListener(
-"touchend",
-e=>{
-
-touchEndX=
-e.changedTouches[0].clientX;
-
-handleSwipe(
-touchStartX,
-touchEndX
-);
-
-},
-{passive:true}
-);
-
-gallery.addEventListener(
-"mousedown",
-e=>{
-
-dragging=true;
-mouseStartX=e.clientX;
-mouseEndX=e.clientX;
-
-gallery.style.userSelect=
-"none";
+horizontalGesture=false;
 
 }
-);
 
-gallery.addEventListener(
-"mousemove",
-e=>{
+gallery.addEventListener("pointerdown",e=>{
 
-if(dragging){
-mouseEndX=e.clientX;
+if(e.pointerType==="mouse"&&e.button!==0)return;
+
+pointerDown=true;
+pointerId=e.pointerId;
+
+startX=e.clientX;
+startY=e.clientY;
+
+currentX=e.clientX;
+currentY=e.clientY;
+
+horizontalGesture=false;
+
+gallery.style.cursor="grabbing";
+
+stopAutoplay();
+
+try{
+gallery.setPointerCapture(e.pointerId);
+}catch{}
+
+});
+
+gallery.addEventListener("pointermove",e=>{
+
+if(
+!pointerDown||
+e.pointerId!==pointerId
+){
+return;
+}
+
+currentX=e.clientX;
+currentY=e.clientY;
+
+const deltaX=currentX-startX;
+const deltaY=currentY-startY;
+
+if(
+Math.abs(deltaX)>10&&
+Math.abs(deltaX)>Math.abs(deltaY)
+){
+
+horizontalGesture=true;
+
+if(e.cancelable){
+e.preventDefault();
 }
 
 }
-);
 
-gallery.addEventListener(
-"mouseup",
-e=>{
+});
 
-if(!dragging)return;
+gallery.addEventListener("pointerup",e=>{
 
-dragging=false;
-
-mouseEndX=e.clientX;
-
-gallery.style.userSelect="";
-
-handleSwipe(
-mouseStartX,
-mouseEndX
-);
-
+if(
+!pointerDown||
+e.pointerId!==pointerId
+){
+return;
 }
-);
 
-gallery.addEventListener(
-"mouseleave",
-()=>{
+currentX=e.clientX;
+currentY=e.clientY;
 
-if(!dragging)return;
+finishSwipe();
 
-dragging=false;
+try{
+gallery.releasePointerCapture(e.pointerId);
+}catch{}
 
-gallery.style.userSelect="";
+});
 
-handleSwipe(
-mouseStartX,
-mouseEndX
-);
+gallery.addEventListener("pointercancel",()=>{
 
+pointerDown=false;
+pointerId=null;
+horizontalGesture=false;
+
+gallery.style.cursor="grab";
+
+startAutoplay();
+
+});
+
+gallery.addEventListener("lostpointercapture",()=>{
+
+if(pointerDown){
+finishSwipe();
 }
-);
+
+});
+
+gallery.addEventListener("mouseenter",()=>{
+stopAutoplay();
+});
+
+gallery.addEventListener("mouseleave",()=>{
+
+if(!pointerDown){
+startAutoplay();
+}
+
+});
 
 showSlide(0);
 startAutoplay();
@@ -1099,10 +1144,6 @@ button
 
 }
 
-/* =========================================================
-   CLICK CALENDAR
-========================================================= */
-
 function handleDayClick(day){
 
 if(suppressClick){
@@ -1115,9 +1156,6 @@ return;
 clearCalendarMessage();
 
 if(isPast(day))return;
-
-
-/* PRIMO CLICK */
 
 if(!selectedStart){
 
@@ -1161,9 +1199,6 @@ renderCalendar();
 return;
 
 }
-
-
-/* RANGE GIÀ COMPLETATO */
 
 if(
 selectedStart&&
@@ -1211,9 +1246,6 @@ return;
 
 }
 
-
-/* STESSO GIORNO */
-
 if(
 day===selectedStart
 ){
@@ -1223,9 +1255,6 @@ clearStay();
 return;
 
 }
-
-
-/* DATA PRECEDENTE */
 
 if(
 day<selectedStart
@@ -1264,9 +1293,6 @@ return;
 
 }
 
-
-/* SECONDO CLICK */
-
 if(
 day>selectedStart
 ){
@@ -1299,10 +1325,6 @@ renderCalendar();
 }
 
 }
-
-/* =========================================================
-   DRAG CALENDAR
-========================================================= */
 
 function startCalendarDrag(
 e,
@@ -1418,19 +1440,11 @@ return;
 
 }
 
-
-/* SEMPLICE CLICK:
-   NON RIDISEGNARE QUI */
-
 previewEnd="";
 dragMoved=false;
 
 }
 );
-
-/* =========================================================
-   LOAD AVAILABILITY
-========================================================= */
 
 async function loadCalendar(
 calendarKey,
@@ -1626,10 +1640,6 @@ lockSubmit(
 
 }
 
-/* =========================================================
-   SELECT RESIDENCE
-========================================================= */
-
 function selectResidence(card){
 
 bookingCards.forEach(
@@ -1713,10 +1723,6 @@ selectResidence(card);
 
 });
 
-/* =========================================================
-   MONTH NAVIGATION
-========================================================= */
-
 if(calendarPrev){
 
 calendarPrev.addEventListener(
@@ -1792,10 +1798,6 @@ clearCalendarMessage();
 
 }
 
-/* =========================================================
-   FORM MESSAGE
-========================================================= */
-
 function showMessage(
 text,
 type
@@ -1824,10 +1826,6 @@ bookingMessage.style.display=
 }
 
 }
-
-/* =========================================================
-   FINAL AVAILABILITY CHECK
-========================================================= */
 
 async function verifyStayAgain(){
 
@@ -1898,10 +1896,6 @@ return false;
 );
 
 }
-
-/* =========================================================
-   BOOKING SUBMIT
-========================================================= */
 
 if(bookingForm){
 
