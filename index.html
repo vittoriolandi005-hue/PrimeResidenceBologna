@@ -213,9 +213,19 @@
       inset:0;
       z-index:0;
       overflow:hidden;
-      padding:112px 6vw 7vh;
       background:#171614;
       pointer-events:none
+    }
+
+    /* This is the real viewport of the carousel. Anything before photo 1
+       or after photo 2 is physically clipped, so no side photo can peek in. */
+    .prime-hero-gallery-window{
+      position:absolute;
+      top:112px;
+      right:6vw;
+      bottom:7vh;
+      left:6vw;
+      overflow:hidden
     }
 
     .prime-hero-gallery-track{
@@ -224,12 +234,13 @@
       width:100%;
       height:100%;
       transform:translate3d(0,0,0);
-      transition:transform 1.5s cubic-bezier(.4,0,.2,1);
-      will-change:transform
+      transition:transform 1.5s linear;
+      will-change:transform;
+      backface-visibility:hidden
     }
 
     .prime-hero-gallery-track.no-transition{
-      transition:none
+      transition:none!important
     }
 
     .prime-hero-gallery-panel{
@@ -240,7 +251,8 @@
       overflow:hidden;
       border-radius:2px;
       background:#28241f;
-      box-shadow:0 28px 70px rgba(0,0,0,.18)
+      box-shadow:0 28px 70px rgba(0,0,0,.18);
+      transform:translateZ(0)
     }
 
     .prime-hero-gallery-panel img{
@@ -249,26 +261,9 @@
       object-fit:cover;
       object-position:center;
       filter:saturate(.88) brightness(.72);
-      transform:scale(1.01);
-      transition:none
-    }
-
-    /* Side masks keep the previous/next carousel photos completely hidden
-       outside the two visible gallery positions. */
-    .prime-hero-gallery::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      z-index:2;
-      pointer-events:none;
-      background:linear-gradient(90deg,
-        #171614 0,
-        #171614 6vw,
-        transparent 6vw,
-        transparent calc(100% - 6vw),
-        #171614 calc(100% - 6vw),
-        #171614 100%
-      )
+      transform:none;
+      transition:none;
+      backface-visibility:hidden
     }
 
     .prime-hero-gallery::after{
@@ -291,19 +286,11 @@
     .hero>.hero-scroll{z-index:5}
 
     @media(max-width:900px){
-      .prime-hero-gallery{
-        padding:96px 28px 52px
-      }
-
-      .prime-hero-gallery::before{
-        background:linear-gradient(90deg,
-          #171614 0,
-          #171614 28px,
-          transparent 28px,
-          transparent calc(100% - 28px),
-          #171614 calc(100% - 28px),
-          #171614 100%
-        )
+      .prime-hero-gallery-window{
+        top:96px;
+        right:28px;
+        bottom:52px;
+        left:28px
       }
 
       .prime-hero-gallery-track{
@@ -316,12 +303,8 @@
     }
 
     @media(max-width:700px){
-      .prime-hero-gallery{
-        padding:0
-      }
-
-      .prime-hero-gallery::before{
-        display:none
+      .prime-hero-gallery-window{
+        inset:0
       }
 
       .prime-hero-gallery-track{
@@ -418,13 +401,15 @@
     ====================================================== -->
 <section class="hero">
 <div class="prime-hero-gallery" id="primeHeroGallery" aria-hidden="true">
-  <div class="prime-hero-gallery-track">
-    <div class="prime-hero-gallery-panel is-current"><img src="images/gastone-rossi-12/30.jpg" alt="" decoding="async" fetchpriority="high"/></div>
-    <div class="prime-hero-gallery-panel"><img src="images/barontini-8/13.jpg" alt="" decoding="async" fetchpriority="high"/></div>
-    <div class="prime-hero-gallery-panel"><img src="images/gastone-rossi-12/01.jpg" alt="" decoding="async" loading="lazy"/></div>
-    <div class="prime-hero-gallery-panel"><img src="images/barontini-8/01.jpg" alt="" decoding="async" loading="lazy"/></div>
-    <div class="prime-hero-gallery-panel"><img src="images/gastone-rossi-12/22.jpg" alt="" decoding="async" loading="lazy"/></div>
-    <div class="prime-hero-gallery-panel"><img src="images/barontini-8/19.jpg" alt="" decoding="async" loading="lazy"/></div>
+  <div class="prime-hero-gallery-window">
+    <div class="prime-hero-gallery-track">
+      <div class="prime-hero-gallery-panel"><img src="images/gastone-rossi-12/30.jpg" alt="" decoding="async" fetchpriority="high" loading="eager"/></div>
+      <div class="prime-hero-gallery-panel"><img src="images/barontini-8/13.jpg" alt="" decoding="async" fetchpriority="high" loading="eager"/></div>
+      <div class="prime-hero-gallery-panel"><img src="images/gastone-rossi-12/01.jpg" alt="" decoding="async" loading="eager"/></div>
+      <div class="prime-hero-gallery-panel"><img src="images/barontini-8/01.jpg" alt="" decoding="async" loading="eager"/></div>
+      <div class="prime-hero-gallery-panel"><img src="images/gastone-rossi-12/22.jpg" alt="" decoding="async" loading="eager"/></div>
+      <div class="prime-hero-gallery-panel"><img src="images/barontini-8/19.jpg" alt="" decoding="async" loading="eager"/></div>
+    </div>
   </div>
 </div>
 <div class="hero-overlay"></div>
@@ -990,97 +975,109 @@
   const originals=Array.from(track.querySelectorAll('.prime-hero-gallery-panel'));
   if(originals.length<3)return;
 
-  // Two cloned panels allow the last original image to slide naturally
-  // while the next images enter from the right, then the track resets invisibly.
+  /* Clone the first two photos so the sequence can continue beyond the
+     last original pair without a visible jump. */
   originals.slice(0,2).forEach(panel=>{
     const clone=panel.cloneNode(true);
-    clone.classList.remove('is-current');
     clone.setAttribute('data-carousel-clone','true');
     track.appendChild(clone);
   });
 
+  const SLIDE_MS=1500;
+  const PAUSE_MS=3600;
   let index=0;
   let timer=null;
   let moving=false;
 
-  const INTERVAL=5200;
-  const SLIDE_DURATION=1500;
-
   function stepSize(){
     const panels=track.querySelectorAll('.prime-hero-gallery-panel');
-    if(panels.length<2)return gallery.clientWidth;
+    if(panels.length<2)return 0;
     return panels[1].offsetLeft-panels[0].offsetLeft;
   }
 
-  function markCurrent(){
-    const panels=Array.from(track.querySelectorAll('.prime-hero-gallery-panel'));
-    panels.forEach(panel=>panel.classList.remove('is-current'));
-    if(panels[index])panels[index].classList.add('is-current');
-  }
-
-  function setPosition(animate=true){
+  function translate(animate){
     track.classList.toggle('no-transition',!animate);
     track.style.transform=`translate3d(${-index*stepSize()}px,0,0)`;
   }
 
-  function finishMove(){
-    if(!moving)return;
-
-    if(index>=originals.length){
-      index=0;
-      markCurrent();
-      setPosition(false);
-      // Commit the invisible reset before re-enabling the 1.5 s transition.
-      track.getBoundingClientRect();
-      requestAnimationFrame(()=>track.classList.remove('no-transition'));
+  function schedule(){
+    window.clearTimeout(timer);
+    if(!document.hidden){
+      timer=window.setTimeout(next,PAUSE_MS);
     }
-
-    moving=false;
   }
 
   function next(){
     if(moving)return;
     moving=true;
     index+=1;
-    markCurrent();
-    setPosition(true);
+    translate(true);
+  }
 
-    // Fallback only: transitionend below is the normal completion path.
-    window.setTimeout(finishMove,SLIDE_DURATION+120);
+  function finish(){
+    if(!moving)return;
+
+    /* At this point the two cloned panels are in exactly the same visual
+       positions as panels 1 and 2. Reset with transitions disabled. */
+    if(index>=originals.length){
+      index=0;
+      track.classList.add('no-transition');
+      track.style.transform='translate3d(0,0,0)';
+      track.getBoundingClientRect();
+      requestAnimationFrame(()=>track.classList.remove('no-transition'));
+    }
+
+    moving=false;
+    schedule();
   }
 
   track.addEventListener('transitionend',event=>{
-    if(event.propertyName==='transform'){
-      finishMove();
+    if(event.target===track&&event.propertyName==='transform'){
+      finish();
     }
   });
 
-  function start(){
-    stop();
-    timer=window.setInterval(next,INTERVAL);
-  }
-
-  function stop(){
-    if(timer){
-      window.clearInterval(timer);
-      timer=null;
-    }
-  }
+  /* Safety fallback for browsers that occasionally miss transitionend. */
+  track.addEventListener('transitioncancel',()=>{
+    moving=false;
+    schedule();
+  });
 
   let resizeTimer=null;
   window.addEventListener('resize',()=>{
     window.clearTimeout(resizeTimer);
-    resizeTimer=window.setTimeout(()=>setPosition(false),100);
+    resizeTimer=window.setTimeout(()=>{
+      translate(false);
+      track.getBoundingClientRect();
+      requestAnimationFrame(()=>track.classList.remove('no-transition'));
+    },100);
   });
 
   document.addEventListener('visibilitychange',()=>{
-    if(document.hidden)stop();
-    else start();
+    window.clearTimeout(timer);
+    if(!document.hidden)schedule();
   });
 
-  setPosition(false);
-  requestAnimationFrame(()=>track.classList.remove('no-transition'));
-  start();
+  /* Pre-decode every carousel image before the first movement to prevent
+     an incoming photo from stuttering while it is being decoded. */
+  Promise.all(
+    Array.from(track.querySelectorAll('img')).map(img=>{
+      if(img.complete){
+        return img.decode ? img.decode().catch(()=>{}) : Promise.resolve();
+      }
+      return new Promise(resolve=>{
+        img.addEventListener('load',resolve,{once:true});
+        img.addEventListener('error',resolve,{once:true});
+      });
+    })
+  ).finally(()=>{
+    translate(false);
+    track.getBoundingClientRect();
+    requestAnimationFrame(()=>{
+      track.classList.remove('no-transition');
+      schedule();
+    });
+  });
 })();
 </script>
 <script src="script.js"></script>
