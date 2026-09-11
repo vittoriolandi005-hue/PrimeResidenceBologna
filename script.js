@@ -114,19 +114,25 @@ const PRIME_TRANSLATIONS={
 "Price on request":"Prezzo su richiesta",
 "Select guests to see the total price":"Seleziona gli ospiti per vedere il prezzo totale",
 "fully booked":"al completo",
-"available":"disponibile"
+"available":"disponibile",
+"SIZE":"SUPERFICIE",
+"YOUR STAY":"IL TUO SOGGIORNO",
+"FAMILIES":"FAMIGLIE",
+"Quiet private stay":"Soggiorno privato e tranquillo",
+"Children welcome":"Bambini benvenuti",
+"SWIPE OR DRAG TO EXPLORE":"SCORRI O TRASCINA PER ESPLORARE",
+"Previous photos":"Foto precedenti",
+"Next photos":"Foto successive"
 };
 
 const PRIME_LANG_KEY="primeResidenceLanguage";
 
 let primeLanguage=(()=>{
-try{
-return localStorage.getItem(PRIME_LANG_KEY)==="it"
-?"it"
-:"en";
-}catch{
-return"en";
-}
+  try{
+    return localStorage.getItem(PRIME_LANG_KEY)==="it"?"it":"en";
+  }catch{
+    return "en";
+  }
 })();
 
 const primeOriginalText=new WeakMap();
@@ -138,577 +144,511 @@ String(s||"")
 .trim();
 
 const primeTranslate=s=>{
-const text=String(s??"");
+  const text=String(s??"");
 
-return primeLanguage==="it"
-?(PRIME_TRANSLATIONS[primeNorm(text)]||text)
-:text;
+  return primeLanguage==="it"
+    ?(PRIME_TRANSLATIONS[primeNorm(text)]||text)
+    :text;
 };
 
 function primeTranslateTextNode(node){
 
-if(
-!node||
-node.nodeType!==3
-){
-return;
-}
+  if(!node||node.nodeType!==3){
+    return;
+  }
 
-if(
-!primeOriginalText.has(node)
-){
-primeOriginalText.set(
-node,
-node.nodeValue
-);
-}
+  if(!primeOriginalText.has(node)){
+    primeOriginalText.set(
+      node,
+      node.nodeValue
+    );
+  }
 
-const original=
-primeOriginalText.get(node);
+  const original=
+  primeOriginalText.get(node);
 
-const normalized=
-primeNorm(original);
+  const normalized=
+  primeNorm(original);
 
-if(!normalized)return;
+  if(!normalized){
+    return;
+  }
 
-const translated=
-primeLanguage==="it"
-?PRIME_TRANSLATIONS[normalized]
-:undefined;
+  const translated=
+  primeLanguage==="it"
+    ?PRIME_TRANSLATIONS[normalized]
+    :undefined;
 
-node.nodeValue=
-translated!==undefined
-?original.replace(
-normalized,
-translated
-)
-:original;
-
+  node.nodeValue=
+  translated!==undefined
+    ?original.replace(
+      normalized,
+      translated
+    )
+    :original;
 }
 
 function primeTranslateElement(el){
 
-if(
-!el||
-el.nodeType!==1||
-["SCRIPT","STYLE"].includes(el.tagName)
-){
-return;
-}
+  if(
+    !el||
+    el.nodeType!==1||
+    ["SCRIPT","STYLE"].includes(el.tagName)
+  ){
+    return;
+  }
 
-[
-"placeholder",
-"aria-label",
-"title"
-].forEach(attr=>{
+  [
+    "placeholder",
+    "aria-label",
+    "title"
+  ].forEach(attr=>{
 
-if(
-!el.hasAttribute(attr)
-){
-return;
-}
+    if(!el.hasAttribute(attr)){
+      return;
+    }
 
-const store=
-primeOriginalAttrs.get(el)||
-{};
+    const store=
+    primeOriginalAttrs.get(el)||{};
 
-if(
-!(attr in store)
-){
-store[attr]=
-el.getAttribute(attr);
-}
+    if(!(attr in store)){
+      store[attr]=
+      el.getAttribute(attr);
+    }
 
-primeOriginalAttrs.set(
-el,
-store
-);
+    primeOriginalAttrs.set(
+      el,
+      store
+    );
 
-const original=
-store[attr];
+    const original=
+    store[attr];
 
-const translated=
-primeLanguage==="it"
-?PRIME_TRANSLATIONS[
-primeNorm(original)
-]
-:undefined;
+    const translated=
+    primeLanguage==="it"
+      ?PRIME_TRANSLATIONS[
+        primeNorm(original)
+      ]
+      :undefined;
 
-el.setAttribute(
-attr,
-translated!==undefined
-?translated
-:original
-);
+    el.setAttribute(
+      attr,
+      translated!==undefined
+        ?translated
+        :original
+    );
+  });
 
-});
+  for(const child of el.childNodes){
 
-for(
-const child of
-el.childNodes
-){
-
-if(
-child.nodeType===3
-){
-
-primeTranslateTextNode(
-child
-);
-
-}else{
-
-primeTranslateElement(
-child
-);
-
-}
-
-}
-
+    if(child.nodeType===3){
+      primeTranslateTextNode(child);
+    }else{
+      primeTranslateElement(child);
+    }
+  }
 }
 
 function primeUpdateLanguageButtons(){
 
-document
-.querySelectorAll(
-".language-switcher button[data-lang]"
-)
-.forEach(btn=>{
+  document
+  .querySelectorAll(
+    ".language-switcher button[data-lang]"
+  )
+  .forEach(btn=>{
 
-btn.classList.toggle(
-"active",
-btn.dataset.lang===
-primeLanguage
-);
-
-});
-
+    btn.classList.toggle(
+      "active",
+      btn.dataset.lang===primeLanguage
+    );
+  });
 }
 
 function primeApplyLanguage(){
 
-document.documentElement.lang=
-primeLanguage;
+  document.documentElement.lang=
+  primeLanguage;
 
-primeTranslateElement(
-document.body
-);
+  primeTranslateElement(
+    document.body
+  );
 
-primeUpdateLanguageButtons();
+  primeUpdateLanguageButtons();
 
-window.dispatchEvent(
-new CustomEvent(
-"primeLanguageChanged",
-{
-detail:{
-lang:primeLanguage
-}
-}
-)
-);
-
+  window.dispatchEvent(
+    new CustomEvent(
+      "primeLanguageChanged",
+      {
+        detail:{
+          lang:primeLanguage
+        }
+      }
+    )
+  );
 }
 
 function primeSetLanguage(lang){
 
-primeLanguage=
-lang==="it"
-?"it"
-:"en";
+  primeLanguage=
+  lang==="it"
+    ?"it"
+    :"en";
 
-try{
+  try{
 
-localStorage.setItem(
-PRIME_LANG_KEY,
-primeLanguage
-);
+    localStorage.setItem(
+      PRIME_LANG_KEY,
+      primeLanguage
+    );
 
-}catch{}
+  }catch{}
 
-primeApplyLanguage();
-
+  primeApplyLanguage();
 }
 
 function primeCreateSwitcher(){
 
-const make=cls=>{
+  const make=cls=>{
 
-const wrap=
-document.createElement(
-"div"
-);
+    const wrap=
+    document.createElement("div");
 
-wrap.className=
-`language-switcher ${cls||""}`.trim();
+    wrap.className=
+    `language-switcher ${cls||""}`.trim();
 
-wrap.setAttribute(
-"aria-label",
-"Language / Lingua"
-);
+    wrap.setAttribute(
+      "aria-label",
+      "Language / Lingua"
+    );
 
-wrap.innerHTML=
-'<button type="button" data-lang="en">EN</button><span class="language-switcher-separator">/</span><button type="button" data-lang="it">IT</button>';
+    wrap.innerHTML=
+    '<button type="button" data-lang="en">EN</button><span class="language-switcher-separator">/</span><button type="button" data-lang="it">IT</button>';
 
-wrap
-.querySelectorAll("button")
-.forEach(button=>{
+    wrap
+    .querySelectorAll("button")
+    .forEach(button=>
+      button.addEventListener(
+        "click",
+        ()=>primeSetLanguage(
+          button.dataset.lang
+        )
+      )
+    );
 
-button.addEventListener(
-"click",
-()=>primeSetLanguage(
-button.dataset.lang
-)
-);
+    return wrap;
+  };
 
-});
+  const desktop=
+  document.querySelector(
+    ".desktop-nav"
+  );
 
-return wrap;
+  if(desktop){
 
-};
+    const switcher=make();
 
-const desktop=
-document.querySelector(
-".desktop-nav"
-);
+    const book=
+    desktop.querySelector(
+      ".nav-book"
+    );
 
-if(desktop){
+    if(book){
+      desktop.insertBefore(
+        switcher,
+        book
+      );
+    }else{
+      desktop.appendChild(
+        switcher
+      );
+    }
 
-const switcher=
-make();
+    const navContainer=
+    document.querySelector(
+      ".nav-container"
+    );
 
-const book=
-desktop.querySelector(
-".nav-book"
-);
+    const toggle=
+    navContainer&&
+    navContainer.querySelector(
+      ".menu-toggle"
+    );
 
-if(book){
+    if(
+      navContainer&&
+      toggle
+    ){
 
-desktop.insertBefore(
-switcher,
-book
-);
+      navContainer.insertBefore(
+        make(
+          "language-switcher-mobile"
+        ),
+        toggle
+      );
+    }
 
-}else{
+  }else{
 
-desktop.appendChild(
-switcher
-);
+    const apartmentRight=
+    document.querySelector(
+      ".apartment-nav-right"
+    );
 
-}
+    if(apartmentRight){
 
-const navContainer=
-document.querySelector(
-".nav-container"
-);
+      apartmentRight.insertBefore(
+        make(),
+        apartmentRight.firstChild
+      );
+    }
+  }
 
-const toggle=
-navContainer&&
-navContainer.querySelector(
-".menu-toggle"
-);
-
-if(
-navContainer&&
-toggle
-){
-
-navContainer.insertBefore(
-make(
-"language-switcher-mobile"
-),
-toggle
-);
-
-}
-
-}else{
-
-const apartmentRight=
-document.querySelector(
-".apartment-nav-right"
-);
-
-if(apartmentRight){
-
-apartmentRight.insertBefore(
-make(),
-apartmentRight.firstChild
-);
-
-}
-
-}
-
-primeUpdateLanguageButtons();
-
+  primeUpdateLanguageButtons();
 }
 
 primeCreateSwitcher();
 primeApplyLanguage();
-
 
 /* =========================================================
    01. PREMIUM INTRO
 ========================================================= */
 
 const loader=
-document.querySelector(
-".loader"
-);
+document.querySelector(".loader");
 
 const hero=
-document.querySelector(
-".hero"
-);
+document.querySelector(".hero");
 
-if(
-loader&&
-hero
-){
+if(loader&&hero){
 
-const INTRO_DURATION=
-2200;
+  const INTRO_DURATION=
+  2200;
 
-let introFinished=false;
-let introAnimating=false;
-let startTime=null;
-let touchStartY=0;
-let mouseStartY=0;
-let mouseDragging=false;
+  let introFinished=false;
+  let introAnimating=false;
+  let startTime=null;
+  let touchStartY=0;
+  let mouseStartY=0;
+  let mouseDragging=false;
 
-document.body.style.overflow=
-"hidden";
+  document.body.style.overflow=
+  "hidden";
 
-loader.style.transform=
-"translate3d(0,0,0)";
+  loader.style.transform=
+  "translate3d(0,0,0)";
 
-const ease=t=>
-t<.5
-?4*t*t*t
-:1-Math.pow(
--2*t+2,
-3
-)/2;
+  const ease=t=>
+  t<.5
+    ?4*t*t*t
+    :1-Math.pow(
+      -2*t+2,
+      3
+    )/2;
 
-function finishIntro(){
+  function finishIntro(){
 
-introFinished=true;
-introAnimating=false;
+    introFinished=true;
+    introAnimating=false;
 
-loader.style.transform=
-"translate3d(0,-100%,0)";
+    loader.style.transform=
+    "translate3d(0,-100%,0)";
 
-loader.classList.add(
-"hide"
-);
+    loader.classList.add(
+      "hide"
+    );
 
-document.body.style.userSelect=
-"";
+    document.body.style.userSelect=
+    "";
 
-document.body.style.overflow=
-"";
+    document.body.style.overflow=
+    "";
+  }
 
+  function animate(now){
+
+    if(!startTime){
+      startTime=now;
+    }
+
+    const progress=
+    Math.min(
+      (now-startTime)/
+      INTRO_DURATION,
+      1
+    );
+
+    loader.style.transform=
+    `translate3d(0,${-ease(progress)*100}%,0)`;
+
+    if(progress<1){
+      requestAnimationFrame(
+        animate
+      );
+    }else{
+      finishIntro();
+    }
+  }
+
+  function startIntro(){
+
+    if(
+      introFinished||
+      introAnimating
+    ){
+      return;
+    }
+
+    introAnimating=true;
+    startTime=null;
+
+    window.dispatchEvent(
+      new CustomEvent(
+        "primeIntroStarted"
+      )
+    );
+
+    requestAnimationFrame(
+      animate
+    );
+  }
+
+  window.addEventListener(
+    "wheel",
+    e=>{
+
+      if(introFinished){
+        return;
+      }
+
+      e.preventDefault();
+
+      if(e.deltaY<0){
+        startIntro();
+      }
+
+    },
+    {
+      passive:false
+    }
+  );
+
+  window.addEventListener(
+    "touchstart",
+    e=>{
+
+      if(
+        introFinished||
+        introAnimating
+      ){
+        return;
+      }
+
+      touchStartY=
+      e.touches[0].clientY;
+
+    },
+    {
+      passive:true
+    }
+  );
+
+  window.addEventListener(
+    "touchmove",
+    e=>{
+
+      if(
+        introFinished||
+        introAnimating
+      ){
+        return;
+      }
+
+      if(
+        touchStartY-
+        e.touches[0].clientY>
+        12
+      ){
+
+        e.preventDefault();
+
+        startIntro();
+      }
+
+    },
+    {
+      passive:false
+    }
+  );
+
+  loader.addEventListener(
+    "mousedown",
+    e=>{
+
+      if(
+        introFinished||
+        introAnimating||
+        e.button!==0
+      ){
+        return;
+      }
+
+      mouseDragging=true;
+      mouseStartY=e.clientY;
+
+      document.body.style.userSelect=
+      "none";
+    }
+  );
+
+  window.addEventListener(
+    "mousemove",
+    e=>{
+
+      if(
+        !mouseDragging||
+        introFinished||
+        introAnimating
+      ){
+        return;
+      }
+
+      if(
+        mouseStartY-
+        e.clientY>=35
+      ){
+
+        mouseDragging=false;
+
+        document.body.style.userSelect=
+        "";
+
+        startIntro();
+      }
+    }
+  );
+
+  window.addEventListener(
+    "mouseup",
+    e=>{
+
+      if(!mouseDragging){
+        return;
+      }
+
+      mouseDragging=false;
+
+      document.body.style.userSelect=
+      "";
+
+      if(
+        mouseStartY-
+        e.clientY>=35
+      ){
+        startIntro();
+      }
+    }
+  );
 }
-
-function animate(now){
-
-if(!startTime){
-startTime=now;
-}
-
-const progress=
-Math.min(
-(now-startTime)/
-INTRO_DURATION,
-1
-);
-
-loader.style.transform=
-`translate3d(0,${-ease(progress)*100}%,0)`;
-
-if(progress<1){
-
-requestAnimationFrame(
-animate
-);
-
-}else{
-
-finishIntro();
-
-}
-
-}
-
-function startIntro(){
-
-if(
-introFinished||
-introAnimating
-){
-return;
-}
-
-introAnimating=true;
-startTime=null;
-
-window.dispatchEvent(
-new CustomEvent(
-"primeIntroStarted"
-)
-);
-
-requestAnimationFrame(
-animate
-);
-
-}
-
-window.addEventListener(
-"wheel",
-e=>{
-
-if(introFinished)return;
-
-e.preventDefault();
-
-if(e.deltaY<0){
-startIntro();
-}
-
-},
-{
-passive:false
-}
-);
-
-window.addEventListener(
-"touchstart",
-e=>{
-
-if(
-introFinished||
-introAnimating
-){
-return;
-}
-
-touchStartY=
-e.touches[0].clientY;
-
-},
-{
-passive:true
-}
-);
-
-window.addEventListener(
-"touchmove",
-e=>{
-
-if(
-introFinished||
-introAnimating
-){
-return;
-}
-
-if(
-touchStartY-
-e.touches[0].clientY>
-12
-){
-
-e.preventDefault();
-
-startIntro();
-
-}
-
-},
-{
-passive:false
-}
-);
-
-loader.addEventListener(
-"mousedown",
-e=>{
-
-if(
-introFinished||
-introAnimating||
-e.button!==0
-){
-return;
-}
-
-mouseDragging=true;
-
-mouseStartY=
-e.clientY;
-
-document.body.style.userSelect=
-"none";
-
-}
-);
-
-window.addEventListener(
-"mousemove",
-e=>{
-
-if(
-!mouseDragging||
-introFinished||
-introAnimating
-){
-return;
-}
-
-if(
-mouseStartY-
-e.clientY>=35
-){
-
-mouseDragging=false;
-
-document.body.style.userSelect=
-"";
-
-startIntro();
-
-}
-
-}
-);
-
-window.addEventListener(
-"mouseup",
-e=>{
-
-if(!mouseDragging)return;
-
-mouseDragging=false;
-
-document.body.style.userSelect=
-"";
-
-if(
-mouseStartY-
-e.clientY>=35
-){
-
-startIntro();
-
-}
-
-}
-);
-
-}
-
 
 /* =========================================================
    02. NAVBAR
@@ -716,41 +656,399 @@ startIntro();
 
 const navbar=
 document.querySelector(
-".navbar"
+  ".navbar"
 );
 
 function updateNavbar(){
 
-if(!navbar)return;
+  if(!navbar){
+    return;
+  }
 
-if(
-window.scrollY>50
-){
-
-navbar.classList.add(
-"scrolled"
-);
-
-}else{
-
-navbar.classList.remove(
-"scrolled"
-);
-
-}
-
+  navbar.classList.toggle(
+    "scrolled",
+    window.scrollY>50
+  );
 }
 
 updateNavbar();
 
 window.addEventListener(
-"scroll",
-updateNavbar,
-{
-passive:true
-}
+  "scroll",
+  updateNavbar,
+  {
+    passive:true
+  }
 );
 
+/* =========================================================
+   02B. ADAPTIVE LOGO CONTRAST
+========================================================= */
+
+const adaptiveNavs=[
+  ...document.querySelectorAll(
+    "[data-adaptive-nav],.navbar,.apartment-nav"
+  )
+];
+
+function luminanceFromColor(color){
+
+  const match=
+  String(color||"")
+  .match(
+    /rgba?\(([^)]+)\)/i
+  );
+
+  if(!match){
+    return null;
+  }
+
+  const parts=
+  match[1]
+  .split(",")
+  .map(
+    v=>Number(
+      v.trim()
+    )
+  );
+
+  if(
+    parts.length<3||
+    parts.slice(0,3)
+    .some(Number.isNaN)
+  ){
+    return null;
+  }
+
+  return(
+    .2126*parts[0]+
+    .7152*parts[1]+
+    .0722*parts[2]
+  )/255;
+}
+
+function schemeUnderNav(nav){
+
+  const rect=
+  nav.getBoundingClientRect();
+
+  const x=
+  Math.min(
+    window.innerWidth-2,
+    Math.max(
+      2,
+      rect.left+
+      Math.min(
+        rect.width*.18,
+        180
+      )
+    )
+  );
+
+  const y=
+  Math.min(
+    window.innerHeight-2,
+    Math.max(
+      2,
+      rect.bottom-8
+    )
+  );
+
+  const stack=
+  document.elementsFromPoint(
+    x,
+    y
+  );
+
+  const target=
+  stack.find(
+    el=>
+    !el.closest(
+      ".navbar,.apartment-nav,.mobile-menu,.prime-assistant"
+    )
+  );
+
+  const themed=
+  target&&
+  target.closest(
+    "[data-logo-scheme]"
+  );
+
+  if(themed){
+
+    const s=
+    themed.dataset.logoScheme;
+
+    if(
+      s==="dark"||
+      s==="image"
+    ){
+      return "dark";
+    }
+
+    if(s==="light"){
+      return "light";
+    }
+  }
+
+  let el=target;
+
+  while(
+    el&&
+    el!==document.documentElement
+  ){
+
+    const style=
+    getComputedStyle(el);
+
+    const lum=
+    luminanceFromColor(
+      style.backgroundColor
+    );
+
+    if(
+      lum!==null&&
+      style.backgroundColor!==
+      "rgba(0, 0, 0, 0)"
+    ){
+      return lum<.48
+        ?"dark"
+        :"light";
+    }
+
+    el=
+    el.parentElement;
+  }
+
+  return document.body.classList.contains(
+    "home-page"
+  )
+    ?"dark"
+    :"light";
+}
+
+function updateAdaptiveLogos(){
+
+  adaptiveNavs.forEach(nav=>{
+
+    const scheme=
+    nav.classList.contains(
+      "scrolled"
+    )
+      ?"light"
+      :schemeUnderNav(nav);
+
+    nav.classList.toggle(
+      "nav-on-dark",
+      scheme==="dark"
+    );
+
+    nav.classList.toggle(
+      "nav-on-light",
+      scheme!=="dark"
+    );
+
+    nav
+    .querySelectorAll(
+      ".site-brand-image"
+    )
+    .forEach(img=>{
+
+      img.classList.toggle(
+        "logo-contrast-light",
+        scheme==="dark"
+      );
+
+      img.classList.toggle(
+        "logo-contrast-dark",
+        scheme!=="dark"
+      );
+    });
+  });
+}
+
+updateAdaptiveLogos();
+
+window.addEventListener(
+  "scroll",
+  updateAdaptiveLogos,
+  {
+    passive:true
+  }
+);
+
+window.addEventListener(
+  "resize",
+  updateAdaptiveLogos
+);
+
+/* =========================================================
+   02C. HOME TWO-PANEL GALLERY
+========================================================= */
+
+const homeGallery=
+document.querySelector(
+  "[data-home-gallery]"
+);
+
+if(homeGallery){
+
+  const track=
+  homeGallery.querySelector(
+    ".home-gallery-track"
+  );
+
+  const frames=[
+    ...homeGallery.querySelectorAll(
+      ".home-gallery-frame"
+    )
+  ];
+
+  const prev=
+  document.querySelector(
+    "[data-home-prev]"
+  );
+
+  const next=
+  document.querySelector(
+    "[data-home-next]"
+  );
+
+  const currentLabel=
+  document.querySelector(
+    "[data-home-current]"
+  );
+
+  const totalLabel=
+  document.querySelector(
+    "[data-home-total]"
+  );
+
+  let current=0;
+  let down=false;
+  let startX=0;
+  let startY=0;
+
+  const render=()=>{
+
+    if(track){
+
+      track.style.transform=
+      `translate3d(${-current*100}%,0,0)`;
+    }
+
+    if(currentLabel){
+
+      currentLabel.textContent=
+      String(
+        current+1
+      ).padStart(
+        2,
+        "0"
+      );
+    }
+
+    if(totalLabel){
+
+      totalLabel.textContent=
+      String(
+        frames.length
+      ).padStart(
+        2,
+        "0"
+      );
+    }
+  };
+
+  const move=dir=>{
+
+    if(!frames.length){
+      return;
+    }
+
+    current=
+    (
+      current+
+      dir+
+      frames.length
+    )%
+    frames.length;
+
+    render();
+  };
+
+  if(prev){
+
+    prev.addEventListener(
+      "click",
+      ()=>move(-1)
+    );
+  }
+
+  if(next){
+
+    next.addEventListener(
+      "click",
+      ()=>move(1)
+    );
+  }
+
+  homeGallery.addEventListener(
+    "pointerdown",
+    e=>{
+
+      if(
+        e.pointerType==="mouse"&&
+        e.button!==0
+      ){
+        return;
+      }
+
+      down=true;
+      startX=e.clientX;
+      startY=e.clientY;
+
+      try{
+        homeGallery.setPointerCapture(
+          e.pointerId
+        );
+      }catch{}
+    }
+  );
+
+  homeGallery.addEventListener(
+    "pointerup",
+    e=>{
+
+      if(!down){
+        return;
+      }
+
+      down=false;
+
+      const dx=
+      e.clientX-startX;
+
+      const dy=
+      e.clientY-startY;
+
+      if(
+        Math.abs(dx)>55&&
+        Math.abs(dx)>
+        Math.abs(dy)
+      ){
+
+        move(
+          dx<0
+            ?1
+            :-1
+        );
+      }
+    }
+  );
+
+  render();
+}
 
 /* =========================================================
    03. MOBILE MENU
@@ -758,84 +1056,78 @@ passive:true
 
 const menuToggle=
 document.querySelector(
-".menu-toggle"
+  ".menu-toggle"
 );
 
 const mobileMenu=
 document.querySelector(
-".mobile-menu"
+  ".mobile-menu"
 );
 
 if(
-menuToggle&&
-mobileMenu
+  menuToggle&&
+  mobileMenu
 ){
 
-menuToggle.setAttribute(
-"aria-expanded",
-"false"
-);
+  menuToggle.setAttribute(
+    "aria-expanded",
+    "false"
+  );
 
-menuToggle.addEventListener(
-"click",
-()=>{
+  menuToggle.addEventListener(
+    "click",
+    ()=>{
 
-const open=
-menuToggle.classList.toggle(
-"active"
-);
+      const open=
+      menuToggle.classList.toggle(
+        "active"
+      );
 
-mobileMenu.classList.toggle(
-"active",
-open
-);
+      mobileMenu.classList.toggle(
+        "active",
+        open
+      );
 
-menuToggle.setAttribute(
-"aria-expanded",
-open
-?"true"
-:"false"
-);
+      menuToggle.setAttribute(
+        "aria-expanded",
+        open
+          ?"true"
+          :"false"
+      );
 
-document.body.style.overflow=
-open
-?"hidden"
-:"";
+      document.body.style.overflow=
+      open
+        ?"hidden"
+        :"";
+    }
+  );
 
+  mobileMenu
+  .querySelectorAll("a")
+  .forEach(link=>
+    link.addEventListener(
+      "click",
+      ()=>{
+
+        menuToggle.classList.remove(
+          "active"
+        );
+
+        mobileMenu.classList.remove(
+          "active"
+        );
+
+        menuToggle.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+
+        document.body.style.overflow=
+        "";
+      }
+    )
+  );
 }
-);
-
-mobileMenu
-.querySelectorAll("a")
-.forEach(link=>{
-
-link.addEventListener(
-"click",
-()=>{
-
-menuToggle.classList.remove(
-"active"
-);
-
-mobileMenu.classList.remove(
-"active"
-);
-
-menuToggle.setAttribute(
-"aria-expanded",
-"false"
-);
-
-document.body.style.overflow=
-"";
-
-}
-);
-
-});
-
-}
-
 
 /* =========================================================
    04. REVEAL
@@ -843,347 +1135,539 @@ document.body.style.overflow=
 
 const revealElements=
 document.querySelectorAll(
-".reveal"
+  ".reveal"
 );
 
-if(
-revealElements.length
-){
+if(revealElements.length){
 
-const observer=
-new IntersectionObserver(
-entries=>{
+  const observer=
+  new IntersectionObserver(
+    entries=>{
 
-entries.forEach(
-entry=>{
+      entries.forEach(
+        entry=>{
 
-if(
-entry.isIntersecting
-){
+          if(
+            entry.isIntersecting
+          ){
 
-entry.target.classList.add(
-"visible"
-);
+            entry.target.classList.add(
+              "visible"
+            );
 
-observer.unobserve(
-entry.target
-);
+            observer.unobserve(
+              entry.target
+            );
+          }
+        }
+      );
 
+    },
+    {
+      threshold:.12
+    }
+  );
+
+  revealElements.forEach(
+    el=>observer.observe(el)
+  );
 }
-
-}
-);
-
-},
-{
-threshold:.12
-}
-);
-
-revealElements.forEach(
-el=>
-observer.observe(el)
-);
-
-}
-
 
 /* =========================================================
    05. PREMIUM SCROLL
 ========================================================= */
 
-let premiumScrollAnimation=
-null;
+let premiumScrollAnimation=null;
 
 function premiumEase(t){
 
-return t<.5
-?4*t*t*t
-:1-Math.pow(
--2*t+2,
-3
-)/2;
-
+  return t<.5
+    ?4*t*t*t
+    :1-Math.pow(
+      -2*t+2,
+      3
+    )/2;
 }
 
 function premiumScrollTo(
-target,
-duration=1400
+  target,
+  duration=1400
 ){
 
-if(!target)return;
+  if(!target){
+    return;
+  }
 
-if(
-premiumScrollAnimation
-){
+  if(premiumScrollAnimation){
 
-cancelAnimationFrame(
-premiumScrollAnimation
-);
+    cancelAnimationFrame(
+      premiumScrollAnimation
+    );
+  }
 
+  const navOffset=
+  navbar
+    ?navbar.offsetHeight
+    :0;
+
+  const startY=
+  window.scrollY;
+
+  const targetY=
+  Math.max(
+    0,
+    target
+    .getBoundingClientRect()
+    .top+
+    window.scrollY-
+    navOffset
+  );
+
+  const distance=
+  targetY-startY;
+
+  let start=null;
+
+  function frame(time){
+
+    if(!start){
+      start=time;
+    }
+
+    const progress=
+    Math.min(
+      (time-start)/
+      duration,
+      1
+    );
+
+    window.scrollTo(
+      0,
+      startY+
+      distance*
+      premiumEase(progress)
+    );
+
+    if(progress<1){
+
+      premiumScrollAnimation=
+      requestAnimationFrame(
+        frame
+      );
+
+    }else{
+
+      premiumScrollAnimation=null;
+    }
+  }
+
+  premiumScrollAnimation=
+  requestAnimationFrame(
+    frame
+  );
 }
-
-const navOffset=
-navbar
-?navbar.offsetHeight
-:0;
-
-const startY=
-window.scrollY;
-
-const targetY=
-Math.max(
-0,
-target
-.getBoundingClientRect()
-.top+
-window.scrollY-
-navOffset
-);
-
-const distance=
-targetY-
-startY;
-
-let start=null;
-
-function frame(time){
-
-if(!start){
-start=time;
-}
-
-const progress=
-Math.min(
-(time-start)/
-duration,
-1
-);
-
-window.scrollTo(
-0,
-startY+
-distance*
-premiumEase(progress)
-);
-
-if(
-progress<1
-){
-
-premiumScrollAnimation=
-requestAnimationFrame(
-frame
-);
-
-}else{
-
-premiumScrollAnimation=
-null;
-
-}
-
-}
-
-premiumScrollAnimation=
-requestAnimationFrame(
-frame
-);
-
-}
-
 
 /* =========================================================
-   06. APARTMENT GALLERY
+   06. BOOKING-LIKE APARTMENT GALLERY + LIGHTBOX
 ========================================================= */
 
 document
 .querySelectorAll(
-".apartment-gallery"
+  "[data-booking-gallery]"
 )
 .forEach(gallery=>{
 
-const slides=[
-...gallery.querySelectorAll(
-".apartment-slide"
-)
-];
+  const prefix=
+  gallery.dataset.galleryPrefix||
+  "";
 
-if(
-slides.length<2
-){
-return;
-}
+  const count=
+  Math.max(
+    0,
+    Number(
+      gallery.dataset.galleryCount
+    )||0
+  );
 
-const section=
-gallery.closest(
-".apartment-gallery-section"
-);
+  const images=
+  Array.from(
+    {
+      length:count
+    },
+    (_,i)=>
+    `${prefix}${String(i+1).padStart(2,"0")}.jpg`
+  );
 
-const counter=
-section
-?section.querySelector(
-".apartment-gallery-counter"
-)
-:null;
+  const slots=[
+    ...gallery.querySelectorAll(
+      "[data-gallery-slot]"
+    )
+  ];
 
-let current=0;
-let autoplay=null;
+  const prev=
+  gallery.querySelector(
+    "[data-gallery-prev]"
+  );
 
-let down=false;
-let startX=0;
-let startY=0;
+  const next=
+  gallery.querySelector(
+    "[data-gallery-next]"
+  );
 
-function showSlide(index){
+  const counter=
+  gallery
+  .closest(
+    ".property-gallery-section"
+  )
+  ?.querySelector(
+    "[data-gallery-current]"
+  );
 
-if(index<0){
-index=
-slides.length-1;
-}
+  const moreLabel=
+  gallery.querySelector(
+    "[data-gallery-more]"
+  );
 
-if(
-index>=slides.length
-){
-index=0;
-}
+  if(
+    !images.length||
+    !slots.length
+  ){
+    return;
+  }
 
-slides.forEach(
-(slide,i)=>{
+  let current=0;
+  let down=false;
+  let startX=0;
+  let startY=0;
+  let lightboxIndex=0;
 
-slide.classList.toggle(
-"active",
-i===index
-);
+  const lightbox=
+  document.createElement(
+    "div"
+  );
 
-}
-);
+  lightbox.className=
+  "gallery-lightbox";
 
-current=index;
+  lightbox.innerHTML=
+  '<button class="gallery-lightbox-close" type="button" aria-label="Close gallery">×</button><button class="gallery-lightbox-prev" type="button" aria-label="Previous photo">←</button><img class="gallery-lightbox-image" alt="Residence gallery photo"><button class="gallery-lightbox-next" type="button" aria-label="Next photo">→</button><div class="gallery-lightbox-counter"></div>';
 
-if(counter){
+  document.body.appendChild(
+    lightbox
+  );
 
-counter.textContent=
-`${String(current+1).padStart(2,"0")} / ${String(slides.length).padStart(2,"0")}`;
+  const lbImage=
+  lightbox.querySelector(
+    ".gallery-lightbox-image"
+  );
 
-}
+  const lbCounter=
+  lightbox.querySelector(
+    ".gallery-lightbox-counter"
+  );
 
-}
+  function openLightbox(index){
 
-function nextSlide(){
+    lightboxIndex=
+    (
+      index+
+      images.length
+    )%
+    images.length;
 
-showSlide(
-current+1
-);
+    lbImage.src=
+    images[
+      lightboxIndex
+    ];
 
-}
+    lbCounter.textContent=
+    `${String(lightboxIndex+1).padStart(2,"0")} / ${String(images.length).padStart(2,"0")}`;
 
-function previousSlide(){
+    lightbox.classList.add(
+      "open"
+    );
 
-showSlide(
-current-1
-);
+    document.body.classList.add(
+      "no-scroll"
+    );
+  }
 
-}
+  function closeLightbox(){
 
-function restartAutoplay(){
+    lightbox.classList.remove(
+      "open"
+    );
 
-if(autoplay){
-clearInterval(
-autoplay
-);
-}
+    document.body.classList.remove(
+      "no-scroll"
+    );
+  }
 
-autoplay=
-setInterval(
-nextSlide,
-5000
-);
+  function lightboxMove(dir){
 
-}
+    openLightbox(
+      lightboxIndex+
+      dir
+    );
+  }
 
-gallery.style.touchAction=
-"pan-y";
+  lightbox
+  .querySelector(
+    ".gallery-lightbox-close"
+  )
+  .addEventListener(
+    "click",
+    closeLightbox
+  );
 
-gallery
-.querySelectorAll("img")
-.forEach(img=>{
+  lightbox
+  .querySelector(
+    ".gallery-lightbox-prev"
+  )
+  .addEventListener(
+    "click",
+    ()=>lightboxMove(-1)
+  );
 
-img.draggable=false;
+  lightbox
+  .querySelector(
+    ".gallery-lightbox-next"
+  )
+  .addEventListener(
+    "click",
+    ()=>lightboxMove(1)
+  );
 
+  lightbox.addEventListener(
+    "click",
+    e=>{
+
+      if(e.target===lightbox){
+        closeLightbox();
+      }
+    }
+  );
+
+  function render(dir=0){
+
+    if(dir){
+
+      gallery.style.setProperty(
+        "--gallery-shift",
+        dir>0
+          ?"-12px"
+          :"12px"
+      );
+
+      gallery.classList.add(
+        "is-shifting"
+      );
+    }
+
+    window.setTimeout(
+      ()=>{
+
+        slots.forEach(
+          (
+            slot,
+            slotIndex
+          )=>{
+
+            const index=
+            (
+              current+
+              slotIndex
+            )%
+            images.length;
+
+            const img=
+            slot.querySelector(
+              "img"
+            );
+
+            if(img){
+
+              img.src=
+              images[index];
+
+              img.alt=
+              `Residence photo ${index+1}`;
+            }
+
+            slot.dataset.imageIndex=
+            String(index);
+          }
+        );
+
+        if(counter){
+
+          counter.textContent=
+          String(
+            current+1
+          ).padStart(
+            2,
+            "0"
+          );
+        }
+
+        if(moreLabel){
+
+          const remaining=
+          Math.max(
+            0,
+            images.length-
+            slots.length
+          );
+
+          moreLabel.textContent=
+          primeLanguage==="it"
+            ?`Altre ${remaining} foto`
+            :`${remaining} more photos`;
+        }
+
+        gallery.classList.remove(
+          "is-shifting"
+        );
+
+      },
+      dir
+        ?170
+        :0
+    );
+  }
+
+  function move(dir){
+
+    current=
+    (
+      current+
+      dir+
+      images.length
+    )%
+    images.length;
+
+    render(dir);
+  }
+
+  if(prev){
+
+    prev.addEventListener(
+      "click",
+      ()=>move(-1)
+    );
+  }
+
+  if(next){
+
+    next.addEventListener(
+      "click",
+      ()=>move(1)
+    );
+  }
+
+  slots.forEach(
+    slot=>
+    slot.addEventListener(
+      "click",
+      ()=>openLightbox(
+        Number(
+          slot.dataset.imageIndex
+        )||0
+      )
+    )
+  );
+
+  gallery.addEventListener(
+    "pointerdown",
+    e=>{
+
+      if(
+        e.pointerType==="mouse"&&
+        e.button!==0
+      ){
+        return;
+      }
+
+      down=true;
+      startX=e.clientX;
+      startY=e.clientY;
+
+      try{
+
+        gallery.setPointerCapture(
+          e.pointerId
+        );
+
+      }catch{}
+    }
+  );
+
+  gallery.addEventListener(
+    "pointerup",
+    e=>{
+
+      if(!down){
+        return;
+      }
+
+      down=false;
+
+      const dx=
+      e.clientX-
+      startX;
+
+      const dy=
+      e.clientY-
+      startY;
+
+      if(
+        Math.abs(dx)>=50&&
+        Math.abs(dx)>
+        Math.abs(dy)
+      ){
+
+        move(
+          dx<0
+            ?1
+            :-1
+        );
+      }
+    }
+  );
+
+  window.addEventListener(
+    "primeLanguageChanged",
+    ()=>render()
+  );
+
+  document.addEventListener(
+    "keydown",
+    e=>{
+
+      if(
+        !lightbox.classList.contains(
+          "open"
+        )
+      ){
+        return;
+      }
+
+      if(e.key==="Escape"){
+        closeLightbox();
+      }
+
+      if(e.key==="ArrowLeft"){
+        lightboxMove(-1);
+      }
+
+      if(e.key==="ArrowRight"){
+        lightboxMove(1);
+      }
+    }
+  );
+
+  render();
 });
-
-gallery.addEventListener(
-"pointerdown",
-e=>{
-
-if(
-e.pointerType==="mouse"&&
-e.button!==0
-){
-return;
-}
-
-down=true;
-
-startX=e.clientX;
-startY=e.clientY;
-
-try{
-
-gallery.setPointerCapture(
-e.pointerId
-);
-
-}catch{}
-
-}
-);
-
-gallery.addEventListener(
-"pointerup",
-e=>{
-
-if(!down)return;
-
-down=false;
-
-const dx=
-e.clientX-
-startX;
-
-const dy=
-e.clientY-
-startY;
-
-if(
-Math.abs(dx)>=45&&
-Math.abs(dx)>
-Math.abs(dy)
-){
-
-if(dx<0){
-
-nextSlide();
-
-}else{
-
-previousSlide();
-
-}
-
-}
-
-restartAutoplay();
-
-}
-);
-
-showSlide(0);
-
-restartAutoplay();
-
-});
-
 
 /* =========================================================
    07. BOOKING
@@ -1191,167 +1675,167 @@ restartAutoplay();
 
 const bookingCards=
 document.querySelectorAll(
-".booking-residence-card"
+  ".booking-residence-card"
 );
 
 const bookingForm=
 document.querySelector(
-"#bookingRequestForm"
+  "#bookingRequestForm"
 );
 
 const residenceInput=
 document.querySelector(
-"#residence"
+  "#residence"
 );
 
 const calendarResidence=
 document.querySelector(
-"#calendarResidence"
+  "#calendarResidence"
 );
 
 const checkinInput=
 document.querySelector(
-"#checkin"
+  "#checkin"
 );
 
 const checkoutInput=
 document.querySelector(
-"#checkout"
+  "#checkout"
 );
 
 const selectedResidenceText=
 document.querySelector(
-"#selectedResidenceText"
+  "#selectedResidenceText"
 );
 
 const bookingFormSection=
 document.querySelector(
-"#booking-form-section"
+  "#booking-form-section"
 );
 
 const bookingMessage=
 document.querySelector(
-"#bookingMessage"
+  "#bookingMessage"
 );
 
 const bookingSubmit=
 document.querySelector(
-".booking-submit"
+  ".booking-submit"
 );
 
 const primeCalendar=
 document.querySelector(
-"#primeCalendar"
+  "#primeCalendar"
 );
 
 const calendarGrid=
 document.querySelector(
-"#calendarGrid"
+  "#calendarGrid"
 );
 
 const calendarMonthLabel=
 document.querySelector(
-"#calendarMonthLabel"
+  "#calendarMonthLabel"
 );
 
 const calendarPrev=
 document.querySelector(
-"#calendarPrev"
+  "#calendarPrev"
 );
 
 const calendarNext=
 document.querySelector(
-"#calendarNext"
+  "#calendarNext"
 );
 
 const calendarResidenceTitle=
 document.querySelector(
-"#calendarResidenceTitle"
+  "#calendarResidenceTitle"
 );
 
 const calendarLiveStatus=
 document.querySelector(
-"#calendarLiveStatus"
+  "#calendarLiveStatus"
 );
 
 const calendarLiveText=
 document.querySelector(
-"#calendarLiveText"
+  "#calendarLiveText"
 );
 
 const calendarLoadingMessage=
 document.querySelector(
-"#calendarLoadingMessage"
+  "#calendarLoadingMessage"
 );
 
 const calendarMessage=
 document.querySelector(
-"#calendarMessage"
+  "#calendarMessage"
 );
 
 const selectedStay=
 document.querySelector(
-"#selectedStay"
+  "#selectedStay"
 );
 
 const selectedStayResidence=
 document.querySelector(
-"#selectedStayResidence"
+  "#selectedStayResidence"
 );
 
 const selectedStayCheckin=
 document.querySelector(
-"#selectedStayCheckin"
+  "#selectedStayCheckin"
 );
 
 const selectedStayCheckout=
 document.querySelector(
-"#selectedStayCheckout"
+  "#selectedStayCheckout"
 );
 
 const selectedStayNights=
 document.querySelector(
-"#selectedStayNights"
+  "#selectedStayNights"
 );
 
 const selectedStayClear=
 document.querySelector(
-"#selectedStayClear"
+  "#selectedStayClear"
 );
 
 const guestsInput=
 document.querySelector(
-"#guests"
+  "#guests"
 );
 
 const stayPriceBanner=
 document.querySelector(
-"#stayPriceBanner"
+  "#stayPriceBanner"
 );
 
 const stayPriceTotal=
 document.querySelector(
-"#stayPriceTotal"
+  "#stayPriceTotal"
 );
 
 const stayPriceMeta=
 document.querySelector(
-"#stayPriceMeta"
+  "#stayPriceMeta"
 );
 
 const requestBookingButton=
 document.querySelector(
-"#requestBookingButton"
+  "#requestBookingButton"
 );
 
 const guestDetailsSection=
 document.querySelector(
-"#guest-details-section"
+  "#guest-details-section"
 );
 
 const estimatedTotalInput=
 document.querySelector(
-"#estimatedTotal"
+  "#estimatedTotal"
 );
 
 let calendarEvents=[];
@@ -1366,73 +1850,71 @@ let calendarRequestId=0;
 
 const parseISO=value=>{
 
-const[
-year,
-month,
-day
-]=value
-.split("-")
-.map(Number);
+  const[
+    year,
+    month,
+    day
+  ]=
+  value
+  .split("-")
+  .map(Number);
 
-return new Date(
-year,
-month-1,
-day
-);
-
+  return new Date(
+    year,
+    month-1,
+    day
+  );
 };
 
 const dateISO=date=>
 `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
 
 const addDays=(
-value,
-days
+  value,
+  days
 )=>{
 
-const date=
-parseISO(value);
+  const date=
+  parseISO(value);
 
-date.setDate(
-date.getDate()+
-days
-);
+  date.setDate(
+    date.getDate()+
+    days
+  );
 
-return dateISO(date);
-
+  return dateISO(
+    date
+  );
 };
 
-const todayISO=()=>{
-
-return dateISO(
-new Date()
+const todayISO=()=>
+dateISO(
+  new Date()
 );
-
-};
 
 const nightsBetween=(
-start,
-end
+  start,
+  end
 )=>
 Math.round(
-(
-parseISO(end)-
-parseISO(start)
-)/
-86400000
+  (
+    parseISO(end)-
+    parseISO(start)
+  )/
+  86400000
 );
 
 const prettyDate=value=>
 parseISO(value)
 .toLocaleDateString(
-primeLanguage==="it"
-?"it-IT"
-:"en-GB",
-{
-day:"2-digit",
-month:"short",
-year:"numeric"
-}
+  primeLanguage==="it"
+    ?"it-IT"
+    :"en-GB",
+  {
+    day:"2-digit",
+    month:"short",
+    year:"numeric"
+  }
 )
 .toUpperCase();
 
@@ -1441,11 +1923,10 @@ new Date();
 
 displayMonth=
 new Date(
-displayMonth.getFullYear(),
-displayMonth.getMonth(),
-1
+  displayMonth.getFullYear(),
+  displayMonth.getMonth(),
+  1
 );
-
 
 /* =========================================================
    08. PRICES — BARONTINI
@@ -1454,38 +1935,30 @@ displayMonth.getMonth(),
 const BARONTINI_RATES={};
 
 const setRate=(
-date,
-price
+  date,
+  price
 )=>{
-
-BARONTINI_RATES[date]=
-price;
-
+  BARONTINI_RATES[date]=
+  price;
 };
 
 const setRange=(
-start,
-end,
-price
+  start,
+  end,
+  price
 )=>{
 
-for(
-let date=start;
-date<=end;
-date=addDays(date,1)
-){
-
-setRate(
-date,
-price
-);
-
-}
-
+  for(
+    let date=start;
+    date<=end;
+    date=addDays(date,1)
+  ){
+    setRate(
+      date,
+      price
+    );
+  }
 };
-
-
-/* SEPTEMBER */
 
 setRate("2026-09-13",99);
 setRate("2026-09-14",99);
@@ -1497,268 +1970,248 @@ setRate("2026-09-24",230);
 setRate("2026-09-29",130);
 setRate("2026-09-30",130);
 
-
-/* OCTOBER */
-
 setRate("2026-10-01",130);
 setRate("2026-10-02",180);
 
 setRange(
-"2026-10-06",
-"2026-10-08",
-130
+  "2026-10-06",
+  "2026-10-08",
+  130
 );
 
 setRange(
-"2026-10-11",
-"2026-10-15",
-130
+  "2026-10-11",
+  "2026-10-15",
+  130
 );
 
 setRange(
-"2026-10-18",
-"2026-10-19",
-150
+  "2026-10-18",
+  "2026-10-19",
+  150
 );
 
 setRange(
-"2026-10-20",
-"2026-10-21",
-180
+  "2026-10-20",
+  "2026-10-21",
+  180
 );
 
 setRate(
-"2026-10-25",
-180
+  "2026-10-25",
+  180
 );
 
 setRange(
-"2026-10-26",
-"2026-10-29",
-150
+  "2026-10-26",
+  "2026-10-29",
+  150
 );
 
 setRange(
-"2026-10-30",
-"2026-10-31",
-180
-);
-
-
-/* NOVEMBER */
-
-setRange(
-"2026-11-01",
-"2026-11-05",
-150
+  "2026-10-30",
+  "2026-10-31",
+  180
 );
 
 setRange(
-"2026-11-06",
-"2026-11-07",
-180
+  "2026-11-01",
+  "2026-11-05",
+  150
+);
+
+setRange(
+  "2026-11-06",
+  "2026-11-07",
+  180
 );
 
 setRate(
-"2026-11-08",
-250
+  "2026-11-08",
+  250
 );
 
 setRate(
-"2026-11-09",
-300
+  "2026-11-09",
+  300
 );
 
 setRange(
-"2026-11-10",
-"2026-11-13",
-330
+  "2026-11-10",
+  "2026-11-13",
+  330
 );
 
 setRate(
-"2026-11-14",
-280
+  "2026-11-14",
+  280
 );
 
 setRange(
-"2026-11-15",
-"2026-11-19",
-150
+  "2026-11-15",
+  "2026-11-19",
+  150
 );
 
 setRange(
-"2026-11-20",
-"2026-11-21",
-180
+  "2026-11-20",
+  "2026-11-21",
+  180
 );
 
 setRange(
-"2026-11-22",
-"2026-11-26",
-150
+  "2026-11-22",
+  "2026-11-26",
+  150
 );
 
 setRange(
-"2026-11-27",
-"2026-11-28",
-180
+  "2026-11-27",
+  "2026-11-28",
+  180
 );
 
 setRange(
-"2026-11-29",
-"2026-11-30",
-150
-);
-
-
-/* DECEMBER */
-
-setRange(
-"2026-12-01",
-"2026-12-03",
-130
+  "2026-11-29",
+  "2026-11-30",
+  150
 );
 
 setRange(
-"2026-12-06",
-"2026-12-10",
-130
+  "2026-12-01",
+  "2026-12-03",
+  130
 );
 
 setRange(
-"2026-12-11",
-"2026-12-12",
-150
+  "2026-12-06",
+  "2026-12-10",
+  130
 );
 
 setRange(
-"2026-12-13",
-"2026-12-17",
-115
+  "2026-12-11",
+  "2026-12-12",
+  150
 );
 
 setRange(
-"2026-12-18",
-"2026-12-19",
-140
+  "2026-12-13",
+  "2026-12-17",
+  115
 );
 
 setRange(
-"2026-12-20",
-"2026-12-24",
-115
+  "2026-12-18",
+  "2026-12-19",
+  140
+);
+
+setRange(
+  "2026-12-20",
+  "2026-12-24",
+  115
 );
 
 setRate(
-"2026-12-25",
-140
+  "2026-12-25",
+  140
 );
 
 setRange(
-"2026-12-28",
-"2026-12-30",
-240
+  "2026-12-28",
+  "2026-12-30",
+  240
 );
 
 setRate(
-"2026-12-31",
-320
-);
-
-
-/* JANUARY */
-
-setRange(
-"2027-01-01",
-"2027-01-05",
-180
+  "2026-12-31",
+  320
 );
 
 setRange(
-"2027-01-06",
-"2027-01-07",
-100
+  "2027-01-01",
+  "2027-01-05",
+  180
 );
 
 setRange(
-"2027-01-08",
-"2027-01-09",
-120
+  "2027-01-06",
+  "2027-01-07",
+  100
 );
 
 setRange(
-"2027-01-10",
-"2027-01-12",
-100
+  "2027-01-08",
+  "2027-01-09",
+  120
 );
 
 setRange(
-"2027-01-13",
-"2027-01-14",
-140
+  "2027-01-10",
+  "2027-01-12",
+  100
 );
 
 setRange(
-"2027-01-15",
-"2027-01-16",
-120
+  "2027-01-13",
+  "2027-01-14",
+  140
 );
 
 setRange(
-"2027-01-17",
-"2027-01-21",
-100
+  "2027-01-15",
+  "2027-01-16",
+  120
 );
 
 setRange(
-"2027-01-22",
-"2027-01-23",
-120
+  "2027-01-17",
+  "2027-01-21",
+  100
 );
 
 setRange(
-"2027-01-24",
-"2027-01-28",
-100
+  "2027-01-22",
+  "2027-01-23",
+  120
 );
 
 setRange(
-"2027-01-29",
-"2027-01-30",
-120
+  "2027-01-24",
+  "2027-01-28",
+  100
+);
+
+setRange(
+  "2027-01-29",
+  "2027-01-30",
+  120
 );
 
 setRate(
-"2027-01-31",
-100
+  "2027-01-31",
+  100
 );
-
-
-/* FEBRUARY
-   SUN-THU 115
-   FRI-SAT 140
-*/
 
 for(
-let date="2027-02-01";
-date<="2027-02-28";
-date=addDays(date,1)
+  let date="2027-02-01";
+  date<="2027-02-28";
+  date=addDays(date,1)
 ){
 
-const weekday=
-parseISO(date)
-.getDay();
+  const weekday=
+  parseISO(date)
+  .getDay();
 
-setRate(
-date,
-weekday===5||
-weekday===6
-?140
-:115
-);
-
+  setRate(
+    date,
+    weekday===5||
+    weekday===6
+      ?140
+      :115
+  );
 }
-
 
 /* =========================================================
    09. PRICES — GASTONE ROSSI 12
@@ -1767,214 +2220,186 @@ weekday===6
 const GASTONE_RATES={};
 
 const setGastoneRate=(
-date,
-price
+  date,
+  price
 )=>{
-
-GASTONE_RATES[date]=
-price;
-
+  GASTONE_RATES[date]=
+  price;
 };
 
 const setGastoneRange=(
-start,
-end,
-price
+  start,
+  end,
+  price
 )=>{
 
-for(
-let date=start;
-date<=end;
-date=addDays(date,1)
-){
+  for(
+    let date=start;
+    date<=end;
+    date=addDays(date,1)
+  ){
 
-setGastoneRate(
-date,
-price
-);
-
-}
-
+    setGastoneRate(
+      date,
+      price
+    );
+  }
 };
 
-
-/* SEPTEMBER */
-
 setGastoneRange(
-"2026-09-27",
-"2026-09-28",
-120
-);
-
-
-/* OCTOBER */
-
-setGastoneRate(
-"2026-10-01",
-130
+  "2026-09-27",
+  "2026-09-28",
+  120
 );
 
 setGastoneRate(
-"2026-10-19",
-150
+  "2026-10-01",
+  130
 );
 
 setGastoneRate(
-"2026-10-27",
-150
-);
-
-
-/* NOVEMBER */
-
-setGastoneRange(
-"2026-11-02",
-"2026-11-05",
-140
-);
-
-setGastoneRange(
-"2026-11-06",
-"2026-11-07",
-160
-);
-
-setGastoneRange(
-"2026-11-15",
-"2026-11-19",
-130
-);
-
-setGastoneRange(
-"2026-11-20",
-"2026-11-21",
-160
+  "2026-10-19",
+  150
 );
 
 setGastoneRate(
-"2026-11-22",
-130
+  "2026-10-27",
+  150
+);
+
+setGastoneRange(
+  "2026-11-02",
+  "2026-11-05",
+  140
+);
+
+setGastoneRange(
+  "2026-11-06",
+  "2026-11-07",
+  160
+);
+
+setGastoneRange(
+  "2026-11-15",
+  "2026-11-19",
+  130
+);
+
+setGastoneRange(
+  "2026-11-20",
+  "2026-11-21",
+  160
 );
 
 setGastoneRate(
-"2026-11-30",
-130
+  "2026-11-22",
+  130
 );
 
-
-/* DECEMBER
-   SUN-THU 120
-   FRI-SAT 140
-   EXCEPTION 1-2 = 130
-*/
+setGastoneRate(
+  "2026-11-30",
+  130
+);
 
 for(
-let date="2026-12-01";
-date<="2026-12-31";
-date=addDays(date,1)
+  let date="2026-12-01";
+  date<="2026-12-31";
+  date=addDays(date,1)
 ){
 
-const weekday=
-parseISO(date)
-.getDay();
+  const weekday=
+  parseISO(date)
+  .getDay();
 
-setGastoneRate(
-date,
-weekday===5||
-weekday===6
-?140
-:120
-);
-
+  setGastoneRate(
+    date,
+    weekday===5||
+    weekday===6
+      ?140
+      :120
+  );
 }
 
 setGastoneRange(
-"2026-12-01",
-"2026-12-02",
-130
+  "2026-12-01",
+  "2026-12-02",
+  130
 );
 
-
-/* JANUARY */
-
 setGastoneRange(
-"2027-01-03",
-"2027-01-05",
-160
+  "2027-01-03",
+  "2027-01-05",
+  160
 );
 
 setGastoneRate(
-"2027-01-07",
-140
+  "2027-01-07",
+  140
 );
 
 setGastoneRange(
-"2027-01-20",
-"2027-01-21",
-140
+  "2027-01-20",
+  "2027-01-21",
+  140
 );
 
 setGastoneRange(
-"2027-01-25",
-"2027-01-28",
-130
+  "2027-01-25",
+  "2027-01-28",
+  130
 );
 
 setGastoneRange(
-"2027-01-29",
-"2027-01-30",
-140
+  "2027-01-29",
+  "2027-01-30",
+  140
 );
 
 setGastoneRate(
-"2027-01-31",
-130
-);
-
-
-/* FEBRUARY */
-
-setGastoneRange(
-"2027-02-01",
-"2027-02-04",
-120
+  "2027-01-31",
+  130
 );
 
 setGastoneRange(
-"2027-02-12",
-"2027-02-13",
-130
+  "2027-02-01",
+  "2027-02-04",
+  120
 );
 
 setGastoneRange(
-"2027-02-14",
-"2027-02-18",
-120
+  "2027-02-12",
+  "2027-02-13",
+  130
 );
 
 setGastoneRange(
-"2027-02-19",
-"2027-02-20",
-130
+  "2027-02-14",
+  "2027-02-18",
+  120
 );
 
 setGastoneRange(
-"2027-02-21",
-"2027-02-25",
-120
+  "2027-02-19",
+  "2027-02-20",
+  130
 );
 
 setGastoneRange(
-"2027-02-26",
-"2027-02-27",
-130
+  "2027-02-21",
+  "2027-02-25",
+  120
+);
+
+setGastoneRange(
+  "2027-02-26",
+  "2027-02-27",
+  130
 );
 
 setGastoneRate(
-"2027-02-28",
-120
+  "2027-02-28",
+  120
 );
-
 
 /* =========================================================
    10. PRICE RULES
@@ -1987,376 +2412,314 @@ const RATE_END=
 "2027-02-28";
 
 function guestMultiplier(
-guests
+  guests
 ){
 
-if(
-guests<=2
-){
-return 1;
-}
+  if(guests<=2){
+    return 1;
+  }
 
-if(
-guests===3
-){
-return 1.30;
-}
+  if(guests===3){
+    return 1.30;
+  }
 
-if(
-guests===4
-){
-return 1.35;
-}
+  if(guests===4){
+    return 1.35;
+  }
 
-if(
-guests===5
-){
-return 1.40;
-}
+  if(guests===5){
+    return 1.40;
+  }
 
-if(
-guests===6
-){
-return 1.45;
-}
+  if(guests===6){
+    return 1.45;
+  }
 
-return 1;
-
+  return 1;
 }
 
 function getRates(){
 
-if(
-currentCalendarKey===
-"barontini"
-){
+  if(
+    currentCalendarKey===
+    "barontini"
+  ){
+    return BARONTINI_RATES;
+  }
 
-return BARONTINI_RATES;
+  if(
+    currentCalendarKey===
+    "gastone"
+  ){
+    return GASTONE_RATES;
+  }
 
-}
-
-if(
-currentCalendarKey===
-"gastone"
-){
-
-return GASTONE_RATES;
-
-}
-
-return null;
-
+  return null;
 }
 
 function hasRate(
-rates,
-day
+  rates,
+  day
 ){
 
-return Object
-.prototype
-.hasOwnProperty
-.call(
-rates,
-day
-);
-
+  return Object
+  .prototype
+  .hasOwnProperty
+  .call(
+    rates,
+    day
+  );
 }
 
-function isRateBlocked(
-day
-){
+function isRateBlocked(day){
 
-const rates=
-getRates();
+  const rates=
+  getRates();
 
-if(!rates){
-return false;
-}
+  if(!rates){
+    return false;
+  }
 
-return(
-day>=RATE_START&&
-day<=RATE_END&&
-!hasRate(
-rates,
-day
-)
-);
-
+  return(
+    day>=RATE_START&&
+    day<=RATE_END&&
+    !hasRate(
+      rates,
+      day
+    )
+  );
 }
 
 function calculateStayPrice(){
 
-if(
-!selectedStart||
-!selectedEnd||
-!guestsInput||
-!guestsInput.value
-){
+  if(
+    !selectedStart||
+    !selectedEnd||
+    !guestsInput||
+    !guestsInput.value
+  ){
+    return null;
+  }
 
-return null;
+  const guests=
+  Number(
+    guestsInput.value
+  );
 
+  const nights=
+  nightsBetween(
+    selectedStart,
+    selectedEnd
+  );
+
+  if(nights<2){
+    return null;
+  }
+
+  const rates=
+  getRates();
+
+  if(!rates){
+    return null;
+  }
+
+  let basePrice=0;
+
+  for(
+    let day=selectedStart;
+    day<selectedEnd;
+    day=addDays(day,1)
+  ){
+
+    if(
+      !hasRate(
+        rates,
+        day
+      )
+    ){
+      return null;
+    }
+
+    basePrice+=
+    rates[day];
+  }
+
+  return{
+    price:
+    basePrice*
+    guestMultiplier(guests),
+
+    nights,
+
+    guests
+  };
 }
 
-const guests=
-Number(
-guestsInput.value
-);
+function formatPrice(value){
 
-const nights=
-nightsBetween(
-selectedStart,
-selectedEnd
-);
-
-if(
-nights<2
-){
-
-return null;
-
-}
-
-const rates=
-getRates();
-
-if(!rates){
-
-return null;
-
-}
-
-let basePrice=0;
-
-for(
-let day=selectedStart;
-day<selectedEnd;
-day=addDays(day,1)
-){
-
-if(
-!hasRate(
-rates,
-day
-)
-){
-
-return null;
-
-}
-
-basePrice+=
-rates[day];
-
-}
-
-const finalPrice=
-basePrice*
-guestMultiplier(
-guests
-);
-
-return{
-price:finalPrice,
-nights,
-guests
-};
-
-}
-
-function formatPrice(
-value
-){
-
-return new Intl.NumberFormat(
-primeLanguage==="it"
-?"it-IT"
-:"en-GB",
-{
-style:"currency",
-currency:"EUR",
-minimumFractionDigits:
-Number.isInteger(value)
-?0
-:2,
-maximumFractionDigits:2
-}
-).format(value);
-
+  return new Intl.NumberFormat(
+    primeLanguage==="it"
+      ?"it-IT"
+      :"en-GB",
+    {
+      style:"currency",
+      currency:"EUR",
+      minimumFractionDigits:
+      Number.isInteger(value)
+        ?0
+        :2,
+      maximumFractionDigits:2
+    }
+  )
+  .format(value);
 }
 
 function updatePriceBanner(){
 
-if(!stayPriceBanner){
-return;
+  if(!stayPriceBanner){
+    return;
+  }
+
+  const result=
+  calculateStayPrice();
+
+  if(!result){
+
+    stayPriceBanner.classList.remove(
+      "visible"
+    );
+
+    if(stayPriceTotal){
+      stayPriceTotal.textContent="";
+    }
+
+    if(stayPriceMeta){
+      stayPriceMeta.textContent="";
+    }
+
+    if(requestBookingButton){
+      requestBookingButton.disabled=true;
+    }
+
+    if(estimatedTotalInput){
+      estimatedTotalInput.value="";
+    }
+
+    return;
+  }
+
+  stayPriceBanner.classList.add(
+    "visible"
+  );
+
+  if(stayPriceTotal){
+
+    stayPriceTotal.textContent=
+    formatPrice(
+      result.price
+    );
+  }
+
+  if(stayPriceMeta){
+
+    stayPriceMeta.textContent=
+    primeLanguage==="it"
+      ?`${result.nights} notti · ${result.guests} ospiti`
+      :`${result.nights} nights · ${result.guests} guests`;
+  }
+
+  if(requestBookingButton){
+
+    requestBookingButton.disabled=false;
+
+    requestBookingButton.textContent=
+    primeTranslate(
+      "REQUEST TO BOOK →"
+    );
+  }
+
+  if(estimatedTotalInput){
+
+    estimatedTotalInput.value=
+    String(
+      Math.round(
+        result.price*100
+      )/100
+    );
+  }
 }
-
-const result=
-calculateStayPrice();
-
-if(!result){
-
-stayPriceBanner.classList.remove(
-"visible"
-);
-
-if(
-estimatedTotalInput
-){
-
-estimatedTotalInput.value=
-"";
-
-}
-
-return;
-
-}
-
-stayPriceBanner.classList.add(
-"visible"
-);
-
-if(
-stayPriceTotal
-){
-
-stayPriceTotal.textContent=
-formatPrice(
-result.price
-);
-
-}
-
-if(
-stayPriceMeta
-){
-
-stayPriceMeta.textContent=
-primeLanguage==="it"
-?`${result.nights} notti · ${result.guests} ospiti`
-:`${result.nights} nights · ${result.guests} guests`;
-
-}
-
-if(
-requestBookingButton
-){
-
-requestBookingButton.textContent=
-primeTranslate(
-"REQUEST TO BOOK →"
-);
-
-}
-
-if(
-estimatedTotalInput
-){
-
-estimatedTotalInput.value=
-String(
-Math.round(
-result.price*100
-)/100
-);
-
-}
-
-}
-
 
 /* =========================================================
    11. AVAILABILITY
 ========================================================= */
 
-function isBooked(
-day
-){
+function isBooked(day){
 
-if(
-isRateBlocked(day)
-){
+  if(isRateBlocked(day)){
+    return true;
+  }
 
-return true;
-
+  return calendarEvents.some(
+    event=>
+    event.start&&
+    event.end&&
+    day>=event.start&&
+    day<event.end
+  );
 }
 
-return calendarEvents.some(
-event=>
-event.start&&
-event.end&&
-day>=event.start&&
-day<event.end
-);
+function isPast(day){
 
-}
-
-function isPast(
-day
-){
-
-return day<
-todayISO();
-
+  return day<
+  todayISO();
 }
 
 function rangeHasConflict(
-start,
-end
+  start,
+  end
 ){
 
-if(
-!start||
-!end||
-end<=start
-){
+  if(
+    !start||
+    !end||
+    end<=start
+  ){
+    return true;
+  }
 
-return true;
+  for(
+    let day=start;
+    day<end;
+    day=addDays(day,1)
+  ){
 
-}
+    if(isBooked(day)){
+      return true;
+    }
+  }
 
-for(
-let day=start;
-day<end;
-day=addDays(day,1)
-){
-
-if(
-isBooked(day)
-){
-
-return true;
-
-}
-
-}
-
-return false;
-
+  return false;
 }
 
 function validCheckout(
-start,
-end
+  start,
+  end
 ){
 
-return(
-!!start&&
-!!end&&
-end>start&&
-nightsBetween(
-start,
-end
-)>=2&&
-!rangeHasConflict(
-start,
-end
-)
-);
-
+  return(
+    !!start&&
+    !!end&&
+    end>start&&
+    nightsBetween(
+      start,
+      end
+    )>=2&&
+    !rangeHasConflict(
+      start,
+      end
+    )
+  );
 }
-
 
 /* =========================================================
    12. CALENDAR UI
@@ -2364,240 +2727,216 @@ end
 
 function clearCalendarMessage(){
 
-if(!calendarMessage){
-return;
-}
+  if(!calendarMessage){
+    return;
+  }
 
-calendarMessage.className=
-"calendar-message";
+  calendarMessage.className=
+  "calendar-message";
 
-calendarMessage.textContent=
-"";
-
+  calendarMessage.textContent=
+  "";
 }
 
 function showCalendarMessage(
-text,
-type="info"
+  text,
+  type="info"
 ){
 
-if(!calendarMessage){
-return;
-}
+  if(!calendarMessage){
+    return;
+  }
 
-calendarMessage.textContent=
-primeTranslate(text);
+  calendarMessage.textContent=
+  primeTranslate(text);
 
-calendarMessage.className=
-`calendar-message visible ${type}`;
-
+  calendarMessage.className=
+  `calendar-message visible ${type}`;
 }
 
 function lockSubmit(
-text="Select Your Stay"
+  text="Select Your Stay"
 ){
 
-if(!bookingSubmit){
-return;
-}
+  if(!bookingSubmit){
+    return;
+  }
 
-bookingSubmit.disabled=
-true;
+  bookingSubmit.disabled=
+  true;
 
-bookingSubmit.classList.add(
-"availability-locked"
-);
+  bookingSubmit.classList.add(
+    "availability-locked"
+  );
 
-bookingSubmit.textContent=
-primeTranslate(text);
-
+  bookingSubmit.textContent=
+  primeTranslate(text);
 }
 
 function unlockSubmit(){
 
-if(!bookingSubmit){
-return;
-}
+  if(!bookingSubmit){
+    return;
+  }
 
-bookingSubmit.disabled=
-false;
+  bookingSubmit.disabled=
+  false;
 
-bookingSubmit.classList.remove(
-"availability-locked"
-);
+  bookingSubmit.classList.remove(
+    "availability-locked"
+  );
 
-bookingSubmit.textContent=
-primeTranslate(
-"Send Booking Request"
-);
-
+  bookingSubmit.textContent=
+  primeTranslate(
+    "Send Booking Request"
+  );
 }
 
 function clearStay(
-render=true
+  render=true
 ){
 
-selectedStart="";
-selectedEnd="";
-previewEnd="";
+  selectedStart="";
+  selectedEnd="";
+  previewEnd="";
 
-if(checkinInput){
+  if(checkinInput){
+    checkinInput.value="";
+  }
 
-checkinInput.value="";
+  if(checkoutInput){
+    checkoutInput.value="";
+  }
 
-}
+  if(selectedStay){
 
-if(checkoutInput){
+    selectedStay.classList.remove(
+      "visible"
+    );
+  }
 
-checkoutInput.value="";
+  if(guestsInput){
+    guestsInput.value="";
+  }
 
-}
+  updatePriceBanner();
+  lockSubmit();
 
-if(selectedStay){
-
-selectedStay.classList.remove(
-"visible"
-);
-
-}
-
-updatePriceBanner();
-
-lockSubmit();
-
-if(render){
-
-renderCalendar();
-
-}
-
+  if(render){
+    renderCalendar();
+  }
 }
 
 function updateSelectedStay(){
 
-if(
-!selectedStart||
-!selectedEnd||
-!validCheckout(
-selectedStart,
-selectedEnd
-)
-){
+  if(
+    !selectedStart||
+    !selectedEnd||
+    !validCheckout(
+      selectedStart,
+      selectedEnd
+    )
+  ){
 
-if(selectedStay){
+    if(selectedStay){
 
-selectedStay.classList.remove(
-"visible"
-);
+      selectedStay.classList.remove(
+        "visible"
+      );
+    }
 
-}
+    lockSubmit();
 
-lockSubmit();
+    return;
+  }
 
-return;
+  if(checkinInput){
 
-}
+    checkinInput.value=
+    selectedStart;
+  }
 
-if(checkinInput){
+  if(checkoutInput){
 
-checkinInput.value=
-selectedStart;
+    checkoutInput.value=
+    selectedEnd;
+  }
 
-}
+  if(selectedStayResidence){
 
-if(checkoutInput){
+    selectedStayResidence.textContent=
+    residenceInput
+      ?residenceInput.value
+      :"";
+  }
 
-checkoutInput.value=
-selectedEnd;
+  if(selectedStayCheckin){
 
-}
+    selectedStayCheckin.textContent=
+    prettyDate(
+      selectedStart
+    );
+  }
 
-if(selectedStayResidence){
+  if(selectedStayCheckout){
 
-selectedStayResidence.textContent=
-residenceInput
-?residenceInput.value
-:"";
+    selectedStayCheckout.textContent=
+    prettyDate(
+      selectedEnd
+    );
+  }
 
-}
+  if(selectedStayNights){
 
-if(selectedStayCheckin){
+    selectedStayNights.textContent=
+    String(
+      nightsBetween(
+        selectedStart,
+        selectedEnd
+      )
+    );
+  }
 
-selectedStayCheckin.textContent=
-prettyDate(
-selectedStart
-);
+  if(selectedStay){
 
-}
+    selectedStay.classList.add(
+      "visible"
+    );
+  }
 
-if(selectedStayCheckout){
-
-selectedStayCheckout.textContent=
-prettyDate(
-selectedEnd
-);
-
-}
-
-if(selectedStayNights){
-
-selectedStayNights.textContent=
-String(
-nightsBetween(
-selectedStart,
-selectedEnd
-)
-);
-
-}
-
-if(selectedStay){
-
-selectedStay.classList.add(
-"visible"
-);
-
-}
-
-updatePriceBanner();
-
-unlockSubmit();
-
+  updatePriceBanner();
+  unlockSubmit();
 }
 
 function selectionBounds(){
 
-if(
-selectedStart&&
-selectedEnd
-){
+  if(
+    selectedStart&&
+    selectedEnd
+  ){
 
-return[
-selectedStart,
-selectedEnd
-];
+    return[
+      selectedStart,
+      selectedEnd
+    ];
+  }
 
+  if(
+    selectedStart&&
+    previewEnd
+  ){
+
+    return[
+      selectedStart,
+      previewEnd
+    ];
+  }
+
+  return[
+    selectedStart,
+    ""
+  ];
 }
-
-if(
-selectedStart&&
-previewEnd
-){
-
-return[
-selectedStart,
-previewEnd
-];
-
-}
-
-return[
-selectedStart,
-""
-];
-
-}
-
 
 /* =========================================================
    13. RENDER CALENDAR
@@ -2605,734 +2944,631 @@ selectedStart,
 
 function renderCalendar(){
 
-if(
-!calendarGrid||
-!calendarMonthLabel
-){
+  if(
+    !calendarGrid||
+    !calendarMonthLabel
+  ){
+    return;
+  }
 
-return;
+  calendarGrid.innerHTML=
+  "";
 
+  calendarMonthLabel.textContent=
+  displayMonth.toLocaleDateString(
+    primeLanguage==="it"
+      ?"it-IT"
+      :"en-GB",
+    {
+      month:"long",
+      year:"numeric"
+    }
+  );
+
+  const year=
+  displayMonth.getFullYear();
+
+  const month=
+  displayMonth.getMonth();
+
+  const firstDay=
+  new Date(
+    year,
+    month,
+    1
+  );
+
+  const daysInMonth=
+  new Date(
+    year,
+    month+1,
+    0
+  ).getDate();
+
+  const leading=
+  (
+    firstDay.getDay()+
+    6
+  )%7;
+
+  if(calendarPrev){
+
+    const now=
+    new Date();
+
+    const currentMonth=
+    new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      1
+    );
+
+    calendarPrev.disabled=
+    displayMonth<=
+    currentMonth;
+  }
+
+  for(
+    let i=0;
+    i<leading;
+    i++
+  ){
+
+    const empty=
+    document.createElement(
+      "div"
+    );
+
+    empty.className=
+    "calendar-empty";
+
+    calendarGrid.appendChild(
+      empty
+    );
+  }
+
+  const[
+    rangeStart,
+    rangeEnd
+  ]=
+  selectionBounds();
+
+  for(
+    let day=1;
+    day<=daysInMonth;
+    day++
+  ){
+
+    const iso=
+    dateISO(
+      new Date(
+        year,
+        month,
+        day
+      )
+    );
+
+    const button=
+    document.createElement(
+      "button"
+    );
+
+    const booked=
+    isBooked(iso);
+
+    const past=
+    isPast(iso);
+
+    button.type=
+    "button";
+
+    button.className=
+    "booking-calendar-day";
+
+    button.dataset.date=
+    iso;
+
+    button.textContent=
+    String(day);
+
+    if(past){
+
+      button.disabled=
+      true;
+
+      button.classList.add(
+        "past"
+      );
+
+    }else{
+
+      button.classList.add(
+        booked
+          ?"booked"
+          :"available"
+      );
+    }
+
+    if(
+      iso===
+      todayISO()
+    ){
+
+      button.classList.add(
+        "today"
+      );
+    }
+
+    if(
+      rangeStart&&
+      iso===rangeStart
+    ){
+
+      button.classList.add(
+        "checkin"
+      );
+    }
+
+    if(
+      rangeEnd&&
+      iso===rangeEnd
+    ){
+
+      button.classList.add(
+        "checkout"
+      );
+    }
+
+    if(
+      rangeStart&&
+      rangeEnd&&
+      iso>rangeStart&&
+      iso<rangeEnd
+    ){
+
+      button.classList.add(
+        "in-range"
+      );
+    }
+
+    button.addEventListener(
+      "click",
+      ()=>handleDayClick(
+        iso
+      )
+    );
+
+    calendarGrid.appendChild(
+      button
+    );
+  }
 }
-
-calendarGrid.innerHTML=
-"";
-
-calendarMonthLabel.textContent=
-displayMonth.toLocaleDateString(
-primeLanguage==="it"
-?"it-IT"
-:"en-GB",
-{
-month:"long",
-year:"numeric"
-}
-);
-
-const year=
-displayMonth.getFullYear();
-
-const month=
-displayMonth.getMonth();
-
-const firstDay=
-new Date(
-year,
-month,
-1
-);
-
-const daysInMonth=
-new Date(
-year,
-month+1,
-0
-).getDate();
-
-const leading=
-(firstDay.getDay()+6)%7;
-
-if(calendarPrev){
-
-const now=
-new Date();
-
-const currentMonth=
-new Date(
-now.getFullYear(),
-now.getMonth(),
-1
-);
-
-calendarPrev.disabled=
-displayMonth<=
-currentMonth;
-
-}
-
-for(
-let i=0;
-i<leading;
-i++
-){
-
-const empty=
-document.createElement(
-"div"
-);
-
-empty.className=
-"calendar-empty";
-
-calendarGrid.appendChild(
-empty
-);
-
-}
-
-const[
-rangeStart,
-rangeEnd
-]=selectionBounds();
-
-for(
-let day=1;
-day<=daysInMonth;
-day++
-){
-
-const iso=
-dateISO(
-new Date(
-year,
-month,
-day
-)
-);
-
-const button=
-document.createElement(
-"button"
-);
-
-const booked=
-isBooked(iso);
-
-const past=
-isPast(iso);
-
-button.type=
-"button";
-
-button.className=
-"booking-calendar-day";
-
-button.dataset.date=
-iso;
-
-button.textContent=
-String(day);
-
-if(past){
-
-button.disabled=
-true;
-
-button.classList.add(
-"past"
-);
-
-}else{
-
-button.classList.add(
-booked
-?"booked"
-:"available"
-);
-
-}
-
-if(
-iso===todayISO()
-){
-
-button.classList.add(
-"today"
-);
-
-}
-
-if(
-rangeStart&&
-iso===rangeStart
-){
-
-button.classList.add(
-"checkin"
-);
-
-}
-
-if(
-rangeEnd&&
-iso===rangeEnd
-){
-
-button.classList.add(
-"checkout"
-);
-
-}
-
-if(
-rangeStart&&
-rangeEnd&&
-iso>rangeStart&&
-iso<rangeEnd
-){
-
-button.classList.add(
-"in-range"
-);
-
-}
-
-button.addEventListener(
-"click",
-()=>handleDayClick(
-iso
-)
-);
-
-calendarGrid.appendChild(
-button
-);
-
-}
-
-}
-
 
 /* =========================================================
    14. DAY CLICK
 ========================================================= */
 
-function handleDayClick(
-day
-){
+function handleDayClick(day){
 
-clearCalendarMessage();
+  clearCalendarMessage();
 
-if(
-isPast(day)
-){
+  if(isPast(day)){
+    return;
+  }
 
-return;
+  if(
+    !selectedStart||
+    selectedEnd
+  ){
 
+    if(isBooked(day)){
+
+      showCalendarMessage(
+        "This date is fully booked. Please choose an available check-in date.",
+        "info"
+      );
+
+      return;
+    }
+
+    selectedStart=
+    day;
+
+    selectedEnd=
+    "";
+
+    if(checkinInput){
+      checkinInput.value=day;
+    }
+
+    if(checkoutInput){
+      checkoutInput.value="";
+    }
+
+    if(selectedStay){
+
+      selectedStay.classList.remove(
+        "visible"
+      );
+    }
+
+    if(guestsInput){
+      guestsInput.value="";
+    }
+
+    updatePriceBanner();
+
+    lockSubmit(
+      "Select Check-out"
+    );
+
+    renderCalendar();
+
+    return;
+  }
+
+  if(day===selectedStart){
+
+    clearStay();
+
+    return;
+  }
+
+  if(day<selectedStart){
+
+    if(isBooked(day)){
+      return;
+    }
+
+    selectedStart=
+    day;
+
+    renderCalendar();
+
+    return;
+  }
+
+  if(
+    nightsBetween(
+      selectedStart,
+      day
+    )<2
+  ){
+
+    showCalendarMessage(
+      "Minimum stay is 2 nights.",
+      "info"
+    );
+
+    return;
+  }
+
+  if(
+    !validCheckout(
+      selectedStart,
+      day
+    )
+  ){
+
+    showCalendarMessage(
+      "Your selected stay crosses a fully booked date. Please choose another check-out date.",
+      "error"
+    );
+
+    return;
+  }
+
+  selectedEnd=
+  day;
+
+  updateSelectedStay();
+
+  renderCalendar();
 }
-
-if(
-!selectedStart||
-selectedEnd
-){
-
-if(
-isBooked(day)
-){
-
-showCalendarMessage(
-"This date is fully booked. Please choose an available check-in date.",
-"info"
-);
-
-return;
-
-}
-
-selectedStart=
-day;
-
-selectedEnd=
-"";
-
-if(checkinInput){
-
-checkinInput.value=
-day;
-
-}
-
-if(checkoutInput){
-
-checkoutInput.value=
-"";
-
-}
-
-if(selectedStay){
-
-selectedStay.classList.remove(
-"visible"
-);
-
-}
-
-updatePriceBanner();
-
-lockSubmit(
-"Select Check-out"
-);
-
-renderCalendar();
-
-return;
-
-}
-
-if(
-day===selectedStart
-){
-
-clearStay();
-
-return;
-
-}
-
-if(
-day<selectedStart
-){
-
-if(
-isBooked(day)
-){
-
-return;
-
-}
-
-selectedStart=
-day;
-
-renderCalendar();
-
-return;
-
-}
-
-if(
-nightsBetween(
-selectedStart,
-day
-)<2
-){
-
-showCalendarMessage(
-"Minimum stay is 2 nights.",
-"info"
-);
-
-return;
-
-}
-
-if(
-!validCheckout(
-selectedStart,
-day
-)
-){
-
-showCalendarMessage(
-"Your selected stay crosses a fully booked date. Please choose another check-out date.",
-"error"
-);
-
-return;
-
-}
-
-selectedEnd=
-day;
-
-updateSelectedStay();
-
-renderCalendar();
-
-}
-
 
 /* =========================================================
    15. LOAD CALENDAR
 ========================================================= */
 
 async function loadCalendar(
-calendarKey,
-residenceName
+  calendarKey,
+  residenceName
 ){
 
-if(!primeCalendar){
-return;
+  if(!primeCalendar){
+    return;
+  }
+
+  const requestId=
+  ++calendarRequestId;
+
+  currentCalendarKey=
+  calendarKey;
+
+  calendarLoaded=false;
+
+  calendarEvents=[];
+
+  clearStay(false);
+
+  clearCalendarMessage();
+
+  primeCalendar.classList.remove(
+    "disabled"
+  );
+
+  if(calendarResidenceTitle){
+
+    calendarResidenceTitle.textContent=
+    residenceName;
+  }
+
+  if(calendarLiveText){
+
+    calendarLiveText.textContent=
+    primeTranslate(
+      "LOADING"
+    );
+  }
+
+  if(calendarLiveStatus){
+
+    calendarLiveStatus.classList.add(
+      "loading"
+    );
+  }
+
+  if(calendarLoadingMessage){
+
+    calendarLoadingMessage.classList.add(
+      "visible"
+    );
+  }
+
+  lockSubmit(
+    "Loading Availability..."
+  );
+
+  const now=
+  new Date();
+
+  displayMonth=
+  new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    1
+  );
+
+  renderCalendar();
+
+  try{
+
+    const response=
+    await fetch(
+      `/api/availability?residence=${encodeURIComponent(calendarKey)}`,
+      {
+        cache:"no-store"
+      }
+    );
+
+    const result=
+    await response.json();
+
+    if(
+      requestId!==
+      calendarRequestId
+    ){
+      return;
+    }
+
+    if(
+      !response.ok||
+      !result.success
+    ){
+
+      throw new Error(
+        "Unable to retrieve calendar."
+      );
+    }
+
+    calendarEvents=
+    Array.isArray(
+      result.events
+    )
+      ?result.events.filter(
+        event=>
+        event.start&&
+        event.end
+      )
+      :[];
+
+    calendarLoaded=
+    true;
+
+    if(calendarLiveText){
+      calendarLiveText.textContent=
+      "LIVE";
+    }
+
+    if(calendarLiveStatus){
+
+      calendarLiveStatus.classList.remove(
+        "loading"
+      );
+    }
+
+    if(calendarLoadingMessage){
+
+      calendarLoadingMessage.classList.remove(
+        "visible"
+      );
+    }
+
+    lockSubmit(
+      "Select Your Stay"
+    );
+
+    renderCalendar();
+
+  }catch(error){
+
+    console.error(
+      "Availability error:",
+      error
+    );
+
+    calendarLoaded=false;
+
+    if(calendarLiveText){
+
+      calendarLiveText.textContent=
+      primeTranslate(
+        "UNAVAILABLE"
+      );
+    }
+
+    if(calendarLiveStatus){
+
+      calendarLiveStatus.classList.remove(
+        "loading"
+      );
+    }
+
+    if(calendarLoadingMessage){
+
+      calendarLoadingMessage.classList.remove(
+        "visible"
+      );
+    }
+
+    showCalendarMessage(
+      "We could not load availability at the moment. Please try again shortly.",
+      "error"
+    );
+
+    primeCalendar.classList.add(
+      "disabled"
+    );
+
+    lockSubmit(
+      "Availability Unavailable"
+    );
+  }
 }
-
-const requestId=
-++calendarRequestId;
-
-currentCalendarKey=
-calendarKey;
-
-calendarLoaded=
-false;
-
-calendarEvents=[];
-
-clearStay(
-false
-);
-
-clearCalendarMessage();
-
-primeCalendar.classList.remove(
-"disabled"
-);
-
-if(
-calendarResidenceTitle
-){
-
-calendarResidenceTitle.textContent=
-residenceName;
-
-}
-
-if(
-calendarLiveText
-){
-
-calendarLiveText.textContent=
-primeTranslate(
-"LOADING"
-);
-
-}
-
-if(
-calendarLiveStatus
-){
-
-calendarLiveStatus.classList.add(
-"loading"
-);
-
-}
-
-if(
-calendarLoadingMessage
-){
-
-calendarLoadingMessage.classList.add(
-"visible"
-);
-
-}
-
-lockSubmit(
-"Loading Availability..."
-);
-
-const now=
-new Date();
-
-displayMonth=
-new Date(
-now.getFullYear(),
-now.getMonth(),
-1
-);
-
-renderCalendar();
-
-try{
-
-const response=
-await fetch(
-`/api/availability?residence=${encodeURIComponent(calendarKey)}`,
-{
-cache:"no-store"
-}
-);
-
-const result=
-await response.json();
-
-if(
-requestId!==
-calendarRequestId
-){
-
-return;
-
-}
-
-if(
-!response.ok||
-!result.success
-){
-
-throw new Error(
-"Unable to retrieve calendar."
-);
-
-}
-
-calendarEvents=
-Array.isArray(
-result.events
-)
-?result.events.filter(
-event=>
-event.start&&
-event.end
-)
-:[];
-
-calendarLoaded=
-true;
-
-if(
-calendarLiveText
-){
-
-calendarLiveText.textContent=
-"LIVE";
-
-}
-
-if(
-calendarLiveStatus
-){
-
-calendarLiveStatus.classList.remove(
-"loading"
-);
-
-}
-
-if(
-calendarLoadingMessage
-){
-
-calendarLoadingMessage.classList.remove(
-"visible"
-);
-
-}
-
-lockSubmit(
-"Select Your Stay"
-);
-
-renderCalendar();
-
-}catch(error){
-
-console.error(
-"Availability error:",
-error
-);
-
-calendarLoaded=
-false;
-
-if(
-calendarLiveText
-){
-
-calendarLiveText.textContent=
-primeTranslate(
-"UNAVAILABLE"
-);
-
-}
-
-if(
-calendarLiveStatus
-){
-
-calendarLiveStatus.classList.remove(
-"loading"
-);
-
-}
-
-if(
-calendarLoadingMessage
-){
-
-calendarLoadingMessage.classList.remove(
-"visible"
-);
-
-}
-
-showCalendarMessage(
-"We could not load availability at the moment. Please try again shortly.",
-"error"
-);
-
-primeCalendar.classList.add(
-"disabled"
-);
-
-lockSubmit(
-"Availability Unavailable"
-);
-
-}
-
-}
-
 
 /* =========================================================
    16. SELECT RESIDENCE
 ========================================================= */
 
-function selectResidence(
-card
-){
+function selectResidence(card){
 
-bookingCards.forEach(
-item=>
-item.classList.remove(
-"selected"
-)
-);
+  bookingCards.forEach(
+    item=>
+    item.classList.remove(
+      "selected"
+    )
+  );
 
-card.classList.add(
-"selected"
-);
+  card.classList.add(
+    "selected"
+  );
 
-const residence=
-card.dataset.residence||
-"";
+  const residence=
+  card.dataset.residence||
+  "";
 
-const calendar=
-card.dataset.calendar||
-"";
+  const calendar=
+  card.dataset.calendar||
+  "";
 
-if(residenceInput){
+  if(residenceInput){
+    residenceInput.value=residence;
+  }
 
-residenceInput.value=
-residence;
+  if(calendarResidence){
+    calendarResidence.value=calendar;
+  }
 
-}
+  if(selectedResidenceText){
+    selectedResidenceText.textContent=residence;
+  }
 
-if(calendarResidence){
+  loadCalendar(
+    calendar,
+    residence
+  );
 
-calendarResidence.value=
-calendar;
+  if(bookingFormSection){
 
-}
-
-if(selectedResidenceText){
-
-selectedResidenceText.textContent=
-residence;
-
-}
-
-loadCalendar(
-calendar,
-residence
-);
-
-if(
-bookingFormSection
-){
-
-bookingFormSection.scrollIntoView({
-behavior:"smooth",
-block:"start"
-});
-
-}
-
+    bookingFormSection.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  }
 }
 
 bookingCards.forEach(
-card=>{
+  card=>{
 
-card.addEventListener(
-"click",
-()=>selectResidence(
-card
-)
+    card.addEventListener(
+      "click",
+      ()=>selectResidence(
+        card
+      )
+    );
+
+    card.addEventListener(
+      "keydown",
+      e=>{
+
+        if(
+          e.key==="Enter"||
+          e.key===" "
+        ){
+
+          e.preventDefault();
+
+          selectResidence(
+            card
+          );
+        }
+      }
+    );
+  }
 );
-
-card.addEventListener(
-"keydown",
-e=>{
-
-if(
-e.key==="Enter"||
-e.key===" "
-){
-
-e.preventDefault();
-
-selectResidence(
-card
-);
-
-}
-
-}
-);
-
-}
-);
-
 
 /* =========================================================
    17. GUESTS + BANNER
 ========================================================= */
 
-if(
-guestsInput
-){
+if(guestsInput){
 
-guestsInput.addEventListener(
-"change",
-updatePriceBanner
-);
-
+  guestsInput.addEventListener(
+    "change",
+    updatePriceBanner
+  );
 }
 
-if(
-requestBookingButton
-){
+if(requestBookingButton){
 
-requestBookingButton.addEventListener(
-"click",
-()=>{
+  requestBookingButton.addEventListener(
+    "click",
+    ()=>{
 
-const target=
-guestDetailsSection||
-bookingForm;
+      const target=
+      guestDetailsSection||
+      bookingForm;
 
-if(target){
+      if(target){
 
-premiumScrollTo(
-target,
-900
-);
-
+        premiumScrollTo(
+          target,
+          900
+        );
+      }
+    }
+  );
 }
-
-}
-);
-
-}
-
 
 /* =========================================================
    18. MONTH NAVIGATION
@@ -3340,575 +3576,1402 @@ target,
 
 if(calendarPrev){
 
-calendarPrev.addEventListener(
-"click",
-()=>{
+  calendarPrev.addEventListener(
+    "click",
+    ()=>{
 
-const previous=
-new Date(
-displayMonth.getFullYear(),
-displayMonth.getMonth()-1,
-1
-);
+      const previous=
+      new Date(
+        displayMonth.getFullYear(),
+        displayMonth.getMonth()-1,
+        1
+      );
 
-const now=
-new Date();
+      const now=
+      new Date();
 
-const currentMonth=
-new Date(
-now.getFullYear(),
-now.getMonth(),
-1
-);
+      const currentMonth=
+      new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        1
+      );
 
-if(
-previous>=currentMonth
-){
+      if(
+        previous>=
+        currentMonth
+      ){
 
-displayMonth=
-previous;
+        displayMonth=
+        previous;
 
-renderCalendar();
-
-}
-
-}
-);
-
+        renderCalendar();
+      }
+    }
+  );
 }
 
 if(calendarNext){
 
-calendarNext.addEventListener(
-"click",
-()=>{
+  calendarNext.addEventListener(
+    "click",
+    ()=>{
 
-displayMonth=
-new Date(
-displayMonth.getFullYear(),
-displayMonth.getMonth()+1,
-1
-);
+      displayMonth=
+      new Date(
+        displayMonth.getFullYear(),
+        displayMonth.getMonth()+1,
+        1
+      );
 
-renderCalendar();
-
-}
-);
-
+      renderCalendar();
+    }
+  );
 }
 
-if(
-selectedStayClear
-){
+if(selectedStayClear){
 
-selectedStayClear.addEventListener(
-"click",
-()=>{
+  selectedStayClear.addEventListener(
+    "click",
+    ()=>{
 
-clearStay();
+      clearStay();
 
-clearCalendarMessage();
-
+      clearCalendarMessage();
+    }
+  );
 }
-);
-
-}
-
 
 /* =========================================================
    19. BOOKING FORM
 ========================================================= */
 
 function showMessage(
-text,
-type
+  text,
+  type
 ){
 
-if(
-!bookingMessage
-){
-return;
-}
+  if(!bookingMessage){
+    return;
+  }
 
-bookingMessage.textContent=
-primeTranslate(text);
+  bookingMessage.textContent=
+  primeTranslate(text);
 
-bookingMessage.className=
-`booking-message ${type}`;
+  bookingMessage.className=
+  `booking-message ${type}`;
 
-bookingMessage.style.display=
-"block";
-
+  bookingMessage.style.display=
+  "block";
 }
 
 function hideMessage(){
 
-if(
-bookingMessage
-){
+  if(bookingMessage){
 
-bookingMessage.style.display=
-"none";
-
-}
-
+    bookingMessage.style.display=
+    "none";
+  }
 }
 
 async function verifyStayAgain(){
 
-if(
-!currentCalendarKey||
-!selectedStart||
-!selectedEnd
-){
+  if(
+    !currentCalendarKey||
+    !selectedStart||
+    !selectedEnd
+  ){
+    return false;
+  }
 
-return false;
+  const response=
+  await fetch(
+    `/api/availability?residence=${encodeURIComponent(currentCalendarKey)}&t=${Date.now()}`,
+    {
+      cache:"no-store"
+    }
+  );
 
+  const result=
+  await response.json();
+
+  if(
+    !response.ok||
+    !result.success
+  ){
+
+    throw new Error(
+      "Unable to verify availability."
+    );
+  }
+
+  const events=
+  Array.isArray(
+    result.events
+  )
+    ?result.events
+    :[];
+
+  for(const event of events){
+
+    for(
+      let day=selectedStart;
+      day<selectedEnd;
+      day=addDays(day,1)
+    ){
+
+      if(
+        day>=event.start&&
+        day<event.end
+      ){
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
-const response=
-await fetch(
-`/api/availability?residence=${encodeURIComponent(currentCalendarKey)}&t=${Date.now()}`,
-{
-cache:"no-store"
+if(bookingForm){
+
+  lockSubmit();
+
+  bookingForm.addEventListener(
+    "submit",
+    async e=>{
+
+      e.preventDefault();
+
+      hideMessage();
+
+      if(
+        !residenceInput||
+        !residenceInput.value
+      ){
+
+        showMessage(
+          "Please select a residence first.",
+          "error"
+        );
+
+        return;
+      }
+
+      if(!calendarLoaded){
+
+        showMessage(
+          "Availability is not currently available. Please try again.",
+          "error"
+        );
+
+        return;
+      }
+
+      if(
+        !selectedStart||
+        !selectedEnd
+      ){
+
+        showMessage(
+          "Please select your check-in and check-out dates from the calendar.",
+          "error"
+        );
+
+        return;
+      }
+
+      if(
+        !validCheckout(
+          selectedStart,
+          selectedEnd
+        )
+      ){
+
+        showMessage(
+          "The selected stay is not available.",
+          "error"
+        );
+
+        return;
+      }
+
+      if(
+        !guestsInput||
+        !guestsInput.value
+      ){
+
+        showMessage(
+          "Select guests to see the total price",
+          "error"
+        );
+
+        return;
+      }
+
+      const privacy=
+      document.querySelector(
+        "#privacy"
+      );
+
+      if(
+        privacy&&
+        !privacy.checked
+      ){
+
+        showMessage(
+          "Please accept the privacy policy.",
+          "error"
+        );
+
+        return;
+      }
+
+      lockSubmit(
+        "Rechecking Availability..."
+      );
+
+      try{
+
+        const available=
+        await verifyStayAgain();
+
+        if(!available){
+
+          showMessage(
+            "Availability has changed and these dates are no longer available. Please select another stay.",
+            "error"
+          );
+
+          await loadCalendar(
+            calendarResidence.value,
+            residenceInput.value
+          );
+
+          return;
+        }
+
+      }catch(error){
+
+        showMessage(
+          "We could not verify availability right now. Please try again in a moment.",
+          "error"
+        );
+
+        unlockSubmit();
+
+        return;
+      }
+
+      lockSubmit(
+        "Sending..."
+      );
+
+      const data=
+      Object.fromEntries(
+        new FormData(
+          bookingForm
+        ).entries()
+      );
+
+      const price=
+      calculateStayPrice();
+
+      if(price){
+
+        data.estimatedTotal=
+        Math.round(
+          price.price*100
+        )/100;
+      }
+
+      data.lang=
+      primeLanguage;
+
+      try{
+
+        const response=
+        await fetch(
+          "/api/booking-request",
+          {
+            method:"POST",
+            headers:{
+              "Content-Type":
+              "application/json"
+            },
+            body:
+            JSON.stringify(
+              data
+            )
+          }
+        );
+
+        const result=
+        await response.json();
+
+        if(!response.ok){
+
+          throw new Error(
+            result.message||
+            "Unable to send request."
+          );
+        }
+
+        showMessage(
+          result.message||
+          "Booking request sent successfully. We will contact you shortly to confirm your stay.",
+          "success"
+        );
+
+        const residence=
+        residenceInput.value;
+
+        const calendar=
+        calendarResidence.value;
+
+        bookingForm.reset();
+
+        residenceInput.value=
+        residence;
+
+        calendarResidence.value=
+        calendar;
+
+        clearStay(false);
+
+        await loadCalendar(
+          calendar,
+          residence
+        );
+
+      }catch(error){
+
+        showMessage(
+          error.message||
+          "Unable to send request.",
+          "error"
+        );
+
+        unlockSubmit();
+      }
+    }
+  );
 }
-);
-
-const result=
-await response.json();
-
-if(
-!response.ok||
-!result.success
-){
-
-throw new Error(
-"Unable to verify availability."
-);
-
-}
-
-const events=
-Array.isArray(
-result.events
-)
-?result.events
-:[];
-
-for(
-const event of
-events
-){
-
-for(
-let day=selectedStart;
-day<selectedEnd;
-day=addDays(day,1)
-){
-
-if(
-day>=event.start&&
-day<event.end
-){
-
-return false;
-
-}
-
-}
-
-}
-
-return true;
-
-}
-
-if(
-bookingForm
-){
-
-lockSubmit();
-
-bookingForm.addEventListener(
-"submit",
-async e=>{
-
-e.preventDefault();
-
-hideMessage();
-
-if(
-!residenceInput||
-!residenceInput.value
-){
-
-showMessage(
-"Please select a residence first.",
-"error"
-);
-
-return;
-
-}
-
-if(
-!calendarLoaded
-){
-
-showMessage(
-"Availability is not currently available. Please try again.",
-"error"
-);
-
-return;
-
-}
-
-if(
-!selectedStart||
-!selectedEnd
-){
-
-showMessage(
-"Please select your check-in and check-out dates from the calendar.",
-"error"
-);
-
-return;
-
-}
-
-if(
-!validCheckout(
-selectedStart,
-selectedEnd
-)
-){
-
-showMessage(
-"The selected stay is not available.",
-"error"
-);
-
-return;
-
-}
-
-if(
-!guestsInput||
-!guestsInput.value
-){
-
-showMessage(
-"Select guests to see the total price",
-"error"
-);
-
-return;
-
-}
-
-const privacy=
-document.querySelector(
-"#privacy"
-);
-
-if(
-privacy&&
-!privacy.checked
-){
-
-showMessage(
-"Please accept the privacy policy.",
-"error"
-);
-
-return;
-
-}
-
-lockSubmit(
-"Rechecking Availability..."
-);
-
-try{
-
-const available=
-await verifyStayAgain();
-
-if(!available){
-
-showMessage(
-"Availability has changed and these dates are no longer available. Please select another stay.",
-"error"
-);
-
-await loadCalendar(
-calendarResidence.value,
-residenceInput.value
-);
-
-return;
-
-}
-
-}catch(error){
-
-showMessage(
-"We could not verify availability right now. Please try again in a moment.",
-"error"
-);
-
-unlockSubmit();
-
-return;
-
-}
-
-lockSubmit(
-"Sending..."
-);
-
-const data=
-Object.fromEntries(
-new FormData(
-bookingForm
-).entries()
-);
-
-const price=
-calculateStayPrice();
-
-if(price){
-
-data.estimatedTotal=
-Math.round(
-price.price*100
-)/100;
-
-}
-
-data.lang=
-primeLanguage;
-
-try{
-
-const response=
-await fetch(
-"/api/booking-request",
-{
-method:"POST",
-headers:{
-"Content-Type":
-"application/json"
-},
-body:
-JSON.stringify(data)
-}
-);
-
-const result=
-await response.json();
-
-if(
-!response.ok
-){
-
-throw new Error(
-result.message||
-"Unable to send request."
-);
-
-}
-
-showMessage(
-result.message||
-"Booking request sent successfully. We will contact you shortly to confirm your stay.",
-"success"
-);
-
-const residence=
-residenceInput.value;
-
-const calendar=
-calendarResidence.value;
-
-bookingForm.reset();
-
-residenceInput.value=
-residence;
-
-calendarResidence.value=
-calendar;
-
-clearStay(
-false
-);
-
-await loadCalendar(
-calendar,
-residence
-);
-
-}catch(error){
-
-showMessage(
-error.message||
-"Unable to send request.",
-"error"
-);
-
-unlockSubmit();
-
-}
-
-}
-);
-
-}
-
 
 /* =========================================================
-   20. PRIME ASSISTANT
+   20. PRIME ASSISTANT — AUTO PROMPT AFTER 3 SECONDS
 ========================================================= */
 
 const assistant=
 document.querySelector(
-".prime-assistant"
+  ".prime-assistant"
 );
 
 if(assistant){
 
-const launcher=
-assistant.querySelector(
-".prime-assistant-launcher"
-);
+  const page=
+  assistant.dataset.assistantPage||
+  "home";
 
-const chatWindow=
-assistant.querySelector(
-".prime-assistant-window"
-);
+  const launcher=
+  assistant.querySelector(
+    ".prime-assistant-launcher"
+  );
 
-const closeChat=
-assistant.querySelector(
-".prime-assistant-close"
-);
+  const chatWindow=
+  assistant.querySelector(
+    ".prime-assistant-window"
+  );
 
-if(
-launcher&&
-chatWindow
-){
+  const closeChat=
+  assistant.querySelector(
+    ".prime-assistant-close"
+  );
 
-launcher.addEventListener(
-"click",
-()=>{
+  const prompt=
+  assistant.querySelector(
+    ".prime-assistant-prompt"
+  );
 
-assistant.classList.add(
-"chat-open"
-);
+  const promptMain=
+  assistant.querySelector(
+    ".assistant-prompt-main"
+  );
 
-chatWindow.classList.add(
-"open"
-);
+  const promptClose=
+  assistant.querySelector(
+    ".assistant-prompt-close"
+  );
 
-chatWindow.setAttribute(
-"aria-hidden",
-"false"
-);
+  const messages=
+  assistant.querySelector(
+    ".prime-assistant-messages"
+  );
 
+  const form=
+  assistant.querySelector(
+    ".prime-assistant-form"
+  );
+
+  const input=
+  assistant.querySelector(
+    ".prime-assistant-input"
+  );
+
+  const suggestionButtons=
+  assistant.querySelectorAll(
+    ".assistant-suggestion"
+  );
+
+  const residences={
+
+    gastone:{
+      name:"Gastone Rossi 12",
+      bedrooms:3,
+      bathrooms:2,
+      guests:6,
+      size:"98 m²",
+      address:
+      "Via Gastone Rossi 12, Bologna",
+      checkin:
+      "15:00–19:00",
+      checkout:
+      "08:00–11:00"
+    },
+
+    barontini:{
+      name:"Barontini 8",
+      bedrooms:2,
+      bathrooms:1,
+      guests:6,
+      size:"75 m²",
+      address:
+      "Via Ilio Barontini 8, Bologna",
+      checkin:
+      "15:00–21:00",
+      checkout:
+      "entro le 11:00"
+    }
+  };
+
+  function isItalian(text){
+
+    if(primeLanguage==="it"){
+      return true;
+    }
+
+    const q=
+    String(text||"")
+    .toLowerCase();
+
+    return[
+      "ciao",
+      "salve",
+      "buongiorno",
+      "buonasera",
+      "cos'è",
+      "cosa è",
+      "appartamento",
+      "camere",
+      "bagni",
+      "ospiti",
+      "prenot",
+      "prezzo",
+      "quanto",
+      "dove",
+      "indirizzo",
+      "parcheggio",
+      "animali",
+      "famiglia",
+      "persone",
+      "grazie",
+      "contatt",
+      "disponibil"
+    ]
+    .some(
+      w=>q.includes(w)
+    );
+  }
+
+  function scrollMessages(){
+
+    if(messages){
+
+      requestAnimationFrame(
+        ()=>messages.scrollTop=
+        messages.scrollHeight
+      );
+    }
+  }
+
+  function addMessage(
+    text,
+    type="bot",
+    actions=[]
+  ){
+
+    if(!messages){
+      return;
+    }
+
+    const wrap=
+    document.createElement(
+      "div"
+    );
+
+    const label=
+    document.createElement(
+      "span"
+    );
+
+    const p=
+    document.createElement(
+      "p"
+    );
+
+    wrap.className=
+    `assistant-message assistant-message-${type}`;
+
+    label.className=
+    "assistant-message-label";
+
+    label.textContent=
+    type==="user"
+      ?"YOU"
+      :"PRIME ASSISTANT";
+
+    p.textContent=
+    text;
+
+    wrap.append(
+      label,
+      p
+    );
+
+    actions.forEach(
+      action=>{
+
+        const a=
+        document.createElement(
+          "a"
+        );
+
+        a.href=
+        action.href;
+
+        a.textContent=
+        action.label;
+
+        if(action.external){
+
+          a.target=
+          "_blank";
+
+          a.rel=
+          "noopener noreferrer";
+        }
+
+        wrap.appendChild(
+          a
+        );
+      }
+    );
+
+    messages.appendChild(
+      wrap
+    );
+
+    scrollMessages();
+  }
+
+  function hidePrompt(){
+
+    if(!prompt){
+      return;
+    }
+
+    prompt.classList.remove(
+      "visible"
+    );
+
+    prompt.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+  }
+
+  function showPrompt(){
+
+    if(
+      !prompt||
+      assistant.classList.contains(
+        "chat-open"
+      )
+    ){
+      return;
+    }
+
+    prompt.classList.add(
+      "visible"
+    );
+
+    prompt.setAttribute(
+      "aria-hidden",
+      "false"
+    );
+  }
+
+  function openChat(){
+
+    if(!chatWindow){
+      return;
+    }
+
+    hidePrompt();
+
+    assistant.classList.add(
+      "chat-open"
+    );
+
+    chatWindow.classList.add(
+      "open"
+    );
+
+    chatWindow.setAttribute(
+      "aria-hidden",
+      "false"
+    );
+
+    if(launcher){
+
+      launcher.setAttribute(
+        "aria-expanded",
+        "true"
+      );
+    }
+
+    setTimeout(
+      ()=>input&&input.focus(),
+      250
+    );
+  }
+
+  function closeAssistant(){
+
+    if(!chatWindow){
+      return;
+    }
+
+    assistant.classList.remove(
+      "chat-open"
+    );
+
+    chatWindow.classList.remove(
+      "open"
+    );
+
+    chatWindow.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+    if(launcher){
+
+      launcher.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+    }
+  }
+
+  if(launcher){
+
+    launcher.addEventListener(
+      "click",
+      openChat
+    );
+  }
+
+  if(closeChat){
+
+    closeChat.addEventListener(
+      "click",
+      closeAssistant
+    );
+  }
+
+  if(promptMain){
+
+    promptMain.addEventListener(
+      "click",
+      openChat
+    );
+  }
+
+  if(promptClose){
+
+    promptClose.addEventListener(
+      "click",
+      e=>{
+
+        e.stopPropagation();
+
+        hidePrompt();
+      }
+    );
+  }
+
+  /* Assistant suggestion appears after 3 seconds on every page */
+  if(prompt){
+
+    setTimeout(
+      showPrompt,
+      3000
+    );
+  }
+
+  function getResponse(original){
+
+    const question=
+    String(original||"")
+    .toLowerCase()
+    .trim();
+
+    const italian=
+    isItalian(original);
+
+    const current=
+    residences[page]||
+    null;
+
+    const bookingAction=[
+      {
+        label:
+        "BOOK YOUR STAY →",
+        href:
+        "booking.html"
+      }
+    ];
+
+    if(
+      question.includes(
+        "what is prime"
+      )||
+      question.includes(
+        "about-prime"
+      )||
+      question.includes(
+        "tell me about prime"
+      )||
+      question.includes(
+        "cos'è prime"
+      )
+    ){
+
+      return{
+
+        text:
+        italian
+          ?"Prime Residence Bologna è una collezione di residence privati e raffinati pensati per vivere Bologna con il comfort e la libertà di una casa propria."
+          :"Prime Residence Bologna is a collection of refined private residences designed for guests who want to experience Bologna with the comfort and freedom of their own space.",
+
+        actions:[
+          {
+            label:
+            "DISCOVER THE RESIDENCES →",
+            href:
+            "index.html#residences"
+          }
+        ]
+      };
+    }
+
+    if(
+      question.includes(
+        "which residences"
+      )||
+      question.includes(
+        "residences"
+      )||
+      (
+        question.includes(
+          "residence"
+        )&&
+        question.includes(
+          "which"
+        )
+      )
+    ){
+
+      return{
+
+        text:
+        italian
+          ?"Prime Residence Bologna propone Gastone Rossi 12, con 3 camere e 2 bagni, e Barontini 8, con 2 camere e 1 bagno. Entrambi possono ospitare fino a 6 persone."
+          :"Prime Residence Bologna offers Gastone Rossi 12, with 3 bedrooms and 2 bathrooms, and Barontini 8, with 2 bedrooms and 1 bathroom. Both accommodate up to 6 guests.",
+
+        actions:[
+          {
+            label:
+            "GASTONE ROSSI 12 →",
+            href:
+            "gastone-rossi-12.html"
+          },
+          {
+            label:
+            "BARONTINI 8 →",
+            href:
+            "barontini-8.html"
+          }
+        ]
+      };
+    }
+
+    if(
+      question.includes(
+        "this residence"
+      )||
+      question.includes(
+        "residence-details"
+      )||
+      question.includes(
+        "apartment"
+      )
+    ){
+
+      if(current){
+
+        return{
+
+          text:
+          italian
+            ?`${current.name} dispone di ${current.bedrooms} camere, ${current.bathrooms} bagni e può ospitare fino a ${current.guests} persone.`
+            :`${current.name} has ${current.bedrooms} bedrooms, ${current.bathrooms} bathrooms and accommodates up to ${current.guests} guests.`,
+
+          actions:
+          bookingAction
+        };
+      }
+    }
+
+    if(
+      question.includes(
+        "difference"
+      )||
+      question.includes(
+        "compare"
+      )||
+      question.includes(
+        "differenza"
+      )||
+      question.includes(
+        "confront"
+      )
+    ){
+
+      return{
+
+        text:
+        italian
+          ?"Gastone Rossi 12 è più ampio, con 3 camere e 2 bagni. Barontini 8 dispone di 2 camere e 1 bagno. Entrambi ospitano fino a 6 persone."
+          :"Gastone Rossi 12 is larger, with 3 bedrooms and 2 bathrooms. Barontini 8 has 2 bedrooms and 1 bathroom. Both accommodate up to 6 guests.",
+
+        actions:[
+          {
+            label:
+            "COMPARE RESIDENCES →",
+            href:
+            "index.html#residences"
+          }
+        ]
+      };
+    }
+
+    if(
+      question.includes(
+        "booking"
+      )||
+      question.includes(
+        "book"
+      )||
+      question.includes(
+        "prenot"
+      )
+    ){
+
+      return{
+
+        text:
+        italian
+          ?"Puoi scegliere il residence, controllare la disponibilità sul calendario e inviare una richiesta dalla pagina Book Your Stay."
+          :"You can choose a residence, check real-time availability on the calendar and submit your request through the Book Your Stay page.",
+
+        actions:
+        bookingAction
+      };
+    }
+
+    if(
+      question.includes(
+        "available"
+      )||
+      question.includes(
+        "availability"
+      )||
+      question.includes(
+        "disponibil"
+      )
+    ){
+
+      return{
+
+        text:
+        italian
+          ?"Nella pagina Book Your Stay puoi vedere la disponibilità sul calendario e selezionare direttamente le date del soggiorno."
+          :"The Book Your Stay page displays real-time availability on the calendar so you can select your stay directly.",
+
+        actions:[
+          {
+            label:
+            "CHECK AVAILABILITY →",
+            href:
+            "booking.html"
+          }
+        ]
+      };
+    }
+
+    if(
+      question.includes(
+        "check-in"
+      )||
+      question.includes(
+        "checkin"
+      )||
+      question.includes(
+        "arriv"
+      )
+    ){
+
+      if(current){
+
+        return{
+
+          text:
+          italian
+            ?`Per ${current.name}, il check-in è previsto ${current.checkin} e il check-out ${current.checkout}. Comunica in anticipo l'orario di arrivo.`
+            :`At ${current.name}, check-in is ${current.checkin} and check-out is ${current.checkout}. Please communicate your arrival time in advance.`,
+
+          actions:
+          bookingAction
+        };
+      }
+
+      return{
+
+        text:
+        italian
+          ?"Gli orari cambiano in base al residence: Gastone Rossi 12, 15:00–19:00; Barontini 8, 15:00–21:00. Il check-out è entro le 11:00."
+          :"Check-in times depend on the residence: Gastone Rossi 12, 15:00–19:00; Barontini 8, 15:00–21:00. Check-out is by 11:00.",
+
+        actions:
+        bookingAction
+      };
+    }
+
+    if(
+      question.includes(
+        "location"
+      )||
+      question.includes(
+        "address"
+      )||
+      question.includes(
+        "where"
+      )||
+      question.includes(
+        "dove"
+      )||
+      question.includes(
+        "indirizzo"
+      )
+    ){
+
+      let target=
+      current;
+
+      if(
+        question.includes(
+          "gastone"
+        )
+      ){
+
+        target=
+        residences.gastone;
+      }
+
+      if(
+        question.includes(
+          "barontini"
+        )
+      ){
+
+        target=
+        residences.barontini;
+      }
+
+      if(target){
+
+        return{
+
+          text:
+          italian
+            ?`${target.name} si trova in ${target.address}.`
+            :`${target.name} is located at ${target.address}.`,
+
+          actions:[]
+        };
+      }
+
+      return{
+
+        text:
+        italian
+          ?"I residence si trovano a Bologna. Puoi aprire le pagine delle singole strutture per vedere posizione e dintorni."
+          :"The residences are located in Bologna. Open each residence page to see its location and nearby places.",
+
+        actions:[
+          {
+            label:
+            "DISCOVER THE RESIDENCES →",
+            href:
+            "index.html#residences"
+          }
+        ]
+      };
+    }
+
+    if(
+      question.includes(
+        "contact"
+      )||
+      question.includes(
+        "whatsapp"
+      )||
+      question.includes(
+        "email"
+      )||
+      question.includes(
+        "contatt"
+      )
+    ){
+
+      return{
+
+        text:
+        italian
+          ?"Puoi contattare direttamente Prime Residence tramite WhatsApp o email."
+          :"You can contact Prime Residence directly via WhatsApp or email.",
+
+        actions:[
+          {
+            label:
+            "WHATSAPP ↗",
+            href:
+            "https://wa.me/393917055625",
+            external:true
+          },
+          {
+            label:
+            "EMAIL ↗",
+            href:
+            "mailto:vittoriolandi005@gmail.com"
+          }
+        ]
+      };
+    }
+
+    return{
+
+      text:
+      italian
+        ?"Posso aiutarti con informazioni sui residence, disponibilità, prenotazioni, check-in e posizione."
+        :"I can help with our residences, availability, booking, check-in and location.",
+
+      actions:[]
+    };
+  }
+
+  function processQuestion(
+    question
+  ){
+
+    if(
+      !question||
+      !question.trim()
+    ){
+      return;
+    }
+
+    const clean=
+    question.trim();
+
+    addMessage(
+      clean,
+      "user"
+    );
+
+    const response=
+    getResponse(clean);
+
+    setTimeout(
+      ()=>addMessage(
+        response.text,
+        "bot",
+        response.actions
+      ),
+      320
+    );
+  }
+
+  if(
+    form&&
+    input
+  ){
+
+    form.addEventListener(
+      "submit",
+      e=>{
+
+        e.preventDefault();
+
+        const question=
+        input.value;
+
+        input.value="";
+
+        processQuestion(
+          question
+        );
+      }
+    );
+  }
+
+  suggestionButtons.forEach(
+    button=>
+    button.addEventListener(
+      "click",
+      ()=>{
+
+        const type=
+        button.dataset.question||
+        "";
+
+        let question="";
+
+        switch(type){
+
+          case"about-prime":
+
+            question=
+            "What is Prime Residence Bologna?";
+
+            break;
+
+          case"residences":
+
+            question=
+            "Which residences do you have?";
+
+            break;
+
+          case"residence-details":
+
+            question=
+            "Tell me about this residence";
+
+            break;
+
+          case"compare":
+
+            question=
+            "What is the difference between the two apartments?";
+
+            break;
+
+          case"booking":
+
+            question=
+            "How can I book?";
+
+            break;
+
+          case"location":
+
+            question=
+            page==="gastone"
+              ?"Where is Gastone Rossi 12?"
+              :page==="barontini"
+              ?"Where is Barontini 8?"
+              :"Where are the residences?";
+
+            break;
+
+          case"checkin":
+
+            question=
+            "How does check-in work?";
+
+            break;
+
+          default:
+
+            question=
+            type;
+        }
+
+        processQuestion(
+          question
+        );
+      }
+    )
+  );
+
+  document.addEventListener(
+    "keydown",
+    e=>{
+
+      if(
+        e.key==="Escape"&&
+        assistant.classList.contains(
+          "chat-open"
+        )
+      ){
+
+        closeAssistant();
+      }
+    }
+  );
 }
-);
-
-}
-
-if(closeChat){
-
-closeChat.addEventListener(
-"click",
-()=>{
-
-assistant.classList.remove(
-"chat-open"
-);
-
-chatWindow.classList.remove(
-"open"
-);
-
-chatWindow.setAttribute(
-"aria-hidden",
-"true"
-);
-
-}
-);
-
-}
-
-}
-
 
 /* =========================================================
    21. ESC
 ========================================================= */
 
 document.addEventListener(
-"keydown",
-e=>{
+  "keydown",
+  e=>{
 
-if(
-e.key!=="Escape"
-){
-return;
-}
+    if(e.key!=="Escape"){
+      return;
+    }
 
-if(
-mobileMenu&&
-mobileMenu.classList.contains(
-"active"
-)
-){
+    if(
+      mobileMenu&&
+      mobileMenu.classList.contains(
+        "active"
+      )
+    ){
 
-mobileMenu.classList.remove(
-"active"
+      mobileMenu.classList.remove(
+        "active"
+      );
+
+      if(menuToggle){
+
+        menuToggle.classList.remove(
+          "active"
+        );
+
+        menuToggle.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+      }
+
+      document.body.style.overflow=
+      "";
+    }
+
+    const openAssistant=
+    document.querySelector(
+      ".prime-assistant.chat-open"
+    );
+
+    if(openAssistant){
+
+      const win=
+      openAssistant.querySelector(
+        ".prime-assistant-window"
+      );
+
+      const launcher=
+      openAssistant.querySelector(
+        ".prime-assistant-launcher"
+      );
+
+      openAssistant.classList.remove(
+        "chat-open"
+      );
+
+      if(win){
+
+        win.classList.remove(
+          "open"
+        );
+
+        win.setAttribute(
+          "aria-hidden",
+          "true"
+        );
+      }
+
+      if(launcher){
+
+        launcher.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+      }
+    }
+  }
 );
-
-if(menuToggle){
-
-menuToggle.classList.remove(
-"active"
-);
-
-}
-
-document.body.style.overflow=
-"";
-
-}
-
-}
-);
-
 
 /* =========================================================
-   22. YEAR
+   22. LANGUAGE-DEPENDENT DYNAMIC UI
+========================================================= */
+
+window.addEventListener(
+  "primeLanguageChanged",
+  ()=>{
+
+    if(calendarGrid){
+      renderCalendar();
+    }
+
+    updatePriceBanner();
+
+    updateAdaptiveLogos();
+  }
+);
+
+/* =========================================================
+   23. YEAR
 ========================================================= */
 
 const year=
 document.querySelector(
-"#year"
+  "#year"
 );
 
 if(year){
 
-year.textContent=
-new Date()
-.getFullYear();
-
+  year.textContent=
+  new Date()
+  .getFullYear();
 }
 
 console.log(
-"Prime Residence Bologna — website ready."
+  "Prime Residence Bologna — website ready."
 );
 
 });
