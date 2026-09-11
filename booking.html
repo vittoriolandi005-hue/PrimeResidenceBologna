@@ -532,10 +532,10 @@
       position:relative
     }
 
-     .booking-page .selected-stay{
+    .booking-page .selected-stay{
       display:block;
       max-height:0;
-      margin:0 92px;
+      margin:0;
       padding:0 30px;
       overflow:hidden;
       visibility:hidden;
@@ -556,7 +556,7 @@
 
     .booking-page .selected-stay.visible{
       max-height:560px;
-      margin:0 92px 24px;
+      margin:0 0 24px;
       padding:27px 30px 30px;
       overflow:hidden;
       visibility:visible;
@@ -997,59 +997,6 @@
 
 
 
-
-    /* =====================================================
-       SELECTED STAY â€” POSITION ABOVE CALENDAR
-    ====================================================== */
-
-    .booking-page .selected-stay{
-      position:relative;
-      z-index:2;
-      margin-left:68px;
-      margin-right:68px
-    }
-
-    .booking-page .selected-stay.visible{
-      margin-top:0;
-      margin-right:68px;
-      margin-bottom:34px;
-      margin-left:68px
-    }
-
-    .booking-page .prime-calendar{
-      position:relative;
-      z-index:1
-    }
-
-    @media(max-width:1024px){
-      .booking-page .selected-stay,
-      .booking-page .selected-stay.visible{
-        margin-left:42px;
-        margin-right:42px
-      }
-    }
-
-    @media(max-width:850px){
-      .booking-page .selected-stay,
-      .booking-page .selected-stay.visible{
-        margin-left:18px;
-        margin-right:18px
-      }
-
-      .booking-page .selected-stay.visible{
-        margin-bottom:26px
-      }
-    }
-
-    @media(max-width:600px){
-      .booking-page .selected-stay,
-      .booking-page .selected-stay.visible{
-        margin-left:0;
-        margin-right:0
-      }
-    }
-
-
   </style>
 </head>
 <body class="booking-page">
@@ -1329,7 +1276,7 @@
                       â€”
                     </strong>
 <span class="stay-price-meta" id="stayPriceMeta">
-                      
+                      Select guests to see the total price
                     </span>
 </div>
 <button class="stay-price-action" id="requestBookingButton" type="button" disabled="">
@@ -1584,13 +1531,18 @@ document.addEventListener("DOMContentLoaded",()=>{
 
   if(!priceBanner||!requestButton)return;
 
+  const emptyPriceCopy=()=>
+    document.documentElement.lang==="it"
+      ?"Seleziona gli ospiti per vedere il prezzo totale"
+      :"Select guests to see the total price";
+
   const syncRequestButton=()=>{
     const priceReady=priceBanner.classList.contains("visible");
     requestButton.disabled=!priceReady;
 
     if(!priceReady){
       if(total)total.textContent="â€”";
-      if(meta)meta.textContent="";
+      if(meta)meta.textContent=emptyPriceCopy();
     }
   };
 
