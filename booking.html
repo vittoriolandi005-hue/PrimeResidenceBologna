@@ -525,7 +525,7 @@
 
 
     /* =====================================================
-       SELECTED STAY â€” PANEL ABOVE CALENDAR
+       SELECTED STAY â€” OVERLAY ON CALENDAR
     ====================================================== */
 
     .booking-page .prime-calendar-section{
@@ -533,6 +533,11 @@
     }
 
     .booking-page .selected-stay{
+      position:absolute;
+      top:18px;
+      right:68px;
+      left:68px;
+      z-index:8;
       display:block;
       max-height:0;
       margin:0;
@@ -544,10 +549,9 @@
       pointer-events:none;
       background:#171614;
       color:#f3efe7;
-      box-shadow:0 18px 48px rgba(23,22,20,.12);
+      box-shadow:0 18px 48px rgba(23,22,20,.16);
       transition:
         max-height .65s cubic-bezier(.22,.61,.36,1),
-        margin .55s cubic-bezier(.22,.61,.36,1),
         padding .55s cubic-bezier(.22,.61,.36,1),
         opacity .35s ease,
         transform .55s cubic-bezier(.22,.61,.36,1),
@@ -556,9 +560,9 @@
 
     .booking-page .selected-stay.visible{
       max-height:560px;
-      margin:0 0 24px;
+      margin:0;
       padding:27px 30px 30px;
-      overflow:hidden;
+      overflow:visible;
       visibility:visible;
       opacity:1;
       transform:translateY(0);
@@ -629,7 +633,7 @@
 
     .booking-page .selected-stay-grid{
       display:grid;
-      grid-template-columns:minmax(0,1.3fr) minmax(175px,.45fr) minmax(390px,1fr);
+      grid-template-columns:minmax(0,1.55fr) minmax(160px,.55fr) minmax(300px,.9fr);
       align-items:stretch;
       border-top:1px solid rgba(255,255,255,.12)
     }
@@ -642,16 +646,16 @@
     .booking-page .selected-stay-residence{
       margin:0;
       font-family:"Playfair Display",serif;
-      font-size:28px;
+      font-size:31px;
       font-weight:400;
-      line-height:1.1
+      line-height:1.08
     }
 
     .booking-page .selected-stay-details{
       display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:20px;
-      margin:18px 0 0;
+      grid-template-columns:repeat(3,minmax(92px,1fr));
+      gap:18px 26px;
+      margin:16px 0 0;
       padding:0;
       border:0
     }
@@ -673,11 +677,12 @@
     }
 
     .booking-page .selected-stay-item span:last-child{
-      overflow:hidden;
+      overflow:visible;
       font-family:"Playfair Display",serif;
-      font-size:17px;
-      white-space:nowrap;
-      text-overflow:ellipsis
+      font-size:14px;
+      line-height:1.3;
+      white-space:normal;
+      text-overflow:clip
     }
 
     .booking-page .selected-stay-guests{
@@ -719,7 +724,7 @@
     .booking-page .selected-stay .stay-price-banner,
     .booking-page .selected-stay .stay-price-banner.visible{
       display:grid!important;
-      grid-template-columns:minmax(115px,.65fr) minmax(185px,1fr);
+      grid-template-columns:minmax(115px,.7fr) minmax(185px,1fr);
       align-items:center;
       gap:22px;
       min-width:0;
@@ -747,6 +752,7 @@
     }
 
     .booking-page .selected-stay .stay-price-total{
+      min-height:40px;
       color:#f3efe7;
       font-family:"Playfair Display",serif;
       font-size:37px;
@@ -777,104 +783,78 @@
     }
 
     .booking-page .selected-stay .stay-price-action:hover:not(:disabled){
-      background:#c7ad77;
-      border-color:#c7ad77;
+      background:#ccb176;
+      border-color:#ccb176;
       transform:translateY(-2px)
     }
 
     .booking-page .selected-stay .stay-price-action:disabled{
-      opacity:.38;
+      opacity:.45;
       cursor:not-allowed;
       transform:none
     }
 
-    @media(max-width:1100px){
+    @media(max-width:1150px){
+      .booking-page .selected-stay{
+        right:42px;
+        left:42px
+      }
 
       .booking-page .selected-stay-grid{
-        grid-template-columns:minmax(0,1.35fr) minmax(175px,.65fr)
+        grid-template-columns:minmax(0,1.25fr) minmax(150px,.5fr) minmax(270px,.85fr)
       }
-
-      .booking-page .selected-stay .stay-price-banner,
-      .booking-page .selected-stay .stay-price-banner.visible{
-        grid-column:1/-1;
-        grid-template-columns:1fr minmax(210px,300px);
-        margin-top:20px;
-        padding:20px 0 0;
-        border-left:0;
-        border-top:1px solid rgba(255,255,255,.12)
-      }
-
     }
 
-    @media(max-width:700px){
-
+    @media(max-width:850px){
       .booking-page .selected-stay{
-        padding:0 20px
+        position:relative;
+        top:auto;
+        right:auto;
+        left:auto
       }
 
       .booking-page .selected-stay.visible{
-        max-height:900px;
-        margin-bottom:16px;
-        padding:22px 20px 24px
-      }
-
-      .booking-page .selected-stay-top{
-        align-items:flex-start;
-        flex-direction:row;
-        gap:14px;
-        margin-bottom:17px
-      }
-
-      .booking-page .selected-stay-heading{
-        align-items:flex-start;
-        flex-direction:column;
-        gap:7px
+        margin:0 0 24px
       }
 
       .booking-page .selected-stay-grid{
-        grid-template-columns:1fr
+        grid-template-columns:1fr;
       }
 
-      .booking-page .selected-stay-summary{
-        padding:19px 0 21px
+      .booking-page .selected-stay-summary,
+      .booking-page .selected-stay-guests,
+      .booking-page .selected-stay .stay-price-banner,
+      .booking-page .selected-stay .stay-price-banner.visible{
+        padding:18px 0 0;
+        border-left:0;
+        border-top:1px solid rgba(255,255,255,.12)
       }
+    }
 
-      .booking-page .selected-stay-residence{
-        font-size:25px
-      }
-
-      .booking-page .selected-stay-details{
-        grid-template-columns:repeat(3,minmax(0,1fr));
+    @media(max-width:600px){
+      .booking-page .selected-stay-top{
+        align-items:flex-start;
+        flex-direction:column;
         gap:10px
       }
 
-      .booking-page .selected-stay-item span:last-child{
-        font-size:14px;
-        white-space:normal
-      }
-
-      .booking-page .selected-stay-guests{
-        padding:20px 0;
-        border-top:1px solid rgba(255,255,255,.12);
-        border-left:0
+      .booking-page .selected-stay-details{
+        grid-template-columns:1fr;
+        gap:14px
       }
 
       .booking-page .selected-stay .stay-price-banner,
       .booking-page .selected-stay .stay-price-banner.visible{
         grid-template-columns:1fr;
-        gap:17px;
-        margin-top:0;
-        padding:20px 0 0
       }
 
       .booking-page .selected-stay .stay-price-action{
         width:100%
       }
-
     }
 
 
-    /* =====================================================
+/* =====================================================
        SELECTED STAY â€” REVEAL ANIMATION
        Smooth entrance after both dates are selected.
     ====================================================== */
@@ -997,7 +977,17 @@
 
 
 
-  </style>
+
+    /* =====================================================
+       SELECTED STAY â€” FINAL POSITION OVERRIDE
+    ====================================================== */
+
+    .booking-page .prime-calendar{
+      position:relative;
+      z-index:1
+    }
+
+</style>
 </head>
 <body class="booking-page">
 <!-- =====================================================
@@ -1273,10 +1263,10 @@
                       TOTAL STAY
                     </span>
 <strong class="stay-price-total" id="stayPriceTotal">
-                      â€”
+                      
                     </strong>
 <span class="stay-price-meta" id="stayPriceMeta">
-                      Select guests to see the total price
+                      
                     </span>
 </div>
 <button class="stay-price-action" id="requestBookingButton" type="button" disabled="">
@@ -1531,18 +1521,13 @@ document.addEventListener("DOMContentLoaded",()=>{
 
   if(!priceBanner||!requestButton)return;
 
-  const emptyPriceCopy=()=>
-    document.documentElement.lang==="it"
-      ?"Seleziona gli ospiti per vedere il prezzo totale"
-      :"Select guests to see the total price";
-
   const syncRequestButton=()=>{
     const priceReady=priceBanner.classList.contains("visible");
     requestButton.disabled=!priceReady;
 
     if(!priceReady){
-      if(total)total.textContent="â€”";
-      if(meta)meta.textContent=emptyPriceCopy();
+      if(total)total.textContent="";
+      if(meta)meta.textContent="";
     }
   };
 
