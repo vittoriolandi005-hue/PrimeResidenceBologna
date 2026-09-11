@@ -1,857 +1,93 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta content="Gastone Rossi 12 — Prime Residence Bologna." name="description"/>
-<title>
-    Gastone Rossi 12 — Prime Residence Bologna
-  </title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&amp;family=Playfair+Display:wght@400;500&amp;display=swap" rel="stylesheet"/>
-<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
-<link href="style.css" rel="stylesheet"/>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Gastone Rossi 12 | Prime Residence Bologna</title>
+  <meta name="description" content="Gastone Rossi 12, a private Prime Residence apartment in Bologna.">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet"><link href="style.css" rel="stylesheet">
 </head>
-<body class="apartment-page">
-<!-- =====================================================
-       NAVIGATION
-  ====================================================== -->
-<header class="apartment-nav">
-<a class="apartment-nav-logo apartment-nav-logo-image" href="index.html" aria-label="Prime Residence Bologna home">
-<img class="site-brand-image site-brand-image-apartment-nav" src="images/prime-residence-logo.png" alt="Prime Residence Bologna"/>
-</a>
-<div class="apartment-nav-right">
-<a class="apartment-nav-link" href="index.html#residences">
-        RESIDENCES
-      </a>
-<a class="apartment-nav-link" href="booking.html">
-        BOOK NOW
-      </a>
-</div>
+<body class="apartment-page" data-residence="gastone">
+<header class="navbar" data-adaptive-nav>
+  <div class="nav-container">
+    <a class="logo logo-image-link" href="index.html" aria-label="Prime Residence Bologna home">
+      <img class="site-brand-image site-brand-image-nav" src="images/prime-residence-logo.png" alt="Prime Residence Bologna">
+    </a>
+    <nav class="desktop-nav">
+      <a href="index.html#residences">Residences</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="index.html#bologna">Bologna</a>
+      <a class="nav-book" href="booking.html">Book now</a></nav>
+    <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+  </div>
 </header>
+<div class="mobile-menu">
+  <div class="mobile-menu-inner">
+    <a href="index.html#residences">Residences</a>
+    <a href="index.html#experience">Experience</a>
+    <a href="index.html#bologna">Bologna</a>
+    <a href="booking.html">Book your stay</a>
+  </div>
+</div>
 <main>
-<!-- =====================================================
-         HERO
-    ====================================================== -->
-<section class="apartment-hero">
-<a class="apartment-back" href="index.html#residences">
-        ← BACK TO RESIDENCES
-      </a>
-<div class="apartment-hero-image"><img alt="Gastone Rossi 12 — Master Bedroom" class="apartment-photo" fetchpriority="high" src="images/gastone-rossi-12/01.jpg"/></div>
-<div class="apartment-hero-overlay"></div>
-<div class="apartment-hero-content">
-<div class="apartment-eyebrow">
-          PRIME RESIDENCE · BOLOGNA
-        </div>
-<h1>
+  <section class="apartment-hero" data-logo-scheme="image"><img class="apartment-hero-photo" src="images/gastone-rossi-12/30.jpg" alt="Gastone Rossi 12"><div class="apartment-hero-overlay"></div><a class="apartment-back" href="index.html#residences">â† BACK TO RESIDENCES</a><div class="apartment-hero-content"><p class="section-kicker">PRIME RESIDENCE Â· BOLOGNA</p><h1>Gastone Rossi 12</h1><p>A spacious contemporary residence designed for families, groups and longer stays, with three bedrooms, two bathrooms and several outdoor areas.</p><a class="btn btn-primary" href="booking.html">Book your stay</a></div></section>
 
-          Gastone Rossi
-          <br/>
-<em>
-            12.
-          </em>
-</h1>
-<div class="apartment-location">
-          BOLOGNA · ITALY
-        </div>
-</div>
-</section>
-<!-- =====================================================
-         FACTS
-    ====================================================== -->
-<section class="apartment-facts">
-<div class="apartment-fact">
-<span>
-          BEDROOMS
-        </span>
-<strong>
-          03
-        </strong>
-</div>
-<div class="apartment-fact">
-<span>
-          BATHROOMS
-        </span>
-<strong>
-          02
-        </strong>
-</div>
-<div class="apartment-fact">
-<span>
-          GUESTS
-        </span>
-<strong>
-          06
-        </strong>
-</div>
-<div class="apartment-fact">
-<span>
-          RESIDENCE
-        </span>
-<strong>
-          01
-        </strong>
-</div>
-</section>
-<!-- =====================================================
-         INTRO
-    ====================================================== -->
-<section class="apartment-intro">
-<div class="apartment-intro-grid">
-<div class="apartment-section-label">
-          THE RESIDENCE
-        </div>
-<div class="apartment-intro-text">
-<h2>
+  <section class="apartment-facts" data-logo-scheme="light"><div class="apartment-fact"><span>SIZE</span><strong>98 mÂ²</strong></div><div class="apartment-fact"><span>BEDROOMS</span><strong>3</strong></div><div class="apartment-fact"><span>BATHROOMS</span><strong>2</strong></div><div class="apartment-fact"><span>GUESTS</span><strong>6</strong></div></section>
 
-            Space to live,
-            <br/>
-<em>
-              room to stay.
-            </em>
-</h2>
-<p>
+  <section class="property-gallery-section" data-logo-scheme="light">
+    <div class="property-gallery-heading container"><div><p class="section-kicker">GALLERY</p><h2>Your place <em>in Bologna.</em></h2></div><div class="gallery-counter"><span data-gallery-current>01</span><i></i><span>34</span></div></div>
+    <div class="booking-gallery" data-booking-gallery data-gallery-prefix="images/gastone-rossi-12/" data-gallery-count="34">
+      <button class="booking-gallery-nav prev" type="button" data-gallery-prev aria-label="Previous photos">â†</button>
+      <div class="booking-gallery-grid"><button class="booking-gallery-cell gallery-main" type="button" data-gallery-slot="0" aria-label="Open photo 1"><img alt="Residence photo"><span class="gallery-cell-shade"></span></button><button class="booking-gallery-cell gallery-side-top" type="button" data-gallery-slot="1" aria-label="Open photo 2"><img alt="Residence photo"><span class="gallery-cell-shade"></span></button><button class="booking-gallery-cell gallery-side-bottom" type="button" data-gallery-slot="2" aria-label="Open photo 3"><img alt="Residence photo"><span class="gallery-cell-shade"></span></button><button class="booking-gallery-cell gallery-thumb" type="button" data-gallery-slot="3" aria-label="Open photo 4"><img alt="Residence photo"><span class="gallery-cell-shade"></span></button><button class="booking-gallery-cell gallery-thumb" type="button" data-gallery-slot="4" aria-label="Open photo 5"><img alt="Residence photo"><span class="gallery-cell-shade"></span></button><button class="booking-gallery-cell gallery-thumb" type="button" data-gallery-slot="5" aria-label="Open photo 6"><img alt="Residence photo"><span class="gallery-cell-shade"></span></button><button class="booking-gallery-cell gallery-thumb" type="button" data-gallery-slot="6" aria-label="Open photo 7"><img alt="Residence photo"><span class="gallery-cell-shade"></span></button><button class="booking-gallery-cell gallery-thumb gallery-more" type="button" data-gallery-slot="7" aria-label="Open photo 8"><img alt="Residence photo"><span class="gallery-cell-shade"></span><span class="gallery-more-label" data-gallery-more></span></button></div>
+      <button class="booking-gallery-nav next" type="button" data-gallery-next aria-label="Next photos">â†’</button>
+      <p class="gallery-swipe-hint">SWIPE OR DRAG TO EXPLORE</p>
+    </div>
+  </section>
 
-            Gastone Rossi 12 is a spacious
-            contemporary residence designed
-            for longer stays, families and
-            groups looking for comfort
-            in Bologna.
+  <section class="apartment-intro section" data-logo-scheme="light"><div class="container apartment-intro-grid"><div><p class="section-kicker">THE RESIDENCE</p><h2>A refined stay, <em>your own space.</em></h2></div><div class="apartment-intro-text"><p>A spacious contemporary residence designed for families, groups and longer stays, with three bedrooms, two bathrooms and several outdoor areas.</p><p>The residence is equipped for independent stays, with a kitchen area, laundry facilities, WiFi and practical everyday comforts.</p></div></div></section>
 
-          </p>
-<p>
+  <section class="apartment-amenities section soft-section" data-logo-scheme="light"><div class="container apartment-amenities-grid"><div><p class="section-kicker">AMENITIES</p><h2>Everything <em>you need.</em></h2></div><ul class="amenities-list"><li>Free WiFi</li><li>Air conditioning</li><li>Garden & balcony</li><li>Private parking (paid)</li><li>Dishwasher</li><li>Washing machine</li><li>Coffee machine</li><li>Microwave & fridge</li><li>TVs in living room and bedrooms</li><li>Towels & bed linen</li></ul></div></section>
 
-            With three bedrooms, two bathrooms
-            and space for up to six guests,
-            the residence offers the freedom
-            and privacy of a home while keeping
-            Bologna within easy reach.
+  <section class="stay-information section dark-section" data-logo-scheme="dark"><div class="container"><div class="section-heading"><div><p class="section-kicker">YOUR STAY</p><h2>Simple details, <em>before you arrive.</em></h2></div><p>Arrival time should be communicated in advance. Final booking conditions depend on the selected rate and stay dates.</p></div><div class="stay-info-grid"><article><span>CHECK-IN</span><strong>15:00 â€” 19:00</strong><p>Please let us know your expected arrival time in advance.</p></article><article><span>CHECK-OUT</span><strong>08:00 â€” 11:00</strong><p>Please complete departure within the stated check-out window.</p></article><article><span>FAMILIES</span><strong>Children welcome</strong><p>A cot for ages 0â€“3 is available free on request and subject to availability. No extra beds.</p></article><article><span>HOUSE RULES</span><strong>Quiet private stay</strong><p>No smoking, parties/events or pets. No minimum age requirement for check-in.</p></article></div><p class="license-line">License: 037006-CV-01421 Â· IT037006B4KLMQB8OE</p></div></section>
 
-          </p>
-</div>
-</div>
-</section>
-<!-- =====================================================
-         GALLERY
-    ====================================================== -->
-<section class="apartment-gallery-section">
-<div class="apartment-gallery-header">
-<div class="apartment-gallery-title">
-          GALLERY
-        </div>
-<div class="apartment-gallery-counter">01 / 34</div>
-</div>
-<div class="apartment-gallery"><div class="apartment-slide active"><img alt="Gastone Rossi 12 — Master Bedroom" class="apartment-photo" decoding="async" loading="eager" src="images/gastone-rossi-12/01.jpg"/><div class="apartment-slide-label">MASTER BEDROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Master Bedroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/02.jpg"/><div class="apartment-slide-label">MASTER BEDROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Master Bedroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/03.jpg"/><div class="apartment-slide-label">MASTER BEDROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Master Bedroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/04.jpg"/><div class="apartment-slide-label">MASTER BEDROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Master Bedroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/05.jpg"/><div class="apartment-slide-label">MASTER BEDROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Bedroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/06.jpg"/><div class="apartment-slide-label">BEDROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Bedroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/07.jpg"/><div class="apartment-slide-label">BEDROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Twin Bedroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/08.jpg"/><div class="apartment-slide-label">TWIN BEDROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Twin Bedroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/09.jpg"/><div class="apartment-slide-label">TWIN BEDROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Twin Bedroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/10.jpg"/><div class="apartment-slide-label">TWIN BEDROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Twin Bedroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/11.jpg"/><div class="apartment-slide-label">TWIN BEDROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Bedroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/12.jpg"/><div class="apartment-slide-label">BEDROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Bedroom Detail" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/13.jpg"/><div class="apartment-slide-label">BEDROOM DETAIL</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Bedroom Detail" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/14.jpg"/><div class="apartment-slide-label">BEDROOM DETAIL</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Bathroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/15.jpg"/><div class="apartment-slide-label">BATHROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Bathroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/16.jpg"/><div class="apartment-slide-label">BATHROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Bathroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/17.jpg"/><div class="apartment-slide-label">BATHROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Bathroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/18.jpg"/><div class="apartment-slide-label">BATHROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Bathroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/19.jpg"/><div class="apartment-slide-label">BATHROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Bathroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/20.jpg"/><div class="apartment-slide-label">BATHROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Bathroom" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/21.jpg"/><div class="apartment-slide-label">BATHROOM</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Kitchen &amp; Dining" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/22.jpg"/><div class="apartment-slide-label">KITCHEN &amp; DINING</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Kitchen &amp; Dining" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/23.jpg"/><div class="apartment-slide-label">KITCHEN &amp; DINING</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Kitchen" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/24.jpg"/><div class="apartment-slide-label">KITCHEN</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Kitchen &amp; Dining" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/25.jpg"/><div class="apartment-slide-label">KITCHEN &amp; DINING</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Private Patio" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/26.jpg"/><div class="apartment-slide-label">PRIVATE PATIO</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Private Patio" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/27.jpg"/><div class="apartment-slide-label">PRIVATE PATIO</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Private Patio" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/28.jpg"/><div class="apartment-slide-label">PRIVATE PATIO</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Garden" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/29.jpg"/><div class="apartment-slide-label">GARDEN</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Garden" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/30.jpg"/><div class="apartment-slide-label">GARDEN</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Garden" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/31.jpg"/><div class="apartment-slide-label">GARDEN</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Garden Detail" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/32.jpg"/><div class="apartment-slide-label">GARDEN DETAIL</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Bedroom Detail" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/33.jpg"/><div class="apartment-slide-label">BEDROOM DETAIL</div></div><div class="apartment-slide"><img alt="Gastone Rossi 12 — Residence Exterior" class="apartment-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/34.jpg"/><div class="apartment-slide-label">RESIDENCE EXTERIOR</div></div></div>
-<div class="apartment-gallery-swipe">
-<span class="swipe-line"></span>
-<span class="swipe-text">
-          SWIPE TO SWITCH PHOTO
-        </span>
-<span class="swipe-line"></span>
-</div>
-</section>
-<!-- =====================================================
-         LOCATION
-    ====================================================== -->
-<section class="residence-location-section">
-<div class="residence-location-heading">
-<div class="apartment-section-label">
-          LOCATION
-        </div>
-<div class="residence-location-heading-main">
-<h2>
+  <section class="residence-location-section section" data-logo-scheme="light"><div class="container residence-location-grid"><div><p class="section-kicker">LOCATION</p><h2>Bologna, <em>within easy reach.</em></h2><p>Approximately 900 m from Santâ€™Orsola Hospital, 1.9 km from BolognaFiere, 1.5 km from the historic centre and about 2 km from Bologna Centrale. Bus 37 stops nearby.</p><div class="location-address"><span>ADDRESS</span><strong>Via Gastone Rossi 12, Bologna</strong></div></div><div class="location-card"><div><span>NEARBY</span><strong>Santâ€™Orsola Â· BolognaFiere Â· Historic centre Â· Bologna Centrale</strong></div><a class="text-link" href="https://www.google.com/maps/search/?api=1&query=Via+Gastone+Rossi+12,+Bologna" target="_blank" rel="noopener noreferrer">OPEN IN MAPS â†—</a></div></div></section>
 
-            Your place
-            <br/>
-<em>
-              in Bologna.
-            </em>
-</h2>
-<p>
-
-            Via Gastone Rossi 12
-            <br/>
-            Bologna · Italy
-
-          </p>
-</div>
-</div>
-<div class="residence-location-grid">
-<!-- =================================================
-             MAP
-        ================================================== -->
-<div class="residence-map-column">
-<div aria-label="Map showing Via Gastone Rossi 12 in Bologna" class="residence-real-map" id="gastoneMap"></div>
-<a class="map-expand-link" href="https://www.google.com/maps/search/?api=1&amp;query=Via%20Gastone%20Rossi%2012%20Bologna" rel="noopener noreferrer" target="_blank">
-<span>
-              CLICK TO EXPAND
-            </span>
-<span>
-              ↗
-            </span>
-</a>
-</div>
-<!-- =================================================
-             DINTORNI
-        ================================================== -->
-<aside class="residence-nearby">
-<div class="nearby-header">
-<span class="nearby-kicker">
-              AROUND THE RESIDENCE
-            </span>
-<h3>
-
-              Dintorni
-
-              <em>
-                della struttura.
-              </em>
-</h3>
-</div>
-<div class="nearby-list">
-<a class="nearby-item" href="https://www.google.com/maps/search/?api=1&amp;query=Universita%20di%20Bologna" rel="noopener noreferrer" target="_blank">
-<span class="nearby-index">
-                01
-              </span>
-<div class="nearby-place">
-<strong>
-                  Università di Bologna
-                </strong>
-<small>
-                  UNIVERSITY · CULTURE
-                </small>
-</div>
-<span class="nearby-distance" data-lat="44.4962" data-lng="11.3544">
-                —
-              </span>
-</a>
-<a class="nearby-item" href="https://www.google.com/maps/search/?api=1&amp;query=Pinacoteca%20Nazionale%20Bologna" rel="noopener noreferrer" target="_blank">
-<span class="nearby-index">
-                02
-              </span>
-<div class="nearby-place">
-<strong>
-                  Pinacoteca Nazionale
-                </strong>
-<small>
-                  ART · CULTURE
-                </small>
-</div>
-<span class="nearby-distance" data-lat="44.4967" data-lng="11.3532">
-                —
-              </span>
-</a>
-<a class="nearby-item" href="https://www.google.com/maps/search/?api=1&amp;query=Due%20Torri%20Bologna" rel="noopener noreferrer" target="_blank">
-<span class="nearby-index">
-                03
-              </span>
-<div class="nearby-place">
-<strong>
-                  Le Due Torri
-                </strong>
-<small>
-                  LANDMARK · HISTORY
-                </small>
-</div>
-<span class="nearby-distance" data-lat="44.4942" data-lng="11.3465">
-                —
-              </span>
-</a>
-<a class="nearby-item" href="https://www.google.com/maps/search/?api=1&amp;query=Piazza%20Santo%20Stefano%20Bologna" rel="noopener noreferrer" target="_blank">
-<span class="nearby-index">
-                04
-              </span>
-<div class="nearby-place">
-<strong>
-                  Piazza Santo Stefano
-                </strong>
-<small>
-                  SQUARE · HISTORY
-                </small>
-</div>
-<span class="nearby-distance" data-lat="44.4919" data-lng="11.3482">
-                —
-              </span>
-</a>
-<a class="nearby-item" href="https://www.google.com/maps/search/?api=1&amp;query=Piazza%20Maggiore%20Bologna" rel="noopener noreferrer" target="_blank">
-<span class="nearby-index">
-                05
-              </span>
-<div class="nearby-place">
-<strong>
-                  Piazza Maggiore
-                </strong>
-<small>
-                  HISTORIC CENTRE
-                </small>
-</div>
-<span class="nearby-distance" data-lat="44.4939" data-lng="11.3426">
-                —
-              </span>
-</a>
-<a class="nearby-item" href="https://www.google.com/maps/search/?api=1&amp;query=Giardini%20Margherita%20Bologna" rel="noopener noreferrer" target="_blank">
-<span class="nearby-index">
-                06
-              </span>
-<div class="nearby-place">
-<strong>
-                  Giardini Margherita
-                </strong>
-<small>
-                  PARK · NATURE
-                </small>
-</div>
-<span class="nearby-distance" data-lat="44.4810" data-lng="11.3555">
-                —
-              </span>
-</a>
-</div>
-<div class="nearby-note">
-            DISTANCES ARE APPROXIMATE FROM THE RESIDENCE
-          </div>
-</aside>
-</div>
-</section>
-<!-- =====================================================
-         AMENITIES
-    ====================================================== -->
-<section class="apartment-amenities">
-<div class="apartment-amenities-grid">
-<div>
-<div class="apartment-section-label">
-            AMENITIES
-          </div>
-<h2>
-
-            Everything
-            <br/>
-            you need.
-
-          </h2>
-</div>
-<div class="amenities-list">
-<div class="amenity">
-            3 BEDROOMS
-          </div>
-<div class="amenity">
-            2 BATHROOMS
-          </div>
-<div class="amenity">
-            UP TO 6 GUESTS
-          </div>
-<div class="amenity placeholder">
-            ADD AMENITY
-          </div>
-<div class="amenity placeholder">
-            ADD AMENITY
-          </div>
-<div class="amenity placeholder">
-            ADD AMENITY
-          </div>
-</div>
-</div>
-</section>
-<!-- =====================================================
-         INFORMATION
-    ====================================================== -->
-<section class="apartment-info">
-<div class="apartment-info-grid">
-<div class="apartment-info-block">
-<h4>
-            LOCATION
-          </h4>
-<p>
-
-            Bologna, Italy.
-            <br/>
-            Exact location details can be added here.
-
-          </p>
-</div>
-<div class="apartment-info-block">
-<h4>
-            CHECK-IN
-          </h4>
-<p>
-
-            Check-in information
-            and arrival instructions
-            can be added here.
-
-          </p>
-</div>
-<div class="apartment-info-block">
-<h4>
-            HOUSE RULES
-          </h4>
-<p>
-
-            House rules and important
-            guest information can be
-            added here.
-
-          </p>
-</div>
-</div>
-</section>
-<!-- =====================================================
-         BOOKING
-    ====================================================== -->
-<section class="apartment-booking">
-<div class="apartment-booking-inner">
-<div class="section-label">
-          GASTONE ROSSI 12 · PRIME RESIDENCE
-        </div>
-<h2>
-
-          Your stay
-          <br/>
-<em>
-            starts here.
-          </em>
-</h2>
-<a class="apartment-booking-button" href="booking.html">
-
-          BOOK YOUR STAY
-
-          <span>
-            →
-          </span>
-</a>
-</div>
-</section>
+  <section class="apartment-booking" data-logo-scheme="dark"><div class="apartment-booking-inner"><p class="section-kicker">GASTONE ROSSI 12 Â· PRIME RESIDENCE</p><h2>Your stay <em>starts here.</em></h2><a class="btn btn-primary" href="booking.html">BOOK YOUR STAY â†’</a></div></section>
 </main>
-<!-- =====================================================
-       FOOTER
-  ====================================================== -->
-<footer>
-<div class="footer-top">
-<div class="footer-brand">
-<div class="footer-logo footer-logo-image">
-<img class="site-brand-image site-brand-image-footer" src="images/prime-residence-logo.png" alt="Prime Residence Bologna"/>
-</div>
-</div>
-<div class="footer-contact">
-<a href="mailto:vittoriolandi005@gmail.com">
-          vittoriolandi005@gmail.com
+<footer class="footer" data-logo-scheme="dark">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="logo logo-image-link" href="index.html" aria-label="Prime Residence Bologna home">
+          <img class="site-brand-image site-brand-image-footer logo-contrast-light" src="images/prime-residence-logo.png" alt="Prime Residence Bologna">
         </a>
-<a href="https://wa.me/393917055625" rel="noopener noreferrer" target="_blank">
-          +39 391 705 5625
-        </a>
-</div>
-<div class="footer-social">
-<a href="https://wa.me/393917055625" rel="noopener noreferrer" target="_blank">
-          WHATSAPP ↗
-        </a>
-</div>
-</div>
-<div class="footer-bottom">
-<span>
-
-        © <span id="year"></span>
-        PRIME RESIDENCE BOLOGNA
-
-      </span>
-<span>
-        BOLOGNA · ITALY
-      </span>
-</div>
+        <p>Refined short stays in Bologna, Italy.</p>
+      </div>
+      <div class="footer-column"><span class="footer-title">EXPLORE</span><a href="index.html#residences">Residences</a><a href="index.html#experience">Experience</a><a href="index.html#bologna">Bologna</a></div>
+      <div class="footer-column"><span class="footer-title">RESIDENCES</span><a href="gastone-rossi-12.html">Gastone Rossi 12</a><a href="barontini-8.html">Barontini 8</a></div>
+      <div class="footer-column"><span class="footer-title">CONTACT</span><a href="booking.html">Book Your Stay</a><a href="https://wa.me/393917055625" target="_blank" rel="noopener noreferrer">WhatsApp</a><a href="mailto:vittoriolandi005@gmail.com">Email</a></div>
+    </div>
+    <div class="footer-bottom"><p>Â© <span id="year"></span> Prime Residence Bologna. All rights reserved.</p><p>Bologna Â· Italy</p></div>
+  </div>
 </footer>
-<!-- =====================================================
-       PRIME RESIDENCE ASSISTANT
-       GASTONE ROSSI 12
-  ====================================================== -->
 <div class="prime-assistant" data-assistant-page="gastone" data-assistant-residence="Gastone Rossi 12">
-<!-- ===================================================
-         AUTOMATIC RESIDENCE BANNER
-    ==================================================== -->
-<div aria-hidden="true" class="prime-assistant-prompt">
-<button aria-label="Ask about Gastone Rossi 12" class="assistant-prompt-main" type="button">
-<span class="assistant-prompt-dot"></span>
-<span class="assistant-prompt-content">
-<span class="assistant-prompt-label">
-            PRIME ASSISTANT
-          </span>
-<strong>
-            What would you like to know about Gastone Rossi 12?
-          </strong>
-<small>
-            Ask about the apartment, location, booking or your stay.
-          </small>
-</span>
-<span class="assistant-prompt-arrow">
-          →
-        </span>
-</button>
-<button aria-label="Close assistant suggestion" class="assistant-prompt-close" type="button">
-        ×
-      </button>
+  <div aria-hidden="true" class="prime-assistant-prompt">
+    <button aria-label="Ask Prime Residence Assistant" class="assistant-prompt-main" type="button">
+      <span class="assistant-prompt-dot"></span>
+      <span class="assistant-prompt-content"><span class="assistant-prompt-label">PRIME ASSISTANT</span><strong>Youâ€™re viewing Gastone Rossi 12. What would you like to know about this residence?</strong><small>Ask about the apartment, location, booking or your stay.</small></span>
+      <span class="assistant-prompt-arrow">â†’</span>
+    </button>
+    <button aria-label="Close assistant suggestion" class="assistant-prompt-close" type="button">Ã—</button>
+  </div>
+  <button aria-expanded="false" aria-label="Open Prime Residence Assistant" class="prime-assistant-launcher" type="button"><span class="assistant-launcher-dot"></span><span class="assistant-launcher-text">PRIME ASSISTANT</span></button>
+  <section aria-hidden="true" aria-label="Prime Residence virtual assistant" class="prime-assistant-window">
+    <div class="prime-assistant-header"><div class="prime-assistant-identity"><span class="assistant-status-dot"></span><div><span class="assistant-name">PRIME ASSISTANT</span><span class="assistant-status">GASTONE ROSSI 12</span></div></div><button aria-label="Close Prime Residence Assistant" class="prime-assistant-close" type="button">Ã—</button></div>
+    <div aria-live="polite" class="prime-assistant-messages"><div class="assistant-message assistant-message-bot"><span class="assistant-message-label">PRIME ASSISTANT</span><p>Youâ€™re viewing Gastone Rossi 12. What would you like to know about this residence?</p></div></div>
+    <div class="prime-assistant-suggestions"><button class="assistant-suggestion" data-question="residence-details" type="button">THE RESIDENCE</button><button class="assistant-suggestion" data-question="location" type="button">LOCATION</button><button class="assistant-suggestion" data-question="booking" type="button">BOOKING</button><button class="assistant-suggestion" data-question="compare" type="button">COMPARE</button><button class="assistant-suggestion" data-question="checkin" type="button">CHECK-IN</button></div>
+    <form autocomplete="off" class="prime-assistant-form"><label class="assistant-visually-hidden" for="primeAssistantInputGastone">Ask Prime Residence Assistant a question</label><input class="prime-assistant-input" id="primeAssistantInputGastone" maxlength="250" placeholder="Ask about your stay..." type="text"><button aria-label="Send message" class="prime-assistant-send" type="submit">â†’</button></form>
+    <div class="prime-assistant-contact"><span>NEED PERSONAL ASSISTANCE?</span><div><a href="https://wa.me/393917055625" target="_blank" rel="noopener noreferrer">WHATSAPP â†—</a><a href="mailto:vittoriolandi005@gmail.com">EMAIL â†—</a></div></div>
+  </section>
 </div>
-<!-- ===================================================
-         CHAT LAUNCHER
-    ==================================================== -->
-<button aria-expanded="false" aria-label="Open Prime Residence Assistant" class="prime-assistant-launcher" type="button">
-<span class="assistant-launcher-dot"></span>
-<span class="assistant-launcher-text">
-        PRIME ASSISTANT
-      </span>
-</button>
-<!-- ===================================================
-         CHAT WINDOW
-    ==================================================== -->
-<section aria-hidden="true" aria-label="Prime Residence virtual assistant" class="prime-assistant-window">
-<!-- HEADER -->
-<div class="prime-assistant-header">
-<div class="prime-assistant-identity">
-<span class="assistant-status-dot"></span>
-<div>
-<span class="assistant-name">
-              PRIME ASSISTANT
-            </span>
-<span class="assistant-status">
-              GASTONE ROSSI 12
-            </span>
-</div>
-</div>
-<button aria-label="Close Prime Residence Assistant" class="prime-assistant-close" type="button">
-          ×
-        </button>
-</div>
-<!-- =================================================
-           CONVERSATION
-      ================================================== -->
-<div aria-live="polite" class="prime-assistant-messages">
-<div class="assistant-message assistant-message-bot">
-<span class="assistant-message-label">
-            PRIME ASSISTANT
-          </span>
-<p>
-
-            You're viewing Gastone Rossi 12.
-            What would you like to know about this residence?
-
-          </p>
-</div>
-</div>
-<!-- =================================================
-           QUICK QUESTIONS
-      ================================================== -->
-<div class="prime-assistant-suggestions">
-<button class="assistant-suggestion" data-question="residence-details" type="button">
-          THE RESIDENCE
-        </button>
-<button class="assistant-suggestion" data-question="location" type="button">
-          LOCATION
-        </button>
-<button class="assistant-suggestion" data-question="booking" type="button">
-          BOOKING
-        </button>
-<button class="assistant-suggestion" data-question="compare" type="button">
-          COMPARE
-        </button>
-<button class="assistant-suggestion" data-question="checkin" type="button">
-          CHECK-IN
-        </button>
-</div>
-<!-- =================================================
-           INPUT
-      ================================================== -->
-<form autocomplete="off" class="prime-assistant-form">
-<label class="assistant-visually-hidden" for="primeAssistantInputGastone">
-          Ask Prime Residence Assistant a question
-        </label>
-<input class="prime-assistant-input" id="primeAssistantInputGastone" maxlength="250" placeholder="Ask about Gastone Rossi 12..." type="text"/>
-<button aria-label="Send message" class="prime-assistant-send" type="submit">
-          →
-        </button>
-</form>
-<!-- =================================================
-           CONTACT
-      ================================================== -->
-<div class="prime-assistant-contact">
-<span>
-          NEED PERSONAL ASSISTANCE?
-        </span>
-<div>
-<a href="https://wa.me/393917055625" rel="noopener noreferrer" target="_blank">
-            WHATSAPP ↗
-          </a>
-<a href="mailto:vittoriolandi005@gmail.com">
-            EMAIL ↗
-          </a>
-</div>
-</div>
-</section>
-</div>
-<!-- =====================================================
-       WHATSAPP
-  ====================================================== -->
-<a aria-label="Contact Prime Residence Bologna on WhatsApp" class="whatsapp-button" href="https://wa.me/393917055625" rel="noopener noreferrer" target="_blank">
-<span class="whatsapp-dot"></span>
-
-    WHATSAPP
-
-  </a>
-<!-- =====================================================
-       LEAFLET MAP
-  ====================================================== -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-
-    document.addEventListener("DOMContentLoaded", async () => {
-
-      const mapElement =
-        document.querySelector("#gastoneMap");
-
-      if (
-        !mapElement ||
-        typeof L === "undefined"
-      ) return;
-
-
-      const fallback = {
-        lat: 44.4985,
-        lng: 11.3650
-      };
-
-
-      let residence = {
-        ...fallback
-      };
-
-
-      try {
-
-        const response =
-          await fetch(
-            "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" +
-            encodeURIComponent(
-              "Via Gastone Rossi 12, Bologna, Italy"
-            )
-          );
-
-
-        const results =
-          await response.json();
-
-
-        if (results.length) {
-
-          residence.lat =
-            parseFloat(
-              results[0].lat
-            );
-
-          residence.lng =
-            parseFloat(
-              results[0].lon
-            );
-
-        }
-
-
-      } catch (error) {
-
-        console.warn(
-          "Residence geocoding unavailable. Using fallback position."
-        );
-
-      }
-
-
-      const map =
-        L.map(
-          "gastoneMap",
-          {
-            zoomControl: false,
-            scrollWheelZoom: false,
-            attributionControl: true
-          }
-        )
-        .setView(
-          [
-            residence.lat,
-            residence.lng
-          ],
-          15
-        );
-
-
-      L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {
-          maxZoom: 19,
-          attribution:
-            "&copy; OpenStreetMap contributors"
-        }
-      )
-      .addTo(map);
-
-
-      L.control.zoom({
-        position: "bottomright"
-      })
-      .addTo(map);
-
-
-      const primeIcon =
-        L.divIcon({
-
-          className:
-            "prime-leaflet-pin",
-
-          html: `
-            <div class="prime-leaflet-pin-outer">
-              <div class="prime-leaflet-pin-inner"></div>
-            </div>
-          `,
-
-          iconSize:
-            [48, 48],
-
-          iconAnchor:
-            [24, 24]
-
-        });
-
-
-      L.marker(
-        [
-          residence.lat,
-          residence.lng
-        ],
-        {
-          icon: primeIcon
-        }
-      )
-      .addTo(map)
-      .bindPopup(`
-        <div class="prime-map-popup">
-
-          <span>
-            PRIME RESIDENCE
-          </span>
-
-          <strong>
-            Gastone Rossi 12
-          </strong>
-
-          <small>
-            Via Gastone Rossi 12 · Bologna
-          </small>
-
-        </div>
-      `);
-
-
-      function distanceKm(
-        lat1,
-        lon1,
-        lat2,
-        lon2
-      ) {
-
-        const R = 6371;
-
-        const dLat =
-          (lat2 - lat1) *
-          Math.PI /
-          180;
-
-        const dLon =
-          (lon2 - lon1) *
-          Math.PI /
-          180;
-
-
-        const a =
-          Math.sin(dLat / 2) *
-          Math.sin(dLat / 2) +
-
-          Math.cos(
-            lat1 *
-            Math.PI /
-            180
-          ) *
-
-          Math.cos(
-            lat2 *
-            Math.PI /
-            180
-          ) *
-
-          Math.sin(dLon / 2) *
-          Math.sin(dLon / 2);
-
-
-        return R *
-          2 *
-          Math.atan2(
-            Math.sqrt(a),
-            Math.sqrt(1 - a)
-          );
-
-      }
-
-
-      document
-        .querySelectorAll(
-          ".nearby-distance"
-        )
-        .forEach(
-          element => {
-
-
-            const lat =
-              parseFloat(
-                element.dataset.lat
-              );
-
-
-            const lng =
-              parseFloat(
-                element.dataset.lng
-              );
-
-
-            const km =
-              distanceKm(
-                residence.lat,
-                residence.lng,
-                lat,
-                lng
-              );
-
-
-            if (km < 1) {
-
-              element.textContent =
-                `${Math.round(
-                  km *
-                  1000 /
-                  50
-                ) * 50} M`;
-
-            } else {
-
-              element.textContent =
-                `${km.toFixed(1)} KM`;
-
-            }
-
-
-          }
-        );
-
-
-    });
-
-  </script>
-<!-- =====================================================
-       WEBSITE JAVASCRIPT
-  ====================================================== -->
+<a aria-label="Contact Prime Residence Bologna on WhatsApp" class="whatsapp-button" href="https://wa.me/393917055625" rel="noopener noreferrer" target="_blank"><span class="whatsapp-dot"></span><span>WhatsApp</span></a>
 <script src="script.js"></script>
-</body>
-</html>
+</body></html>
