@@ -126,284 +126,84 @@ const PRIME_TRANSLATIONS={
 };
 
 const PRIME_LANG_KEY="primeResidenceLanguage";
-
-let primeLanguage=(()=>{
-  try{
-    return localStorage.getItem(PRIME_LANG_KEY)==="it"?"it":"en";
-  }catch{
-    return "en";
-  }
-})();
-
+let primeLanguage=(()=>{try{return localStorage.getItem(PRIME_LANG_KEY)==="it"?"it":"en"}catch{return"en"}})();
 const primeOriginalText=new WeakMap();
 const primeOriginalAttrs=new WeakMap();
-
-const primeNorm=s=>
-String(s||"")
-.replace(/\s+/g," ")
-.trim();
-
-const primeTranslate=s=>{
-  const text=String(s??"");
-
-  return primeLanguage==="it"
-    ?(PRIME_TRANSLATIONS[primeNorm(text)]||text)
-    :text;
-};
+const primeNorm=s=>String(s||"").replace(/\s+/g," ").trim();
+const primeTranslate=s=>{const text=String(s??"");return primeLanguage==="it"?(PRIME_TRANSLATIONS[primeNorm(text)]||text):text};
 
 function primeTranslateTextNode(node){
-
-  if(!node||node.nodeType!==3){
-    return;
-  }
-
-  if(!primeOriginalText.has(node)){
-    primeOriginalText.set(
-      node,
-      node.nodeValue
-    );
-  }
-
-  const original=
-  primeOriginalText.get(node);
-
-  const normalized=
-  primeNorm(original);
-
-  if(!normalized){
-    return;
-  }
-
-  const translated=
-  primeLanguage==="it"
-    ?PRIME_TRANSLATIONS[normalized]
-    :undefined;
-
-  node.nodeValue=
-  translated!==undefined
-    ?original.replace(
-      normalized,
-      translated
-    )
-    :original;
+if(!node||node.nodeType!==3)return;
+if(!primeOriginalText.has(node))primeOriginalText.set(node,node.nodeValue);
+const original=primeOriginalText.get(node),normalized=primeNorm(original);
+if(!normalized)return;
+const translated=primeLanguage==="it"?PRIME_TRANSLATIONS[normalized]:undefined;
+node.nodeValue=translated!==undefined?original.replace(normalized,translated):original;
 }
 
 function primeTranslateElement(el){
-
-  if(
-    !el||
-    el.nodeType!==1||
-    ["SCRIPT","STYLE"].includes(el.tagName)
-  ){
-    return;
-  }
-
-  [
-    "placeholder",
-    "aria-label",
-    "title"
-  ].forEach(attr=>{
-
-    if(!el.hasAttribute(attr)){
-      return;
-    }
-
-    const store=
-    primeOriginalAttrs.get(el)||{};
-
-    if(!(attr in store)){
-      store[attr]=
-      el.getAttribute(attr);
-    }
-
-    primeOriginalAttrs.set(
-      el,
-      store
-    );
-
-    const original=
-    store[attr];
-
-    const translated=
-    primeLanguage==="it"
-      ?PRIME_TRANSLATIONS[
-        primeNorm(original)
-      ]
-      :undefined;
-
-    el.setAttribute(
-      attr,
-      translated!==undefined
-        ?translated
-        :original
-    );
-  });
-
-  for(const child of el.childNodes){
-
-    if(child.nodeType===3){
-      primeTranslateTextNode(child);
-    }else{
-      primeTranslateElement(child);
-    }
-  }
+if(!el||el.nodeType!==1||["SCRIPT","STYLE"].includes(el.tagName))return;
+["placeholder","aria-label","title"].forEach(attr=>{
+if(!el.hasAttribute(attr))return;
+const store=primeOriginalAttrs.get(el)||{};
+if(!(attr in store))store[attr]=el.getAttribute(attr);
+primeOriginalAttrs.set(el,store);
+const original=store[attr],translated=primeLanguage==="it"?PRIME_TRANSLATIONS[primeNorm(original)]:undefined;
+el.setAttribute(attr,translated!==undefined?translated:original);
+});
+for(const child of el.childNodes){child.nodeType===3?primeTranslateTextNode(child):primeTranslateElement(child)}
 }
 
 function primeUpdateLanguageButtons(){
-
-  document
-  .querySelectorAll(
-    ".language-switcher button[data-lang]"
-  )
-  .forEach(btn=>{
-
-    btn.classList.toggle(
-      "active",
-      btn.dataset.lang===primeLanguage
-    );
-  });
+document.querySelectorAll(".language-switcher button[data-lang]").forEach(btn=>btn.classList.toggle("active",btn.dataset.lang===primeLanguage));
 }
 
 function primeApplyLanguage(){
-
-  document.documentElement.lang=
-  primeLanguage;
-
-  primeTranslateElement(
-    document.body
-  );
-
-  primeUpdateLanguageButtons();
-
-  window.dispatchEvent(
-    new CustomEvent(
-      "primeLanguageChanged",
-      {
-        detail:{
-          lang:primeLanguage
-        }
-      }
-    )
-  );
+document.documentElement.lang=primeLanguage;
+primeTranslateElement(document.body);
+primeUpdateLanguageButtons();
+window.dispatchEvent(new CustomEvent("primeLanguageChanged",{detail:{lang:primeLanguage}}));
 }
 
 function primeSetLanguage(lang){
-
-  primeLanguage=
-  lang==="it"
-    ?"it"
-    :"en";
-
-  try{
-
-    localStorage.setItem(
-      PRIME_LANG_KEY,
-      primeLanguage
-    );
-
-  }catch{}
-
-  primeApplyLanguage();
+primeLanguage=lang==="it"?"it":"en";
+try{localStorage.setItem(PRIME_LANG_KEY,primeLanguage)}catch{}
+primeApplyLanguage();
 }
 
 function primeCreateSwitcher(){
+const make=cls=>{
+const wrap=document.createElement("div");
+wrap.className=`language-switcher ${cls||""}`.trim();
+wrap.setAttribute("aria-label","Language / Lingua");
+wrap.innerHTML='<button type="button" data-lang="en">EN</button><span class="language-switcher-separator">/</span><button type="button" data-lang="it">IT</button>';
+wrap.querySelectorAll("button").forEach(button=>button.addEventListener("click",()=>primeSetLanguage(button.dataset.lang)));
+return wrap;
+};
 
-  const make=cls=>{
+const desktop=document.querySelector(".desktop-nav");
 
-    const wrap=
-    document.createElement("div");
+if(desktop){
+const switcher=make(),book=desktop.querySelector(".nav-book");
+book?desktop.insertBefore(switcher,book):desktop.appendChild(switcher);
 
-    wrap.className=
-    `language-switcher ${cls||""}`.trim();
+const navContainer=document.querySelector(".nav-container");
+const toggle=navContainer&&navContainer.querySelector(".menu-toggle");
 
-    wrap.setAttribute(
-      "aria-label",
-      "Language / Lingua"
-    );
+if(navContainer&&toggle){
+navContainer.insertBefore(make("language-switcher-mobile"),toggle);
+}
 
-    wrap.innerHTML=
-    '<button type="button" data-lang="en">EN</button><span class="language-switcher-separator">/</span><button type="button" data-lang="it">IT</button>';
+}else{
 
-    wrap
-    .querySelectorAll("button")
-    .forEach(button=>
-      button.addEventListener(
-        "click",
-        ()=>primeSetLanguage(
-          button.dataset.lang
-        )
-      )
-    );
+const apartmentRight=document.querySelector(".apartment-nav-right");
 
-    return wrap;
-  };
+if(apartmentRight){
+apartmentRight.insertBefore(make(),apartmentRight.firstChild);
+}
+}
 
-  const desktop=
-  document.querySelector(
-    ".desktop-nav"
-  );
-
-  if(desktop){
-
-    const switcher=make();
-
-    const book=
-    desktop.querySelector(
-      ".nav-book"
-    );
-
-    if(book){
-      desktop.insertBefore(
-        switcher,
-        book
-      );
-    }else{
-      desktop.appendChild(
-        switcher
-      );
-    }
-
-    const navContainer=
-    document.querySelector(
-      ".nav-container"
-    );
-
-    const toggle=
-    navContainer&&
-    navContainer.querySelector(
-      ".menu-toggle"
-    );
-
-    if(
-      navContainer&&
-      toggle
-    ){
-
-      navContainer.insertBefore(
-        make(
-          "language-switcher-mobile"
-        ),
-        toggle
-      );
-    }
-
-  }else{
-
-    const apartmentRight=
-    document.querySelector(
-      ".apartment-nav-right"
-    );
-
-    if(apartmentRight){
-
-      apartmentRight.insertBefore(
-        make(),
-        apartmentRight.firstChild
-      );
-    }
-  }
-
-  primeUpdateLanguageButtons();
+primeUpdateLanguageButtons();
 }
 
 primeCreateSwitcher();
@@ -413,272 +213,205 @@ primeApplyLanguage();
    01. PREMIUM INTRO
 ========================================================= */
 
-const loader=
-document.querySelector(".loader");
-
-const hero=
-document.querySelector(".hero");
+const loader=document.querySelector(".loader");
+const hero=document.querySelector(".hero");
 
 if(loader&&hero){
 
-  const INTRO_DURATION=
-  2200;
+const INTRO_DURATION=2200;
 
-  let introFinished=false;
-  let introAnimating=false;
-  let startTime=null;
-  let touchStartY=0;
-  let mouseStartY=0;
-  let mouseDragging=false;
+let introFinished=false;
+let introAnimating=false;
+let startTime=null;
+let touchStartY=0;
+let mouseStartY=0;
+let mouseDragging=false;
 
-  document.body.style.overflow=
-  "hidden";
+document.body.style.overflow="hidden";
+loader.style.transform="translate3d(0,0,0)";
 
-  loader.style.transform=
-  "translate3d(0,0,0)";
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
 
-  const ease=t=>
-  t<.5
-    ?4*t*t*t
-    :1-Math.pow(
-      -2*t+2,
-      3
-    )/2;
+function finishIntro(){
+introFinished=true;
+introAnimating=false;
+loader.style.transform="translate3d(0,-100%,0)";
+loader.classList.add("hide");
+document.body.style.userSelect="";
+document.body.style.overflow="";
+}
 
-  function finishIntro(){
+function animate(now){
 
-    introFinished=true;
-    introAnimating=false;
+if(!startTime){
+startTime=now;
+}
 
-    loader.style.transform=
-    "translate3d(0,-100%,0)";
+const progress=Math.min((now-startTime)/INTRO_DURATION,1);
 
-    loader.classList.add(
-      "hide"
-    );
+loader.style.transform=
+`translate3d(0,${-ease(progress)*100}%,0)`;
 
-    document.body.style.userSelect=
-    "";
+if(progress<1){
+requestAnimationFrame(animate);
+}else{
+finishIntro();
+}
+}
 
-    document.body.style.overflow=
-    "";
-  }
+function startIntro(){
 
-  function animate(now){
+if(introFinished||introAnimating){
+return;
+}
 
-    if(!startTime){
-      startTime=now;
-    }
+introAnimating=true;
+startTime=null;
 
-    const progress=
-    Math.min(
-      (now-startTime)/
-      INTRO_DURATION,
-      1
-    );
+window.dispatchEvent(
+new CustomEvent("primeIntroStarted")
+);
 
-    loader.style.transform=
-    `translate3d(0,${-ease(progress)*100}%,0)`;
+requestAnimationFrame(animate);
+}
 
-    if(progress<1){
-      requestAnimationFrame(
-        animate
-      );
-    }else{
-      finishIntro();
-    }
-  }
+window.addEventListener(
+"wheel",
+e=>{
 
-  function startIntro(){
+if(introFinished){
+return;
+}
 
-    if(
-      introFinished||
-      introAnimating
-    ){
-      return;
-    }
+e.preventDefault();
 
-    introAnimating=true;
-    startTime=null;
+if(e.deltaY<0){
+startIntro();
+}
 
-    window.dispatchEvent(
-      new CustomEvent(
-        "primeIntroStarted"
-      )
-    );
+},
+{
+passive:false
+}
+);
 
-    requestAnimationFrame(
-      animate
-    );
-  }
+window.addEventListener(
+"touchstart",
+e=>{
 
-  window.addEventListener(
-    "wheel",
-    e=>{
+if(introFinished||introAnimating){
+return;
+}
 
-      if(introFinished){
-        return;
-      }
+touchStartY=e.touches[0].clientY;
 
-      e.preventDefault();
+},
+{
+passive:true
+}
+);
 
-      if(e.deltaY<0){
-        startIntro();
-      }
+window.addEventListener(
+"touchmove",
+e=>{
 
-    },
-    {
-      passive:false
-    }
-  );
+if(introFinished||introAnimating){
+return;
+}
 
-  window.addEventListener(
-    "touchstart",
-    e=>{
+if(touchStartY-e.touches[0].clientY>12){
 
-      if(
-        introFinished||
-        introAnimating
-      ){
-        return;
-      }
+e.preventDefault();
 
-      touchStartY=
-      e.touches[0].clientY;
+startIntro();
+}
 
-    },
-    {
-      passive:true
-    }
-  );
+},
+{
+passive:false
+}
+);
 
-  window.addEventListener(
-    "touchmove",
-    e=>{
+loader.addEventListener(
+"mousedown",
+e=>{
 
-      if(
-        introFinished||
-        introAnimating
-      ){
-        return;
-      }
+if(introFinished||introAnimating||e.button!==0){
+return;
+}
 
-      if(
-        touchStartY-
-        e.touches[0].clientY>
-        12
-      ){
+mouseDragging=true;
+mouseStartY=e.clientY;
 
-        e.preventDefault();
+document.body.style.userSelect="none";
+}
+);
 
-        startIntro();
-      }
+window.addEventListener(
+"mousemove",
+e=>{
 
-    },
-    {
-      passive:false
-    }
-  );
+if(!mouseDragging||introFinished||introAnimating){
+return;
+}
 
-  loader.addEventListener(
-    "mousedown",
-    e=>{
+if(mouseStartY-e.clientY>=35){
 
-      if(
-        introFinished||
-        introAnimating||
-        e.button!==0
-      ){
-        return;
-      }
+mouseDragging=false;
 
-      mouseDragging=true;
-      mouseStartY=e.clientY;
+document.body.style.userSelect="";
 
-      document.body.style.userSelect=
-      "none";
-    }
-  );
+startIntro();
+}
+}
+);
 
-  window.addEventListener(
-    "mousemove",
-    e=>{
+window.addEventListener(
+"mouseup",
+e=>{
 
-      if(
-        !mouseDragging||
-        introFinished||
-        introAnimating
-      ){
-        return;
-      }
+if(!mouseDragging){
+return;
+}
 
-      if(
-        mouseStartY-
-        e.clientY>=35
-      ){
+mouseDragging=false;
 
-        mouseDragging=false;
+document.body.style.userSelect="";
 
-        document.body.style.userSelect=
-        "";
+if(mouseStartY-e.clientY>=35){
+startIntro();
+}
+}
+);
 
-        startIntro();
-      }
-    }
-  );
-
-  window.addEventListener(
-    "mouseup",
-    e=>{
-
-      if(!mouseDragging){
-        return;
-      }
-
-      mouseDragging=false;
-
-      document.body.style.userSelect=
-      "";
-
-      if(
-        mouseStartY-
-        e.clientY>=35
-      ){
-        startIntro();
-      }
-    }
-  );
 }
 
 /* =========================================================
    02. NAVBAR
 ========================================================= */
 
-const navbar=
-document.querySelector(
-  ".navbar"
-);
+const navbar=document.querySelector(".navbar");
 
 function updateNavbar(){
 
-  if(!navbar){
-    return;
-  }
+if(!navbar){
+return;
+}
 
-  navbar.classList.toggle(
-    "scrolled",
-    window.scrollY>50
-  );
+navbar.classList.toggle(
+"scrolled",
+window.scrollY>50
+);
 }
 
 updateNavbar();
 
 window.addEventListener(
-  "scroll",
-  updateNavbar,
-  {
-    passive:true
-  }
+"scroll",
+updateNavbar,
+{
+passive:true
+}
 );
 
 /* =========================================================
@@ -686,368 +419,515 @@ window.addEventListener(
 ========================================================= */
 
 const adaptiveNavs=[
-  ...document.querySelectorAll(
-    "[data-adaptive-nav],.navbar,.apartment-nav"
-  )
+...document.querySelectorAll(
+"[data-adaptive-nav],.navbar,.apartment-nav"
+)
 ];
 
 function luminanceFromColor(color){
 
-  const match=
-  String(color||"")
-  .match(
-    /rgba?\(([^)]+)\)/i
-  );
+const match=
+String(color||"")
+.match(
+/rgba?\(([^)]+)\)/i
+);
 
-  if(!match){
-    return null;
-  }
+if(!match){
+return null;
+}
 
-  const parts=
-  match[1]
-  .split(",")
-  .map(
-    v=>Number(
-      v.trim()
-    )
-  );
+const parts=
+match[1]
+.split(",")
+.map(
+v=>Number(
+v.trim()
+)
+);
 
-  if(
-    parts.length<3||
-    parts.slice(0,3)
-    .some(Number.isNaN)
-  ){
-    return null;
-  }
+if(
+parts.length<3||
+parts.slice(0,3).some(Number.isNaN)
+){
+return null;
+}
 
-  return(
-    .2126*parts[0]+
-    .7152*parts[1]+
-    .0722*parts[2]
-  )/255;
+return(
+.2126*parts[0]+
+.7152*parts[1]+
+.0722*parts[2]
+)/255;
 }
 
 function schemeUnderNav(nav){
 
-  const rect=
-  nav.getBoundingClientRect();
+const rect=
+nav.getBoundingClientRect();
 
-  const x=
-  Math.min(
-    window.innerWidth-2,
-    Math.max(
-      2,
-      rect.left+
-      Math.min(
-        rect.width*.18,
-        180
-      )
-    )
-  );
+const x=
+Math.min(
+window.innerWidth-2,
+Math.max(
+2,
+rect.left+
+Math.min(
+rect.width*.18,
+180
+)
+)
+);
 
-  const y=
-  Math.min(
-    window.innerHeight-2,
-    Math.max(
-      2,
-      rect.bottom-8
-    )
-  );
+const y=
+Math.min(
+window.innerHeight-2,
+Math.max(
+2,
+rect.bottom-8
+)
+);
 
-  const stack=
-  document.elementsFromPoint(
-    x,
-    y
-  );
+const stack=
+document.elementsFromPoint(
+x,
+y
+);
 
-  const target=
-  stack.find(
-    el=>
-    !el.closest(
-      ".navbar,.apartment-nav,.mobile-menu,.prime-assistant"
-    )
-  );
+const target=
+stack.find(
+el=>
+!el.closest(
+".navbar,.apartment-nav,.mobile-menu,.prime-assistant"
+)
+);
 
-  const themed=
-  target&&
-  target.closest(
-    "[data-logo-scheme]"
-  );
+const themed=
+target&&
+target.closest(
+"[data-logo-scheme]"
+);
 
-  if(themed){
+if(themed){
 
-    const s=
-    themed.dataset.logoScheme;
+const s=
+themed.dataset.logoScheme;
 
-    if(
-      s==="dark"||
-      s==="image"
-    ){
-      return "dark";
-    }
+if(
+s==="dark"||
+s==="image"
+){
+return "dark";
+}
 
-    if(s==="light"){
-      return "light";
-    }
-  }
+if(s==="light"){
+return "light";
+}
+}
 
-  let el=target;
+let el=target;
 
-  while(
-    el&&
-    el!==document.documentElement
-  ){
+while(
+el&&
+el!==document.documentElement
+){
 
-    const style=
-    getComputedStyle(el);
+const style=
+getComputedStyle(el);
 
-    const lum=
-    luminanceFromColor(
-      style.backgroundColor
-    );
+const lum=
+luminanceFromColor(
+style.backgroundColor
+);
 
-    if(
-      lum!==null&&
-      style.backgroundColor!==
-      "rgba(0, 0, 0, 0)"
-    ){
-      return lum<.48
-        ?"dark"
-        :"light";
-    }
+if(
+lum!==null&&
+style.backgroundColor!==
+"rgba(0, 0, 0, 0)"
+){
+return lum<.48
+?"dark"
+:"light";
+}
 
-    el=
-    el.parentElement;
-  }
+el=
+el.parentElement;
+}
 
-  return document.body.classList.contains(
-    "home-page"
-  )
-    ?"dark"
-    :"light";
+return document.body.classList.contains(
+"home-page"
+)
+?"dark"
+:"light";
 }
 
 function updateAdaptiveLogos(){
 
-  adaptiveNavs.forEach(nav=>{
+adaptiveNavs.forEach(nav=>{
 
-    const scheme=
-    nav.classList.contains(
-      "scrolled"
-    )
-      ?"light"
-      :schemeUnderNav(nav);
+const scheme=
+nav.classList.contains(
+"scrolled"
+)
+?"light"
+:schemeUnderNav(nav);
 
-    nav.classList.toggle(
-      "nav-on-dark",
-      scheme==="dark"
-    );
+nav.classList.toggle(
+"nav-on-dark",
+scheme==="dark"
+);
 
-    nav.classList.toggle(
-      "nav-on-light",
-      scheme!=="dark"
-    );
+nav.classList.toggle(
+"nav-on-light",
+scheme!=="dark"
+);
 
-    nav
-    .querySelectorAll(
-      ".site-brand-image"
-    )
-    .forEach(img=>{
+nav
+.querySelectorAll(
+".site-brand-image"
+)
+.forEach(img=>{
 
-      img.classList.toggle(
-        "logo-contrast-light",
-        scheme==="dark"
-      );
+img.classList.toggle(
+"logo-contrast-light",
+scheme==="dark"
+);
 
-      img.classList.toggle(
-        "logo-contrast-dark",
-        scheme!=="dark"
-      );
-    });
-  });
+img.classList.toggle(
+"logo-contrast-dark",
+scheme!=="dark"
+);
+});
+});
 }
 
 updateAdaptiveLogos();
 
 window.addEventListener(
-  "scroll",
-  updateAdaptiveLogos,
-  {
-    passive:true
-  }
+"scroll",
+updateAdaptiveLogos,
+{
+passive:true
+}
 );
 
 window.addEventListener(
-  "resize",
-  updateAdaptiveLogos
+"resize",
+updateAdaptiveLogos
 );
 
 /* =========================================================
-   02C. HOME TWO-PANEL GALLERY
+   02C. HOME HERO CAROUSEL — GPU / REQUESTANIMATIONFRAME
 ========================================================= */
 
-const homeGallery=
+const primeHeroGallery=
 document.querySelector(
-  "[data-home-gallery]"
+"#primeHeroGallery"
 );
 
-if(homeGallery){
+if(primeHeroGallery){
 
-  const track=
-  homeGallery.querySelector(
-    ".home-gallery-track"
-  );
+const track=
+primeHeroGallery.querySelector(
+".prime-hero-gallery-track"
+);
 
-  const frames=[
-    ...homeGallery.querySelectorAll(
-      ".home-gallery-frame"
-    )
-  ];
+const viewport=
+primeHeroGallery.querySelector(
+".prime-hero-gallery-window"
+);
 
-  const prev=
-  document.querySelector(
-    "[data-home-prev]"
-  );
+const originals=
+track
+?[...track.querySelectorAll(
+".prime-hero-gallery-panel"
+)]
+:[];
 
-  const next=
-  document.querySelector(
-    "[data-home-next]"
-  );
+if(
+track&&
+viewport&&
+originals.length>=3
+){
 
-  const currentLabel=
-  document.querySelector(
-    "[data-home-current]"
-  );
+/* Two clones make the end of the loop visually identical to the start. */
 
-  const totalLabel=
-  document.querySelector(
-    "[data-home-total]"
-  );
+originals
+.slice(0,2)
+.forEach(panel=>{
 
-  let current=0;
-  let down=false;
-  let startX=0;
-  let startY=0;
+const clone=
+panel.cloneNode(true);
 
-  const render=()=>{
+clone.setAttribute(
+"data-carousel-clone",
+"true"
+);
 
-    if(track){
+track.appendChild(clone);
+});
 
-      track.style.transform=
-      `translate3d(${-current*100}%,0,0)`;
-    }
+const SLIDE_MS=1500;
+const HOLD_MS=3600;
 
-    if(currentLabel){
+let index=0;
+let step=0;
+let offset=0;
+let rafId=0;
+let timer=0;
+let animating=false;
+let resizeTimer=0;
 
-      currentLabel.textContent=
-      String(
-        current+1
-      ).padStart(
-        2,
-        "0"
-      );
-    }
+const ease=t=>
+0.5-Math.cos(Math.PI*t)/2;
 
-    if(totalLabel){
+function measure(){
 
-      totalLabel.textContent=
-      String(
-        frames.length
-      ).padStart(
-        2,
-        "0"
-      );
-    }
-  };
+const panels=
+track.querySelectorAll(
+".prime-hero-gallery-panel"
+);
 
-  const move=dir=>{
+if(panels.length<2){
+return;
+}
 
-    if(!frames.length){
-      return;
-    }
+const a=
+panels[0]
+.getBoundingClientRect();
 
-    current=
-    (
-      current+
-      dir+
-      frames.length
-    )%
-    frames.length;
+const b=
+panels[1]
+.getBoundingClientRect();
 
-    render();
-  };
+step=
+b.left-a.left;
 
-  if(prev){
+offset=
+index*step;
 
-    prev.addEventListener(
-      "click",
-      ()=>move(-1)
-    );
-  }
+track.style.transform=
+`translate3d(${-offset}px,0,0)`;
+}
 
-  if(next){
+function stopAnimation(){
 
-    next.addEventListener(
-      "click",
-      ()=>move(1)
-    );
-  }
+if(rafId){
 
-  homeGallery.addEventListener(
-    "pointerdown",
-    e=>{
+cancelAnimationFrame(
+rafId
+);
 
-      if(
-        e.pointerType==="mouse"&&
-        e.button!==0
-      ){
-        return;
-      }
+rafId=0;
+}
 
-      down=true;
-      startX=e.clientX;
-      startY=e.clientY;
+animating=false;
+}
 
-      try{
-        homeGallery.setPointerCapture(
-          e.pointerId
-        );
-      }catch{}
-    }
-  );
+function schedule(){
 
-  homeGallery.addEventListener(
-    "pointerup",
-    e=>{
+clearTimeout(timer);
 
-      if(!down){
-        return;
-      }
+if(!document.hidden){
 
-      down=false;
+timer=
+window.setTimeout(
+slideNext,
+HOLD_MS
+);
+}
+}
 
-      const dx=
-      e.clientX-startX;
+function slideNext(){
 
-      const dy=
-      e.clientY-startY;
+if(
+animating||
+!step
+){
+return;
+}
 
-      if(
-        Math.abs(dx)>55&&
-        Math.abs(dx)>
-        Math.abs(dy)
-      ){
+animating=true;
 
-        move(
-          dx<0
-            ?1
-            :-1
-        );
-      }
-    }
-  );
+const startOffset=
+offset;
 
-  render();
+const endOffset=
+startOffset+
+step;
+
+const startTime=
+performance.now();
+
+function frame(now){
+
+const progress=
+Math.min(
+(now-startTime)/
+SLIDE_MS,
+1
+);
+
+const value=
+startOffset+
+(
+endOffset-
+startOffset
+)*
+ease(progress);
+
+track.style.transform=
+`translate3d(${-value}px,0,0)`;
+
+if(progress<1){
+
+rafId=
+requestAnimationFrame(
+frame
+);
+
+return;
+}
+
+rafId=0;
+
+index+=1;
+
+offset=
+endOffset;
+
+if(
+index>=
+originals.length
+){
+
+/*
+We are displaying clones of photos 1 and 2.
+Jump back to the identical originals between
+two animation frames: visually zero jump.
+*/
+
+index=0;
+offset=0;
+
+track.style.transform=
+"translate3d(0,0,0)";
+}
+
+animating=false;
+
+schedule();
+}
+
+rafId=
+requestAnimationFrame(
+frame
+);
+}
+
+function preload(){
+
+return Promise.all(
+[
+...track.querySelectorAll(
+"img"
+)
+]
+.map(img=>{
+
+if(img.complete){
+
+return img.decode
+?img.decode().catch(()=>{})
+:Promise.resolve();
+}
+
+return new Promise(resolve=>{
+
+img.addEventListener(
+"load",
+resolve,
+{
+once:true
+}
+);
+
+img.addEventListener(
+"error",
+resolve,
+{
+once:true
+}
+);
+
+});
+})
+);
+}
+
+window.addEventListener(
+"resize",
+()=>{
+
+clearTimeout(
+resizeTimer
+);
+
+resizeTimer=
+window.setTimeout(
+()=>{
+
+stopAnimation();
+
+clearTimeout(
+timer
+);
+
+measure();
+
+schedule();
+
+},
+120
+);
+}
+);
+
+document.addEventListener(
+"visibilitychange",
+()=>{
+
+clearTimeout(timer);
+
+if(document.hidden){
+
+stopAnimation();
+
+}else{
+
+measure();
+
+schedule();
+}
+}
+);
+
+preload()
+.finally(
+()=>{
+
+requestAnimationFrame(
+()=>{
+
+measure();
+
+requestAnimationFrame(
+schedule
+);
+}
+);
+}
+);
+
+}
 }
 
 /* =========================================================
@@ -1056,77 +936,79 @@ if(homeGallery){
 
 const menuToggle=
 document.querySelector(
-  ".menu-toggle"
+".menu-toggle"
 );
 
 const mobileMenu=
 document.querySelector(
-  ".mobile-menu"
+".mobile-menu"
 );
 
 if(
-  menuToggle&&
-  mobileMenu
+menuToggle&&
+mobileMenu
 ){
 
-  menuToggle.setAttribute(
-    "aria-expanded",
-    "false"
-  );
+menuToggle.setAttribute(
+"aria-expanded",
+"false"
+);
 
-  menuToggle.addEventListener(
-    "click",
-    ()=>{
+menuToggle.addEventListener(
+"click",
+()=>{
 
-      const open=
-      menuToggle.classList.toggle(
-        "active"
-      );
+const open=
+menuToggle.classList.toggle(
+"active"
+);
 
-      mobileMenu.classList.toggle(
-        "active",
-        open
-      );
+mobileMenu.classList.toggle(
+"active",
+open
+);
 
-      menuToggle.setAttribute(
-        "aria-expanded",
-        open
-          ?"true"
-          :"false"
-      );
+menuToggle.setAttribute(
+"aria-expanded",
+open
+?"true"
+:"false"
+);
 
-      document.body.style.overflow=
-      open
-        ?"hidden"
-        :"";
-    }
-  );
+document.body.style.overflow=
+open
+?"hidden"
+:"";
+}
+);
 
-  mobileMenu
-  .querySelectorAll("a")
-  .forEach(link=>
-    link.addEventListener(
-      "click",
-      ()=>{
+mobileMenu
+.querySelectorAll("a")
+.forEach(
+link=>
+link.addEventListener(
+"click",
+()=>{
 
-        menuToggle.classList.remove(
-          "active"
-        );
+menuToggle.classList.remove(
+"active"
+);
 
-        mobileMenu.classList.remove(
-          "active"
-        );
+mobileMenu.classList.remove(
+"active"
+);
 
-        menuToggle.setAttribute(
-          "aria-expanded",
-          "false"
-        );
+menuToggle.setAttribute(
+"aria-expanded",
+"false"
+);
 
-        document.body.style.overflow=
-        "";
-      }
-    )
-  );
+document.body.style.overflow=
+"";
+}
+)
+);
+
 }
 
 /* =========================================================
@@ -1135,42 +1017,44 @@ if(
 
 const revealElements=
 document.querySelectorAll(
-  ".reveal"
+".reveal"
 );
 
 if(revealElements.length){
 
-  const observer=
-  new IntersectionObserver(
-    entries=>{
+const observer=
+new IntersectionObserver(
+entries=>{
 
-      entries.forEach(
-        entry=>{
+entries.forEach(
+entry=>{
 
-          if(
-            entry.isIntersecting
-          ){
+if(
+entry.isIntersecting
+){
 
-            entry.target.classList.add(
-              "visible"
-            );
+entry.target.classList.add(
+"visible"
+);
 
-            observer.unobserve(
-              entry.target
-            );
-          }
-        }
-      );
+observer.unobserve(
+entry.target
+);
+}
+}
+);
 
-    },
-    {
-      threshold:.12
-    }
-  );
+},
+{
+threshold:.12
+}
+);
 
-  revealElements.forEach(
-    el=>observer.observe(el)
-  );
+revealElements.forEach(
+el=>
+observer.observe(el)
+);
+
 }
 
 /* =========================================================
@@ -1181,90 +1065,90 @@ let premiumScrollAnimation=null;
 
 function premiumEase(t){
 
-  return t<.5
-    ?4*t*t*t
-    :1-Math.pow(
-      -2*t+2,
-      3
-    )/2;
+return t<.5
+?4*t*t*t
+:1-Math.pow(
+-2*t+2,
+3
+)/2;
 }
 
 function premiumScrollTo(
-  target,
-  duration=1400
+target,
+duration=1400
 ){
 
-  if(!target){
-    return;
-  }
+if(!target){
+return;
+}
 
-  if(premiumScrollAnimation){
+if(premiumScrollAnimation){
 
-    cancelAnimationFrame(
-      premiumScrollAnimation
-    );
-  }
+cancelAnimationFrame(
+premiumScrollAnimation
+);
+}
 
-  const navOffset=
-  navbar
-    ?navbar.offsetHeight
-    :0;
+const navOffset=
+navbar
+?navbar.offsetHeight
+:0;
 
-  const startY=
-  window.scrollY;
+const startY=
+window.scrollY;
 
-  const targetY=
-  Math.max(
-    0,
-    target
-    .getBoundingClientRect()
-    .top+
-    window.scrollY-
-    navOffset
-  );
+const targetY=
+Math.max(
+0,
+target
+.getBoundingClientRect()
+.top+
+window.scrollY-
+navOffset
+);
 
-  const distance=
-  targetY-startY;
+const distance=
+targetY-startY;
 
-  let start=null;
+let start=null;
 
-  function frame(time){
+function frame(time){
 
-    if(!start){
-      start=time;
-    }
+if(!start){
+start=time;
+}
 
-    const progress=
-    Math.min(
-      (time-start)/
-      duration,
-      1
-    );
+const progress=
+Math.min(
+(time-start)/
+duration,
+1
+);
 
-    window.scrollTo(
-      0,
-      startY+
-      distance*
-      premiumEase(progress)
-    );
+window.scrollTo(
+0,
+startY+
+distance*
+premiumEase(progress)
+);
 
-    if(progress<1){
+if(progress<1){
 
-      premiumScrollAnimation=
-      requestAnimationFrame(
-        frame
-      );
+premiumScrollAnimation=
+requestAnimationFrame(
+frame
+);
 
-    }else{
+}else{
 
-      premiumScrollAnimation=null;
-    }
-  }
+premiumScrollAnimation=null;
+}
+}
 
-  premiumScrollAnimation=
-  requestAnimationFrame(
-    frame
-  );
+premiumScrollAnimation=
+requestAnimationFrame(
+frame
+);
 }
 
 /* =========================================================
@@ -1273,400 +1157,404 @@ function premiumScrollTo(
 
 document
 .querySelectorAll(
-  "[data-booking-gallery]"
+"[data-booking-gallery]"
 )
 .forEach(gallery=>{
 
-  const prefix=
-  gallery.dataset.galleryPrefix||
-  "";
-
-  const count=
-  Math.max(
-    0,
-    Number(
-      gallery.dataset.galleryCount
-    )||0
-  );
-
-  const images=
-  Array.from(
-    {
-      length:count
-    },
-    (_,i)=>
-    `${prefix}${String(i+1).padStart(2,"0")}.jpg`
-  );
-
-  const slots=[
-    ...gallery.querySelectorAll(
-      "[data-gallery-slot]"
-    )
-  ];
-
-  const prev=
-  gallery.querySelector(
-    "[data-gallery-prev]"
-  );
-
-  const next=
-  gallery.querySelector(
-    "[data-gallery-next]"
-  );
-
-  const counter=
-  gallery
-  .closest(
-    ".property-gallery-section"
-  )
-  ?.querySelector(
-    "[data-gallery-current]"
-  );
-
-  const moreLabel=
-  gallery.querySelector(
-    "[data-gallery-more]"
-  );
-
-  if(
-    !images.length||
-    !slots.length
-  ){
-    return;
-  }
-
-  let current=0;
-  let down=false;
-  let startX=0;
-  let startY=0;
-  let lightboxIndex=0;
-
-  const lightbox=
-  document.createElement(
-    "div"
-  );
-
-  lightbox.className=
-  "gallery-lightbox";
-
-  lightbox.innerHTML=
-  '<button class="gallery-lightbox-close" type="button" aria-label="Close gallery">×</button><button class="gallery-lightbox-prev" type="button" aria-label="Previous photo">←</button><img class="gallery-lightbox-image" alt="Residence gallery photo"><button class="gallery-lightbox-next" type="button" aria-label="Next photo">→</button><div class="gallery-lightbox-counter"></div>';
-
-  document.body.appendChild(
-    lightbox
-  );
-
-  const lbImage=
-  lightbox.querySelector(
-    ".gallery-lightbox-image"
-  );
-
-  const lbCounter=
-  lightbox.querySelector(
-    ".gallery-lightbox-counter"
-  );
-
-  function openLightbox(index){
-
-    lightboxIndex=
-    (
-      index+
-      images.length
-    )%
-    images.length;
-
-    lbImage.src=
-    images[
-      lightboxIndex
-    ];
-
-    lbCounter.textContent=
-    `${String(lightboxIndex+1).padStart(2,"0")} / ${String(images.length).padStart(2,"0")}`;
-
-    lightbox.classList.add(
-      "open"
-    );
-
-    document.body.classList.add(
-      "no-scroll"
-    );
-  }
-
-  function closeLightbox(){
-
-    lightbox.classList.remove(
-      "open"
-    );
-
-    document.body.classList.remove(
-      "no-scroll"
-    );
-  }
-
-  function lightboxMove(dir){
-
-    openLightbox(
-      lightboxIndex+
-      dir
-    );
-  }
-
-  lightbox
-  .querySelector(
-    ".gallery-lightbox-close"
-  )
-  .addEventListener(
-    "click",
-    closeLightbox
-  );
-
-  lightbox
-  .querySelector(
-    ".gallery-lightbox-prev"
-  )
-  .addEventListener(
-    "click",
-    ()=>lightboxMove(-1)
-  );
-
-  lightbox
-  .querySelector(
-    ".gallery-lightbox-next"
-  )
-  .addEventListener(
-    "click",
-    ()=>lightboxMove(1)
-  );
-
-  lightbox.addEventListener(
-    "click",
-    e=>{
-
-      if(e.target===lightbox){
-        closeLightbox();
-      }
-    }
-  );
-
-  function render(dir=0){
-
-    if(dir){
-
-      gallery.style.setProperty(
-        "--gallery-shift",
-        dir>0
-          ?"-12px"
-          :"12px"
-      );
-
-      gallery.classList.add(
-        "is-shifting"
-      );
-    }
-
-    window.setTimeout(
-      ()=>{
-
-        slots.forEach(
-          (
-            slot,
-            slotIndex
-          )=>{
-
-            const index=
-            (
-              current+
-              slotIndex
-            )%
-            images.length;
-
-            const img=
-            slot.querySelector(
-              "img"
-            );
-
-            if(img){
-
-              img.src=
-              images[index];
-
-              img.alt=
-              `Residence photo ${index+1}`;
-            }
-
-            slot.dataset.imageIndex=
-            String(index);
-          }
-        );
-
-        if(counter){
-
-          counter.textContent=
-          String(
-            current+1
-          ).padStart(
-            2,
-            "0"
-          );
-        }
-
-        if(moreLabel){
-
-          const remaining=
-          Math.max(
-            0,
-            images.length-
-            slots.length
-          );
-
-          moreLabel.textContent=
-          primeLanguage==="it"
-            ?`Altre ${remaining} foto`
-            :`${remaining} more photos`;
-        }
-
-        gallery.classList.remove(
-          "is-shifting"
-        );
-
-      },
-      dir
-        ?170
-        :0
-    );
-  }
-
-  function move(dir){
-
-    current=
-    (
-      current+
-      dir+
-      images.length
-    )%
-    images.length;
-
-    render(dir);
-  }
-
-  if(prev){
-
-    prev.addEventListener(
-      "click",
-      ()=>move(-1)
-    );
-  }
-
-  if(next){
-
-    next.addEventListener(
-      "click",
-      ()=>move(1)
-    );
-  }
-
-  slots.forEach(
-    slot=>
-    slot.addEventListener(
-      "click",
-      ()=>openLightbox(
-        Number(
-          slot.dataset.imageIndex
-        )||0
-      )
-    )
-  );
-
-  gallery.addEventListener(
-    "pointerdown",
-    e=>{
-
-      if(
-        e.pointerType==="mouse"&&
-        e.button!==0
-      ){
-        return;
-      }
-
-      down=true;
-      startX=e.clientX;
-      startY=e.clientY;
-
-      try{
-
-        gallery.setPointerCapture(
-          e.pointerId
-        );
-
-      }catch{}
-    }
-  );
-
-  gallery.addEventListener(
-    "pointerup",
-    e=>{
-
-      if(!down){
-        return;
-      }
-
-      down=false;
-
-      const dx=
-      e.clientX-
-      startX;
-
-      const dy=
-      e.clientY-
-      startY;
-
-      if(
-        Math.abs(dx)>=50&&
-        Math.abs(dx)>
-        Math.abs(dy)
-      ){
-
-        move(
-          dx<0
-            ?1
-            :-1
-        );
-      }
-    }
-  );
-
-  window.addEventListener(
-    "primeLanguageChanged",
-    ()=>render()
-  );
-
-  document.addEventListener(
-    "keydown",
-    e=>{
-
-      if(
-        !lightbox.classList.contains(
-          "open"
-        )
-      ){
-        return;
-      }
-
-      if(e.key==="Escape"){
-        closeLightbox();
-      }
-
-      if(e.key==="ArrowLeft"){
-        lightboxMove(-1);
-      }
-
-      if(e.key==="ArrowRight"){
-        lightboxMove(1);
-      }
-    }
-  );
-
-  render();
+const prefix=
+gallery.dataset.galleryPrefix||
+"";
+
+const count=
+Math.max(
+0,
+Number(
+gallery.dataset.galleryCount
+)||
+0
+);
+
+const images=
+Array.from(
+{
+length:count
+},
+(_,i)=>
+`${prefix}${String(i+1).padStart(2,"0")}.jpg`
+);
+
+const slots=[
+...gallery.querySelectorAll(
+"[data-gallery-slot]"
+)
+];
+
+const prev=
+gallery.querySelector(
+"[data-gallery-prev]"
+);
+
+const next=
+gallery.querySelector(
+"[data-gallery-next]"
+);
+
+const counter=
+gallery
+.closest(
+".property-gallery-section"
+)
+?.querySelector(
+"[data-gallery-current]"
+);
+
+const moreLabel=
+gallery.querySelector(
+"[data-gallery-more]"
+);
+
+if(
+!images.length||
+!slots.length
+){
+return;
+}
+
+let current=0;
+let down=false;
+let startX=0;
+let startY=0;
+let lightboxIndex=0;
+
+const lightbox=
+document.createElement(
+"div"
+);
+
+lightbox.className=
+"gallery-lightbox";
+
+lightbox.innerHTML=
+'<button class="gallery-lightbox-close" type="button" aria-label="Close gallery">×</button><button class="gallery-lightbox-prev" type="button" aria-label="Previous photo">←</button><img class="gallery-lightbox-image" alt="Residence gallery photo"><button class="gallery-lightbox-next" type="button" aria-label="Next photo">→</button><div class="gallery-lightbox-counter"></div>';
+
+document.body.appendChild(
+lightbox
+);
+
+const lbImage=
+lightbox.querySelector(
+".gallery-lightbox-image"
+);
+
+const lbCounter=
+lightbox.querySelector(
+".gallery-lightbox-counter"
+);
+
+function openLightbox(index){
+
+lightboxIndex=
+(
+index+
+images.length
+)%
+images.length;
+
+lbImage.src=
+images[
+lightboxIndex
+];
+
+lbCounter.textContent=
+`${String(lightboxIndex+1).padStart(2,"0")} / ${String(images.length).padStart(2,"0")}`;
+
+lightbox.classList.add(
+"open"
+);
+
+document.body.classList.add(
+"no-scroll"
+);
+}
+
+function closeLightbox(){
+
+lightbox.classList.remove(
+"open"
+);
+
+document.body.classList.remove(
+"no-scroll"
+);
+}
+
+function lightboxMove(dir){
+
+openLightbox(
+lightboxIndex+
+dir
+);
+}
+
+lightbox
+.querySelector(
+".gallery-lightbox-close"
+)
+.addEventListener(
+"click",
+closeLightbox
+);
+
+lightbox
+.querySelector(
+".gallery-lightbox-prev"
+)
+.addEventListener(
+"click",
+()=>lightboxMove(-1)
+);
+
+lightbox
+.querySelector(
+".gallery-lightbox-next"
+)
+.addEventListener(
+"click",
+()=>lightboxMove(1)
+);
+
+lightbox.addEventListener(
+"click",
+e=>{
+
+if(e.target===lightbox){
+closeLightbox();
+}
+}
+);
+
+function render(dir=0){
+
+if(dir){
+
+gallery.style.setProperty(
+"--gallery-shift",
+dir>0
+?"-12px"
+:"12px"
+);
+
+gallery.classList.add(
+"is-shifting"
+);
+}
+
+window.setTimeout(
+()=>{
+
+slots.forEach(
+(
+slot,
+slotIndex
+)=>{
+
+const index=
+(
+current+
+slotIndex
+)%
+images.length;
+
+const img=
+slot.querySelector(
+"img"
+);
+
+if(img){
+
+img.src=
+images[index];
+
+img.alt=
+`Residence photo ${index+1}`;
+}
+
+slot.dataset.imageIndex=
+String(index);
+}
+);
+
+if(counter){
+
+counter.textContent=
+String(
+current+1
+)
+.padStart(
+2,
+"0"
+);
+}
+
+if(moreLabel){
+
+const remaining=
+Math.max(
+0,
+images.length-
+slots.length
+);
+
+moreLabel.textContent=
+primeLanguage==="it"
+?`Altre ${remaining} foto`
+:`${remaining} more photos`;
+}
+
+gallery.classList.remove(
+"is-shifting"
+);
+
+},
+dir
+?170
+:0
+);
+}
+
+function move(dir){
+
+current=
+(
+current+
+dir+
+images.length
+)%
+images.length;
+
+render(dir);
+}
+
+if(prev){
+
+prev.addEventListener(
+"click",
+()=>move(-1)
+);
+}
+
+if(next){
+
+next.addEventListener(
+"click",
+()=>move(1)
+);
+}
+
+slots.forEach(
+slot=>
+slot.addEventListener(
+"click",
+()=>openLightbox(
+Number(
+slot.dataset.imageIndex
+)||
+0
+)
+)
+);
+
+gallery.addEventListener(
+"pointerdown",
+e=>{
+
+if(
+e.pointerType==="mouse"&&
+e.button!==0
+){
+return;
+}
+
+down=true;
+startX=e.clientX;
+startY=e.clientY;
+
+try{
+
+gallery.setPointerCapture(
+e.pointerId
+);
+
+}catch{}
+}
+);
+
+gallery.addEventListener(
+"pointerup",
+e=>{
+
+if(!down){
+return;
+}
+
+down=false;
+
+const dx=
+e.clientX-
+startX;
+
+const dy=
+e.clientY-
+startY;
+
+if(
+Math.abs(dx)>=50&&
+Math.abs(dx)>
+Math.abs(dy)
+){
+
+move(
+dx<0
+?1
+:-1
+);
+}
+}
+);
+
+window.addEventListener(
+"primeLanguageChanged",
+()=>render()
+);
+
+document.addEventListener(
+"keydown",
+e=>{
+
+if(
+!lightbox.classList.contains(
+"open"
+)
+){
+return;
+}
+
+if(e.key==="Escape"){
+closeLightbox();
+}
+
+if(e.key==="ArrowLeft"){
+lightboxMove(-1);
+}
+
+if(e.key==="ArrowRight"){
+lightboxMove(1);
+}
+}
+);
+
+render();
+
 });
 
 /* =========================================================
@@ -1675,167 +1563,167 @@ document
 
 const bookingCards=
 document.querySelectorAll(
-  ".booking-residence-card"
+".booking-residence-card"
 );
 
 const bookingForm=
 document.querySelector(
-  "#bookingRequestForm"
+"#bookingRequestForm"
 );
 
 const residenceInput=
 document.querySelector(
-  "#residence"
+"#residence"
 );
 
 const calendarResidence=
 document.querySelector(
-  "#calendarResidence"
+"#calendarResidence"
 );
 
 const checkinInput=
 document.querySelector(
-  "#checkin"
+"#checkin"
 );
 
 const checkoutInput=
 document.querySelector(
-  "#checkout"
+"#checkout"
 );
 
 const selectedResidenceText=
 document.querySelector(
-  "#selectedResidenceText"
+"#selectedResidenceText"
 );
 
 const bookingFormSection=
 document.querySelector(
-  "#booking-form-section"
+"#booking-form-section"
 );
 
 const bookingMessage=
 document.querySelector(
-  "#bookingMessage"
+"#bookingMessage"
 );
 
 const bookingSubmit=
 document.querySelector(
-  ".booking-submit"
+".booking-submit"
 );
 
 const primeCalendar=
 document.querySelector(
-  "#primeCalendar"
+"#primeCalendar"
 );
 
 const calendarGrid=
 document.querySelector(
-  "#calendarGrid"
+"#calendarGrid"
 );
 
 const calendarMonthLabel=
 document.querySelector(
-  "#calendarMonthLabel"
+"#calendarMonthLabel"
 );
 
 const calendarPrev=
 document.querySelector(
-  "#calendarPrev"
+"#calendarPrev"
 );
 
 const calendarNext=
 document.querySelector(
-  "#calendarNext"
+"#calendarNext"
 );
 
 const calendarResidenceTitle=
 document.querySelector(
-  "#calendarResidenceTitle"
+"#calendarResidenceTitle"
 );
 
 const calendarLiveStatus=
 document.querySelector(
-  "#calendarLiveStatus"
+"#calendarLiveStatus"
 );
 
 const calendarLiveText=
 document.querySelector(
-  "#calendarLiveText"
+"#calendarLiveText"
 );
 
 const calendarLoadingMessage=
 document.querySelector(
-  "#calendarLoadingMessage"
+"#calendarLoadingMessage"
 );
 
 const calendarMessage=
 document.querySelector(
-  "#calendarMessage"
+"#calendarMessage"
 );
 
 const selectedStay=
 document.querySelector(
-  "#selectedStay"
+"#selectedStay"
 );
 
 const selectedStayResidence=
 document.querySelector(
-  "#selectedStayResidence"
+"#selectedStayResidence"
 );
 
 const selectedStayCheckin=
 document.querySelector(
-  "#selectedStayCheckin"
+"#selectedStayCheckin"
 );
 
 const selectedStayCheckout=
 document.querySelector(
-  "#selectedStayCheckout"
+"#selectedStayCheckout"
 );
 
 const selectedStayNights=
 document.querySelector(
-  "#selectedStayNights"
+"#selectedStayNights"
 );
 
 const selectedStayClear=
 document.querySelector(
-  "#selectedStayClear"
+"#selectedStayClear"
 );
 
 const guestsInput=
 document.querySelector(
-  "#guests"
+"#guests"
 );
 
 const stayPriceBanner=
 document.querySelector(
-  "#stayPriceBanner"
+"#stayPriceBanner"
 );
 
 const stayPriceTotal=
 document.querySelector(
-  "#stayPriceTotal"
+"#stayPriceTotal"
 );
 
 const stayPriceMeta=
 document.querySelector(
-  "#stayPriceMeta"
+"#stayPriceMeta"
 );
 
 const requestBookingButton=
 document.querySelector(
-  "#requestBookingButton"
+"#requestBookingButton"
 );
 
 const guestDetailsSection=
 document.querySelector(
-  "#guest-details-section"
+"#guest-details-section"
 );
 
 const estimatedTotalInput=
 document.querySelector(
-  "#estimatedTotal"
+"#estimatedTotal"
 );
 
 let calendarEvents=[];
@@ -1850,71 +1738,71 @@ let calendarRequestId=0;
 
 const parseISO=value=>{
 
-  const[
-    year,
-    month,
-    day
-  ]=
-  value
-  .split("-")
-  .map(Number);
+const[
+year,
+month,
+day
+]=
+value
+.split("-")
+.map(Number);
 
-  return new Date(
-    year,
-    month-1,
-    day
-  );
+return new Date(
+year,
+month-1,
+day
+);
 };
 
 const dateISO=date=>
 `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
 
 const addDays=(
-  value,
-  days
+value,
+days
 )=>{
 
-  const date=
-  parseISO(value);
+const date=
+parseISO(value);
 
-  date.setDate(
-    date.getDate()+
-    days
-  );
+date.setDate(
+date.getDate()+
+days
+);
 
-  return dateISO(
-    date
-  );
+return dateISO(
+date
+);
 };
 
 const todayISO=()=>
 dateISO(
-  new Date()
+new Date()
 );
 
 const nightsBetween=(
-  start,
-  end
+start,
+end
 )=>
 Math.round(
-  (
-    parseISO(end)-
-    parseISO(start)
-  )/
-  86400000
+(
+parseISO(end)-
+parseISO(start)
+)/
+86400000
 );
 
 const prettyDate=value=>
 parseISO(value)
 .toLocaleDateString(
-  primeLanguage==="it"
-    ?"it-IT"
-    :"en-GB",
-  {
-    day:"2-digit",
-    month:"short",
-    year:"numeric"
-  }
+primeLanguage==="it"
+?"it-IT"
+:"en-GB",
+{
+day:"2-digit",
+month:"short",
+year:"numeric"
+}
 )
 .toUpperCase();
 
@@ -1923,9 +1811,9 @@ new Date();
 
 displayMonth=
 new Date(
-  displayMonth.getFullYear(),
-  displayMonth.getMonth(),
-  1
+displayMonth.getFullYear(),
+displayMonth.getMonth(),
+1
 );
 
 /* =========================================================
@@ -1935,29 +1823,29 @@ new Date(
 const BARONTINI_RATES={};
 
 const setRate=(
-  date,
-  price
+date,
+price
 )=>{
-  BARONTINI_RATES[date]=
-  price;
+BARONTINI_RATES[date]=
+price;
 };
 
 const setRange=(
-  start,
-  end,
-  price
+start,
+end,
+price
 )=>{
 
-  for(
-    let date=start;
-    date<=end;
-    date=addDays(date,1)
-  ){
-    setRate(
-      date,
-      price
-    );
-  }
+for(
+let date=start;
+date<=end;
+date=addDays(date,1)
+){
+setRate(
+date,
+price
+);
+}
 };
 
 setRate("2026-09-13",99);
@@ -1974,243 +1862,243 @@ setRate("2026-10-01",130);
 setRate("2026-10-02",180);
 
 setRange(
-  "2026-10-06",
-  "2026-10-08",
-  130
+"2026-10-06",
+"2026-10-08",
+130
 );
 
 setRange(
-  "2026-10-11",
-  "2026-10-15",
-  130
+"2026-10-11",
+"2026-10-15",
+130
 );
 
 setRange(
-  "2026-10-18",
-  "2026-10-19",
-  150
+"2026-10-18",
+"2026-10-19",
+150
 );
 
 setRange(
-  "2026-10-20",
-  "2026-10-21",
-  180
+"2026-10-20",
+"2026-10-21",
+180
 );
 
 setRate(
-  "2026-10-25",
-  180
+"2026-10-25",
+180
 );
 
 setRange(
-  "2026-10-26",
-  "2026-10-29",
-  150
+"2026-10-26",
+"2026-10-29",
+150
 );
 
 setRange(
-  "2026-10-30",
-  "2026-10-31",
-  180
+"2026-10-30",
+"2026-10-31",
+180
 );
 
 setRange(
-  "2026-11-01",
-  "2026-11-05",
-  150
+"2026-11-01",
+"2026-11-05",
+150
 );
 
 setRange(
-  "2026-11-06",
-  "2026-11-07",
-  180
+"2026-11-06",
+"2026-11-07",
+180
 );
 
 setRate(
-  "2026-11-08",
-  250
+"2026-11-08",
+250
 );
 
 setRate(
-  "2026-11-09",
-  300
+"2026-11-09",
+300
 );
 
 setRange(
-  "2026-11-10",
-  "2026-11-13",
-  330
+"2026-11-10",
+"2026-11-13",
+330
 );
 
 setRate(
-  "2026-11-14",
-  280
+"2026-11-14",
+280
 );
 
 setRange(
-  "2026-11-15",
-  "2026-11-19",
-  150
+"2026-11-15",
+"2026-11-19",
+150
 );
 
 setRange(
-  "2026-11-20",
-  "2026-11-21",
-  180
+"2026-11-20",
+"2026-11-21",
+180
 );
 
 setRange(
-  "2026-11-22",
-  "2026-11-26",
-  150
+"2026-11-22",
+"2026-11-26",
+150
 );
 
 setRange(
-  "2026-11-27",
-  "2026-11-28",
-  180
+"2026-11-27",
+"2026-11-28",
+180
 );
 
 setRange(
-  "2026-11-29",
-  "2026-11-30",
-  150
+"2026-11-29",
+"2026-11-30",
+150
 );
 
 setRange(
-  "2026-12-01",
-  "2026-12-03",
-  130
+"2026-12-01",
+"2026-12-03",
+130
 );
 
 setRange(
-  "2026-12-06",
-  "2026-12-10",
-  130
+"2026-12-06",
+"2026-12-10",
+130
 );
 
 setRange(
-  "2026-12-11",
-  "2026-12-12",
-  150
+"2026-12-11",
+"2026-12-12",
+150
 );
 
 setRange(
-  "2026-12-13",
-  "2026-12-17",
-  115
+"2026-12-13",
+"2026-12-17",
+115
 );
 
 setRange(
-  "2026-12-18",
-  "2026-12-19",
-  140
+"2026-12-18",
+"2026-12-19",
+140
 );
 
 setRange(
-  "2026-12-20",
-  "2026-12-24",
-  115
+"2026-12-20",
+"2026-12-24",
+115
 );
 
 setRate(
-  "2026-12-25",
-  140
+"2026-12-25",
+140
 );
 
 setRange(
-  "2026-12-28",
-  "2026-12-30",
-  240
+"2026-12-28",
+"2026-12-30",
+240
 );
 
 setRate(
-  "2026-12-31",
-  320
+"2026-12-31",
+320
 );
 
 setRange(
-  "2027-01-01",
-  "2027-01-05",
-  180
+"2027-01-01",
+"2027-01-05",
+180
 );
 
 setRange(
-  "2027-01-06",
-  "2027-01-07",
-  100
+"2027-01-06",
+"2027-01-07",
+100
 );
 
 setRange(
-  "2027-01-08",
-  "2027-01-09",
-  120
+"2027-01-08",
+"2027-01-09",
+120
 );
 
 setRange(
-  "2027-01-10",
-  "2027-01-12",
-  100
+"2027-01-10",
+"2027-01-12",
+100
 );
 
 setRange(
-  "2027-01-13",
-  "2027-01-14",
-  140
+"2027-01-13",
+"2027-01-14",
+140
 );
 
 setRange(
-  "2027-01-15",
-  "2027-01-16",
-  120
+"2027-01-15",
+"2027-01-16",
+120
 );
 
 setRange(
-  "2027-01-17",
-  "2027-01-21",
-  100
+"2027-01-17",
+"2027-01-21",
+100
 );
 
 setRange(
-  "2027-01-22",
-  "2027-01-23",
-  120
+"2027-01-22",
+"2027-01-23",
+120
 );
 
 setRange(
-  "2027-01-24",
-  "2027-01-28",
-  100
+"2027-01-24",
+"2027-01-28",
+100
 );
 
 setRange(
-  "2027-01-29",
-  "2027-01-30",
-  120
+"2027-01-29",
+"2027-01-30",
+120
 );
 
 setRate(
-  "2027-01-31",
-  100
+"2027-01-31",
+100
 );
 
 for(
-  let date="2027-02-01";
-  date<="2027-02-28";
-  date=addDays(date,1)
+let date="2027-02-01";
+date<="2027-02-28";
+date=addDays(date,1)
 ){
 
-  const weekday=
-  parseISO(date)
-  .getDay();
+const weekday=
+parseISO(date)
+.getDay();
 
-  setRate(
-    date,
-    weekday===5||
-    weekday===6
-      ?140
-      :115
-  );
+setRate(
+date,
+weekday===5||
+weekday===6
+?140
+:115
+);
 }
 
 /* =========================================================
@@ -2220,185 +2108,185 @@ for(
 const GASTONE_RATES={};
 
 const setGastoneRate=(
-  date,
-  price
+date,
+price
 )=>{
-  GASTONE_RATES[date]=
-  price;
+GASTONE_RATES[date]=
+price;
 };
 
 const setGastoneRange=(
-  start,
-  end,
-  price
+start,
+end,
+price
 )=>{
 
-  for(
-    let date=start;
-    date<=end;
-    date=addDays(date,1)
-  ){
+for(
+let date=start;
+date<=end;
+date=addDays(date,1)
+){
 
-    setGastoneRate(
-      date,
-      price
-    );
-  }
+setGastoneRate(
+date,
+price
+);
+}
 };
 
 setGastoneRange(
-  "2026-09-27",
-  "2026-09-28",
-  120
+"2026-09-27",
+"2026-09-28",
+120
 );
 
 setGastoneRate(
-  "2026-10-01",
-  130
+"2026-10-01",
+130
 );
 
 setGastoneRate(
-  "2026-10-19",
-  150
+"2026-10-19",
+150
 );
 
 setGastoneRate(
-  "2026-10-27",
-  150
+"2026-10-27",
+150
 );
 
 setGastoneRange(
-  "2026-11-02",
-  "2026-11-05",
-  140
+"2026-11-02",
+"2026-11-05",
+140
 );
 
 setGastoneRange(
-  "2026-11-06",
-  "2026-11-07",
-  160
+"2026-11-06",
+"2026-11-07",
+160
 );
 
 setGastoneRange(
-  "2026-11-15",
-  "2026-11-19",
-  130
+"2026-11-15",
+"2026-11-19",
+130
 );
 
 setGastoneRange(
-  "2026-11-20",
-  "2026-11-21",
-  160
+"2026-11-20",
+"2026-11-21",
+160
 );
 
 setGastoneRate(
-  "2026-11-22",
-  130
+"2026-11-22",
+130
 );
 
 setGastoneRate(
-  "2026-11-30",
-  130
+"2026-11-30",
+130
 );
 
 for(
-  let date="2026-12-01";
-  date<="2026-12-31";
-  date=addDays(date,1)
+let date="2026-12-01";
+date<="2026-12-31";
+date=addDays(date,1)
 ){
 
-  const weekday=
-  parseISO(date)
-  .getDay();
+const weekday=
+parseISO(date)
+.getDay();
 
-  setGastoneRate(
-    date,
-    weekday===5||
-    weekday===6
-      ?140
-      :120
-  );
+setGastoneRate(
+date,
+weekday===5||
+weekday===6
+?140
+:120
+);
 }
 
 setGastoneRange(
-  "2026-12-01",
-  "2026-12-02",
-  130
+"2026-12-01",
+"2026-12-02",
+130
 );
 
 setGastoneRange(
-  "2027-01-03",
-  "2027-01-05",
-  160
+"2027-01-03",
+"2027-01-05",
+160
 );
 
 setGastoneRate(
-  "2027-01-07",
-  140
+"2027-01-07",
+140
 );
 
 setGastoneRange(
-  "2027-01-20",
-  "2027-01-21",
-  140
+"2027-01-20",
+"2027-01-21",
+140
 );
 
 setGastoneRange(
-  "2027-01-25",
-  "2027-01-28",
-  130
+"2027-01-25",
+"2027-01-28",
+130
 );
 
 setGastoneRange(
-  "2027-01-29",
-  "2027-01-30",
-  140
+"2027-01-29",
+"2027-01-30",
+140
 );
 
 setGastoneRate(
-  "2027-01-31",
-  130
+"2027-01-31",
+130
 );
 
 setGastoneRange(
-  "2027-02-01",
-  "2027-02-04",
-  120
+"2027-02-01",
+"2027-02-04",
+120
 );
 
 setGastoneRange(
-  "2027-02-12",
-  "2027-02-13",
-  130
+"2027-02-12",
+"2027-02-13",
+130
 );
 
 setGastoneRange(
-  "2027-02-14",
-  "2027-02-18",
-  120
+"2027-02-14",
+"2027-02-18",
+120
 );
 
 setGastoneRange(
-  "2027-02-19",
-  "2027-02-20",
-  130
+"2027-02-19",
+"2027-02-20",
+130
 );
 
 setGastoneRange(
-  "2027-02-21",
-  "2027-02-25",
-  120
+"2027-02-21",
+"2027-02-25",
+120
 );
 
 setGastoneRange(
-  "2027-02-26",
-  "2027-02-27",
-  130
+"2027-02-26",
+"2027-02-27",
+130
 );
 
 setGastoneRate(
-  "2027-02-28",
-  120
+"2027-02-28",
+120
 );
 
 /* =========================================================
@@ -2412,241 +2300,228 @@ const RATE_END=
 "2027-02-28";
 
 function guestMultiplier(
-  guests
+guests
 ){
 
-  if(guests<=2){
-    return 1;
-  }
+if(guests<=2){
+return 1;
+}
 
-  if(guests===3){
-    return 1.30;
-  }
+if(guests===3){
+return 1.30;
+}
 
-  if(guests===4){
-    return 1.35;
-  }
+if(guests===4){
+return 1.35;
+}
 
-  if(guests===5){
-    return 1.40;
-  }
+if(guests===5){
+return 1.40;
+}
 
-  if(guests===6){
-    return 1.45;
-  }
+if(guests===6){
+return 1.45;
+}
 
-  return 1;
+return 1;
 }
 
 function getRates(){
 
-  if(
-    currentCalendarKey===
-    "barontini"
-  ){
-    return BARONTINI_RATES;
-  }
+if(
+currentCalendarKey===
+"barontini"
+){
+return BARONTINI_RATES;
+}
 
-  if(
-    currentCalendarKey===
-    "gastone"
-  ){
-    return GASTONE_RATES;
-  }
+if(
+currentCalendarKey===
+"gastone"
+){
+return GASTONE_RATES;
+}
 
-  return null;
+return null;
 }
 
 function hasRate(
-  rates,
-  day
+rates,
+day
 ){
 
-  return Object
-  .prototype
-  .hasOwnProperty
-  .call(
-    rates,
-    day
-  );
+return Object
+.prototype
+.hasOwnProperty
+.call(
+rates,
+day
+);
 }
 
 function isRateBlocked(day){
 
-  const rates=
-  getRates();
+const rates=
+getRates();
 
-  if(!rates){
-    return false;
-  }
+if(!rates){
+return false;
+}
 
-  return(
-    day>=RATE_START&&
-    day<=RATE_END&&
-    !hasRate(
-      rates,
-      day
-    )
-  );
+return(
+day>=RATE_START&&
+day<=RATE_END&&
+!hasRate(
+rates,
+day
+)
+);
 }
 
 function calculateStayPrice(){
 
-  if(
-    !selectedStart||
-    !selectedEnd||
-    !guestsInput||
-    !guestsInput.value
-  ){
-    return null;
-  }
+if(
+!selectedStart||
+!selectedEnd||
+!guestsInput||
+!guestsInput.value
+){
+return null;
+}
 
-  const guests=
-  Number(
-    guestsInput.value
-  );
+const guests=
+Number(
+guestsInput.value
+);
 
-  const nights=
-  nightsBetween(
-    selectedStart,
-    selectedEnd
-  );
+const nights=
+nightsBetween(
+selectedStart,
+selectedEnd
+);
 
-  if(nights<2){
-    return null;
-  }
+if(nights<2){
+return null;
+}
 
-  const rates=
-  getRates();
+const rates=
+getRates();
 
-  if(!rates){
-    return null;
-  }
+if(!rates){
+return null;
+}
 
-  let basePrice=0;
+let basePrice=0;
 
-  for(
-    let day=selectedStart;
-    day<selectedEnd;
-    day=addDays(day,1)
-  ){
+for(
+let day=selectedStart;
+day<selectedEnd;
+day=addDays(day,1)
+){
 
-    if(
-      !hasRate(
-        rates,
-        day
-      )
-    ){
-      return null;
-    }
+if(
+!hasRate(
+rates,
+day
+)
+){
+return null;
+}
 
-    basePrice+=
-    rates[day];
-  }
+basePrice+=
+rates[day];
+}
 
-  return{
-    price:
-    basePrice*
-    guestMultiplier(guests),
+return{
+price:
+basePrice*
+guestMultiplier(guests),
 
-    nights,
+nights,
 
-    guests
-  };
+guests
+};
 }
 
 function formatPrice(value){
 
-  return new Intl.NumberFormat(
-    primeLanguage==="it"
-      ?"it-IT"
-      :"en-GB",
-    {
-      style:"currency",
-      currency:"EUR",
-      minimumFractionDigits:
-      Number.isInteger(value)
-        ?0
-        :2,
-      maximumFractionDigits:2
-    }
-  )
-  .format(value);
+return new Intl.NumberFormat(
+primeLanguage==="it"
+?"it-IT"
+:"en-GB",
+{
+style:"currency",
+currency:"EUR",
+minimumFractionDigits:
+Number.isInteger(value)
+?0
+:2,
+maximumFractionDigits:2
+}
+)
+.format(value);
 }
 
 function updatePriceBanner(){
 
-  if(!stayPriceBanner){
-    return;
-  }
+if(!stayPriceBanner){
+return;
+}
 
-  const result=
-  calculateStayPrice();
+const result=
+calculateStayPrice();
 
-  if(!result){
+if(!result){
 
-    stayPriceBanner.classList.remove(
-      "visible"
-    );
+stayPriceBanner.classList.remove(
+"visible"
+);
 
-    if(stayPriceTotal){
-      stayPriceTotal.textContent="";
-    }
+if(estimatedTotalInput){
+estimatedTotalInput.value="";
+}
 
-    if(stayPriceMeta){
-      stayPriceMeta.textContent="";
-    }
+return;
+}
 
-    if(requestBookingButton){
-      requestBookingButton.disabled=true;
-    }
+stayPriceBanner.classList.add(
+"visible"
+);
 
-    if(estimatedTotalInput){
-      estimatedTotalInput.value="";
-    }
+if(stayPriceTotal){
 
-    return;
-  }
+stayPriceTotal.textContent=
+formatPrice(
+result.price
+);
+}
 
-  stayPriceBanner.classList.add(
-    "visible"
-  );
+if(stayPriceMeta){
 
-  if(stayPriceTotal){
+stayPriceMeta.textContent=
+primeLanguage==="it"
+?`${result.nights} notti · ${result.guests} ospiti`
+:`${result.nights} nights · ${result.guests} guests`;
+}
 
-    stayPriceTotal.textContent=
-    formatPrice(
-      result.price
-    );
-  }
+if(requestBookingButton){
 
-  if(stayPriceMeta){
+requestBookingButton.textContent=
+primeTranslate(
+"REQUEST TO BOOK →"
+);
+}
 
-    stayPriceMeta.textContent=
-    primeLanguage==="it"
-      ?`${result.nights} notti · ${result.guests} ospiti`
-      :`${result.nights} nights · ${result.guests} guests`;
-  }
+if(estimatedTotalInput){
 
-  if(requestBookingButton){
-
-    requestBookingButton.disabled=false;
-
-    requestBookingButton.textContent=
-    primeTranslate(
-      "REQUEST TO BOOK →"
-    );
-  }
-
-  if(estimatedTotalInput){
-
-    estimatedTotalInput.value=
-    String(
-      Math.round(
-        result.price*100
-      )/100
-    );
-  }
+estimatedTotalInput.value=
+String(
+Math.round(
+result.price*100
+)/
+100
+);
+}
 }
 
 /* =========================================================
@@ -2655,70 +2530,70 @@ function updatePriceBanner(){
 
 function isBooked(day){
 
-  if(isRateBlocked(day)){
-    return true;
-  }
+if(isRateBlocked(day)){
+return true;
+}
 
-  return calendarEvents.some(
-    event=>
-    event.start&&
-    event.end&&
-    day>=event.start&&
-    day<event.end
-  );
+return calendarEvents.some(
+event=>
+event.start&&
+event.end&&
+day>=event.start&&
+day<event.end
+);
 }
 
 function isPast(day){
 
-  return day<
-  todayISO();
+return day<
+todayISO();
 }
 
 function rangeHasConflict(
-  start,
-  end
+start,
+end
 ){
 
-  if(
-    !start||
-    !end||
-    end<=start
-  ){
-    return true;
-  }
+if(
+!start||
+!end||
+end<=start
+){
+return true;
+}
 
-  for(
-    let day=start;
-    day<end;
-    day=addDays(day,1)
-  ){
+for(
+let day=start;
+day<end;
+day=addDays(day,1)
+){
 
-    if(isBooked(day)){
-      return true;
-    }
-  }
+if(isBooked(day)){
+return true;
+}
+}
 
-  return false;
+return false;
 }
 
 function validCheckout(
-  start,
-  end
+start,
+end
 ){
 
-  return(
-    !!start&&
-    !!end&&
-    end>start&&
-    nightsBetween(
-      start,
-      end
-    )>=2&&
-    !rangeHasConflict(
-      start,
-      end
-    )
-  );
+return(
+!!start&&
+!!end&&
+end>start&&
+nightsBetween(
+start,
+end
+)>=2&&
+!rangeHasConflict(
+start,
+end
+)
+);
 }
 
 /* =========================================================
@@ -2727,215 +2602,211 @@ function validCheckout(
 
 function clearCalendarMessage(){
 
-  if(!calendarMessage){
-    return;
-  }
+if(!calendarMessage){
+return;
+}
 
-  calendarMessage.className=
-  "calendar-message";
+calendarMessage.className=
+"calendar-message";
 
-  calendarMessage.textContent=
-  "";
+calendarMessage.textContent=
+"";
 }
 
 function showCalendarMessage(
-  text,
-  type="info"
+text,
+type="info"
 ){
 
-  if(!calendarMessage){
-    return;
-  }
+if(!calendarMessage){
+return;
+}
 
-  calendarMessage.textContent=
-  primeTranslate(text);
+calendarMessage.textContent=
+primeTranslate(text);
 
-  calendarMessage.className=
-  `calendar-message visible ${type}`;
+calendarMessage.className=
+`calendar-message visible ${type}`;
 }
 
 function lockSubmit(
-  text="Select Your Stay"
+text="Select Your Stay"
 ){
 
-  if(!bookingSubmit){
-    return;
-  }
+if(!bookingSubmit){
+return;
+}
 
-  bookingSubmit.disabled=
-  true;
+bookingSubmit.disabled=
+true;
 
-  bookingSubmit.classList.add(
-    "availability-locked"
-  );
+bookingSubmit.classList.add(
+"availability-locked"
+);
 
-  bookingSubmit.textContent=
-  primeTranslate(text);
+bookingSubmit.textContent=
+primeTranslate(text);
 }
 
 function unlockSubmit(){
 
-  if(!bookingSubmit){
-    return;
-  }
+if(!bookingSubmit){
+return;
+}
 
-  bookingSubmit.disabled=
-  false;
+bookingSubmit.disabled=
+false;
 
-  bookingSubmit.classList.remove(
-    "availability-locked"
-  );
+bookingSubmit.classList.remove(
+"availability-locked"
+);
 
-  bookingSubmit.textContent=
-  primeTranslate(
-    "Send Booking Request"
-  );
+bookingSubmit.textContent=
+primeTranslate(
+"Send Booking Request"
+);
 }
 
 function clearStay(
-  render=true
+render=true
 ){
 
-  selectedStart="";
-  selectedEnd="";
-  previewEnd="";
+selectedStart="";
+selectedEnd="";
+previewEnd="";
 
-  if(checkinInput){
-    checkinInput.value="";
-  }
+if(checkinInput){
+checkinInput.value="";
+}
 
-  if(checkoutInput){
-    checkoutInput.value="";
-  }
+if(checkoutInput){
+checkoutInput.value="";
+}
 
-  if(selectedStay){
+if(selectedStay){
 
-    selectedStay.classList.remove(
-      "visible"
-    );
-  }
+selectedStay.classList.remove(
+"visible"
+);
+}
 
-  if(guestsInput){
-    guestsInput.value="";
-  }
+updatePriceBanner();
 
-  updatePriceBanner();
-  lockSubmit();
+lockSubmit();
 
-  if(render){
-    renderCalendar();
-  }
+if(render){
+renderCalendar();
+}
 }
 
 function updateSelectedStay(){
 
-  if(
-    !selectedStart||
-    !selectedEnd||
-    !validCheckout(
-      selectedStart,
-      selectedEnd
-    )
-  ){
+if(
+!selectedStart||
+!selectedEnd||
+!validCheckout(
+selectedStart,
+selectedEnd
+)
+){
 
-    if(selectedStay){
+if(selectedStay){
 
-      selectedStay.classList.remove(
-        "visible"
-      );
-    }
+selectedStay.classList.remove(
+"visible"
+);
+}
 
-    lockSubmit();
+lockSubmit();
 
-    return;
-  }
+return;
+}
 
-  if(checkinInput){
+if(checkinInput){
+checkinInput.value=
+selectedStart;
+}
 
-    checkinInput.value=
-    selectedStart;
-  }
+if(checkoutInput){
+checkoutInput.value=
+selectedEnd;
+}
 
-  if(checkoutInput){
+if(selectedStayResidence){
 
-    checkoutInput.value=
-    selectedEnd;
-  }
+selectedStayResidence.textContent=
+residenceInput
+?residenceInput.value
+:"";
+}
 
-  if(selectedStayResidence){
+if(selectedStayCheckin){
 
-    selectedStayResidence.textContent=
-    residenceInput
-      ?residenceInput.value
-      :"";
-  }
+selectedStayCheckin.textContent=
+prettyDate(
+selectedStart
+);
+}
 
-  if(selectedStayCheckin){
+if(selectedStayCheckout){
 
-    selectedStayCheckin.textContent=
-    prettyDate(
-      selectedStart
-    );
-  }
+selectedStayCheckout.textContent=
+prettyDate(
+selectedEnd
+);
+}
 
-  if(selectedStayCheckout){
+if(selectedStayNights){
 
-    selectedStayCheckout.textContent=
-    prettyDate(
-      selectedEnd
-    );
-  }
+selectedStayNights.textContent=
+String(
+nightsBetween(
+selectedStart,
+selectedEnd
+)
+);
+}
 
-  if(selectedStayNights){
+if(selectedStay){
 
-    selectedStayNights.textContent=
-    String(
-      nightsBetween(
-        selectedStart,
-        selectedEnd
-      )
-    );
-  }
+selectedStay.classList.add(
+"visible"
+);
+}
 
-  if(selectedStay){
+updatePriceBanner();
 
-    selectedStay.classList.add(
-      "visible"
-    );
-  }
-
-  updatePriceBanner();
-  unlockSubmit();
+unlockSubmit();
 }
 
 function selectionBounds(){
 
-  if(
-    selectedStart&&
-    selectedEnd
-  ){
+if(
+selectedStart&&
+selectedEnd
+){
 
-    return[
-      selectedStart,
-      selectedEnd
-    ];
-  }
+return[
+selectedStart,
+selectedEnd
+];
+}
 
-  if(
-    selectedStart&&
-    previewEnd
-  ){
+if(
+selectedStart&&
+previewEnd
+){
 
-    return[
-      selectedStart,
-      previewEnd
-    ];
-  }
+return[
+selectedStart,
+previewEnd
+];
+}
 
-  return[
-    selectedStart,
-    ""
-  ];
+return[
+selectedStart,
+""
+];
 }
 
 /* =========================================================
@@ -2944,204 +2815,204 @@ function selectionBounds(){
 
 function renderCalendar(){
 
-  if(
-    !calendarGrid||
-    !calendarMonthLabel
-  ){
-    return;
-  }
+if(
+!calendarGrid||
+!calendarMonthLabel
+){
+return;
+}
 
-  calendarGrid.innerHTML=
-  "";
+calendarGrid.innerHTML=
+"";
 
-  calendarMonthLabel.textContent=
-  displayMonth.toLocaleDateString(
-    primeLanguage==="it"
-      ?"it-IT"
-      :"en-GB",
-    {
-      month:"long",
-      year:"numeric"
-    }
-  );
+calendarMonthLabel.textContent=
+displayMonth.toLocaleDateString(
+primeLanguage==="it"
+?"it-IT"
+:"en-GB",
+{
+month:"long",
+year:"numeric"
+}
+);
 
-  const year=
-  displayMonth.getFullYear();
+const year=
+displayMonth.getFullYear();
 
-  const month=
-  displayMonth.getMonth();
+const month=
+displayMonth.getMonth();
 
-  const firstDay=
-  new Date(
-    year,
-    month,
-    1
-  );
+const firstDay=
+new Date(
+year,
+month,
+1
+);
 
-  const daysInMonth=
-  new Date(
-    year,
-    month+1,
-    0
-  ).getDate();
+const daysInMonth=
+new Date(
+year,
+month+1,
+0
+).getDate();
 
-  const leading=
-  (
-    firstDay.getDay()+
-    6
-  )%7;
+const leading=
+(
+firstDay.getDay()+
+6
+)%7;
 
-  if(calendarPrev){
+if(calendarPrev){
 
-    const now=
-    new Date();
+const now=
+new Date();
 
-    const currentMonth=
-    new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      1
-    );
+const currentMonth=
+new Date(
+now.getFullYear(),
+now.getMonth(),
+1
+);
 
-    calendarPrev.disabled=
-    displayMonth<=
-    currentMonth;
-  }
+calendarPrev.disabled=
+displayMonth<=
+currentMonth;
+}
 
-  for(
-    let i=0;
-    i<leading;
-    i++
-  ){
+for(
+let i=0;
+i<leading;
+i++
+){
 
-    const empty=
-    document.createElement(
-      "div"
-    );
+const empty=
+document.createElement(
+"div"
+);
 
-    empty.className=
-    "calendar-empty";
+empty.className=
+"calendar-empty";
 
-    calendarGrid.appendChild(
-      empty
-    );
-  }
+calendarGrid.appendChild(
+empty
+);
+}
 
-  const[
-    rangeStart,
-    rangeEnd
-  ]=
-  selectionBounds();
+const[
+rangeStart,
+rangeEnd
+]=
+selectionBounds();
 
-  for(
-    let day=1;
-    day<=daysInMonth;
-    day++
-  ){
+for(
+let day=1;
+day<=daysInMonth;
+day++
+){
 
-    const iso=
-    dateISO(
-      new Date(
-        year,
-        month,
-        day
-      )
-    );
+const iso=
+dateISO(
+new Date(
+year,
+month,
+day
+)
+);
 
-    const button=
-    document.createElement(
-      "button"
-    );
+const button=
+document.createElement(
+"button"
+);
 
-    const booked=
-    isBooked(iso);
+const booked=
+isBooked(iso);
 
-    const past=
-    isPast(iso);
+const past=
+isPast(iso);
 
-    button.type=
-    "button";
+button.type=
+"button";
 
-    button.className=
-    "booking-calendar-day";
+button.className=
+"booking-calendar-day";
 
-    button.dataset.date=
-    iso;
+button.dataset.date=
+iso;
 
-    button.textContent=
-    String(day);
+button.textContent=
+String(day);
 
-    if(past){
+if(past){
 
-      button.disabled=
-      true;
+button.disabled=
+true;
 
-      button.classList.add(
-        "past"
-      );
+button.classList.add(
+"past"
+);
 
-    }else{
+}else{
 
-      button.classList.add(
-        booked
-          ?"booked"
-          :"available"
-      );
-    }
+button.classList.add(
+booked
+?"booked"
+:"available"
+);
+}
 
-    if(
-      iso===
-      todayISO()
-    ){
+if(
+iso===
+todayISO()
+){
 
-      button.classList.add(
-        "today"
-      );
-    }
+button.classList.add(
+"today"
+);
+}
 
-    if(
-      rangeStart&&
-      iso===rangeStart
-    ){
+if(
+rangeStart&&
+iso===rangeStart
+){
 
-      button.classList.add(
-        "checkin"
-      );
-    }
+button.classList.add(
+"checkin"
+);
+}
 
-    if(
-      rangeEnd&&
-      iso===rangeEnd
-    ){
+if(
+rangeEnd&&
+iso===rangeEnd
+){
 
-      button.classList.add(
-        "checkout"
-      );
-    }
+button.classList.add(
+"checkout"
+);
+}
 
-    if(
-      rangeStart&&
-      rangeEnd&&
-      iso>rangeStart&&
-      iso<rangeEnd
-    ){
+if(
+rangeStart&&
+rangeEnd&&
+iso>rangeStart&&
+iso<rangeEnd
+){
 
-      button.classList.add(
-        "in-range"
-      );
-    }
+button.classList.add(
+"in-range"
+);
+}
 
-    button.addEventListener(
-      "click",
-      ()=>handleDayClick(
-        iso
-      )
-    );
+button.addEventListener(
+"click",
+()=>handleDayClick(
+iso
+)
+);
 
-    calendarGrid.appendChild(
-      button
-    );
-  }
+calendarGrid.appendChild(
+button
+);
+}
 }
 
 /* =========================================================
@@ -3150,120 +3021,116 @@ function renderCalendar(){
 
 function handleDayClick(day){
 
-  clearCalendarMessage();
+clearCalendarMessage();
 
-  if(isPast(day)){
-    return;
-  }
+if(isPast(day)){
+return;
+}
 
-  if(
-    !selectedStart||
-    selectedEnd
-  ){
+if(
+!selectedStart||
+selectedEnd
+){
 
-    if(isBooked(day)){
+if(isBooked(day)){
 
-      showCalendarMessage(
-        "This date is fully booked. Please choose an available check-in date.",
-        "info"
-      );
+showCalendarMessage(
+"This date is fully booked. Please choose an available check-in date.",
+"info"
+);
 
-      return;
-    }
+return;
+}
 
-    selectedStart=
-    day;
+selectedStart=
+day;
 
-    selectedEnd=
-    "";
+selectedEnd=
+"";
 
-    if(checkinInput){
-      checkinInput.value=day;
-    }
+if(checkinInput){
+checkinInput.value=day;
+}
 
-    if(checkoutInput){
-      checkoutInput.value="";
-    }
+if(checkoutInput){
+checkoutInput.value="";
+}
 
-    if(selectedStay){
+if(selectedStay){
 
-      selectedStay.classList.remove(
-        "visible"
-      );
-    }
+selectedStay.classList.remove(
+"visible"
+);
+}
 
-    if(guestsInput){
-      guestsInput.value="";
-    }
+updatePriceBanner();
 
-    updatePriceBanner();
+lockSubmit(
+"Select Check-out"
+);
 
-    lockSubmit(
-      "Select Check-out"
-    );
+renderCalendar();
 
-    renderCalendar();
+return;
+}
 
-    return;
-  }
+if(day===selectedStart){
 
-  if(day===selectedStart){
+clearStay();
 
-    clearStay();
+return;
+}
 
-    return;
-  }
+if(day<selectedStart){
 
-  if(day<selectedStart){
+if(isBooked(day)){
+return;
+}
 
-    if(isBooked(day)){
-      return;
-    }
+selectedStart=
+day;
 
-    selectedStart=
-    day;
+renderCalendar();
 
-    renderCalendar();
+return;
+}
 
-    return;
-  }
+if(
+nightsBetween(
+selectedStart,
+day
+)<2
+){
 
-  if(
-    nightsBetween(
-      selectedStart,
-      day
-    )<2
-  ){
+showCalendarMessage(
+"Minimum stay is 2 nights.",
+"info"
+);
 
-    showCalendarMessage(
-      "Minimum stay is 2 nights.",
-      "info"
-    );
+return;
+}
 
-    return;
-  }
+if(
+!validCheckout(
+selectedStart,
+day
+)
+){
 
-  if(
-    !validCheckout(
-      selectedStart,
-      day
-    )
-  ){
+showCalendarMessage(
+"Your selected stay crosses a fully booked date. Please choose another check-out date.",
+"error"
+);
 
-    showCalendarMessage(
-      "Your selected stay crosses a fully booked date. Please choose another check-out date.",
-      "error"
-    );
+return;
+}
 
-    return;
-  }
+selectedEnd=
+day;
 
-  selectedEnd=
-  day;
+updateSelectedStay();
 
-  updateSelectedStay();
-
-  renderCalendar();
+renderCalendar();
 }
 
 /* =========================================================
@@ -3271,189 +3138,189 @@ function handleDayClick(day){
 ========================================================= */
 
 async function loadCalendar(
-  calendarKey,
-  residenceName
+calendarKey,
+residenceName
 ){
 
-  if(!primeCalendar){
-    return;
-  }
+if(!primeCalendar){
+return;
+}
 
-  const requestId=
-  ++calendarRequestId;
+const requestId=
+++calendarRequestId;
 
-  currentCalendarKey=
-  calendarKey;
+currentCalendarKey=
+calendarKey;
 
-  calendarLoaded=false;
+calendarLoaded=false;
 
-  calendarEvents=[];
+calendarEvents=[];
 
-  clearStay(false);
+clearStay(false);
 
-  clearCalendarMessage();
+clearCalendarMessage();
 
-  primeCalendar.classList.remove(
-    "disabled"
-  );
+primeCalendar.classList.remove(
+"disabled"
+);
 
-  if(calendarResidenceTitle){
+if(calendarResidenceTitle){
 
-    calendarResidenceTitle.textContent=
-    residenceName;
-  }
+calendarResidenceTitle.textContent=
+residenceName;
+}
 
-  if(calendarLiveText){
+if(calendarLiveText){
 
-    calendarLiveText.textContent=
-    primeTranslate(
-      "LOADING"
-    );
-  }
+calendarLiveText.textContent=
+primeTranslate(
+"LOADING"
+);
+}
 
-  if(calendarLiveStatus){
+if(calendarLiveStatus){
 
-    calendarLiveStatus.classList.add(
-      "loading"
-    );
-  }
+calendarLiveStatus.classList.add(
+"loading"
+);
+}
 
-  if(calendarLoadingMessage){
+if(calendarLoadingMessage){
 
-    calendarLoadingMessage.classList.add(
-      "visible"
-    );
-  }
+calendarLoadingMessage.classList.add(
+"visible"
+);
+}
 
-  lockSubmit(
-    "Loading Availability..."
-  );
+lockSubmit(
+"Loading Availability..."
+);
 
-  const now=
-  new Date();
+const now=
+new Date();
 
-  displayMonth=
-  new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    1
-  );
+displayMonth=
+new Date(
+now.getFullYear(),
+now.getMonth(),
+1
+);
 
-  renderCalendar();
+renderCalendar();
 
-  try{
+try{
 
-    const response=
-    await fetch(
-      `/api/availability?residence=${encodeURIComponent(calendarKey)}`,
-      {
-        cache:"no-store"
-      }
-    );
+const response=
+await fetch(
+`/api/availability?residence=${encodeURIComponent(calendarKey)}`,
+{
+cache:"no-store"
+}
+);
 
-    const result=
-    await response.json();
+const result=
+await response.json();
 
-    if(
-      requestId!==
-      calendarRequestId
-    ){
-      return;
-    }
+if(
+requestId!==
+calendarRequestId
+){
+return;
+}
 
-    if(
-      !response.ok||
-      !result.success
-    ){
+if(
+!response.ok||
+!result.success
+){
 
-      throw new Error(
-        "Unable to retrieve calendar."
-      );
-    }
+throw new Error(
+"Unable to retrieve calendar."
+);
+}
 
-    calendarEvents=
-    Array.isArray(
-      result.events
-    )
-      ?result.events.filter(
-        event=>
-        event.start&&
-        event.end
-      )
-      :[];
+calendarEvents=
+Array.isArray(
+result.events
+)
+?result.events.filter(
+event=>
+event.start&&
+event.end
+)
+:[];
 
-    calendarLoaded=
-    true;
+calendarLoaded=
+true;
 
-    if(calendarLiveText){
-      calendarLiveText.textContent=
-      "LIVE";
-    }
+if(calendarLiveText){
+calendarLiveText.textContent=
+"LIVE";
+}
 
-    if(calendarLiveStatus){
+if(calendarLiveStatus){
 
-      calendarLiveStatus.classList.remove(
-        "loading"
-      );
-    }
+calendarLiveStatus.classList.remove(
+"loading"
+);
+}
 
-    if(calendarLoadingMessage){
+if(calendarLoadingMessage){
 
-      calendarLoadingMessage.classList.remove(
-        "visible"
-      );
-    }
+calendarLoadingMessage.classList.remove(
+"visible"
+);
+}
 
-    lockSubmit(
-      "Select Your Stay"
-    );
+lockSubmit(
+"Select Your Stay"
+);
 
-    renderCalendar();
+renderCalendar();
 
-  }catch(error){
+}catch(error){
 
-    console.error(
-      "Availability error:",
-      error
-    );
+console.error(
+"Availability error:",
+error
+);
 
-    calendarLoaded=false;
+calendarLoaded=false;
 
-    if(calendarLiveText){
+if(calendarLiveText){
 
-      calendarLiveText.textContent=
-      primeTranslate(
-        "UNAVAILABLE"
-      );
-    }
+calendarLiveText.textContent=
+primeTranslate(
+"UNAVAILABLE"
+);
+}
 
-    if(calendarLiveStatus){
+if(calendarLiveStatus){
 
-      calendarLiveStatus.classList.remove(
-        "loading"
-      );
-    }
+calendarLiveStatus.classList.remove(
+"loading"
+);
+}
 
-    if(calendarLoadingMessage){
+if(calendarLoadingMessage){
 
-      calendarLoadingMessage.classList.remove(
-        "visible"
-      );
-    }
+calendarLoadingMessage.classList.remove(
+"visible"
+);
+}
 
-    showCalendarMessage(
-      "We could not load availability at the moment. Please try again shortly.",
-      "error"
-    );
+showCalendarMessage(
+"We could not load availability at the moment. Please try again shortly.",
+"error"
+);
 
-    primeCalendar.classList.add(
-      "disabled"
-    );
+primeCalendar.classList.add(
+"disabled"
+);
 
-    lockSubmit(
-      "Availability Unavailable"
-    );
-  }
+lockSubmit(
+"Availability Unavailable"
+);
+}
 }
 
 /* =========================================================
@@ -3462,79 +3329,79 @@ async function loadCalendar(
 
 function selectResidence(card){
 
-  bookingCards.forEach(
-    item=>
-    item.classList.remove(
-      "selected"
-    )
-  );
+bookingCards.forEach(
+item=>
+item.classList.remove(
+"selected"
+)
+);
 
-  card.classList.add(
-    "selected"
-  );
+card.classList.add(
+"selected"
+);
 
-  const residence=
-  card.dataset.residence||
-  "";
+const residence=
+card.dataset.residence||
+"";
 
-  const calendar=
-  card.dataset.calendar||
-  "";
+const calendar=
+card.dataset.calendar||
+"";
 
-  if(residenceInput){
-    residenceInput.value=residence;
-  }
+if(residenceInput){
+residenceInput.value=residence;
+}
 
-  if(calendarResidence){
-    calendarResidence.value=calendar;
-  }
+if(calendarResidence){
+calendarResidence.value=calendar;
+}
 
-  if(selectedResidenceText){
-    selectedResidenceText.textContent=residence;
-  }
+if(selectedResidenceText){
+selectedResidenceText.textContent=residence;
+}
 
-  loadCalendar(
-    calendar,
-    residence
-  );
+loadCalendar(
+calendar,
+residence
+);
 
-  if(bookingFormSection){
+if(bookingFormSection){
 
-    bookingFormSection.scrollIntoView({
-      behavior:"smooth",
-      block:"start"
-    });
-  }
+bookingFormSection.scrollIntoView({
+behavior:"smooth",
+block:"start"
+});
+}
 }
 
 bookingCards.forEach(
-  card=>{
+card=>{
 
-    card.addEventListener(
-      "click",
-      ()=>selectResidence(
-        card
-      )
-    );
+card.addEventListener(
+"click",
+()=>selectResidence(
+card
+)
+);
 
-    card.addEventListener(
-      "keydown",
-      e=>{
+card.addEventListener(
+"keydown",
+e=>{
 
-        if(
-          e.key==="Enter"||
-          e.key===" "
-        ){
+if(
+e.key==="Enter"||
+e.key===" "
+){
 
-          e.preventDefault();
+e.preventDefault();
 
-          selectResidence(
-            card
-          );
-        }
-      }
-    );
-  }
+selectResidence(
+card
+);
+}
+}
+);
+}
 );
 
 /* =========================================================
@@ -3543,31 +3410,31 @@ bookingCards.forEach(
 
 if(guestsInput){
 
-  guestsInput.addEventListener(
-    "change",
-    updatePriceBanner
-  );
+guestsInput.addEventListener(
+"change",
+updatePriceBanner
+);
 }
 
 if(requestBookingButton){
 
-  requestBookingButton.addEventListener(
-    "click",
-    ()=>{
+requestBookingButton.addEventListener(
+"click",
+()=>{
 
-      const target=
-      guestDetailsSection||
-      bookingForm;
+const target=
+guestDetailsSection||
+bookingForm;
 
-      if(target){
+if(target){
 
-        premiumScrollTo(
-          target,
-          900
-        );
-      }
-    }
-  );
+premiumScrollTo(
+target,
+900
+);
+}
+}
+);
 }
 
 /* =========================================================
@@ -3576,70 +3443,70 @@ if(requestBookingButton){
 
 if(calendarPrev){
 
-  calendarPrev.addEventListener(
-    "click",
-    ()=>{
+calendarPrev.addEventListener(
+"click",
+()=>{
 
-      const previous=
-      new Date(
-        displayMonth.getFullYear(),
-        displayMonth.getMonth()-1,
-        1
-      );
+const previous=
+new Date(
+displayMonth.getFullYear(),
+displayMonth.getMonth()-1,
+1
+);
 
-      const now=
-      new Date();
+const now=
+new Date();
 
-      const currentMonth=
-      new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        1
-      );
+const currentMonth=
+new Date(
+now.getFullYear(),
+now.getMonth(),
+1
+);
 
-      if(
-        previous>=
-        currentMonth
-      ){
+if(
+previous>=
+currentMonth
+){
 
-        displayMonth=
-        previous;
+displayMonth=
+previous;
 
-        renderCalendar();
-      }
-    }
-  );
+renderCalendar();
+}
+}
+);
 }
 
 if(calendarNext){
 
-  calendarNext.addEventListener(
-    "click",
-    ()=>{
+calendarNext.addEventListener(
+"click",
+()=>{
 
-      displayMonth=
-      new Date(
-        displayMonth.getFullYear(),
-        displayMonth.getMonth()+1,
-        1
-      );
+displayMonth=
+new Date(
+displayMonth.getFullYear(),
+displayMonth.getMonth()+1,
+1
+);
 
-      renderCalendar();
-    }
-  );
+renderCalendar();
+}
+);
 }
 
 if(selectedStayClear){
 
-  selectedStayClear.addEventListener(
-    "click",
-    ()=>{
+selectedStayClear.addEventListener(
+"click",
+()=>{
 
-      clearStay();
+clearStay();
 
-      clearCalendarMessage();
-    }
-  );
+clearCalendarMessage();
+}
+);
 }
 
 /* =========================================================
@@ -3647,314 +3514,316 @@ if(selectedStayClear){
 ========================================================= */
 
 function showMessage(
-  text,
-  type
+text,
+type
 ){
 
-  if(!bookingMessage){
-    return;
-  }
+if(!bookingMessage){
+return;
+}
 
-  bookingMessage.textContent=
-  primeTranslate(text);
+bookingMessage.textContent=
+primeTranslate(text);
 
-  bookingMessage.className=
-  `booking-message ${type}`;
+bookingMessage.className=
+`booking-message ${type}`;
 
-  bookingMessage.style.display=
-  "block";
+bookingMessage.style.display=
+"block";
 }
 
 function hideMessage(){
 
-  if(bookingMessage){
+if(bookingMessage){
 
-    bookingMessage.style.display=
-    "none";
-  }
+bookingMessage.style.display=
+"none";
+}
 }
 
 async function verifyStayAgain(){
 
-  if(
-    !currentCalendarKey||
-    !selectedStart||
-    !selectedEnd
-  ){
-    return false;
-  }
+if(
+!currentCalendarKey||
+!selectedStart||
+!selectedEnd
+){
+return false;
+}
 
-  const response=
-  await fetch(
-    `/api/availability?residence=${encodeURIComponent(currentCalendarKey)}&t=${Date.now()}`,
-    {
-      cache:"no-store"
-    }
-  );
+const response=
+await fetch(
+`/api/availability?residence=${encodeURIComponent(currentCalendarKey)}&t=${Date.now()}`,
+{
+cache:"no-store"
+}
+);
 
-  const result=
-  await response.json();
+const result=
+await response.json();
 
-  if(
-    !response.ok||
-    !result.success
-  ){
+if(
+!response.ok||
+!result.success
+){
 
-    throw new Error(
-      "Unable to verify availability."
-    );
-  }
+throw new Error(
+"Unable to verify availability."
+);
+}
 
-  const events=
-  Array.isArray(
-    result.events
-  )
-    ?result.events
-    :[];
+const events=
+Array.isArray(
+result.events
+)
+?result.events
+:[];
 
-  for(const event of events){
+for(const event of events){
 
-    for(
-      let day=selectedStart;
-      day<selectedEnd;
-      day=addDays(day,1)
-    ){
+for(
+let day=selectedStart;
+day<selectedEnd;
+day=addDays(day,1)
+){
 
-      if(
-        day>=event.start&&
-        day<event.end
-      ){
-        return false;
-      }
-    }
-  }
+if(
+day>=event.start&&
+day<event.end
+){
+return false;
+}
+}
+}
 
-  return true;
+return true;
 }
 
 if(bookingForm){
 
-  lockSubmit();
+lockSubmit();
 
-  bookingForm.addEventListener(
-    "submit",
-    async e=>{
+bookingForm.addEventListener(
+"submit",
+async e=>{
 
-      e.preventDefault();
+e.preventDefault();
 
-      hideMessage();
+hideMessage();
 
-      if(
-        !residenceInput||
-        !residenceInput.value
-      ){
+if(
+!residenceInput||
+!residenceInput.value
+){
 
-        showMessage(
-          "Please select a residence first.",
-          "error"
-        );
+showMessage(
+"Please select a residence first.",
+"error"
+);
 
-        return;
-      }
+return;
+}
 
-      if(!calendarLoaded){
+if(!calendarLoaded){
 
-        showMessage(
-          "Availability is not currently available. Please try again.",
-          "error"
-        );
+showMessage(
+"Availability is not currently available. Please try again.",
+"error"
+);
 
-        return;
-      }
+return;
+}
 
-      if(
-        !selectedStart||
-        !selectedEnd
-      ){
+if(
+!selectedStart||
+!selectedEnd
+){
 
-        showMessage(
-          "Please select your check-in and check-out dates from the calendar.",
-          "error"
-        );
+showMessage(
+"Please select your check-in and check-out dates from the calendar.",
+"error"
+);
 
-        return;
-      }
+return;
+}
 
-      if(
-        !validCheckout(
-          selectedStart,
-          selectedEnd
-        )
-      ){
+if(
+!validCheckout(
+selectedStart,
+selectedEnd
+)
+){
 
-        showMessage(
-          "The selected stay is not available.",
-          "error"
-        );
+showMessage(
+"The selected stay is not available.",
+"error"
+);
 
-        return;
-      }
+return;
+}
 
-      if(
-        !guestsInput||
-        !guestsInput.value
-      ){
+if(
+!guestsInput||
+!guestsInput.value
+){
 
-        showMessage(
-          "Select guests to see the total price",
-          "error"
-        );
+showMessage(
+"Select guests to see the total price",
+"error"
+);
 
-        return;
-      }
+return;
+}
 
-      const privacy=
-      document.querySelector(
-        "#privacy"
-      );
+const privacy=
+document.querySelector(
+"#privacy"
+);
 
-      if(
-        privacy&&
-        !privacy.checked
-      ){
+if(
+privacy&&
+!privacy.checked
+){
 
-        showMessage(
-          "Please accept the privacy policy.",
-          "error"
-        );
+showMessage(
+"Please accept the privacy policy.",
+"error"
+);
 
-        return;
-      }
+return;
+}
 
-      lockSubmit(
-        "Rechecking Availability..."
-      );
+lockSubmit(
+"Rechecking Availability..."
+);
 
-      try{
+try{
 
-        const available=
-        await verifyStayAgain();
+const available=
+await verifyStayAgain();
 
-        if(!available){
+if(!available){
 
-          showMessage(
-            "Availability has changed and these dates are no longer available. Please select another stay.",
-            "error"
-          );
+showMessage(
+"Availability has changed and these dates are no longer available. Please select another stay.",
+"error"
+);
 
-          await loadCalendar(
-            calendarResidence.value,
-            residenceInput.value
-          );
+await loadCalendar(
+calendarResidence.value,
+residenceInput.value
+);
 
-          return;
-        }
+return;
+}
 
-      }catch(error){
+}catch(error){
 
-        showMessage(
-          "We could not verify availability right now. Please try again in a moment.",
-          "error"
-        );
+showMessage(
+"We could not verify availability right now. Please try again in a moment.",
+"error"
+);
 
-        unlockSubmit();
+unlockSubmit();
 
-        return;
-      }
+return;
+}
 
-      lockSubmit(
-        "Sending..."
-      );
+lockSubmit(
+"Sending..."
+);
 
-      const data=
-      Object.fromEntries(
-        new FormData(
-          bookingForm
-        ).entries()
-      );
+const data=
+Object.fromEntries(
+new FormData(
+bookingForm
+)
+.entries()
+);
 
-      const price=
-      calculateStayPrice();
+const price=
+calculateStayPrice();
 
-      if(price){
+if(price){
 
-        data.estimatedTotal=
-        Math.round(
-          price.price*100
-        )/100;
-      }
+data.estimatedTotal=
+Math.round(
+price.price*100
+)/
+100;
+}
 
-      data.lang=
-      primeLanguage;
+data.lang=
+primeLanguage;
 
-      try{
+try{
 
-        const response=
-        await fetch(
-          "/api/booking-request",
-          {
-            method:"POST",
-            headers:{
-              "Content-Type":
-              "application/json"
-            },
-            body:
-            JSON.stringify(
-              data
-            )
-          }
-        );
+const response=
+await fetch(
+"/api/booking-request",
+{
+method:"POST",
+headers:{
+"Content-Type":
+"application/json"
+},
+body:
+JSON.stringify(
+data
+)
+}
+);
 
-        const result=
-        await response.json();
+const result=
+await response.json();
 
-        if(!response.ok){
+if(!response.ok){
 
-          throw new Error(
-            result.message||
-            "Unable to send request."
-          );
-        }
+throw new Error(
+result.message||
+"Unable to send request."
+);
+}
 
-        showMessage(
-          result.message||
-          "Booking request sent successfully. We will contact you shortly to confirm your stay.",
-          "success"
-        );
+showMessage(
+result.message||
+"Booking request sent successfully. We will contact you shortly to confirm your stay.",
+"success"
+);
 
-        const residence=
-        residenceInput.value;
+const residence=
+residenceInput.value;
 
-        const calendar=
-        calendarResidence.value;
+const calendar=
+calendarResidence.value;
 
-        bookingForm.reset();
+bookingForm.reset();
 
-        residenceInput.value=
-        residence;
+residenceInput.value=
+residence;
 
-        calendarResidence.value=
-        calendar;
+calendarResidence.value=
+calendar;
 
-        clearStay(false);
+clearStay(false);
 
-        await loadCalendar(
-          calendar,
-          residence
-        );
+await loadCalendar(
+calendar,
+residence
+);
 
-      }catch(error){
+}catch(error){
 
-        showMessage(
-          error.message||
-          "Unable to send request.",
-          "error"
-        );
+showMessage(
+error.message||
+"Unable to send request.",
+"error"
+);
 
-        unlockSubmit();
-      }
-    }
-  );
+unlockSubmit();
+}
+}
+);
 }
 
 /* =========================================================
@@ -3963,894 +3832,887 @@ if(bookingForm){
 
 const assistant=
 document.querySelector(
-  ".prime-assistant"
+".prime-assistant"
 );
 
 if(assistant){
 
-  const page=
-  assistant.dataset.assistantPage||
-  "home";
-
-  const launcher=
-  assistant.querySelector(
-    ".prime-assistant-launcher"
-  );
-
-  const chatWindow=
-  assistant.querySelector(
-    ".prime-assistant-window"
-  );
-
-  const closeChat=
-  assistant.querySelector(
-    ".prime-assistant-close"
-  );
-
-  const prompt=
-  assistant.querySelector(
-    ".prime-assistant-prompt"
-  );
-
-  const promptMain=
-  assistant.querySelector(
-    ".assistant-prompt-main"
-  );
-
-  const promptClose=
-  assistant.querySelector(
-    ".assistant-prompt-close"
-  );
-
-  const messages=
-  assistant.querySelector(
-    ".prime-assistant-messages"
-  );
-
-  const form=
-  assistant.querySelector(
-    ".prime-assistant-form"
-  );
-
-  const input=
-  assistant.querySelector(
-    ".prime-assistant-input"
-  );
-
-  const suggestionButtons=
-  assistant.querySelectorAll(
-    ".assistant-suggestion"
-  );
-
-  const residences={
-
-    gastone:{
-      name:"Gastone Rossi 12",
-      bedrooms:3,
-      bathrooms:2,
-      guests:6,
-      size:"98 m²",
-      address:
-      "Via Gastone Rossi 12, Bologna",
-      checkin:
-      "15:00–19:00",
-      checkout:
-      "08:00–11:00"
-    },
-
-    barontini:{
-      name:"Barontini 8",
-      bedrooms:2,
-      bathrooms:1,
-      guests:6,
-      size:"75 m²",
-      address:
-      "Via Ilio Barontini 8, Bologna",
-      checkin:
-      "15:00–21:00",
-      checkout:
-      "entro le 11:00"
-    }
-  };
-
-  function isItalian(text){
-
-    if(primeLanguage==="it"){
-      return true;
-    }
-
-    const q=
-    String(text||"")
-    .toLowerCase();
-
-    return[
-      "ciao",
-      "salve",
-      "buongiorno",
-      "buonasera",
-      "cos'è",
-      "cosa è",
-      "appartamento",
-      "camere",
-      "bagni",
-      "ospiti",
-      "prenot",
-      "prezzo",
-      "quanto",
-      "dove",
-      "indirizzo",
-      "parcheggio",
-      "animali",
-      "famiglia",
-      "persone",
-      "grazie",
-      "contatt",
-      "disponibil"
-    ]
-    .some(
-      w=>q.includes(w)
-    );
-  }
-
-  function scrollMessages(){
-
-    if(messages){
-
-      requestAnimationFrame(
-        ()=>messages.scrollTop=
-        messages.scrollHeight
-      );
-    }
-  }
-
-  function addMessage(
-    text,
-    type="bot",
-    actions=[]
-  ){
-
-    if(!messages){
-      return;
-    }
-
-    const wrap=
-    document.createElement(
-      "div"
-    );
-
-    const label=
-    document.createElement(
-      "span"
-    );
-
-    const p=
-    document.createElement(
-      "p"
-    );
-
-    wrap.className=
-    `assistant-message assistant-message-${type}`;
-
-    label.className=
-    "assistant-message-label";
-
-    label.textContent=
-    type==="user"
-      ?"YOU"
-      :"PRIME ASSISTANT";
-
-    p.textContent=
-    text;
-
-    wrap.append(
-      label,
-      p
-    );
-
-    actions.forEach(
-      action=>{
-
-        const a=
-        document.createElement(
-          "a"
-        );
-
-        a.href=
-        action.href;
-
-        a.textContent=
-        action.label;
-
-        if(action.external){
-
-          a.target=
-          "_blank";
-
-          a.rel=
-          "noopener noreferrer";
-        }
-
-        wrap.appendChild(
-          a
-        );
-      }
-    );
-
-    messages.appendChild(
-      wrap
-    );
-
-    scrollMessages();
-  }
-
-  function hidePrompt(){
-
-    if(!prompt){
-      return;
-    }
-
-    prompt.classList.remove(
-      "visible"
-    );
-
-    prompt.setAttribute(
-      "aria-hidden",
-      "true"
-    );
-  }
-
-  function showPrompt(){
-
-    if(
-      !prompt||
-      assistant.classList.contains(
-        "chat-open"
-      )
-    ){
-      return;
-    }
-
-    prompt.classList.add(
-      "visible"
-    );
-
-    prompt.setAttribute(
-      "aria-hidden",
-      "false"
-    );
-  }
-
-  function openChat(){
-
-    if(!chatWindow){
-      return;
-    }
-
-    hidePrompt();
-
-    assistant.classList.add(
-      "chat-open"
-    );
-
-    chatWindow.classList.add(
-      "open"
-    );
-
-    chatWindow.setAttribute(
-      "aria-hidden",
-      "false"
-    );
-
-    if(launcher){
-
-      launcher.setAttribute(
-        "aria-expanded",
-        "true"
-      );
-    }
-
-    setTimeout(
-      ()=>input&&input.focus(),
-      250
-    );
-  }
-
-  function closeAssistant(){
-
-    if(!chatWindow){
-      return;
-    }
-
-    assistant.classList.remove(
-      "chat-open"
-    );
-
-    chatWindow.classList.remove(
-      "open"
-    );
-
-    chatWindow.setAttribute(
-      "aria-hidden",
-      "true"
-    );
-
-    if(launcher){
-
-      launcher.setAttribute(
-        "aria-expanded",
-        "false"
-      );
-    }
-  }
-
-  if(launcher){
-
-    launcher.addEventListener(
-      "click",
-      openChat
-    );
-  }
-
-  if(closeChat){
-
-    closeChat.addEventListener(
-      "click",
-      closeAssistant
-    );
-  }
-
-  if(promptMain){
-
-    promptMain.addEventListener(
-      "click",
-      openChat
-    );
-  }
-
-  if(promptClose){
-
-    promptClose.addEventListener(
-      "click",
-      e=>{
-
-        e.stopPropagation();
-
-        hidePrompt();
-      }
-    );
-  }
-
-  /* Assistant suggestion appears after 3 seconds on every page */
-  if(prompt){
-
-    setTimeout(
-      showPrompt,
-      3000
-    );
-  }
-
-  function getResponse(original){
-
-    const question=
-    String(original||"")
-    .toLowerCase()
-    .trim();
-
-    const italian=
-    isItalian(original);
-
-    const current=
-    residences[page]||
-    null;
-
-    const bookingAction=[
-      {
-        label:
-        "BOOK YOUR STAY →",
-        href:
-        "booking.html"
-      }
-    ];
-
-    if(
-      question.includes(
-        "what is prime"
-      )||
-      question.includes(
-        "about-prime"
-      )||
-      question.includes(
-        "tell me about prime"
-      )||
-      question.includes(
-        "cos'è prime"
-      )
-    ){
-
-      return{
-
-        text:
-        italian
-          ?"Prime Residence Bologna è una collezione di residence privati e raffinati pensati per vivere Bologna con il comfort e la libertà di una casa propria."
-          :"Prime Residence Bologna is a collection of refined private residences designed for guests who want to experience Bologna with the comfort and freedom of their own space.",
-
-        actions:[
-          {
-            label:
-            "DISCOVER THE RESIDENCES →",
-            href:
-            "index.html#residences"
-          }
-        ]
-      };
-    }
-
-    if(
-      question.includes(
-        "which residences"
-      )||
-      question.includes(
-        "residences"
-      )||
-      (
-        question.includes(
-          "residence"
-        )&&
-        question.includes(
-          "which"
-        )
-      )
-    ){
-
-      return{
-
-        text:
-        italian
-          ?"Prime Residence Bologna propone Gastone Rossi 12, con 3 camere e 2 bagni, e Barontini 8, con 2 camere e 1 bagno. Entrambi possono ospitare fino a 6 persone."
-          :"Prime Residence Bologna offers Gastone Rossi 12, with 3 bedrooms and 2 bathrooms, and Barontini 8, with 2 bedrooms and 1 bathroom. Both accommodate up to 6 guests.",
-
-        actions:[
-          {
-            label:
-            "GASTONE ROSSI 12 →",
-            href:
-            "gastone-rossi-12.html"
-          },
-          {
-            label:
-            "BARONTINI 8 →",
-            href:
-            "barontini-8.html"
-          }
-        ]
-      };
-    }
-
-    if(
-      question.includes(
-        "this residence"
-      )||
-      question.includes(
-        "residence-details"
-      )||
-      question.includes(
-        "apartment"
-      )
-    ){
-
-      if(current){
-
-        return{
-
-          text:
-          italian
-            ?`${current.name} dispone di ${current.bedrooms} camere, ${current.bathrooms} bagni e può ospitare fino a ${current.guests} persone.`
-            :`${current.name} has ${current.bedrooms} bedrooms, ${current.bathrooms} bathrooms and accommodates up to ${current.guests} guests.`,
-
-          actions:
-          bookingAction
-        };
-      }
-    }
-
-    if(
-      question.includes(
-        "difference"
-      )||
-      question.includes(
-        "compare"
-      )||
-      question.includes(
-        "differenza"
-      )||
-      question.includes(
-        "confront"
-      )
-    ){
-
-      return{
-
-        text:
-        italian
-          ?"Gastone Rossi 12 è più ampio, con 3 camere e 2 bagni. Barontini 8 dispone di 2 camere e 1 bagno. Entrambi ospitano fino a 6 persone."
-          :"Gastone Rossi 12 is larger, with 3 bedrooms and 2 bathrooms. Barontini 8 has 2 bedrooms and 1 bathroom. Both accommodate up to 6 guests.",
-
-        actions:[
-          {
-            label:
-            "COMPARE RESIDENCES →",
-            href:
-            "index.html#residences"
-          }
-        ]
-      };
-    }
-
-    if(
-      question.includes(
-        "booking"
-      )||
-      question.includes(
-        "book"
-      )||
-      question.includes(
-        "prenot"
-      )
-    ){
-
-      return{
-
-        text:
-        italian
-          ?"Puoi scegliere il residence, controllare la disponibilità sul calendario e inviare una richiesta dalla pagina Book Your Stay."
-          :"You can choose a residence, check real-time availability on the calendar and submit your request through the Book Your Stay page.",
-
-        actions:
-        bookingAction
-      };
-    }
-
-    if(
-      question.includes(
-        "available"
-      )||
-      question.includes(
-        "availability"
-      )||
-      question.includes(
-        "disponibil"
-      )
-    ){
-
-      return{
-
-        text:
-        italian
-          ?"Nella pagina Book Your Stay puoi vedere la disponibilità sul calendario e selezionare direttamente le date del soggiorno."
-          :"The Book Your Stay page displays real-time availability on the calendar so you can select your stay directly.",
-
-        actions:[
-          {
-            label:
-            "CHECK AVAILABILITY →",
-            href:
-            "booking.html"
-          }
-        ]
-      };
-    }
-
-    if(
-      question.includes(
-        "check-in"
-      )||
-      question.includes(
-        "checkin"
-      )||
-      question.includes(
-        "arriv"
-      )
-    ){
-
-      if(current){
-
-        return{
-
-          text:
-          italian
-            ?`Per ${current.name}, il check-in è previsto ${current.checkin} e il check-out ${current.checkout}. Comunica in anticipo l'orario di arrivo.`
-            :`At ${current.name}, check-in is ${current.checkin} and check-out is ${current.checkout}. Please communicate your arrival time in advance.`,
-
-          actions:
-          bookingAction
-        };
-      }
-
-      return{
-
-        text:
-        italian
-          ?"Gli orari cambiano in base al residence: Gastone Rossi 12, 15:00–19:00; Barontini 8, 15:00–21:00. Il check-out è entro le 11:00."
-          :"Check-in times depend on the residence: Gastone Rossi 12, 15:00–19:00; Barontini 8, 15:00–21:00. Check-out is by 11:00.",
-
-        actions:
-        bookingAction
-      };
-    }
-
-    if(
-      question.includes(
-        "location"
-      )||
-      question.includes(
-        "address"
-      )||
-      question.includes(
-        "where"
-      )||
-      question.includes(
-        "dove"
-      )||
-      question.includes(
-        "indirizzo"
-      )
-    ){
-
-      let target=
-      current;
-
-      if(
-        question.includes(
-          "gastone"
-        )
-      ){
-
-        target=
-        residences.gastone;
-      }
-
-      if(
-        question.includes(
-          "barontini"
-        )
-      ){
-
-        target=
-        residences.barontini;
-      }
-
-      if(target){
-
-        return{
-
-          text:
-          italian
-            ?`${target.name} si trova in ${target.address}.`
-            :`${target.name} is located at ${target.address}.`,
-
-          actions:[]
-        };
-      }
-
-      return{
-
-        text:
-        italian
-          ?"I residence si trovano a Bologna. Puoi aprire le pagine delle singole strutture per vedere posizione e dintorni."
-          :"The residences are located in Bologna. Open each residence page to see its location and nearby places.",
-
-        actions:[
-          {
-            label:
-            "DISCOVER THE RESIDENCES →",
-            href:
-            "index.html#residences"
-          }
-        ]
-      };
-    }
-
-    if(
-      question.includes(
-        "contact"
-      )||
-      question.includes(
-        "whatsapp"
-      )||
-      question.includes(
-        "email"
-      )||
-      question.includes(
-        "contatt"
-      )
-    ){
-
-      return{
-
-        text:
-        italian
-          ?"Puoi contattare direttamente Prime Residence tramite WhatsApp o email."
-          :"You can contact Prime Residence directly via WhatsApp or email.",
-
-        actions:[
-          {
-            label:
-            "WHATSAPP ↗",
-            href:
-            "https://wa.me/393917055625",
-            external:true
-          },
-          {
-            label:
-            "EMAIL ↗",
-            href:
-            "mailto:vittoriolandi005@gmail.com"
-          }
-        ]
-      };
-    }
-
-    return{
-
-      text:
-      italian
-        ?"Posso aiutarti con informazioni sui residence, disponibilità, prenotazioni, check-in e posizione."
-        :"I can help with our residences, availability, booking, check-in and location.",
-
-      actions:[]
-    };
-  }
-
-  function processQuestion(
-    question
-  ){
-
-    if(
-      !question||
-      !question.trim()
-    ){
-      return;
-    }
-
-    const clean=
-    question.trim();
-
-    addMessage(
-      clean,
-      "user"
-    );
-
-    const response=
-    getResponse(clean);
-
-    setTimeout(
-      ()=>addMessage(
-        response.text,
-        "bot",
-        response.actions
-      ),
-      320
-    );
-  }
-
-  if(
-    form&&
-    input
-  ){
-
-    form.addEventListener(
-      "submit",
-      e=>{
-
-        e.preventDefault();
-
-        const question=
-        input.value;
-
-        input.value="";
-
-        processQuestion(
-          question
-        );
-      }
-    );
-  }
-
-  suggestionButtons.forEach(
-    button=>
-    button.addEventListener(
-      "click",
-      ()=>{
-
-        const type=
-        button.dataset.question||
-        "";
-
-        let question="";
-
-        switch(type){
-
-          case"about-prime":
-
-            question=
-            "What is Prime Residence Bologna?";
-
-            break;
-
-          case"residences":
-
-            question=
-            "Which residences do you have?";
-
-            break;
-
-          case"residence-details":
-
-            question=
-            "Tell me about this residence";
-
-            break;
-
-          case"compare":
-
-            question=
-            "What is the difference between the two apartments?";
-
-            break;
-
-          case"booking":
-
-            question=
-            "How can I book?";
-
-            break;
-
-          case"location":
-
-            question=
-            page==="gastone"
-              ?"Where is Gastone Rossi 12?"
-              :page==="barontini"
-              ?"Where is Barontini 8?"
-              :"Where are the residences?";
-
-            break;
-
-          case"checkin":
-
-            question=
-            "How does check-in work?";
-
-            break;
-
-          default:
-
-            question=
-            type;
-        }
-
-        processQuestion(
-          question
-        );
-      }
-    )
-  );
-
-  document.addEventListener(
-    "keydown",
-    e=>{
-
-      if(
-        e.key==="Escape"&&
-        assistant.classList.contains(
-          "chat-open"
-        )
-      ){
-
-        closeAssistant();
-      }
-    }
-  );
+const page=
+assistant.dataset.assistantPage||
+"home";
+
+const launcher=
+assistant.querySelector(
+".prime-assistant-launcher"
+);
+
+const chatWindow=
+assistant.querySelector(
+".prime-assistant-window"
+);
+
+const closeChat=
+assistant.querySelector(
+".prime-assistant-close"
+);
+
+const prompt=
+assistant.querySelector(
+".prime-assistant-prompt"
+);
+
+const promptMain=
+assistant.querySelector(
+".assistant-prompt-main"
+);
+
+const promptClose=
+assistant.querySelector(
+".assistant-prompt-close"
+);
+
+const messages=
+assistant.querySelector(
+".prime-assistant-messages"
+);
+
+const form=
+assistant.querySelector(
+".prime-assistant-form"
+);
+
+const input=
+assistant.querySelector(
+".prime-assistant-input"
+);
+
+const suggestionButtons=
+assistant.querySelectorAll(
+".assistant-suggestion"
+);
+
+const residences={
+
+gastone:{
+name:"Gastone Rossi 12",
+bedrooms:3,
+bathrooms:2,
+guests:6,
+size:"98 m²",
+address:"Via Gastone Rossi 12, Bologna",
+checkin:"15:00–19:00",
+checkout:"08:00–11:00"
+},
+
+barontini:{
+name:"Barontini 8",
+bedrooms:2,
+bathrooms:1,
+guests:6,
+size:"75 m²",
+address:"Via Ilio Barontini 8, Bologna",
+checkin:"15:00–21:00",
+checkout:"00:00–11:00"
+}
+
+};
+
+function isItalian(text){
+
+if(primeLanguage==="it"){
+return true;
+}
+
+const q=
+String(text||"")
+.toLowerCase();
+
+return[
+"ciao",
+"salve",
+"buongiorno",
+"buonasera",
+"cos'è",
+"cosa è",
+"appartamento",
+"camere",
+"bagni",
+"ospiti",
+"prenot",
+"prezzo",
+"quanto",
+"dove",
+"indirizzo",
+"parcheggio",
+"animali",
+"famiglia",
+"persone",
+"grazie",
+"contatt",
+"disponibil"
+]
+.some(
+w=>q.includes(w)
+);
+}
+
+function scrollMessages(){
+
+if(messages){
+
+requestAnimationFrame(
+()=>messages.scrollTop=
+messages.scrollHeight
+);
+}
+}
+
+function addMessage(
+text,
+type="bot",
+actions=[]
+){
+
+if(!messages){
+return;
+}
+
+const wrap=
+document.createElement(
+"div"
+);
+
+const label=
+document.createElement(
+"span"
+);
+
+const p=
+document.createElement(
+"p"
+);
+
+wrap.className=
+`assistant-message assistant-message-${type}`;
+
+label.className=
+"assistant-message-label";
+
+label.textContent=
+type==="user"
+?"YOU"
+:"PRIME ASSISTANT";
+
+p.textContent=
+text;
+
+wrap.append(
+label,
+p
+);
+
+actions.forEach(
+action=>{
+
+const a=
+document.createElement(
+"a"
+);
+
+a.href=
+action.href;
+
+a.textContent=
+action.label;
+
+if(action.external){
+
+a.target=
+"_blank";
+
+a.rel=
+"noopener noreferrer";
+}
+
+wrap.appendChild(
+a
+);
+}
+);
+
+messages.appendChild(
+wrap
+);
+
+scrollMessages();
+}
+
+function hidePrompt(){
+
+if(!prompt){
+return;
+}
+
+prompt.classList.remove(
+"visible"
+);
+
+prompt.setAttribute(
+"aria-hidden",
+"true"
+);
+}
+
+function showPrompt(){
+
+if(
+!prompt||
+assistant.classList.contains(
+"chat-open"
+)
+){
+return;
+}
+
+prompt.classList.add(
+"visible"
+);
+
+prompt.setAttribute(
+"aria-hidden",
+"false"
+);
+}
+
+function openChat(){
+
+if(!chatWindow){
+return;
+}
+
+hidePrompt();
+
+assistant.classList.add(
+"chat-open"
+);
+
+chatWindow.classList.add(
+"open"
+);
+
+chatWindow.setAttribute(
+"aria-hidden",
+"false"
+);
+
+if(launcher){
+
+launcher.setAttribute(
+"aria-expanded",
+"true"
+);
+}
+
+setTimeout(
+()=>input&&input.focus(),
+250
+);
+}
+
+function closeAssistant(){
+
+if(!chatWindow){
+return;
+}
+
+assistant.classList.remove(
+"chat-open"
+);
+
+chatWindow.classList.remove(
+"open"
+);
+
+chatWindow.setAttribute(
+"aria-hidden",
+"true"
+);
+
+if(launcher){
+
+launcher.setAttribute(
+"aria-expanded",
+"false"
+);
+}
+}
+
+if(launcher){
+
+launcher.addEventListener(
+"click",
+openChat
+);
+}
+
+if(closeChat){
+
+closeChat.addEventListener(
+"click",
+closeAssistant
+);
+}
+
+if(promptMain){
+
+promptMain.addEventListener(
+"click",
+openChat
+);
+}
+
+if(promptClose){
+
+promptClose.addEventListener(
+"click",
+e=>{
+
+e.stopPropagation();
+
+hidePrompt();
+}
+);
+}
+
+if(prompt){
+
+setTimeout(
+showPrompt,
+3000
+);
+}
+
+function getResponse(original){
+
+const question=
+String(original||"")
+.toLowerCase()
+.trim();
+
+const italian=
+isItalian(original);
+
+const current=
+residences[page]||
+null;
+
+const bookingAction=[
+{
+label:
+"BOOK YOUR STAY →",
+href:
+"booking.html"
+}
+];
+
+if(
+question.includes(
+"what is prime"
+)||
+question.includes(
+"about-prime"
+)||
+question.includes(
+"tell me about prime"
+)||
+question.includes(
+"cos'è prime"
+)
+){
+
+return{
+
+text:
+italian
+?"Prime Residence Bologna è una collezione di residence privati e raffinati pensati per vivere Bologna con il comfort e la libertà di una casa propria."
+:"Prime Residence Bologna is a collection of refined private residences designed for guests who want to experience Bologna with the comfort and freedom of their own space.",
+
+actions:[
+{
+label:
+"DISCOVER THE RESIDENCES →",
+href:
+"index.html#residences"
+}
+]
+};
+}
+
+if(
+question.includes(
+"which residences"
+)||
+question.includes(
+"residences"
+)||
+(
+question.includes(
+"residence"
+)&&
+question.includes(
+"which"
+)
+)
+){
+
+return{
+
+text:
+italian
+?"Prime Residence Bologna propone Gastone Rossi 12, con 3 camere e 2 bagni, e Barontini 8, con 2 camere e 1 bagno. Entrambi possono ospitare fino a 6 persone."
+:"Prime Residence Bologna offers Gastone Rossi 12, with 3 bedrooms and 2 bathrooms, and Barontini 8, with 2 bedrooms and 1 bathroom. Both accommodate up to 6 guests.",
+
+actions:[
+{
+label:
+"GASTONE ROSSI 12 →",
+href:
+"gastone-rossi-12.html"
+},
+{
+label:
+"BARONTINI 8 →",
+href:
+"barontini-8.html"
+}
+]
+};
+}
+
+if(
+question.includes(
+"this residence"
+)||
+question.includes(
+"residence-details"
+)||
+question.includes(
+"apartment"
+)
+){
+
+if(current){
+
+return{
+
+text:
+italian
+?`${current.name} dispone di ${current.bedrooms} camere, ${current.bathrooms} bagni e può ospitare fino a ${current.guests} persone.`
+:`${current.name} has ${current.bedrooms} bedrooms, ${current.bathrooms} bathrooms and accommodates up to ${current.guests} guests.`,
+
+actions:
+bookingAction
+};
+}
+}
+
+if(
+question.includes(
+"difference"
+)||
+question.includes(
+"compare"
+)||
+question.includes(
+"differenza"
+)||
+question.includes(
+"confront"
+)
+){
+
+return{
+
+text:
+italian
+?"Gastone Rossi 12 è più ampio, con 3 camere e 2 bagni. Barontini 8 dispone di 2 camere e 1 bagno. Entrambi ospitano fino a 6 persone."
+:"Gastone Rossi 12 is larger, with 3 bedrooms and 2 bathrooms. Barontini 8 has 2 bedrooms and 1 bathroom. Both accommodate up to 6 guests.",
+
+actions:[
+{
+label:
+"COMPARE RESIDENCES →",
+href:
+"index.html#residences"
+}
+]
+};
+}
+
+if(
+question.includes(
+"booking"
+)||
+question.includes(
+"book"
+)||
+question.includes(
+"prenot"
+)
+){
+
+return{
+
+text:
+italian
+?"Puoi scegliere il residence, controllare la disponibilità sul calendario e inviare una richiesta dalla pagina Book Your Stay."
+:"You can choose a residence, check real-time availability on the calendar and submit your request through the Book Your Stay page.",
+
+actions:
+bookingAction
+};
+}
+
+if(
+question.includes(
+"available"
+)||
+question.includes(
+"availability"
+)||
+question.includes(
+"disponibil"
+)
+){
+
+return{
+
+text:
+italian
+?"Nella pagina Book Your Stay puoi vedere la disponibilità sul calendario e selezionare direttamente le date del soggiorno."
+:"The Book Your Stay page displays real-time availability on the calendar so you can select your stay directly.",
+
+actions:[
+{
+label:
+"CHECK AVAILABILITY →",
+href:
+"booking.html"
+}
+]
+};
+}
+
+if(
+question.includes(
+"check-in"
+)||
+question.includes(
+"checkin"
+)||
+question.includes(
+"arriv"
+)
+){
+
+if(current){
+
+return{
+
+text:
+italian
+?`Per ${current.name}, il check-in è previsto ${current.checkin} e il check-out ${current.checkout}. Comunica in anticipo l'orario di arrivo.`
+:`At ${current.name}, check-in is ${current.checkin} and check-out is ${current.checkout}. Please communicate your arrival time in advance.`,
+
+actions:
+bookingAction
+};
+}
+
+return{
+
+text:
+italian
+?"Gli orari cambiano in base al residence: Gastone Rossi 12, 15:00–19:00; Barontini 8, 15:00–21:00. Il check-out è entro le 11:00."
+:"Check-in times depend on the residence: Gastone Rossi 12, 15:00–19:00; Barontini 8, 15:00–21:00. Check-out is by 11:00.",
+
+actions:
+bookingAction
+};
+}
+
+if(
+question.includes(
+"location"
+)||
+question.includes(
+"address"
+)||
+question.includes(
+"where"
+)||
+question.includes(
+"dove"
+)||
+question.includes(
+"indirizzo"
+)
+){
+
+let target=
+current;
+
+if(
+question.includes(
+"gastone"
+)
+){
+
+target=
+residences.gastone;
+}
+
+if(
+question.includes(
+"barontini"
+)
+){
+
+target=
+residences.barontini;
+}
+
+if(target){
+
+return{
+
+text:
+italian
+?`${target.name} si trova in ${target.address}.`
+:`${target.name} is located at ${target.address}.`,
+
+actions:[]
+};
+}
+
+return{
+
+text:
+italian
+?"I residence si trovano a Bologna. Puoi aprire le pagine delle singole strutture per vedere posizione e dintorni."
+:"The residences are located in Bologna. Open each residence page to see its location and nearby places.",
+
+actions:[
+{
+label:
+"DISCOVER THE RESIDENCES →",
+href:
+"index.html#residences"
+}
+]
+};
+}
+
+if(
+question.includes(
+"contact"
+)||
+question.includes(
+"whatsapp"
+)||
+question.includes(
+"email"
+)||
+question.includes(
+"contatt"
+)
+){
+
+return{
+
+text:
+italian
+?"Puoi contattare direttamente Prime Residence tramite WhatsApp o email."
+:"You can contact Prime Residence directly via WhatsApp or email.",
+
+actions:[
+{
+label:
+"WHATSAPP ↗",
+href:
+"https://wa.me/393917055625",
+external:true
+},
+{
+label:
+"EMAIL ↗",
+href:
+"mailto:vittoriolandi005@gmail.com"
+}
+]
+};
+}
+
+return{
+
+text:
+italian
+?"Posso aiutarti con informazioni sui residence, disponibilità, prenotazioni, check-in e posizione."
+:"I can help with our residences, availability, booking, check-in and location.",
+
+actions:[]
+};
+}
+
+function processQuestion(question){
+
+if(
+!question||
+!question.trim()
+){
+return;
+}
+
+const clean=
+question.trim();
+
+addMessage(
+clean,
+"user"
+);
+
+const response=
+getResponse(clean);
+
+setTimeout(
+()=>addMessage(
+response.text,
+"bot",
+response.actions
+),
+320
+);
+}
+
+if(
+form&&
+input
+){
+
+form.addEventListener(
+"submit",
+e=>{
+
+e.preventDefault();
+
+const question=
+input.value;
+
+input.value="";
+
+processQuestion(
+question
+);
+}
+);
+}
+
+suggestionButtons.forEach(
+button=>
+button.addEventListener(
+"click",
+()=>{
+
+const type=
+button.dataset.question||
+"";
+
+let question="";
+
+switch(type){
+
+case"about-prime":
+
+question=
+"What is Prime Residence Bologna?";
+
+break;
+
+case"residences":
+
+question=
+"Which residences do you have?";
+
+break;
+
+case"residence-details":
+
+question=
+"Tell me about this residence";
+
+break;
+
+case"compare":
+
+question=
+"What is the difference between the two apartments?";
+
+break;
+
+case"booking":
+
+question=
+"How can I book?";
+
+break;
+
+case"location":
+
+question=
+page==="gastone"
+?"Where is Gastone Rossi 12?"
+:page==="barontini"
+?"Where is Barontini 8?"
+:"Where are the residences?";
+
+break;
+
+case"checkin":
+
+question=
+"How does check-in work?";
+
+break;
+
+default:
+
+question=
+type;
+}
+
+processQuestion(
+question
+);
+}
+)
+);
+
+document.addEventListener(
+"keydown",
+e=>{
+
+if(
+e.key==="Escape"&&
+assistant.classList.contains(
+"chat-open"
+)
+){
+
+closeAssistant();
+}
+}
+);
+
 }
 
 /* =========================================================
@@ -4858,120 +4720,97 @@ if(assistant){
 ========================================================= */
 
 document.addEventListener(
-  "keydown",
-  e=>{
+"keydown",
+e=>{
 
-    if(e.key!=="Escape"){
-      return;
-    }
+if(e.key!=="Escape"){
+return;
+}
 
-    if(
-      mobileMenu&&
-      mobileMenu.classList.contains(
-        "active"
-      )
-    ){
+if(
+mobileMenu&&
+mobileMenu.classList.contains(
+"active"
+)
+){
 
-      mobileMenu.classList.remove(
-        "active"
-      );
+mobileMenu.classList.remove(
+"active"
+);
 
-      if(menuToggle){
+if(menuToggle){
 
-        menuToggle.classList.remove(
-          "active"
-        );
+menuToggle.classList.remove(
+"active"
+);
+}
 
-        menuToggle.setAttribute(
-          "aria-expanded",
-          "false"
-        );
-      }
+document.body.style.overflow=
+"";
+}
 
-      document.body.style.overflow=
-      "";
-    }
+const openAssistant=
+document.querySelector(
+".prime-assistant.chat-open"
+);
 
-    const openAssistant=
-    document.querySelector(
-      ".prime-assistant.chat-open"
-    );
+if(openAssistant){
 
-    if(openAssistant){
+const win=
+openAssistant.querySelector(
+".prime-assistant-window"
+);
 
-      const win=
-      openAssistant.querySelector(
-        ".prime-assistant-window"
-      );
+const launcher=
+openAssistant.querySelector(
+".prime-assistant-launcher"
+);
 
-      const launcher=
-      openAssistant.querySelector(
-        ".prime-assistant-launcher"
-      );
+openAssistant.classList.remove(
+"chat-open"
+);
 
-      openAssistant.classList.remove(
-        "chat-open"
-      );
+if(win){
 
-      if(win){
+win.classList.remove(
+"open"
+);
 
-        win.classList.remove(
-          "open"
-        );
+win.setAttribute(
+"aria-hidden",
+"true"
+);
+}
 
-        win.setAttribute(
-          "aria-hidden",
-          "true"
-        );
-      }
+if(launcher){
 
-      if(launcher){
-
-        launcher.setAttribute(
-          "aria-expanded",
-          "false"
-        );
-      }
-    }
-  }
+launcher.setAttribute(
+"aria-expanded",
+"false"
+);
+}
+}
+}
 );
 
 /* =========================================================
-   22. LANGUAGE-DEPENDENT DYNAMIC UI
-========================================================= */
-
-window.addEventListener(
-  "primeLanguageChanged",
-  ()=>{
-
-    if(calendarGrid){
-      renderCalendar();
-    }
-
-    updatePriceBanner();
-
-    updateAdaptiveLogos();
-  }
-);
-
-/* =========================================================
-   23. YEAR
+   22. YEAR
 ========================================================= */
 
 const year=
 document.querySelector(
-  "#year"
+"#year"
 );
 
 if(year){
 
-  year.textContent=
-  new Date()
-  .getFullYear();
+year.textContent=
+new Date()
+.getFullYear();
 }
 
 console.log(
-  "Prime Residence Bologna — website ready."
+"Prime Residence Bologna — website ready."
 );
 
 });
