@@ -10,6 +10,7 @@
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&amp;family=Playfair+Display:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
 <link href="style.css" rel="stylesheet"/>
+
 <style>
 
     /* =====================================================
@@ -525,7 +526,7 @@
 
 
     /* =====================================================
-       SELECTED STAY â€” OVERLAY ON CALENDAR
+       SELECTED STAY - OVERLAY ON CALENDAR
     ====================================================== */
 
     .booking-page .prime-calendar-section{
@@ -847,7 +848,7 @@
       }
 
       .booking-page .selected-stay-grid{
-        grid-template-columns:1fr;
+        grid-template-columns:1fr
       }
 
       .booking-page .selected-stay-summary,
@@ -873,7 +874,7 @@
 
       .booking-page .selected-stay .stay-price-banner,
       .booking-page .selected-stay .stay-price-banner.visible{
-        grid-template-columns:1fr;
+        grid-template-columns:1fr
       }
 
       .booking-page .selected-stay .stay-price-action{
@@ -882,8 +883,8 @@
     }
 
 
-/* =====================================================
-       SELECTED STAY â€” REVEAL ANIMATION
+    /* =====================================================
+       SELECTED STAY - REVEAL ANIMATION
        Smooth entrance after both dates are selected.
     ====================================================== */
 
@@ -1002,11 +1003,8 @@
     }
 
 
-
-
-
     /* =====================================================
-       SELECTED STAY â€” FINAL POSITION OVERRIDE
+       SELECTED STAY - FINAL POSITION OVERRIDE
     ====================================================== */
 
     .booking-page .prime-calendar{
@@ -1015,331 +1013,521 @@
     }
 
 </style>
+
 </head>
+
 <body class="booking-page">
+
 <!-- =====================================================
        NAVIGATION
-  ====================================================== -->
+====================================================== -->
+
 <header class="navbar booking-navbar" data-adaptive-nav>
+
 <div class="nav-container">
+
 <a class="logo logo-image-link" href="index.html" aria-label="Prime Residence Bologna home">
+
 <img class="site-brand-image site-brand-image-nav" src="images/prime-residence-logo.png" alt="Prime Residence Bologna"/>
+
 </a>
+
 <nav class="desktop-nav">
+
 <a href="index.html#residences">
           Residences
-        </a>
+</a>
+
 <a href="index.html#experience">
           Experience
-        </a>
+</a>
+
 <a href="index.html#bologna">
           Bologna
-        </a>
+</a>
+
 <a class="nav-book" href="booking.html">
           Book Now
-        </a>
+</a>
+
 </nav>
+
 <button aria-expanded="false" aria-label="Open menu" class="menu-toggle" type="button">
 <span></span>
 <span></span>
 </button>
+
 </div>
+
 </header>
+
+
 <!-- =====================================================
        MOBILE MENU
-  ====================================================== -->
+====================================================== -->
+
 <div class="mobile-menu">
+
 <div class="mobile-menu-inner">
+
 <a href="index.html#residences">
         Residences
-      </a>
+</a>
+
 <a href="index.html#experience">
         Experience
-      </a>
+</a>
+
 <a href="index.html#bologna">
         Bologna
-      </a>
+</a>
+
 <a class="mobile-book" href="booking.html">
         Book Your Stay
-      </a>
+</a>
+
 </div>
+
 </div>
+
+
 <!-- =====================================================
        MAIN
-  ====================================================== -->
+====================================================== -->
+
 <main>
+
+
 <!-- =====================================================
          BOOKING HERO
-    ====================================================== -->
+====================================================== -->
+
 <section class="booking-hero" data-logo-scheme="light">
+
 <div class="container">
+
 <div class="booking-hero-inner">
+
 <span class="eyebrow">
             PRIME RESIDENCE BOLOGNA
-          </span>
+</span>
+
 <h1>
             Book your stay.
-          </h1>
+</h1>
+
 <p class="booking-hero-description">
 
             Choose your residence, explore real-time availability
             and select your stay directly from the calendar.
             Then send us your booking request.
 
-          </p>
+</p>
+
 </div>
+
 </div>
+
 </section>
+
+
 <!-- =====================================================
          RESIDENCE CHOICE
-    ====================================================== -->
+====================================================== -->
+
 <section class="booking-choice" data-logo-scheme="light">
+
 <div class="container">
+
 <div class="booking-section-heading">
+
 <span class="eyebrow">
-            01 â€” SELECT YOUR RESIDENCE
-          </span>
+            01 &mdash; SELECT YOUR RESIDENCE
+</span>
+
 <h2>
             Choose where<br/>
             you would like to stay.
-          </h2>
+</h2>
+
 </div>
+
+
 <div class="booking-residence-grid">
+
+
 <!-- GASTONE ROSSI -->
+
 <article aria-label="Select Gastone Rossi 12" class="booking-residence-card" data-calendar="gastone" data-residence="Gastone Rossi 12" role="button" tabindex="0">
+
 <div class="booking-card-image">
-<img alt="Gastone Rossi 12 â€” master bedroom" class="booking-residence-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/01.jpg"/>
+
+<img alt="Gastone Rossi 12 &mdash; master bedroom" class="booking-residence-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/01.jpg"/>
+
 <span class="booking-card-number">
                 01
-              </span>
+</span>
+
 </div>
+
 <div class="booking-card-overlay"></div>
+
 <div class="booking-card-content">
+
 <span class="booking-card-label">
                 PRIME RESIDENCE
-              </span>
+</span>
+
 <h3>
                 Gastone Rossi 12
-              </h3>
+</h3>
+
 <div class="booking-card-details">
+
 <span>
                   3 Bedrooms
-                </span>
+</span>
+
 <span>
                   2 Bathrooms
-                </span>
+</span>
+
 <span>
                   Up to 6 Guests
-                </span>
+</span>
+
 </div>
+
 <span class="booking-card-arrow">
                 Select Residence &rarr;
-              </span>
+</span>
+
 </div>
+
 </article>
+
+
 <!-- BARONTINI -->
+
 <article aria-label="Select Barontini 8" class="booking-residence-card" data-calendar="barontini" data-residence="Barontini 8" role="button" tabindex="0">
+
 <div class="booking-card-image">
-<img alt="Barontini 8 â€” kitchen and dining area" class="booking-residence-photo" decoding="async" loading="lazy" src="images/barontini-8/13.jpg"/>
+
+<img alt="Barontini 8 &mdash; kitchen and dining area" class="booking-residence-photo" decoding="async" loading="lazy" src="images/barontini-8/13.jpg"/>
+
 <span class="booking-card-number">
                 02
-              </span>
+</span>
+
 </div>
+
 <div class="booking-card-overlay"></div>
+
 <div class="booking-card-content">
+
 <span class="booking-card-label">
                 PRIME RESIDENCE
-              </span>
+</span>
+
 <h3>
                 Barontini 8
-              </h3>
+</h3>
+
 <div class="booking-card-details">
+
 <span>
                   2 Bedrooms
-                </span>
+</span>
+
 <span>
                   1 Bathroom
-                </span>
+</span>
+
 <span>
                   Up to 6 Guests
-                </span>
+</span>
+
 </div>
+
 <span class="booking-card-arrow">
                 Select Residence &rarr;
-              </span>
+</span>
+
 </div>
+
 </article>
+
 </div>
+
 </div>
+
 </section>
+
+
 <!-- =====================================================
          BOOKING FORM
-    ====================================================== -->
+====================================================== -->
+
 <section class="booking-form-section" id="booking-form-section" data-logo-scheme="light">
+
 <div class="container">
+
 <div class="booking-form-wrapper">
+
 <div class="booking-form-intro">
+
 <span class="eyebrow">
-              02 â€” YOUR STAY
-            </span>
+              02 &mdash; YOUR STAY
+</span>
+
 <h2>
               Select your<br/>
               stay.
-            </h2>
+</h2>
+
 <p class="selected-residence-display" id="selectedResidenceText">
               Please select a residence above
-            </p>
+</p>
+
 </div>
+
+
 <form class="booking-form" id="bookingRequestForm">
+
+
 <!-- =================================================
                  HIDDEN BOOKING VALUES
-            ================================================== -->
+================================================== -->
+
 <input id="residence" name="residence" type="hidden" value=""/>
 <input id="calendarResidence" type="hidden" value=""/>
 <input id="checkin" name="checkin" type="hidden" value=""/>
 <input id="checkout" name="checkout" type="hidden" value=""/>
 <input id="estimatedTotal" name="estimatedTotal" type="hidden" value=""/>
+
+
 <!-- =================================================
                  REAL-TIME AVAILABILITY
-            ================================================== -->
+================================================== -->
+
 <div class="form-section">
+
 <div class="form-section-title">
                 Real-time availability
-              </div>
-<div class="prime-calendar-section">
-<!-- =================================================
-                     SELECTED STAY / BOOKING SUMMARY
-                ================================================== -->
-<div class="selected-stay" id="selectedStay" aria-live="polite">
-<div class="selected-stay-top">
-<div class="selected-stay-heading">
-<span class="selected-stay-label">
-                      SELECTED STAY
-                    </span>
-<span class="selected-stay-status">
-                      AVAILABLE
-                    </span>
-</div>
-<div class="selected-stay-guests">
-<label for="guests">
-                      Guests
-                    </label>
-<select id="guests" name="guests" required="">
-<option value="">
-                        Select
-                      </option>
-<option value="1">
-                        1 Guest
-                      </option>
-<option value="2">
-                        2 Guests
-                      </option>
-<option value="3">
-                        3 Guests
-                      </option>
-<option value="4">
-                        4 Guests
-                      </option>
-<option value="5">
-                        5 Guests
-                      </option>
-<option value="6">
-                        6 Guests
-                      </option>
-</select>
-</div>
-<button class="selected-stay-clear" id="selectedStayClear" type="button">
-                    Change dates
-                  </button>
-</div>
-<div class="selected-stay-grid">
-<div class="selected-stay-summary">
-<div class="selected-stay-residence" id="selectedStayResidence">
-                    â€”
-                  </div>
-<div class="selected-stay-details">
-<div class="selected-stay-item">
-<span>
-                        Check-in
-                      </span>
-<span id="selectedStayCheckin">
-                        â€”
-                      </span>
-</div>
-<div class="selected-stay-item">
-<span>
-                        Check-out
-                      </span>
-<span id="selectedStayCheckout">
-                        â€”
-                      </span>
-</div>
-<div class="selected-stay-item">
-<span>
-                        Nights
-                      </span>
-<span id="selectedStayNights">
-                        â€”
-                      </span>
-</div>
-</div>
 </div>
 
+
+<div class="prime-calendar-section">
+
+
+<!-- =================================================
+                     SELECTED STAY / BOOKING SUMMARY
+================================================== -->
+
+<div class="selected-stay" id="selectedStay" aria-live="polite">
+
+<div class="selected-stay-top">
+
+<div class="selected-stay-heading">
+
+<span class="selected-stay-label">
+                      SELECTED STAY
+</span>
+
+<span class="selected-stay-status">
+                      AVAILABLE
+</span>
+
+</div>
+
+
+<div class="selected-stay-guests">
+
+<label for="guests">
+                      Guests
+</label>
+
+<select id="guests" name="guests" required="">
+
+<option value="">
+                        Select
+</option>
+
+<option value="1">
+                        1 Guest
+</option>
+
+<option value="2">
+                        2 Guests
+</option>
+
+<option value="3">
+                        3 Guests
+</option>
+
+<option value="4">
+                        4 Guests
+</option>
+
+<option value="5">
+                        5 Guests
+</option>
+
+<option value="6">
+                        6 Guests
+</option>
+
+</select>
+
+</div>
+
+
+<button class="selected-stay-clear" id="selectedStayClear" type="button">
+                    Change dates
+</button>
+
+</div>
+
+
+<div class="selected-stay-grid">
+
+<div class="selected-stay-summary">
+
+<div class="selected-stay-residence" id="selectedStayResidence">
+                    &mdash;
+</div>
+
+
+<div class="selected-stay-details">
+
+<div class="selected-stay-item">
+
+<span>
+                        Check-in
+</span>
+
+<span id="selectedStayCheckin">
+                        &mdash;
+</span>
+
+</div>
+
+
+<div class="selected-stay-item">
+
+<span>
+                        Check-out
+</span>
+
+<span id="selectedStayCheckout">
+                        &mdash;
+</span>
+
+</div>
+
+
+<div class="selected-stay-item">
+
+<span>
+                        Nights
+</span>
+
+<span id="selectedStayNights">
+                        &mdash;
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+
 <div class="stay-price-banner" id="stayPriceBanner" aria-live="polite">
+
 <div class="stay-price-copy">
+
 <span class="stay-price-label">
                       TOTAL STAY
-                    </span>
-<strong class="stay-price-total" id="stayPriceTotal">
-                      
-                    </strong>
-<span class="stay-price-meta" id="stayPriceMeta">
-                      
-                    </span>
+</span>
+
+<strong class="stay-price-total" id="stayPriceTotal"></strong>
+
+<span class="stay-price-meta" id="stayPriceMeta"></span>
+
 </div>
+
 <button class="stay-price-action" id="requestBookingButton" type="button" disabled="">
                     REQUEST TO BOOK &rarr;
-                  </button>
+</button>
+
 </div>
+
 </div>
+
 </div>
+
+
 <div class="prime-calendar disabled" id="primeCalendar">
+
 <div class="prime-calendar-top">
+
 <div class="prime-calendar-heading">
+
 <span class="prime-calendar-kicker">
                         REAL-TIME AVAILABILITY
-                      </span>
+</span>
+
 <h3 id="calendarResidenceTitle">
                         Select a residence
-                      </h3>
+</h3>
+
 <p>
 
                         Availability is based on the latest calendar data.
                         Final confirmation follows your booking request.
 
-                      </p>
+</p>
+
 </div>
+
+
 <div class="calendar-live-status" id="calendarLiveStatus">
+
 <span class="calendar-live-dot"></span>
+
 <span id="calendarLiveText">
                         WAITING
-                      </span>
+</span>
+
 </div>
+
 </div>
+
+
 <!-- MONTH NAVIGATION -->
+
 <div class="calendar-navigation">
+
 <button aria-label="Previous month" class="calendar-nav-button" id="calendarPrev" type="button">
                       &larr;
-                    </button>
+</button>
+
 <div class="calendar-month" id="calendarMonthLabel">
-                      â€”
-                    </div>
+                      &mdash;
+</div>
+
 <button aria-label="Next month" class="calendar-nav-button" id="calendarNext" type="button">
                       &rarr;
-                    </button>
+</button>
+
 </div>
+
+
 <!-- WEEKDAYS -->
+
 <div class="calendar-weekdays">
+
 <span>MON</span>
 <span>TUE</span>
 <span>WED</span>
@@ -1347,100 +1535,171 @@
 <span>FRI</span>
 <span>SAT</span>
 <span>SUN</span>
+
 </div>
+
+
 <!-- DAYS -->
+
 <div class="calendar-grid" id="calendarGrid"></div>
+
+
 <!-- LEGEND -->
+
 <div class="calendar-legend">
+
 <div class="calendar-legend-item">
+
 <span class="calendar-legend-box available"></span>
+
 <span>
                         Available
-                      </span>
+</span>
+
 </div>
+
+
 <div class="calendar-legend-item">
+
 <span class="calendar-legend-box booked"></span>
+
 <span>
                         Fully booked
-                      </span>
+</span>
+
 </div>
+
 </div>
+
+
 <p class="calendar-help">
 
                     Click once to select your check-in and again
                     to select your check-out. On desktop you can
                     also click and drag across the calendar.
 
-                  </p>
+</p>
+
+
 <div class="calendar-loading-message" id="calendarLoadingMessage">
                     Loading current availability...
-                  </div>
+</div>
+
 <div aria-live="polite" class="calendar-message" id="calendarMessage"></div>
+
 </div>
+
 </div>
+
 </div>
+
+
 <!-- =================================================
                  PERSONAL DETAILS
-            ================================================== -->
+================================================== -->
+
 <div class="form-section" id="guest-details-section">
+
 <div class="form-section-title">
                 Guest details
-              </div>
+</div>
+
 <div class="form-row">
+
 <div class="form-field">
+
 <label for="firstName">
                     First name
-                  </label>
+</label>
+
 <input autocomplete="given-name" id="firstName" name="firstName" placeholder="First name" required="" type="text"/>
+
 </div>
+
+
 <div class="form-field">
+
 <label for="lastName">
                     Last name
-                  </label>
+</label>
+
 <input autocomplete="family-name" id="lastName" name="lastName" placeholder="Last name" required="" type="text"/>
+
 </div>
+
+
 <div class="form-field">
+
 <label for="birthDate">
                     Date of birth
-                  </label>
+</label>
+
 <input id="birthDate" name="birthDate" required="" type="date"/>
+
 </div>
+
+
 <div class="form-field">
+
 <label for="email">
                     Email
-                  </label>
+</label>
+
 <input autocomplete="email" id="email" name="email" placeholder="your@email.com" required="" type="email"/>
+
 </div>
+
+
 <div class="form-field">
+
 <label for="phone">
                     Phone
-                  </label>
+</label>
+
 <input autocomplete="tel" id="phone" name="phone" placeholder="+39 ..." required="" type="tel"/>
+
 </div>
+
+
 <div class="form-field full-width">
+
 <label for="message">
                     Notes
-                  </label>
+</label>
+
 <textarea id="message" name="message" placeholder="Tell us anything we should know about your stay..."></textarea>
+
 </div>
+
 </div>
+
 </div>
+
+
 <!-- =================================================
                  PRIVACY
-            ================================================== -->
+================================================== -->
+
 <div class="privacy-check">
+
 <input id="privacy" name="privacy" required="" type="checkbox" value="accepted"/>
+
 <label for="privacy">
 
                 I agree to the processing of my personal data
                 for the purpose of handling this booking request.
 
-              </label>
+</label>
+
 </div>
+
+
 <!-- =================================================
                  SUBMIT
-            ================================================== -->
+================================================== -->
+
 <div class="booking-submit-wrapper">
+
 <p class="booking-note">
 
                 Real-time availability is based on the latest
@@ -1448,157 +1707,318 @@
                 constitute a confirmed reservation. We will contact
                 you to confirm your stay.
 
-              </p>
+</p>
+
 <button class="booking-submit btn btn-primary availability-locked" disabled="" type="submit">
                 Select Your Stay
-              </button>
+</button>
+
 </div>
+
+
 <div aria-live="polite" class="booking-message" id="bookingMessage"></div>
+
 </form>
+
 </div>
+
 </div>
+
 </section>
+
 </main>
+
+
 <!-- =====================================================
        FOOTER
-  ====================================================== -->
+====================================================== -->
+
 <footer class="footer">
+
 <div class="container">
+
 <div class="footer-top">
+
+
 <div class="footer-brand">
+
 <a class="logo logo-image-link" href="index.html" aria-label="Prime Residence Bologna home">
+
 <img class="site-brand-image site-brand-image-footer" src="images/prime-residence-logo.png" alt="Prime Residence Bologna"/>
+
 </a>
+
 <p>
 
             Contemporary residences in Bologna,
             designed for a refined and comfortable stay.
 
-          </p>
+</p>
+
 </div>
+
+
 <div class="footer-column">
+
 <span class="footer-title">
             Explore
-          </span>
+</span>
+
 <a href="index.html#residences">
             Residences
-          </a>
+</a>
+
 <a href="index.html#experience">
             Experience
-          </a>
+</a>
+
 <a href="index.html#bologna">
             Bologna
-          </a>
+</a>
+
 </div>
+
+
 <div class="footer-column">
+
 <span class="footer-title">
             Residences
-          </span>
+</span>
+
 <a href="gastone-rossi-12.html">
             Gastone Rossi 12
-          </a>
+</a>
+
 <a href="barontini-8.html">
             Barontini 8
-          </a>
+</a>
+
 </div>
+
+
 <div class="footer-column">
+
 <span class="footer-title">
             Contact
-          </span>
+</span>
+
 <a href="booking.html">
             Book Your Stay
-          </a>
+</a>
+
 <a href="https://wa.me/393917055625" rel="noopener" target="_blank">
             WhatsApp
-          </a>
+</a>
+
 <a href="mailto:vittoriolandi005@gmail.com">
             Email
-          </a>
+</a>
+
 </div>
+
 </div>
+
+
 <div class="footer-bottom">
+
 <p>
 
-          Â© <span id="year"></span>
+          &copy; <span id="year"></span>
           Prime Residence Bologna.
           All rights reserved.
 
-        </p>
+</p>
+
 <p>
-          Bologna Â· Italy
-        </p>
+          Bologna &middot; Italy
+</p>
+
 </div>
+
 </div>
+
 </footer>
+
+
 <!-- =====================================================
-       PRIME ASSISTANT â€” BOOKING
-  ====================================================== -->
+       PRIME ASSISTANT - BOOKING
+====================================================== -->
+
 <div class="prime-assistant" data-assistant-page="booking" data-assistant-residence="Prime Residence Bologna">
+
 <div aria-hidden="true" class="prime-assistant-prompt">
+
 <button aria-label="Ask about booking at Prime Residence Bologna" class="assistant-prompt-main" type="button">
+
 <span class="assistant-prompt-dot"></span>
+
 <span class="assistant-prompt-content">
-<span class="assistant-prompt-label">PRIME ASSISTANT</span>
-<strong>Need help with your booking?</strong>
-<small>Ask about availability, the residences, check-in or your stay.</small>
+
+<span class="assistant-prompt-label">
+PRIME ASSISTANT
 </span>
-<span class="assistant-prompt-arrow">â†’</span>
+
+<strong>
+Need help with your booking?
+</strong>
+
+<small>
+Ask about availability, the residences, check-in or your stay.
+</small>
+
+</span>
+
+<span class="assistant-prompt-arrow">
+&rarr;
+</span>
+
 </button>
-<button aria-label="Close assistant suggestion" class="assistant-prompt-close" type="button">Ã—</button>
+
+<button aria-label="Close assistant suggestion" class="assistant-prompt-close" type="button">
+&times;
+</button>
+
 </div>
+
+
 <button aria-expanded="false" aria-label="Open Prime Residence Assistant" class="prime-assistant-launcher" type="button">
+
 <span class="assistant-launcher-dot"></span>
-<span class="assistant-launcher-text">PRIME ASSISTANT</span>
+
+<span class="assistant-launcher-text">
+PRIME ASSISTANT
+</span>
+
 </button>
+
+
 <section aria-hidden="true" aria-label="Prime Residence virtual assistant" class="prime-assistant-window">
+
 <div class="prime-assistant-header">
+
 <div class="prime-assistant-identity">
+
 <span class="assistant-status-dot"></span>
+
 <div>
-<span class="assistant-name">PRIME ASSISTANT</span>
-<span class="assistant-status">BOOK YOUR STAY</span>
+
+<span class="assistant-name">
+PRIME ASSISTANT
+</span>
+
+<span class="assistant-status">
+BOOK YOUR STAY
+</span>
+
 </div>
+
 </div>
-<button aria-label="Close Prime Residence Assistant" class="prime-assistant-close" type="button">Ã—</button>
+
+<button aria-label="Close Prime Residence Assistant" class="prime-assistant-close" type="button">
+&times;
+</button>
+
 </div>
+
+
 <div aria-live="polite" class="prime-assistant-messages">
+
 <div class="assistant-message assistant-message-bot">
-<span class="assistant-message-label">PRIME ASSISTANT</span>
-<p>Welcome. I can help you with availability, the residences, booking and check-in.</p>
+
+<span class="assistant-message-label">
+PRIME ASSISTANT
+</span>
+
+<p>
+Welcome. I can help you with availability, the residences, booking and check-in.
+</p>
+
 </div>
+
 </div>
+
+
 <div class="prime-assistant-suggestions">
-<button class="assistant-suggestion" data-question="residences" type="button">THE RESIDENCES</button>
-<button class="assistant-suggestion" data-question="booking" type="button">BOOKING</button>
-<button class="assistant-suggestion" data-question="location" type="button">LOCATION</button>
-<button class="assistant-suggestion" data-question="checkin" type="button">CHECK-IN</button>
+
+<button class="assistant-suggestion" data-question="residences" type="button">
+THE RESIDENCES
+</button>
+
+<button class="assistant-suggestion" data-question="booking" type="button">
+BOOKING
+</button>
+
+<button class="assistant-suggestion" data-question="location" type="button">
+LOCATION
+</button>
+
+<button class="assistant-suggestion" data-question="checkin" type="button">
+CHECK-IN
+</button>
+
 </div>
+
+
 <form autocomplete="off" class="prime-assistant-form">
-<label class="assistant-visually-hidden" for="primeAssistantInputBooking">Ask Prime Residence Assistant a question</label>
+
+<label class="assistant-visually-hidden" for="primeAssistantInputBooking">
+Ask Prime Residence Assistant a question
+</label>
+
 <input class="prime-assistant-input" id="primeAssistantInputBooking" maxlength="250" placeholder="Ask about your stay..." type="text"/>
-<button aria-label="Send message" class="prime-assistant-send" type="submit">â†’</button>
+
+<button aria-label="Send message" class="prime-assistant-send" type="submit">
+&rarr;
+</button>
+
 </form>
+
+
 <div class="prime-assistant-contact">
-<span>NEED PERSONAL ASSISTANCE?</span>
+
+<span>
+NEED PERSONAL ASSISTANCE?
+</span>
+
 <div>
-<a href="https://wa.me/393917055625" rel="noopener noreferrer" target="_blank">WHATSAPP â†—</a>
-<a href="mailto:vittoriolandi005@gmail.com">EMAIL â†—</a>
+
+<a href="https://wa.me/393917055625" rel="noopener noreferrer" target="_blank">
+WHATSAPP &#8599;
+</a>
+
+<a href="mailto:vittoriolandi005@gmail.com">
+EMAIL &#8599;
+</a>
+
 </div>
+
 </div>
+
 </section>
+
 </div>
+
+
 <!-- =====================================================
        WHATSAPP
-  ====================================================== -->
+====================================================== -->
+
 <a aria-label="Contact Prime Residence Bologna on WhatsApp" class="whatsapp-button" href="https://wa.me/393917055625" rel="noopener" target="_blank">
+
 <span>
       WhatsApp
-    </span>
+</span>
+
 </a>
+
+
 <script src="script.js"></script>
 
+
 <script>
+
 document.addEventListener("DOMContentLoaded",()=>{
+
   const priceBanner=document.querySelector("#stayPriceBanner");
   const requestButton=document.querySelector("#requestBookingButton");
   const total=document.querySelector("#stayPriceTotal");
@@ -1607,24 +2027,35 @@ document.addEventListener("DOMContentLoaded",()=>{
   if(!priceBanner||!requestButton)return;
 
   const syncRequestButton=()=>{
+
     const priceReady=priceBanner.classList.contains("visible");
+
     requestButton.disabled=!priceReady;
 
     if(!priceReady){
+
       if(total)total.textContent="";
+
       if(meta)meta.textContent="";
+
     }
+
   };
 
   const observer=new MutationObserver(syncRequestButton);
+
   observer.observe(priceBanner,{
     attributes:true,
     attributeFilter:["class"]
   });
 
   window.addEventListener("primeLanguageChanged",syncRequestButton);
+
   syncRequestButton();
+
 });
+
 </script>
+
 </body>
 </html>
