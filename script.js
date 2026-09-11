@@ -126,839 +126,2466 @@ const PRIME_TRANSLATIONS={
 };
 
 const PRIME_LANG_KEY="primeResidenceLanguage";
-let primeLanguage=(()=>{try{return localStorage.getItem(PRIME_LANG_KEY)==="it"?"it":"en"}catch{return"en"}})();
+
+let primeLanguage=(()=>{
+try{
+return localStorage.getItem(PRIME_LANG_KEY)==="it"?"it":"en";
+}catch{
+return"en";
+}
+})();
+
 const primeOriginalText=new WeakMap();
 const primeOriginalAttrs=new WeakMap();
-const primeNorm=s=>String(s||"").replace(/\s+/g," ").trim();
-const primeTranslate=s=>{const text=String(s??"");return primeLanguage==="it"?(PRIME_TRANSLATIONS[primeNorm(text)]||text):text};
+
+const primeNorm=s=>
+String(s||"")
+.replace(/\s+/g," ")
+.trim();
+
+const primeTranslate=s=>{
+const text=String(s??"");
+
+return primeLanguage==="it"
+?(PRIME_TRANSLATIONS[primeNorm(text)]||text)
+:text;
+};
 
 function primeTranslateTextNode(node){
-if(!node||node.nodeType!==3)return;
-if(!primeOriginalText.has(node))primeOriginalText.set(node,node.nodeValue);
-const original=primeOriginalText.get(node),normalized=primeNorm(original);
-if(!normalized)return;
-const translated=primeLanguage==="it"?PRIME_TRANSLATIONS[normalized]:undefined;
-node.nodeValue=translated!==undefined?original.replace(normalized,translated):original;
+
+if(!node||node.nodeType!==3){
+return;
+}
+
+if(!primeOriginalText.has(node)){
+primeOriginalText.set(node,node.nodeValue);
+}
+
+const original=
+primeOriginalText.get(node);
+
+const normalized=
+primeNorm(original);
+
+if(!normalized){
+return;
+}
+
+const translated=
+primeLanguage==="it"
+?PRIME_TRANSLATIONS[normalized]
+:undefined;
+
+node.nodeValue=
+translated!==undefined
+?original.replace(normalized,translated)
+:original;
 }
 
 function primeTranslateElement(el){
-if(!el||el.nodeType!==1||["SCRIPT","STYLE"].includes(el.tagName))return;
+
+if(
+!el||
+el.nodeType!==1||
+["SCRIPT","STYLE"].includes(el.tagName)
+){
+return;
+}
+
 ["placeholder","aria-label","title"].forEach(attr=>{
-if(!el.hasAttribute(attr))return;
-const store=primeOriginalAttrs.get(el)||{};
-if(!(attr in store))store[attr]=el.getAttribute(attr);
+
+if(!el.hasAttribute(attr)){
+return;
+}
+
+const store=
+primeOriginalAttrs.get(el)||{};
+
+if(!(attr in store)){
+store[attr]=el.getAttribute(attr);
+}
+
 primeOriginalAttrs.set(el,store);
-const original=store[attr],translated=primeLanguage==="it"?PRIME_TRANSLATIONS[primeNorm(original)]:undefined;
-el.setAttribute(attr,translated!==undefined?translated:original);
+
+const original=
+store[attr];
+
+const translated=
+primeLanguage==="it"
+?PRIME_TRANSLATIONS[primeNorm(original)]
+:undefined;
+
+el.setAttribute(
+attr,
+translated!==undefined
+?translated
+:original
+);
+
 });
-for(const child of el.childNodes){child.nodeType===3?primeTranslateTextNode(child):primeTranslateElement(child)}
+
+for(const child of el.childNodes){
+
+child.nodeType===3
+?primeTranslateTextNode(child)
+:primeTranslateElement(child);
+
+}
+
 }
 
 function primeUpdateLanguageButtons(){
-document.querySelectorAll(".language-switcher button[data-lang]").forEach(btn=>btn.classList.toggle("active",btn.dataset.lang===primeLanguage));
+
+document
+.querySelectorAll(".language-switcher button[data-lang]")
+.forEach(btn=>{
+
+btn.classList.toggle(
+"active",
+btn.dataset.lang===primeLanguage
+);
+
+});
+
 }
 
 function primeApplyLanguage(){
-document.documentElement.lang=primeLanguage;
-primeTranslateElement(document.body);
+
+document.documentElement.lang=
+primeLanguage;
+
+primeTranslateElement(
+document.body
+);
+
 primeUpdateLanguageButtons();
-window.dispatchEvent(new CustomEvent("primeLanguageChanged",{detail:{lang:primeLanguage}}));
+
+window.dispatchEvent(
+new CustomEvent(
+"primeLanguageChanged",
+{
+detail:{
+lang:primeLanguage
+}
+}
+)
+);
+
 }
 
 function primeSetLanguage(lang){
-primeLanguage=lang==="it"?"it":"en";
-try{localStorage.setItem(PRIME_LANG_KEY,primeLanguage)}catch{}
+
+primeLanguage=
+lang==="it"
+?"it"
+:"en";
+
+try{
+localStorage.setItem(
+PRIME_LANG_KEY,
+primeLanguage
+);
+}catch{}
+
 primeApplyLanguage();
+
 }
 
 function primeCreateSwitcher(){
+
 const make=cls=>{
-const wrap=document.createElement("div");
-wrap.className=`language-switcher ${cls||""}`.trim();
-wrap.setAttribute("aria-label","Language / Lingua");
-wrap.innerHTML='<button type="button" data-lang="en">EN</button><span class="language-switcher-separator">/</span><button type="button" data-lang="it">IT</button>';
-wrap.querySelectorAll("button").forEach(button=>button.addEventListener("click",()=>primeSetLanguage(button.dataset.lang)));
+
+const wrap=
+document.createElement("div");
+
+wrap.className=
+`language-switcher ${cls||""}`.trim();
+
+wrap.setAttribute(
+"aria-label",
+"Language / Lingua"
+);
+
+wrap.innerHTML=
+'<button type="button" data-lang="en">EN</button><span class="language-switcher-separator">/</span><button type="button" data-lang="it">IT</button>';
+
+wrap
+.querySelectorAll("button")
+.forEach(button=>{
+
+button.addEventListener(
+"click",
+()=>primeSetLanguage(
+button.dataset.lang
+)
+);
+
+});
+
 return wrap;
+
 };
-const desktop=document.querySelector(".desktop-nav");
+
+const desktop=
+document.querySelector(
+".desktop-nav"
+);
+
 if(desktop){
-const switcher=make(),book=desktop.querySelector(".nav-book");
-book?desktop.insertBefore(switcher,book):desktop.appendChild(switcher);
-const navContainer=document.querySelector(".nav-container"),toggle=navContainer&&navContainer.querySelector(".menu-toggle");
-if(navContainer&&toggle)navContainer.insertBefore(make("language-switcher-mobile"),toggle);
-}else{
-const apartmentRight=document.querySelector(".apartment-nav-right");
-if(apartmentRight)apartmentRight.insertBefore(make(),apartmentRight.firstChild);
+
+const switcher=
+make();
+
+const book=
+desktop.querySelector(
+".nav-book"
+);
+
+book
+?desktop.insertBefore(
+switcher,
+book
+)
+:desktop.appendChild(
+switcher
+);
+
+const navContainer=
+document.querySelector(
+".nav-container"
+);
+
+const toggle=
+navContainer&&
+navContainer.querySelector(
+".menu-toggle"
+);
+
+if(
+navContainer&&
+toggle
+){
+
+navContainer.insertBefore(
+make("language-switcher-mobile"),
+toggle
+);
+
 }
+
+}else{
+
+const apartmentRight=
+document.querySelector(
+".apartment-nav-right"
+);
+
+if(apartmentRight){
+
+apartmentRight.insertBefore(
+make(),
+apartmentRight.firstChild
+);
+
+}
+
+}
+
 primeUpdateLanguageButtons();
+
 }
 
 primeCreateSwitcher();
 primeApplyLanguage();
 
+
 /* =========================================================
    01. PREMIUM INTRO
 ========================================================= */
 
-const loader=document.querySelector(".loader");
-const hero=document.querySelector(".hero");
+const loader=
+document.querySelector(
+".loader"
+);
+
+const hero=
+document.querySelector(
+".hero"
+);
 
 if(loader&&hero){
-const INTRO_DURATION=2200;
-let introFinished=false,introAnimating=false,startTime=null,touchStartY=0,mouseStartY=0,mouseDragging=false;
-document.body.style.overflow="hidden";
-loader.style.transform="translate3d(0,0,0)";
-const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
-function finishIntro(){introFinished=true;introAnimating=false;loader.style.transform="translate3d(0,-100%,0)";loader.classList.add("hide");document.body.style.userSelect="";document.body.style.overflow=""}
-function animate(now){if(!startTime)startTime=now;const progress=Math.min((now-startTime)/INTRO_DURATION,1);loader.style.transform=`translate3d(0,${-ease(progress)*100}%,0)`;progress<1?requestAnimationFrame(animate):finishIntro()}
-function startIntro(){if(introFinished||introAnimating)return;introAnimating=true;startTime=null;window.dispatchEvent(new CustomEvent("primeIntroStarted"));requestAnimationFrame(animate)}
-window.addEventListener("wheel",e=>{if(introFinished)return;e.preventDefault();if(e.deltaY<0)startIntro()},{passive:false});
-window.addEventListener("touchstart",e=>{if(introFinished||introAnimating)return;touchStartY=e.touches[0].clientY},{passive:true});
-window.addEventListener("touchmove",e=>{if(introFinished||introAnimating)return;if(touchStartY-e.touches[0].clientY>12){e.preventDefault();startIntro()}},{passive:false});
-loader.addEventListener("mousedown",e=>{if(introFinished||introAnimating||e.button!==0)return;mouseDragging=true;mouseStartY=e.clientY;document.body.style.userSelect="none"});
-window.addEventListener("mousemove",e=>{if(!mouseDragging||introFinished||introAnimating)return;if(mouseStartY-e.clientY>=35){mouseDragging=false;document.body.style.userSelect="";startIntro()}});
-window.addEventListener("mouseup",e=>{if(!mouseDragging)return;mouseDragging=false;document.body.style.userSelect="";if(mouseStartY-e.clientY>=35)startIntro()});
+
+const INTRO_DURATION=
+2200;
+
+let introFinished=false;
+let introAnimating=false;
+let startTime=null;
+let touchStartY=0;
+let mouseStartY=0;
+let mouseDragging=false;
+
+document.body.style.overflow=
+"hidden";
+
+loader.style.transform=
+"translate3d(0,0,0)";
+
+const ease=t=>
+t<.5
+?4*t*t*t
+:1-Math.pow(-2*t+2,3)/2;
+
+function finishIntro(){
+
+introFinished=true;
+introAnimating=false;
+
+loader.style.transform=
+"translate3d(0,-100%,0)";
+
+loader.classList.add(
+"hide"
+);
+
+document.body.style.userSelect=
+"";
+
+document.body.style.overflow=
+"";
+
 }
+
+function animate(now){
+
+if(!startTime){
+startTime=now;
+}
+
+const progress=
+Math.min(
+(now-startTime)/
+INTRO_DURATION,
+1
+);
+
+loader.style.transform=
+`translate3d(0,${-ease(progress)*100}%,0)`;
+
+if(progress<1){
+
+requestAnimationFrame(
+animate
+);
+
+}else{
+
+finishIntro();
+
+}
+
+}
+
+function startIntro(){
+
+if(
+introFinished||
+introAnimating
+){
+return;
+}
+
+introAnimating=true;
+startTime=null;
+
+window.dispatchEvent(
+new CustomEvent(
+"primeIntroStarted"
+)
+);
+
+requestAnimationFrame(
+animate
+);
+
+}
+
+window.addEventListener(
+"wheel",
+e=>{
+
+if(introFinished){
+return;
+}
+
+e.preventDefault();
+
+if(e.deltaY<0){
+startIntro();
+}
+
+},
+{
+passive:false
+}
+);
+
+window.addEventListener(
+"touchstart",
+e=>{
+
+if(
+introFinished||
+introAnimating
+){
+return;
+}
+
+touchStartY=
+e.touches[0].clientY;
+
+},
+{
+passive:true
+}
+);
+
+window.addEventListener(
+"touchmove",
+e=>{
+
+if(
+introFinished||
+introAnimating
+){
+return;
+}
+
+if(
+touchStartY-
+e.touches[0].clientY>
+12
+){
+
+e.preventDefault();
+
+startIntro();
+
+}
+
+},
+{
+passive:false
+}
+);
+
+loader.addEventListener(
+"mousedown",
+e=>{
+
+if(
+introFinished||
+introAnimating||
+e.button!==0
+){
+return;
+}
+
+mouseDragging=true;
+
+mouseStartY=
+e.clientY;
+
+document.body.style.userSelect=
+"none";
+
+}
+);
+
+window.addEventListener(
+"mousemove",
+e=>{
+
+if(
+!mouseDragging||
+introFinished||
+introAnimating
+){
+return;
+}
+
+if(
+mouseStartY-
+e.clientY>=
+35
+){
+
+mouseDragging=false;
+
+document.body.style.userSelect=
+"";
+
+startIntro();
+
+}
+
+}
+);
+
+window.addEventListener(
+"mouseup",
+e=>{
+
+if(!mouseDragging){
+return;
+}
+
+mouseDragging=false;
+
+document.body.style.userSelect=
+"";
+
+if(
+mouseStartY-
+e.clientY>=
+35
+){
+
+startIntro();
+
+}
+
+}
+);
+
+}
+
 
 /* =========================================================
    02. NAVBAR
 ========================================================= */
 
-const navbar=document.querySelector(".navbar");
-function updateNavbar(){if(!navbar)return;navbar.classList.toggle("scrolled",window.scrollY>50)}
+const navbar=
+document.querySelector(
+".navbar"
+);
+
+function updateNavbar(){
+
+if(!navbar){
+return;
+}
+
+navbar.classList.toggle(
+"scrolled",
+window.scrollY>50
+);
+
+}
+
 updateNavbar();
-window.addEventListener("scroll",updateNavbar,{passive:true});
+
+window.addEventListener(
+"scroll",
+updateNavbar,
+{
+passive:true
+}
+);
+
 
 /* =========================================================
    02B. ADAPTIVE LOGO CONTRAST
 ========================================================= */
 
-const adaptiveNavs=[...document.querySelectorAll("[data-adaptive-nav],.navbar,.apartment-nav")];
+const adaptiveNavs=[
+...document.querySelectorAll(
+"[data-adaptive-nav],.navbar,.apartment-nav"
+)
+];
+
 function luminanceFromColor(color){
-const match=String(color||"").match(/rgba?\(([^)]+)\)/i);
-if(!match)return null;
-const parts=match[1].split(",").map(v=>Number(v.trim()));
-if(parts.length<3||parts.slice(0,3).some(Number.isNaN))return null;
-return(.2126*parts[0]+.7152*parts[1]+.0722*parts[2])/255;
+
+const match=
+String(color||"")
+.match(
+/rgba?\(([^)]+)\)/i
+);
+
+if(!match){
+return null;
 }
+
+const parts=
+match[1]
+.split(",")
+.map(
+v=>
+Number(
+v.trim()
+)
+);
+
+if(
+parts.length<3||
+parts
+.slice(0,3)
+.some(Number.isNaN)
+){
+return null;
+}
+
+return(
+.2126*parts[0]+
+.7152*parts[1]+
+.0722*parts[2]
+)/255;
+
+}
+
 function schemeUnderNav(nav){
-const rect=nav.getBoundingClientRect();
-const x=Math.min(window.innerWidth-2,Math.max(2,rect.left+Math.min(rect.width*.18,180)));
-const y=Math.min(window.innerHeight-2,Math.max(2,rect.bottom-8));
-const stack=document.elementsFromPoint(x,y);
-const target=stack.find(el=>!el.closest(".navbar,.apartment-nav,.mobile-menu,.prime-assistant"));
-const themed=target&&target.closest("[data-logo-scheme]");
-if(themed){const s=themed.dataset.logoScheme;if(s==="dark"||s==="image")return"dark";if(s==="light")return"light"}
-let el=target;
-while(el&&el!==document.documentElement){const lum=luminanceFromColor(getComputedStyle(el).backgroundColor);if(lum!==null&&getComputedStyle(el).backgroundColor!=="rgba(0, 0, 0, 0)")return lum<.48?"dark":"light";el=el.parentElement}
-return document.body.classList.contains("home-page")?"dark":"light";
+
+const rect=
+nav.getBoundingClientRect();
+
+const x=
+Math.min(
+window.innerWidth-2,
+Math.max(
+2,
+rect.left+
+Math.min(
+rect.width*.18,
+180
+)
+)
+);
+
+const y=
+Math.min(
+window.innerHeight-2,
+Math.max(
+2,
+rect.bottom-8
+)
+);
+
+const stack=
+document.elementsFromPoint(
+x,
+y
+);
+
+const target=
+stack.find(
+el=>
+!el.closest(
+".navbar,.apartment-nav,.mobile-menu,.prime-assistant"
+)
+);
+
+const themed=
+target&&
+target.closest(
+"[data-logo-scheme]"
+);
+
+if(themed){
+
+const s=
+themed.dataset.logoScheme;
+
+if(
+s==="dark"||
+s==="image"
+){
+return"dark";
 }
+
+if(s==="light"){
+return"light";
+}
+
+}
+
+let el=
+target;
+
+while(
+el&&
+el!==document.documentElement
+){
+
+const style=
+getComputedStyle(el);
+
+const lum=
+luminanceFromColor(
+style.backgroundColor
+);
+
+if(
+lum!==null&&
+style.backgroundColor!==
+"rgba(0, 0, 0, 0)"
+){
+
+return lum<.48
+?"dark"
+:"light";
+
+}
+
+el=
+el.parentElement;
+
+}
+
+return document.body.classList.contains(
+"home-page"
+)
+?"dark"
+:"light";
+
+}
+
 function updateAdaptiveLogos(){
+
 adaptiveNavs.forEach(nav=>{
-const scheme=nav.classList.contains("scrolled")?"light":schemeUnderNav(nav);
-nav.classList.toggle("nav-on-dark",scheme==="dark");nav.classList.toggle("nav-on-light",scheme!=="dark");
-nav.querySelectorAll(".site-brand-image").forEach(img=>{img.classList.toggle("logo-contrast-light",scheme==="dark");img.classList.toggle("logo-contrast-dark",scheme!=="dark")});
+
+const scheme=
+nav.classList.contains(
+"scrolled"
+)
+?"light"
+:schemeUnderNav(nav);
+
+nav.classList.toggle(
+"nav-on-dark",
+scheme==="dark"
+);
+
+nav.classList.toggle(
+"nav-on-light",
+scheme!=="dark"
+);
+
+nav
+.querySelectorAll(
+".site-brand-image"
+)
+.forEach(img=>{
+
+img.classList.toggle(
+"logo-contrast-light",
+scheme==="dark"
+);
+
+img.classList.toggle(
+"logo-contrast-dark",
+scheme!=="dark"
+);
+
 });
+
+});
+
 }
+
 updateAdaptiveLogos();
-window.addEventListener("scroll",updateAdaptiveLogos,{passive:true});
-window.addEventListener("resize",updateAdaptiveLogos);
+
+window.addEventListener(
+"scroll",
+updateAdaptiveLogos,
+{
+passive:true
+}
+);
+
+window.addEventListener(
+"resize",
+updateAdaptiveLogos
+);
+
 
 /* =========================================================
    02C. HOME HERO CAROUSEL — GPU / REQUESTANIMATIONFRAME
 ========================================================= */
 
-const primeHeroGallery=document.querySelector("#primeHeroGallery");
+const primeHeroGallery=
+document.querySelector(
+"#primeHeroGallery"
+);
+
 if(primeHeroGallery){
-  const track=primeHeroGallery.querySelector(".prime-hero-gallery-track");
-  const viewport=primeHeroGallery.querySelector(".prime-hero-gallery-window");
-  const originals=track?[...track.querySelectorAll(".prime-hero-gallery-panel")]:[];
 
-  if(track&&viewport&&originals.length>=3){
-    originals.slice(0,2).forEach(panel=>{
-      const clone=panel.cloneNode(true);
-      clone.setAttribute("data-carousel-clone","true");
-      track.appendChild(clone);
-    });
+const track=
+primeHeroGallery.querySelector(
+".prime-hero-gallery-track"
+);
 
-    const SLIDE_MS=1500;
-    const HOLD_MS=3600;
-    let index=0;
-    let step=0;
-    let offset=0;
-    let rafId=0;
-    let timer=0;
-    let animating=false;
-    let resizeTimer=0;
+const viewport=
+primeHeroGallery.querySelector(
+".prime-hero-gallery-window"
+);
 
-    const ease=t=>0.5-Math.cos(Math.PI*t)/2;
+const originals=
+track
+?[...track.querySelectorAll(
+".prime-hero-gallery-panel"
+)]
+:[];
 
-    function measure(){
-      const panels=track.querySelectorAll(".prime-hero-gallery-panel");
-      if(panels.length<2)return;
-      const a=panels[0].getBoundingClientRect();
-      const b=panels[1].getBoundingClientRect();
-      step=b.left-a.left;
-      offset=index*step;
-      track.style.transform=`translate3d(${-offset}px,0,0)`;
-    }
+if(
+track&&
+viewport&&
+originals.length>=3
+){
 
-    function stopAnimation(){
-      if(rafId){
-        cancelAnimationFrame(rafId);
-        rafId=0;
-      }
-      animating=false;
-    }
+originals
+.slice(0,2)
+.forEach(panel=>{
 
-    function schedule(){
-      clearTimeout(timer);
-      if(!document.hidden){
-        timer=window.setTimeout(slideNext,HOLD_MS);
-      }
-    }
+const clone=
+panel.cloneNode(true);
 
-    function slideNext(){
-      if(animating||!step)return;
-      animating=true;
+clone.setAttribute(
+"data-carousel-clone",
+"true"
+);
 
-      const startOffset=offset;
-      const endOffset=startOffset+step;
-      const startTime=performance.now();
+track.appendChild(
+clone
+);
 
-      function frame(now){
-        const progress=Math.min((now-startTime)/SLIDE_MS,1);
-        const value=startOffset+(endOffset-startOffset)*ease(progress);
-        track.style.transform=`translate3d(${-value}px,0,0)`;
+});
 
-        if(progress<1){
-          rafId=requestAnimationFrame(frame);
-          return;
-        }
+const SLIDE_MS=1500;
+const HOLD_MS=3600;
 
-        rafId=0;
-        index+=1;
-        offset=endOffset;
+let index=0;
+let step=0;
+let offset=0;
+let rafId=0;
+let timer=0;
+let animating=false;
+let resizeTimer=0;
 
-        if(index>=originals.length){
-          index=0;
-          offset=0;
-          track.style.transform="translate3d(0,0,0)";
-        }
+const ease=t=>
+0.5-
+Math.cos(
+Math.PI*t
+)/2;
 
-        animating=false;
-        schedule();
-      }
+function measure(){
 
-      rafId=requestAnimationFrame(frame);
-    }
+const panels=
+track.querySelectorAll(
+".prime-hero-gallery-panel"
+);
 
-    function preload(){
-      return Promise.all([...track.querySelectorAll("img")].map(img=>{
-        if(img.complete){
-          return img.decode?img.decode().catch(()=>{}):Promise.resolve();
-        }
-        return new Promise(resolve=>{
-          img.addEventListener("load",resolve,{once:true});
-          img.addEventListener("error",resolve,{once:true});
-        });
-      }));
-    }
-
-    window.addEventListener("resize",()=>{
-      clearTimeout(resizeTimer);
-      resizeTimer=window.setTimeout(()=>{
-        stopAnimation();
-        clearTimeout(timer);
-        measure();
-        schedule();
-      },120);
-    });
-
-    document.addEventListener("visibilitychange",()=>{
-      clearTimeout(timer);
-      if(document.hidden){
-        stopAnimation();
-      }else{
-        measure();
-        schedule();
-      }
-    });
-
-    preload().finally(()=>{
-      requestAnimationFrame(()=>{
-        measure();
-        requestAnimationFrame(schedule);
-      });
-    });
-  }
+if(panels.length<2){
+return;
 }
+
+const a=
+panels[0]
+.getBoundingClientRect();
+
+const b=
+panels[1]
+.getBoundingClientRect();
+
+step=
+b.left-a.left;
+
+offset=
+index*step;
+
+track.style.transform=
+`translate3d(${-offset}px,0,0)`;
+
+}
+
+function stopAnimation(){
+
+if(rafId){
+
+cancelAnimationFrame(
+rafId
+);
+
+rafId=0;
+
+}
+
+animating=false;
+
+}
+
+function schedule(){
+
+clearTimeout(
+timer
+);
+
+if(!document.hidden){
+
+timer=
+window.setTimeout(
+slideNext,
+HOLD_MS
+);
+
+}
+
+}
+
+function slideNext(){
+
+if(
+animating||
+!step
+){
+return;
+}
+
+animating=true;
+
+const startOffset=
+offset;
+
+const endOffset=
+startOffset+
+step;
+
+const startTime=
+performance.now();
+
+function frame(now){
+
+const progress=
+Math.min(
+(now-startTime)/
+SLIDE_MS,
+1
+);
+
+const value=
+startOffset+
+(
+endOffset-
+startOffset
+)*
+ease(progress);
+
+track.style.transform=
+`translate3d(${-value}px,0,0)`;
+
+if(progress<1){
+
+rafId=
+requestAnimationFrame(
+frame
+);
+
+return;
+
+}
+
+rafId=0;
+
+index+=1;
+
+offset=
+endOffset;
+
+if(
+index>=
+originals.length
+){
+
+index=0;
+
+offset=0;
+
+track.style.transform=
+"translate3d(0,0,0)";
+
+}
+
+animating=false;
+
+schedule();
+
+}
+
+rafId=
+requestAnimationFrame(
+frame
+);
+
+}
+
+function preload(){
+
+return Promise.all(
+[
+...track.querySelectorAll(
+"img"
+)
+]
+.map(img=>{
+
+if(img.complete){
+
+return img.decode
+?img.decode().catch(()=>{})
+:Promise.resolve();
+
+}
+
+return new Promise(resolve=>{
+
+img.addEventListener(
+"load",
+resolve,
+{
+once:true
+}
+);
+
+img.addEventListener(
+"error",
+resolve,
+{
+once:true
+}
+);
+
+});
+
+})
+);
+
+}
+
+window.addEventListener(
+"resize",
+()=>{
+
+clearTimeout(
+resizeTimer
+);
+
+resizeTimer=
+window.setTimeout(
+()=>{
+
+stopAnimation();
+
+clearTimeout(
+timer
+);
+
+measure();
+
+schedule();
+
+},
+120
+);
+
+}
+);
+
+document.addEventListener(
+"visibilitychange",
+()=>{
+
+clearTimeout(
+timer
+);
+
+if(document.hidden){
+
+stopAnimation();
+
+}else{
+
+measure();
+
+schedule();
+
+}
+
+}
+);
+
+preload()
+.finally(
+()=>{
+
+requestAnimationFrame(
+()=>{
+
+measure();
+
+requestAnimationFrame(
+schedule
+);
+
+}
+);
+
+}
+);
+
+}
+
+}
+
 
 /* =========================================================
    03. MOBILE MENU
 ========================================================= */
 
-const menuToggle=document.querySelector(".menu-toggle");
-const mobileMenu=document.querySelector(".mobile-menu");
-if(menuToggle&&mobileMenu){
-menuToggle.setAttribute("aria-expanded","false");
-menuToggle.addEventListener("click",()=>{const open=menuToggle.classList.toggle("active");mobileMenu.classList.toggle("active",open);menuToggle.setAttribute("aria-expanded",open?"true":"false");document.body.style.overflow=open?"hidden":""});
-mobileMenu.querySelectorAll("a").forEach(link=>link.addEventListener("click",()=>{menuToggle.classList.remove("active");mobileMenu.classList.remove("active");menuToggle.setAttribute("aria-expanded","false");document.body.style.overflow=""}));
+const menuToggle=
+document.querySelector(
+".menu-toggle"
+);
+
+const mobileMenu=
+document.querySelector(
+".mobile-menu"
+);
+
+if(
+menuToggle&&
+mobileMenu
+){
+
+menuToggle.setAttribute(
+"aria-expanded",
+"false"
+);
+
+menuToggle.addEventListener(
+"click",
+()=>{
+
+const open=
+menuToggle.classList.toggle(
+"active"
+);
+
+mobileMenu.classList.toggle(
+"active",
+open
+);
+
+menuToggle.setAttribute(
+"aria-expanded",
+open
+?"true"
+:"false"
+);
+
+document.body.style.overflow=
+open
+?"hidden"
+:"";
+
 }
+);
+
+mobileMenu
+.querySelectorAll(
+"a"
+)
+.forEach(link=>{
+
+link.addEventListener(
+"click",
+()=>{
+
+menuToggle.classList.remove(
+"active"
+);
+
+mobileMenu.classList.remove(
+"active"
+);
+
+menuToggle.setAttribute(
+"aria-expanded",
+"false"
+);
+
+document.body.style.overflow=
+"";
+
+}
+);
+
+});
+
+}
+
 
 /* =========================================================
    04. REVEAL
 ========================================================= */
 
-const revealElements=document.querySelectorAll(".reveal");
+const revealElements=
+document.querySelectorAll(
+".reveal"
+);
+
 if(revealElements.length){
-const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add("visible");observer.unobserve(entry.target)}})},{threshold:.12});
-revealElements.forEach(el=>observer.observe(el));
+
+const observer=
+new IntersectionObserver(
+entries=>{
+
+entries.forEach(entry=>{
+
+if(
+entry.isIntersecting
+){
+
+entry.target.classList.add(
+"visible"
+);
+
+observer.unobserve(
+entry.target
+);
+
 }
+
+});
+
+},
+{
+threshold:.12
+}
+);
+
+revealElements.forEach(
+el=>
+observer.observe(el)
+);
+
+}
+
 
 /* =========================================================
    05. PREMIUM SCROLL
 ========================================================= */
 
-let premiumScrollAnimation=null;
-function premiumEase(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2}
-function premiumScrollTo(target,duration=1400){
-if(!target)return;
-if(premiumScrollAnimation)cancelAnimationFrame(premiumScrollAnimation);
-const navOffset=navbar?navbar.offsetHeight:0,startY=window.scrollY,targetY=Math.max(0,target.getBoundingClientRect().top+window.scrollY-navOffset),distance=targetY-startY;
-let start=null;
-function frame(time){if(!start)start=time;const progress=Math.min((time-start)/duration,1);window.scrollTo(0,startY+distance*premiumEase(progress));if(progress<1)premiumScrollAnimation=requestAnimationFrame(frame);else premiumScrollAnimation=null}
-premiumScrollAnimation=requestAnimationFrame(frame);
+let premiumScrollAnimation=
+null;
+
+function premiumEase(t){
+
+return t<.5
+?4*t*t*t
+:1-Math.pow(
+-2*t+2,
+3
+)/2;
+
 }
+
+function premiumScrollTo(
+target,
+duration=1400
+){
+
+if(!target){
+return;
+}
+
+if(premiumScrollAnimation){
+
+cancelAnimationFrame(
+premiumScrollAnimation
+);
+
+}
+
+const navOffset=
+navbar
+?navbar.offsetHeight
+:0;
+
+const startY=
+window.scrollY;
+
+const targetY=
+Math.max(
+0,
+target
+.getBoundingClientRect()
+.top+
+window.scrollY-
+navOffset
+);
+
+const distance=
+targetY-
+startY;
+
+let start=
+null;
+
+function frame(time){
+
+if(!start){
+start=time;
+}
+
+const progress=
+Math.min(
+(time-start)/
+duration,
+1
+);
+
+window.scrollTo(
+0,
+startY+
+distance*
+premiumEase(progress)
+);
+
+if(progress<1){
+
+premiumScrollAnimation=
+requestAnimationFrame(
+frame
+);
+
+}else{
+
+premiumScrollAnimation=
+null;
+
+}
+
+}
+
+premiumScrollAnimation=
+requestAnimationFrame(
+frame
+);
+
+}
+
 
 /* =========================================================
    06. APARTMENT GALLERY - ALL PHOTOS + PHOTO VIEWER
-   Only Gastone Rossi 12 and Barontini 8 galleries.
+   ONLY GASTONE ROSSI 12 AND BARONTINI 8
 ========================================================= */
 
-document.querySelectorAll("[data-booking-gallery]").forEach(gallery=>{
+document
+.querySelectorAll(
+"[data-booking-gallery]"
+)
+.forEach(gallery=>{
 
-const prefix=gallery.dataset.galleryPrefix||"";
-const count=Math.max(0,Number(gallery.dataset.galleryCount)||0);
+const prefix=
+gallery.dataset.galleryPrefix||
+"";
 
-const images=Array.from(
-  {length:count},
-  (_,i)=>`${prefix}${String(i+1).padStart(2,"0")}.jpg`
+const count=
+Math.max(
+0,
+Number(
+gallery.dataset.galleryCount
+)||
+0
 );
 
-const slots=[...gallery.querySelectorAll("[data-gallery-slot]")];
-const prev=gallery.querySelector("[data-gallery-prev]");
-const next=gallery.querySelector("[data-gallery-next]");
+const images=
+Array.from(
+{
+length:count
+},
+(_,i)=>
+`${prefix}${String(i+1).padStart(2,"0")}.jpg`
+);
+
+const slots=[
+...gallery.querySelectorAll(
+"[data-gallery-slot]"
+)
+];
+
+const prev=
+gallery.querySelector(
+"[data-gallery-prev]"
+);
+
+const next=
+gallery.querySelector(
+"[data-gallery-next]"
+);
 
 const counter=
-  gallery
-    .closest(".property-gallery-section")
-    ?.querySelector("[data-gallery-current]");
+gallery
+.closest(
+".property-gallery-section"
+)
+?.querySelector(
+"[data-gallery-current]"
+);
 
-const moreLabel=gallery.querySelector("[data-gallery-more]");
+const moreLabel=
+gallery.querySelector(
+"[data-gallery-more]"
+);
 
-if(!images.length||!slots.length){
-  return;
+if(
+!images.length||
+!slots.length
+){
+return;
 }
 
 let current=0;
+
 let down=false;
 let startX=0;
 let startY=0;
 
 let viewerIndex=0;
+
 let viewerDown=false;
 let viewerStartX=0;
 let viewerStartY=0;
 
 const residenceName=
-  document.body.dataset.residence==="gastone"
-    ?"Gastone Rossi 12"
-    :document.body.dataset.residence==="barontini"
-      ?"Barontini 8"
-      :"Prime Residence Bologna";
+document.body.dataset.residence==="gastone"
+?"Gastone Rossi 12"
+:document.body.dataset.residence==="barontini"
+?"Barontini 8"
+:"Prime Residence Bologna";
 
 
-/* ---------------------------------------------------------
-   SCREEN 1: ALL PHOTOS
---------------------------------------------------------- */
+/* =========================================================
+   SCREEN 1 — ALL PHOTOS
+========================================================= */
 
-const album=document.createElement("section");
+const album=
+document.createElement(
+"section"
+);
 
-album.className="gallery-album-overlay";
-album.setAttribute("aria-hidden","true");
-album.setAttribute("aria-label","All residence photos");
+album.className=
+"gallery-album-overlay";
+
+album.setAttribute(
+"aria-hidden",
+"true"
+);
+
+album.setAttribute(
+"aria-label",
+"All residence photos"
+);
 
 album.innerHTML=`
-  <button
-    class="gallery-album-back"
-    type="button"
-    aria-label="Back to residence"
-  >
-    <span aria-hidden="true">&#8592;</span>
-  </button>
+<button
+  class="gallery-album-back"
+  type="button"
+  aria-label="Back to residence"
+>
+  <span aria-hidden="true">&#8592;</span>
+</button>
 
-  <div class="gallery-album-grid"></div>
+<div class="gallery-album-grid"></div>
 `;
 
-document.body.appendChild(album);
+document.body.appendChild(
+album
+);
 
-const albumGrid=album.querySelector(".gallery-album-grid");
-const albumBack=album.querySelector(".gallery-album-back");
+const albumGrid=
+album.querySelector(
+".gallery-album-grid"
+);
 
-images.forEach((src,index)=>{
+const albumBack=
+album.querySelector(
+".gallery-album-back"
+);
 
-  const button=document.createElement("button");
+images.forEach(
+(src,index)=>{
 
-  button.className="gallery-album-item";
-  button.type="button";
-  button.dataset.albumIndex=String(index);
-  button.setAttribute("aria-label",`Open photo ${index+1}`);
+const button=
+document.createElement(
+"button"
+);
 
-  const img=document.createElement("img");
+button.className=
+"gallery-album-item";
 
-  img.src=src;
-  img.alt=`${residenceName} - photo ${index+1}`;
-  img.loading=index<10?"eager":"lazy";
-  img.decoding="async";
+button.type=
+"button";
 
-  button.appendChild(img);
-  albumGrid.appendChild(button);
+button.dataset.albumIndex=
+String(index);
 
-  button.addEventListener("click",()=>{
-    openViewer(index);
-  });
-});
+button.setAttribute(
+"aria-label",
+`Open photo ${index+1}`
+);
+
+const img=
+document.createElement(
+"img"
+);
+
+img.src=
+src;
+
+img.alt=
+`${residenceName} - photo ${index+1}`;
+
+img.loading=
+index<10
+?"eager"
+:"lazy";
+
+img.decoding=
+"async";
+
+button.appendChild(
+img
+);
+
+albumGrid.appendChild(
+button
+);
+
+button.addEventListener(
+"click",
+()=>{
+
+openViewer(
+index
+);
+
+}
+);
+
+}
+);
 
 function openAlbum(){
 
-  album.classList.add("open");
-  album.setAttribute("aria-hidden","false");
+album.classList.add(
+"open"
+);
 
-  document.body.classList.add("no-scroll");
+album.setAttribute(
+"aria-hidden",
+"false"
+);
 
-  album.scrollTop=0;
+document.body.classList.add(
+"no-scroll"
+);
 
-  requestAnimationFrame(()=>{
-    albumBack.focus({preventScroll:true});
-  });
+album.scrollTop=
+0;
+
+requestAnimationFrame(
+()=>{
+
+albumBack.focus({
+preventScroll:true
+});
+
+}
+);
+
 }
 
 function closeAlbum(){
 
-  closeViewer(false);
+closeViewer(
+false
+);
 
-  album.classList.remove("open");
-  album.setAttribute("aria-hidden","true");
+album.classList.remove(
+"open"
+);
 
-  document.body.classList.remove("no-scroll");
+album.setAttribute(
+"aria-hidden",
+"true"
+);
+
+document.body.classList.remove(
+"no-scroll"
+);
+
 }
 
-albumBack.addEventListener("click",closeAlbum);
+albumBack.addEventListener(
+"click",
+closeAlbum
+);
 
 
-/* ---------------------------------------------------------
-   SCREEN 2: SINGLE PHOTO + BOTTOM THUMBNAILS
---------------------------------------------------------- */
+/* =========================================================
+   SCREEN 2 — SINGLE PHOTO
+========================================================= */
 
-const viewer=document.createElement("section");
+const viewer=
+document.createElement(
+"section"
+);
 
-viewer.className="gallery-photo-viewer";
-viewer.setAttribute("aria-hidden","true");
-viewer.setAttribute("aria-label","Residence photo viewer");
+viewer.className=
+"gallery-photo-viewer";
+
+viewer.setAttribute(
+"aria-hidden",
+"true"
+);
+
+viewer.setAttribute(
+"aria-label",
+"Residence photo viewer"
+);
 
 viewer.innerHTML=`
-  <button
-    class="gallery-viewer-back"
-    type="button"
-    aria-label="Back to all photos"
-  >
-    <span aria-hidden="true">&#8592;</span>
-  </button>
 
-  <button
-    class="gallery-viewer-close"
-    type="button"
-    aria-label="Close gallery"
-  >
-    <span aria-hidden="true">&times;</span>
-  </button>
+<button
+  class="gallery-viewer-back"
+  type="button"
+  aria-label="Back to all photos"
+>
+  <span aria-hidden="true">&#8592;</span>
+</button>
 
-  <button
-    class="gallery-viewer-prev"
-    type="button"
-    aria-label="Previous photo"
-  >
-    <span aria-hidden="true">&#8249;</span>
-  </button>
+<button
+  class="gallery-viewer-close"
+  type="button"
+  aria-label="Close gallery"
+>
+  <span aria-hidden="true">&times;</span>
+</button>
 
-  <div class="gallery-viewer-main">
-    <div class="gallery-viewer-image-wrap">
-      <img
-        class="gallery-viewer-image"
-        alt="Residence gallery photo"
-      >
-    </div>
+<button
+  class="gallery-viewer-prev"
+  type="button"
+  aria-label="Previous photo"
+>
+  <span aria-hidden="true">&#8249;</span>
+</button>
 
-    <div class="gallery-viewer-counter"></div>
+<div class="gallery-viewer-main">
+
+  <div class="gallery-viewer-image-wrap">
+
+    <img
+      class="gallery-viewer-image"
+      alt="Residence gallery photo"
+    >
+
   </div>
 
-  <button
-    class="gallery-viewer-next"
-    type="button"
-    aria-label="Next photo"
-  >
-    <span aria-hidden="true">&#8250;</span>
-  </button>
+  <div class="gallery-viewer-counter"></div>
 
-  <div class="gallery-viewer-thumbnails"></div>
+</div>
+
+<button
+  class="gallery-viewer-next"
+  type="button"
+  aria-label="Next photo"
+>
+  <span aria-hidden="true">&#8250;</span>
+</button>
+
+<div class="gallery-viewer-thumbnails"></div>
+
 `;
 
-document.body.appendChild(viewer);
+document.body.appendChild(
+viewer
+);
 
-const viewerImage=viewer.querySelector(".gallery-viewer-image");
-const viewerCounter=viewer.querySelector(".gallery-viewer-counter");
-const viewerBack=viewer.querySelector(".gallery-viewer-back");
-const viewerClose=viewer.querySelector(".gallery-viewer-close");
-const viewerPrev=viewer.querySelector(".gallery-viewer-prev");
-const viewerNext=viewer.querySelector(".gallery-viewer-next");
-const viewerThumbs=viewer.querySelector(".gallery-viewer-thumbnails");
+const viewerImage=
+viewer.querySelector(
+".gallery-viewer-image"
+);
 
-const thumbnailButtons=[];
+const viewerCounter=
+viewer.querySelector(
+".gallery-viewer-counter"
+);
 
-images.forEach((src,index)=>{
+const viewerBack=
+viewer.querySelector(
+".gallery-viewer-back"
+);
 
-  const button=document.createElement("button");
+const viewerClose=
+viewer.querySelector(
+".gallery-viewer-close"
+);
 
-  button.className="gallery-viewer-thumb";
-  button.type="button";
-  button.dataset.viewerIndex=String(index);
-  button.setAttribute("aria-label",`View photo ${index+1}`);
+const viewerPrev=
+viewer.querySelector(
+".gallery-viewer-prev"
+);
 
-  const img=document.createElement("img");
+const viewerNext=
+viewer.querySelector(
+".gallery-viewer-next"
+);
 
-  img.src=src;
-  img.alt="";
-  img.loading=index<12?"eager":"lazy";
-  img.decoding="async";
+const viewerThumbs=
+viewer.querySelector(
+".gallery-viewer-thumbnails"
+);
 
-  button.appendChild(img);
-  viewerThumbs.appendChild(button);
-  thumbnailButtons.push(button);
+const thumbnailButtons=
+[];
 
-  button.addEventListener("click",()=>{
-    viewerIndex=index;
-    renderViewer();
-  });
-});
+images.forEach(
+(src,index)=>{
+
+const button=
+document.createElement(
+"button"
+);
+
+button.className=
+"gallery-viewer-thumb";
+
+button.type=
+"button";
+
+button.dataset.viewerIndex=
+String(index);
+
+button.setAttribute(
+"aria-label",
+`View photo ${index+1}`
+);
+
+const img=
+document.createElement(
+"img"
+);
+
+img.src=
+src;
+
+img.alt=
+"";
+
+img.loading=
+index<12
+?"eager"
+:"lazy";
+
+img.decoding=
+"async";
+
+button.appendChild(
+img
+);
+
+viewerThumbs.appendChild(
+button
+);
+
+thumbnailButtons.push(
+button
+);
+
+button.addEventListener(
+"click",
+()=>{
+
+viewerIndex=
+index;
+
+renderViewer();
+
+}
+);
+
+}
+);
 
 function preloadViewerNeighbors(){
 
-  const indexes=[
-    (viewerIndex+1)%images.length,
-    (viewerIndex-1+images.length)%images.length
-  ];
+const indexes=[
+(viewerIndex+1)%images.length,
+(viewerIndex-1+images.length)%images.length
+];
 
-  indexes.forEach(index=>{
-    const preloadImage=new Image();
-    preloadImage.src=images[index];
-  });
+indexes.forEach(
+index=>{
+
+const preloadImage=
+new Image();
+
+preloadImage.src=
+images[index];
+
+}
+);
+
 }
 
 function syncActiveThumbnail(){
 
-  thumbnailButtons.forEach((button,index)=>{
-    const active=index===viewerIndex;
+thumbnailButtons.forEach(
+(button,index)=>{
 
-    button.classList.toggle("active",active);
-    button.setAttribute(
-      "aria-current",
-      active?"true":"false"
-    );
-  });
+const active=
+index===viewerIndex;
 
-  const active=thumbnailButtons[viewerIndex];
+button.classList.toggle(
+"active",
+active
+);
 
-  if(active){
-    active.scrollIntoView({
-      behavior:"smooth",
-      block:"nearest",
-      inline:"center"
-    });
-  }
+button.setAttribute(
+"aria-current",
+active
+?"true"
+:"false"
+);
+
+}
+);
+
+const active=
+thumbnailButtons[
+viewerIndex
+];
+
+if(active){
+
+active.scrollIntoView({
+behavior:"smooth",
+block:"nearest",
+inline:"center"
+});
+
+}
+
 }
 
 function renderViewer(){
 
-  viewerIndex=
-    (viewerIndex+images.length)%images.length;
+viewerIndex=
+(
+viewerIndex+
+images.length
+)%
+images.length;
 
-  viewerImage.classList.add("is-changing");
+viewerImage.classList.add(
+"is-changing"
+);
 
-  window.setTimeout(()=>{
+window.setTimeout(
+()=>{
 
-    viewerImage.src=images[viewerIndex];
-    viewerImage.alt=
-      `${residenceName} - photo ${viewerIndex+1}`;
+viewerImage.src=
+images[
+viewerIndex
+];
 
-    viewerCounter.textContent=
-      `${viewerIndex+1} / ${images.length}`;
+viewerImage.alt=
+`${residenceName} - photo ${viewerIndex+1}`;
 
-    syncActiveThumbnail();
-    preloadViewerNeighbors();
+viewerCounter.textContent=
+`${viewerIndex+1} / ${images.length}`;
 
-    requestAnimationFrame(()=>{
-      viewerImage.classList.remove("is-changing");
-    });
+syncActiveThumbnail();
 
-  },90);
+preloadViewerNeighbors();
+
+requestAnimationFrame(
+()=>{
+
+viewerImage.classList.remove(
+"is-changing"
+);
+
+}
+);
+
+},
+90
+);
+
 }
 
 function openViewer(index){
 
-  viewerIndex=
-    (Number(index)+images.length)%images.length;
+viewerIndex=
+(
+Number(index)+
+images.length
+)%
+images.length;
 
-  viewer.classList.add("open");
-  viewer.setAttribute("aria-hidden","false");
+viewer.classList.add(
+"open"
+);
 
-  document.body.classList.add("no-scroll");
+viewer.setAttribute(
+"aria-hidden",
+"false"
+);
 
-  renderViewer();
+document.body.classList.add(
+"no-scroll"
+);
 
-  requestAnimationFrame(()=>{
-    viewerBack.focus({preventScroll:true});
-  });
+renderViewer();
+
+requestAnimationFrame(
+()=>{
+
+viewerBack.focus({
+preventScroll:true
+});
+
+}
+);
+
 }
 
-function closeViewer(returnToAlbum=true){
+function closeViewer(
+returnToAlbum=true
+){
 
-  viewer.classList.remove("open");
-  viewer.setAttribute("aria-hidden","true");
+viewer.classList.remove(
+"open"
+);
 
-  if(returnToAlbum&&album.classList.contains("open")){
+viewer.setAttribute(
+"aria-hidden",
+"true"
+);
 
-    requestAnimationFrame(()=>{
-      albumBack.focus({preventScroll:true});
-    });
+if(
+returnToAlbum&&
+album.classList.contains(
+"open"
+)
+){
 
-    return;
-  }
+requestAnimationFrame(
+()=>{
 
-  if(!album.classList.contains("open")){
-    document.body.classList.remove("no-scroll");
-  }
+albumBack.focus({
+preventScroll:true
+});
+
+}
+);
+
+return;
+
+}
+
+if(
+!album.classList.contains(
+"open"
+)
+){
+
+document.body.classList.remove(
+"no-scroll"
+);
+
+}
+
 }
 
 function viewerMove(direction){
 
-  viewerIndex=
-    (viewerIndex+direction+images.length)%images.length;
+viewerIndex=
+(
+viewerIndex+
+direction+
+images.length
+)%
+images.length;
 
-  renderViewer();
+renderViewer();
+
 }
 
-viewerBack.addEventListener("click",()=>{
-  closeViewer(true);
-});
+viewerBack.addEventListener(
+"click",
+()=>{
 
-viewerClose.addEventListener("click",()=>{
-  closeViewer(false);
-  closeAlbum();
-});
+closeViewer(
+true
+);
 
-viewerPrev.addEventListener("click",()=>{
-  viewerMove(-1);
-});
+}
+);
 
-viewerNext.addEventListener("click",()=>{
-  viewerMove(1);
-});
+viewerClose.addEventListener(
+"click",
+()=>{
 
-viewer.addEventListener("pointerdown",e=>{
+closeViewer(
+false
+);
 
-  if(
-    e.target.closest(
-      ".gallery-viewer-thumb,.gallery-viewer-back,.gallery-viewer-close,.gallery-viewer-prev,.gallery-viewer-next"
-    )
-  ){
-    return;
-  }
+closeAlbum();
 
-  if(e.pointerType==="mouse"&&e.button!==0){
-    return;
-  }
+}
+);
 
-  viewerDown=true;
-  viewerStartX=e.clientX;
-  viewerStartY=e.clientY;
+viewerPrev.addEventListener(
+"click",
+()=>{
 
-  try{
-    viewer.setPointerCapture(e.pointerId);
-  }catch{}
-});
+viewerMove(
+-1
+);
 
-viewer.addEventListener("pointerup",e=>{
+}
+);
 
-  if(!viewerDown){
-    return;
-  }
+viewerNext.addEventListener(
+"click",
+()=>{
 
-  viewerDown=false;
+viewerMove(
+1
+);
 
-  const dx=e.clientX-viewerStartX;
-  const dy=e.clientY-viewerStartY;
+}
+);
 
-  if(
-    Math.abs(dx)>=55&&
-    Math.abs(dx)>Math.abs(dy)
-  ){
-    viewerMove(dx<0?1:-1);
-  }
-});
+viewer.addEventListener(
+"pointerdown",
+e=>{
+
+if(
+e.target.closest(
+".gallery-viewer-thumb,.gallery-viewer-back,.gallery-viewer-close,.gallery-viewer-prev,.gallery-viewer-next"
+)
+){
+return;
+}
+
+if(
+e.pointerType==="mouse"&&
+e.button!==0
+){
+return;
+}
+
+viewerDown=true;
+
+viewerStartX=
+e.clientX;
+
+viewerStartY=
+e.clientY;
+
+try{
+
+viewer.setPointerCapture(
+e.pointerId
+);
+
+}catch{}
+
+}
+);
+
+viewer.addEventListener(
+"pointerup",
+e=>{
+
+if(!viewerDown){
+return;
+}
+
+viewerDown=false;
+
+const dx=
+e.clientX-
+viewerStartX;
+
+const dy=
+e.clientY-
+viewerStartY;
+
+if(
+Math.abs(dx)>=55&&
+Math.abs(dx)>
+Math.abs(dy)
+){
+
+viewerMove(
+dx<0
+?1
+:-1
+);
+
+}
+
+}
+);
 
 
-/* ---------------------------------------------------------
-   EXISTING MOSAIC GALLERY ON THE APARTMENT PAGE
---------------------------------------------------------- */
+/* =========================================================
+   ORIGINAL MOSAIC ON RESIDENCE PAGE
+========================================================= */
 
 function render(dir=0){
 
-  if(dir){
+if(dir){
 
-    gallery.style.setProperty(
-      "--gallery-shift",
-      dir>0?"-12px":"12px"
-    );
+gallery.style.setProperty(
+"--gallery-shift",
+dir>0
+?"-12px"
+:"12px"
+);
 
-    gallery.classList.add("is-shifting");
-  }
+gallery.classList.add(
+"is-shifting"
+);
 
-  window.setTimeout(()=>{
+}
 
-    slots.forEach((slot,slotIndex)=>{
+window.setTimeout(
+()=>{
 
-      const index=
-        (current+slotIndex)%images.length;
+slots.forEach(
+(
+slot,
+slotIndex
+)=>{
 
-      const img=slot.querySelector("img");
+const index=
+(
+current+
+slotIndex
+)%
+images.length;
 
-      if(img){
+const img=
+slot.querySelector(
+"img"
+);
 
-        img.src=images[index];
-        img.alt=`Residence photo ${index+1}`;
-      }
+if(img){
 
-      slot.dataset.imageIndex=String(index);
-    });
+img.src=
+images[index];
 
-    if(counter){
+img.alt=
+`Residence photo ${index+1}`;
 
-      counter.textContent=
-        String(current+1).padStart(2,"0");
-    }
+}
 
-    if(moreLabel){
+slot.dataset.imageIndex=
+String(index);
 
-      const remaining=
-        Math.max(0,images.length-slots.length);
+}
+);
 
-      moreLabel.textContent=
-        primeLanguage==="it"
-          ?`Altre ${remaining} foto`
-          :`${remaining} more photos`;
-    }
+if(counter){
 
-    gallery.classList.remove("is-shifting");
+counter.textContent=
+String(
+current+1
+)
+.padStart(
+2,
+"0"
+);
 
-  },dir?170:0);
+}
+
+if(moreLabel){
+
+const remaining=
+Math.max(
+0,
+images.length-
+slots.length
+);
+
+moreLabel.textContent=
+primeLanguage==="it"
+?`Altre ${remaining} foto`
+:`${remaining} more photos`;
+
+}
+
+gallery.classList.remove(
+"is-shifting"
+);
+
+},
+dir
+?170
+:0
+);
+
 }
 
 function move(dir){
 
-  current=
-    (current+dir+images.length)%images.length;
+current=
+(
+current+
+dir+
+images.length
+)%
+images.length;
 
-  render(dir);
+render(
+dir
+);
+
 }
 
 if(prev){
-  prev.addEventListener("click",()=>move(-1));
+
+prev.addEventListener(
+"click",
+e=>{
+
+e.stopPropagation();
+
+move(
+-1
+);
+
+}
+);
+
 }
 
 if(next){
-  next.addEventListener("click",()=>move(1));
-}
 
-slots.forEach(slot=>{
+next.addEventListener(
+"click",
+e=>{
 
-  slot.addEventListener("click",()=>{
-    openAlbum();
-  });
-});
+e.stopPropagation();
 
-gallery.addEventListener("pointerdown",e=>{
-
-  if(e.pointerType==="mouse"&&e.button!==0){
-    return;
-  }
-
-  down=true;
-  startX=e.clientX;
-  startY=e.clientY;
-
-  try{
-    gallery.setPointerCapture(e.pointerId);
-  }catch{}
-});
-
-gallery.addEventListener("pointerup",e=>{
-
-  if(!down){
-    return;
-  }
-
-  down=false;
-
-  const dx=e.clientX-startX;
-  const dy=e.clientY-startY;
-
-  if(
-    Math.abs(dx)>=50&&
-    Math.abs(dx)>Math.abs(dy)
-  ){
-    move(dx<0?1:-1);
-  }
-});
-
-window.addEventListener(
-  "primeLanguageChanged",
-  ()=>render()
+move(
+1
 );
 
-document.addEventListener("keydown",e=>{
+}
+);
 
-  if(viewer.classList.contains("open")){
+}
 
-    if(e.key==="Escape"){
-      closeViewer(true);
-    }
 
-    if(e.key==="ArrowLeft"){
-      viewerMove(-1);
-    }
+/* =========================================================
+   FIX CLICK / SWIPE CONFLICT
+========================================================= */
 
-    if(e.key==="ArrowRight"){
-      viewerMove(1);
-    }
+gallery.addEventListener(
+"pointerdown",
+e=>{
 
-    return;
-  }
+if(
+e.pointerType==="mouse"&&
+e.button!==0
+){
+return;
+}
 
-  if(album.classList.contains("open")&&e.key==="Escape"){
-    closeAlbum();
-  }
-});
+down=true;
+
+startX=
+e.clientX;
+
+startY=
+e.clientY;
+
+try{
+
+gallery.setPointerCapture(
+e.pointerId
+);
+
+}catch{}
+
+}
+);
+
+gallery.addEventListener(
+"pointerup",
+e=>{
+
+if(!down){
+return;
+}
+
+down=false;
+
+const dx=
+e.clientX-
+startX;
+
+const dy=
+e.clientY-
+startY;
+
+const movedX=
+Math.abs(dx);
+
+const movedY=
+Math.abs(dy);
+
+/*
+A normal short click opens the ALL PHOTOS screen.
+We do this manually here because pointer capture can
+prevent the original button click from firing.
+*/
+
+if(
+movedX<12&&
+movedY<12
+){
+
+const elementUnderPointer=
+document.elementFromPoint(
+e.clientX,
+e.clientY
+);
+
+const clickedSlot=
+elementUnderPointer&&
+elementUnderPointer.closest(
+"[data-gallery-slot]"
+);
+
+if(
+clickedSlot&&
+gallery.contains(
+clickedSlot
+)
+){
+
+openAlbum();
+
+}
+
+return;
+
+}
+
+/*
+A horizontal drag remains the original gallery swipe.
+*/
+
+if(
+movedX>=50&&
+movedX>
+movedY
+){
+
+move(
+dx<0
+?1
+:-1
+);
+
+}
+
+}
+);
+
+window.addEventListener(
+"primeLanguageChanged",
+()=>{
+
+render();
+
+}
+);
+
+document.addEventListener(
+"keydown",
+e=>{
+
+if(
+viewer.classList.contains(
+"open"
+)
+){
+
+if(
+e.key==="Escape"
+){
+
+closeViewer(
+true
+);
+
+}
+
+if(
+e.key==="ArrowLeft"
+){
+
+viewerMove(
+-1
+);
+
+}
+
+if(
+e.key==="ArrowRight"
+){
+
+viewerMove(
+1
+);
+
+}
+
+return;
+
+}
+
+if(
+album.classList.contains(
+"open"
+)&&
+e.key==="Escape"
+){
+
+closeAlbum();
+
+}
+
+}
+);
 
 render();
 
@@ -969,329 +2596,2361 @@ render();
    07. BOOKING
 ========================================================= */
 
-const bookingCards=document.querySelectorAll(".booking-residence-card");
-const bookingForm=document.querySelector("#bookingRequestForm");
-const residenceInput=document.querySelector("#residence");
-const calendarResidence=document.querySelector("#calendarResidence");
-const checkinInput=document.querySelector("#checkin");
-const checkoutInput=document.querySelector("#checkout");
-const selectedResidenceText=document.querySelector("#selectedResidenceText");
-const bookingFormSection=document.querySelector("#booking-form-section");
-const bookingMessage=document.querySelector("#bookingMessage");
-const bookingSubmit=document.querySelector(".booking-submit");
-const primeCalendar=document.querySelector("#primeCalendar");
-const calendarGrid=document.querySelector("#calendarGrid");
-const calendarMonthLabel=document.querySelector("#calendarMonthLabel");
-const calendarPrev=document.querySelector("#calendarPrev");
-const calendarNext=document.querySelector("#calendarNext");
-const calendarResidenceTitle=document.querySelector("#calendarResidenceTitle");
-const calendarLiveStatus=document.querySelector("#calendarLiveStatus");
-const calendarLiveText=document.querySelector("#calendarLiveText");
-const calendarLoadingMessage=document.querySelector("#calendarLoadingMessage");
-const calendarMessage=document.querySelector("#calendarMessage");
-const selectedStay=document.querySelector("#selectedStay");
-const selectedStayResidence=document.querySelector("#selectedStayResidence");
-const selectedStayCheckin=document.querySelector("#selectedStayCheckin");
-const selectedStayCheckout=document.querySelector("#selectedStayCheckout");
-const selectedStayNights=document.querySelector("#selectedStayNights");
-const selectedStayClear=document.querySelector("#selectedStayClear");
-const guestsInput=document.querySelector("#guests");
-const stayPriceBanner=document.querySelector("#stayPriceBanner");
-const stayPriceTotal=document.querySelector("#stayPriceTotal");
-const stayPriceMeta=document.querySelector("#stayPriceMeta");
-const requestBookingButton=document.querySelector("#requestBookingButton");
-const guestDetailsSection=document.querySelector("#guest-details-section");
-const estimatedTotalInput=document.querySelector("#estimatedTotal");
+const bookingCards=
+document.querySelectorAll(
+".booking-residence-card"
+);
+
+const bookingForm=
+document.querySelector(
+"#bookingRequestForm"
+);
+
+const residenceInput=
+document.querySelector(
+"#residence"
+);
+
+const calendarResidence=
+document.querySelector(
+"#calendarResidence"
+);
+
+const checkinInput=
+document.querySelector(
+"#checkin"
+);
+
+const checkoutInput=
+document.querySelector(
+"#checkout"
+);
+
+const selectedResidenceText=
+document.querySelector(
+"#selectedResidenceText"
+);
+
+const bookingFormSection=
+document.querySelector(
+"#booking-form-section"
+);
+
+const bookingMessage=
+document.querySelector(
+"#bookingMessage"
+);
+
+const bookingSubmit=
+document.querySelector(
+".booking-submit"
+);
+
+const primeCalendar=
+document.querySelector(
+"#primeCalendar"
+);
+
+const calendarGrid=
+document.querySelector(
+"#calendarGrid"
+);
+
+const calendarMonthLabel=
+document.querySelector(
+"#calendarMonthLabel"
+);
+
+const calendarPrev=
+document.querySelector(
+"#calendarPrev"
+);
+
+const calendarNext=
+document.querySelector(
+"#calendarNext"
+);
+
+const calendarResidenceTitle=
+document.querySelector(
+"#calendarResidenceTitle"
+);
+
+const calendarLiveStatus=
+document.querySelector(
+"#calendarLiveStatus"
+);
+
+const calendarLiveText=
+document.querySelector(
+"#calendarLiveText"
+);
+
+const calendarLoadingMessage=
+document.querySelector(
+"#calendarLoadingMessage"
+);
+
+const calendarMessage=
+document.querySelector(
+"#calendarMessage"
+);
+
+const selectedStay=
+document.querySelector(
+"#selectedStay"
+);
+
+const selectedStayResidence=
+document.querySelector(
+"#selectedStayResidence"
+);
+
+const selectedStayCheckin=
+document.querySelector(
+"#selectedStayCheckin"
+);
+
+const selectedStayCheckout=
+document.querySelector(
+"#selectedStayCheckout"
+);
+
+const selectedStayNights=
+document.querySelector(
+"#selectedStayNights"
+);
+
+const selectedStayClear=
+document.querySelector(
+"#selectedStayClear"
+);
+
+const guestsInput=
+document.querySelector(
+"#guests"
+);
+
+const stayPriceBanner=
+document.querySelector(
+"#stayPriceBanner"
+);
+
+const stayPriceTotal=
+document.querySelector(
+"#stayPriceTotal"
+);
+
+const stayPriceMeta=
+document.querySelector(
+"#stayPriceMeta"
+);
+
+const requestBookingButton=
+document.querySelector(
+"#requestBookingButton"
+);
+
+const guestDetailsSection=
+document.querySelector(
+"#guest-details-section"
+);
+
+const estimatedTotalInput=
+document.querySelector(
+"#estimatedTotal"
+);
 
 let calendarEvents=[];
-let selectedStart="",selectedEnd="",previewEnd="";
-let calendarLoaded=false,currentCalendarKey="",calendarRequestId=0;
 
-const parseISO=value=>{const [year,month,day]=value.split("-").map(Number);return new Date(year,month-1,day)};
-const dateISO=date=>`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
-const addDays=(value,days)=>{const date=parseISO(value);date.setDate(date.getDate()+days);return dateISO(date)};
-const todayISO=()=>dateISO(new Date());
-const nightsBetween=(start,end)=>Math.round((parseISO(end)-parseISO(start))/86400000);
-const prettyDate=value=>parseISO(value).toLocaleDateString(primeLanguage==="it"?"it-IT":"en-GB",{day:"2-digit",month:"short",year:"numeric"}).toUpperCase();
-let displayMonth=new Date();
-displayMonth=new Date(displayMonth.getFullYear(),displayMonth.getMonth(),1);
+let selectedStart="";
+let selectedEnd="";
+let previewEnd="";
+
+let calendarLoaded=false;
+let currentCalendarKey="";
+let calendarRequestId=0;
+
+const parseISO=value=>{
+
+const[
+year,
+month,
+day
+]=
+value
+.split("-")
+.map(Number);
+
+return new Date(
+year,
+month-1,
+day
+);
+
+};
+
+const dateISO=date=>
+`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+
+const addDays=(
+value,
+days
+)=>{
+
+const date=
+parseISO(value);
+
+date.setDate(
+date.getDate()+
+days
+);
+
+return dateISO(
+date
+);
+
+};
+
+const todayISO=()=>
+dateISO(
+new Date()
+);
+
+const nightsBetween=(
+start,
+end
+)=>
+Math.round(
+(
+parseISO(end)-
+parseISO(start)
+)/
+86400000
+);
+
+const prettyDate=value=>
+parseISO(value)
+.toLocaleDateString(
+primeLanguage==="it"
+?"it-IT"
+:"en-GB",
+{
+day:"2-digit",
+month:"short",
+year:"numeric"
+}
+)
+.toUpperCase();
+
+let displayMonth=
+new Date();
+
+displayMonth=
+new Date(
+displayMonth.getFullYear(),
+displayMonth.getMonth(),
+1
+);
+
 
 /* =========================================================
    08. PRICES — BARONTINI
 ========================================================= */
 
 const BARONTINI_RATES={};
-const setRate=(date,price)=>{BARONTINI_RATES[date]=price};
-const setRange=(start,end,price)=>{for(let date=start;date<=end;date=addDays(date,1))setRate(date,price)};
 
-setRate("2026-09-13",99);setRate("2026-09-14",99);setRate("2026-09-15",99);setRate("2026-09-19",150);setRate("2026-09-20",175);setRate("2026-09-23",230);setRate("2026-09-24",230);setRate("2026-09-29",130);setRate("2026-09-30",130);
-setRate("2026-10-01",130);setRate("2026-10-02",180);setRange("2026-10-06","2026-10-08",130);setRange("2026-10-11","2026-10-15",130);setRange("2026-10-18","2026-10-19",150);setRange("2026-10-20","2026-10-21",180);setRate("2026-10-25",180);setRange("2026-10-26","2026-10-29",150);setRange("2026-10-30","2026-10-31",180);
-setRange("2026-11-01","2026-11-05",150);setRange("2026-11-06","2026-11-07",180);setRate("2026-11-08",250);setRate("2026-11-09",300);setRange("2026-11-10","2026-11-13",330);setRate("2026-11-14",280);setRange("2026-11-15","2026-11-19",150);setRange("2026-11-20","2026-11-21",180);setRange("2026-11-22","2026-11-26",150);setRange("2026-11-27","2026-11-28",180);setRange("2026-11-29","2026-11-30",150);
-setRange("2026-12-01","2026-12-03",130);setRange("2026-12-06","2026-12-10",130);setRange("2026-12-11","2026-12-12",150);setRange("2026-12-13","2026-12-17",115);setRange("2026-12-18","2026-12-19",140);setRange("2026-12-20","2026-12-24",115);setRate("2026-12-25",140);setRange("2026-12-28","2026-12-30",240);setRate("2026-12-31",320);
-setRange("2027-01-01","2027-01-05",180);setRange("2027-01-06","2027-01-07",100);setRange("2027-01-08","2027-01-09",120);setRange("2027-01-10","2027-01-12",100);setRange("2027-01-13","2027-01-14",140);setRange("2027-01-15","2027-01-16",120);setRange("2027-01-17","2027-01-21",100);setRange("2027-01-22","2027-01-23",120);setRange("2027-01-24","2027-01-28",100);setRange("2027-01-29","2027-01-30",120);setRate("2027-01-31",100);
-for(let date="2027-02-01";date<="2027-02-28";date=addDays(date,1)){const weekday=parseISO(date).getDay();setRate(date,weekday===5||weekday===6?140:115)}
+const setRate=(
+date,
+price
+)=>{
+BARONTINI_RATES[date]=
+price;
+};
+
+const setRange=(
+start,
+end,
+price
+)=>{
+
+for(
+let date=start;
+date<=end;
+date=addDays(date,1)
+){
+
+setRate(
+date,
+price
+);
+
+}
+
+};
+
+setRate("2026-09-13",99);
+setRate("2026-09-14",99);
+setRate("2026-09-15",99);
+setRate("2026-09-19",150);
+setRate("2026-09-20",175);
+setRate("2026-09-23",230);
+setRate("2026-09-24",230);
+setRate("2026-09-29",130);
+setRate("2026-09-30",130);
+
+setRate("2026-10-01",130);
+setRate("2026-10-02",180);
+
+setRange(
+"2026-10-06",
+"2026-10-08",
+130
+);
+
+setRange(
+"2026-10-11",
+"2026-10-15",
+130
+);
+
+setRange(
+"2026-10-18",
+"2026-10-19",
+150
+);
+
+setRange(
+"2026-10-20",
+"2026-10-21",
+180
+);
+
+setRate(
+"2026-10-25",
+180
+);
+
+setRange(
+"2026-10-26",
+"2026-10-29",
+150
+);
+
+setRange(
+"2026-10-30",
+"2026-10-31",
+180
+);
+
+setRange(
+"2026-11-01",
+"2026-11-05",
+150
+);
+
+setRange(
+"2026-11-06",
+"2026-11-07",
+180
+);
+
+setRate(
+"2026-11-08",
+250
+);
+
+setRate(
+"2026-11-09",
+300
+);
+
+setRange(
+"2026-11-10",
+"2026-11-13",
+330
+);
+
+setRate(
+"2026-11-14",
+280
+);
+
+setRange(
+"2026-11-15",
+"2026-11-19",
+150
+);
+
+setRange(
+"2026-11-20",
+"2026-11-21",
+180
+);
+
+setRange(
+"2026-11-22",
+"2026-11-26",
+150
+);
+
+setRange(
+"2026-11-27",
+"2026-11-28",
+180
+);
+
+setRange(
+"2026-11-29",
+"2026-11-30",
+150
+);
+
+setRange(
+"2026-12-01",
+"2026-12-03",
+130
+);
+
+setRange(
+"2026-12-06",
+"2026-12-10",
+130
+);
+
+setRange(
+"2026-12-11",
+"2026-12-12",
+150
+);
+
+setRange(
+"2026-12-13",
+"2026-12-17",
+115
+);
+
+setRange(
+"2026-12-18",
+"2026-12-19",
+140
+);
+
+setRange(
+"2026-12-20",
+"2026-12-24",
+115
+);
+
+setRate(
+"2026-12-25",
+140
+);
+
+setRange(
+"2026-12-28",
+"2026-12-30",
+240
+);
+
+setRate(
+"2026-12-31",
+320
+);
+
+setRange(
+"2027-01-01",
+"2027-01-05",
+180
+);
+
+setRange(
+"2027-01-06",
+"2027-01-07",
+100
+);
+
+setRange(
+"2027-01-08",
+"2027-01-09",
+120
+);
+
+setRange(
+"2027-01-10",
+"2027-01-12",
+100
+);
+
+setRange(
+"2027-01-13",
+"2027-01-14",
+140
+);
+
+setRange(
+"2027-01-15",
+"2027-01-16",
+120
+);
+
+setRange(
+"2027-01-17",
+"2027-01-21",
+100
+);
+
+setRange(
+"2027-01-22",
+"2027-01-23",
+120
+);
+
+setRange(
+"2027-01-24",
+"2027-01-28",
+100
+);
+
+setRange(
+"2027-01-29",
+"2027-01-30",
+120
+);
+
+setRate(
+"2027-01-31",
+100
+);
+
+for(
+let date="2027-02-01";
+date<="2027-02-28";
+date=addDays(date,1)
+){
+
+const weekday=
+parseISO(date)
+.getDay();
+
+setRate(
+date,
+weekday===5||
+weekday===6
+?140
+:115
+);
+
+}
+
 
 /* =========================================================
    09. PRICES — GASTONE ROSSI 12
 ========================================================= */
 
 const GASTONE_RATES={};
-const setGastoneRate=(date,price)=>{GASTONE_RATES[date]=price};
-const setGastoneRange=(start,end,price)=>{for(let date=start;date<=end;date=addDays(date,1))setGastoneRate(date,price)};
-setGastoneRange("2026-09-27","2026-09-28",120);
-setGastoneRate("2026-10-01",130);setGastoneRate("2026-10-19",150);setGastoneRate("2026-10-27",150);
-setGastoneRange("2026-11-02","2026-11-05",140);setGastoneRange("2026-11-06","2026-11-07",160);setGastoneRange("2026-11-15","2026-11-19",130);setGastoneRange("2026-11-20","2026-11-21",160);setGastoneRate("2026-11-22",130);setGastoneRate("2026-11-30",130);
-for(let date="2026-12-01";date<="2026-12-31";date=addDays(date,1)){const weekday=parseISO(date).getDay();setGastoneRate(date,weekday===5||weekday===6?140:120)}
-setGastoneRange("2026-12-01","2026-12-02",130);
-setGastoneRange("2027-01-03","2027-01-05",160);setGastoneRate("2027-01-07",140);setGastoneRange("2027-01-20","2027-01-21",140);setGastoneRange("2027-01-25","2027-01-28",130);setGastoneRange("2027-01-29","2027-01-30",140);setGastoneRate("2027-01-31",130);
-setGastoneRange("2027-02-01","2027-02-04",120);setGastoneRange("2027-02-12","2027-02-13",130);setGastoneRange("2027-02-14","2027-02-18",120);setGastoneRange("2027-02-19","2027-02-20",130);setGastoneRange("2027-02-21","2027-02-25",120);setGastoneRange("2027-02-26","2027-02-27",130);setGastoneRate("2027-02-28",120);
+
+const setGastoneRate=(
+date,
+price
+)=>{
+GASTONE_RATES[date]=
+price;
+};
+
+const setGastoneRange=(
+start,
+end,
+price
+)=>{
+
+for(
+let date=start;
+date<=end;
+date=addDays(date,1)
+){
+
+setGastoneRate(
+date,
+price
+);
+
+}
+
+};
+
+setGastoneRange(
+"2026-09-27",
+"2026-09-28",
+120
+);
+
+setGastoneRate(
+"2026-10-01",
+130
+);
+
+setGastoneRate(
+"2026-10-19",
+150
+);
+
+setGastoneRate(
+"2026-10-27",
+150
+);
+
+setGastoneRange(
+"2026-11-02",
+"2026-11-05",
+140
+);
+
+setGastoneRange(
+"2026-11-06",
+"2026-11-07",
+160
+);
+
+setGastoneRange(
+"2026-11-15",
+"2026-11-19",
+130
+);
+
+setGastoneRange(
+"2026-11-20",
+"2026-11-21",
+160
+);
+
+setGastoneRate(
+"2026-11-22",
+130
+);
+
+setGastoneRate(
+"2026-11-30",
+130
+);
+
+for(
+let date="2026-12-01";
+date<="2026-12-31";
+date=addDays(date,1)
+){
+
+const weekday=
+parseISO(date)
+.getDay();
+
+setGastoneRate(
+date,
+weekday===5||
+weekday===6
+?140
+:120
+);
+
+}
+
+setGastoneRange(
+"2026-12-01",
+"2026-12-02",
+130
+);
+
+setGastoneRange(
+"2027-01-03",
+"2027-01-05",
+160
+);
+
+setGastoneRate(
+"2027-01-07",
+140
+);
+
+setGastoneRange(
+"2027-01-20",
+"2027-01-21",
+140
+);
+
+setGastoneRange(
+"2027-01-25",
+"2027-01-28",
+130
+);
+
+setGastoneRange(
+"2027-01-29",
+"2027-01-30",
+140
+);
+
+setGastoneRate(
+"2027-01-31",
+130
+);
+
+setGastoneRange(
+"2027-02-01",
+"2027-02-04",
+120
+);
+
+setGastoneRange(
+"2027-02-12",
+"2027-02-13",
+130
+);
+
+setGastoneRange(
+"2027-02-14",
+"2027-02-18",
+120
+);
+
+setGastoneRange(
+"2027-02-19",
+"2027-02-20",
+130
+);
+
+setGastoneRange(
+"2027-02-21",
+"2027-02-25",
+120
+);
+
+setGastoneRange(
+"2027-02-26",
+"2027-02-27",
+130
+);
+
+setGastoneRate(
+"2027-02-28",
+120
+);
+
 
 /* =========================================================
    10. PRICE RULES
 ========================================================= */
 
-const RATE_START="2026-09-01",RATE_END="2027-02-28";
-function guestMultiplier(guests){if(guests<=2)return 1;if(guests===3)return 1.30;if(guests===4)return 1.35;if(guests===5)return 1.40;if(guests===6)return 1.45;return 1}
-function getRates(){if(currentCalendarKey==="barontini")return BARONTINI_RATES;if(currentCalendarKey==="gastone")return GASTONE_RATES;return null}
-function hasRate(rates,day){return Object.prototype.hasOwnProperty.call(rates,day)}
-function isRateBlocked(day){const rates=getRates();if(!rates)return false;return day>=RATE_START&&day<=RATE_END&&!hasRate(rates,day)}
+const RATE_START=
+"2026-09-01";
+
+const RATE_END=
+"2027-02-28";
+
+function guestMultiplier(
+guests
+){
+
+if(guests<=2){
+return 1;
+}
+
+if(guests===3){
+return 1.30;
+}
+
+if(guests===4){
+return 1.35;
+}
+
+if(guests===5){
+return 1.40;
+}
+
+if(guests===6){
+return 1.45;
+}
+
+return 1;
+
+}
+
+function getRates(){
+
+if(
+currentCalendarKey===
+"barontini"
+){
+return BARONTINI_RATES;
+}
+
+if(
+currentCalendarKey===
+"gastone"
+){
+return GASTONE_RATES;
+}
+
+return null;
+
+}
+
+function hasRate(
+rates,
+day
+){
+
+return Object
+.prototype
+.hasOwnProperty
+.call(
+rates,
+day
+);
+
+}
+
+function isRateBlocked(day){
+
+const rates=
+getRates();
+
+if(!rates){
+return false;
+}
+
+return(
+day>=RATE_START&&
+day<=RATE_END&&
+!hasRate(
+rates,
+day
+)
+);
+
+}
+
 function calculateStayPrice(){
-if(!selectedStart||!selectedEnd||!guestsInput||!guestsInput.value)return null;
-const guests=Number(guestsInput.value),nights=nightsBetween(selectedStart,selectedEnd);if(nights<2)return null;
-const rates=getRates();if(!rates)return null;
+
+if(
+!selectedStart||
+!selectedEnd||
+!guestsInput||
+!guestsInput.value
+){
+return null;
+}
+
+const guests=
+Number(
+guestsInput.value
+);
+
+const nights=
+nightsBetween(
+selectedStart,
+selectedEnd
+);
+
+if(nights<2){
+return null;
+}
+
+const rates=
+getRates();
+
+if(!rates){
+return null;
+}
+
 let basePrice=0;
-for(let day=selectedStart;day<selectedEnd;day=addDays(day,1)){if(!hasRate(rates,day))return null;basePrice+=rates[day]}
-return{price:basePrice*guestMultiplier(guests),nights,guests};
+
+for(
+let day=selectedStart;
+day<selectedEnd;
+day=addDays(day,1)
+){
+
+if(
+!hasRate(
+rates,
+day
+)
+){
+return null;
 }
-function formatPrice(value){return new Intl.NumberFormat(primeLanguage==="it"?"it-IT":"en-GB",{style:"currency",currency:"EUR",minimumFractionDigits:Number.isInteger(value)?0:2,maximumFractionDigits:2}).format(value)}
+
+basePrice+=
+rates[day];
+
+}
+
+return{
+price:
+basePrice*
+guestMultiplier(guests),
+
+nights,
+
+guests
+};
+
+}
+
+function formatPrice(value){
+
+return new Intl.NumberFormat(
+primeLanguage==="it"
+?"it-IT"
+:"en-GB",
+{
+style:"currency",
+currency:"EUR",
+minimumFractionDigits:
+Number.isInteger(value)
+?0
+:2,
+maximumFractionDigits:2
+}
+)
+.format(value);
+
+}
+
 function updatePriceBanner(){
-if(!stayPriceBanner)return;
-const result=calculateStayPrice();
-if(!result){stayPriceBanner.classList.remove("visible");if(estimatedTotalInput)estimatedTotalInput.value="";return}
-stayPriceBanner.classList.add("visible");
-if(stayPriceTotal)stayPriceTotal.textContent=formatPrice(result.price);
-if(stayPriceMeta)stayPriceMeta.textContent=primeLanguage==="it"?`${result.nights} notti · ${result.guests} ospiti`:`${result.nights} nights · ${result.guests} guests`;
-if(requestBookingButton)requestBookingButton.textContent=primeTranslate("REQUEST TO BOOK →");
-if(estimatedTotalInput)estimatedTotalInput.value=String(Math.round(result.price*100)/100);
+
+if(!stayPriceBanner){
+return;
 }
+
+const result=
+calculateStayPrice();
+
+if(!result){
+
+stayPriceBanner.classList.remove(
+"visible"
+);
+
+if(estimatedTotalInput){
+estimatedTotalInput.value="";
+}
+
+return;
+
+}
+
+stayPriceBanner.classList.add(
+"visible"
+);
+
+if(stayPriceTotal){
+
+stayPriceTotal.textContent=
+formatPrice(
+result.price
+);
+
+}
+
+if(stayPriceMeta){
+
+stayPriceMeta.textContent=
+primeLanguage==="it"
+?`${result.nights} notti · ${result.guests} ospiti`
+:`${result.nights} nights · ${result.guests} guests`;
+
+}
+
+if(requestBookingButton){
+
+requestBookingButton.textContent=
+primeTranslate(
+"REQUEST TO BOOK →"
+);
+
+}
+
+if(estimatedTotalInput){
+
+estimatedTotalInput.value=
+String(
+Math.round(
+result.price*100
+)/
+100
+);
+
+}
+
+}
+
 
 /* =========================================================
    11. AVAILABILITY
 ========================================================= */
 
-function isBooked(day){if(isRateBlocked(day))return true;return calendarEvents.some(event=>event.start&&event.end&&day>=event.start&&day<event.end)}
-function isPast(day){return day<todayISO()}
-function rangeHasConflict(start,end){if(!start||!end||end<=start)return true;for(let day=start;day<end;day=addDays(day,1)){if(isBooked(day))return true}return false}
-function validCheckout(start,end){return !!start&&!!end&&end>start&&nightsBetween(start,end)>=2&&!rangeHasConflict(start,end)}
+function isBooked(day){
+
+if(isRateBlocked(day)){
+return true;
+}
+
+return calendarEvents.some(
+event=>
+event.start&&
+event.end&&
+day>=event.start&&
+day<event.end
+);
+
+}
+
+function isPast(day){
+
+return day<
+todayISO();
+
+}
+
+function rangeHasConflict(
+start,
+end
+){
+
+if(
+!start||
+!end||
+end<=start
+){
+return true;
+}
+
+for(
+let day=start;
+day<end;
+day=addDays(day,1)
+){
+
+if(isBooked(day)){
+return true;
+}
+
+}
+
+return false;
+
+}
+
+function validCheckout(
+start,
+end
+){
+
+return(
+!!start&&
+!!end&&
+end>start&&
+nightsBetween(
+start,
+end
+)>=2&&
+!rangeHasConflict(
+start,
+end
+)
+);
+
+}
+
 
 /* =========================================================
    12. CALENDAR UI
 ========================================================= */
 
-function clearCalendarMessage(){if(!calendarMessage)return;calendarMessage.className="calendar-message";calendarMessage.textContent=""}
-function showCalendarMessage(text,type="info"){if(!calendarMessage)return;calendarMessage.textContent=primeTranslate(text);calendarMessage.className=`calendar-message visible ${type}`}
-function lockSubmit(text="Select Your Stay"){if(!bookingSubmit)return;bookingSubmit.disabled=true;bookingSubmit.classList.add("availability-locked");bookingSubmit.textContent=primeTranslate(text)}
-function unlockSubmit(){if(!bookingSubmit)return;bookingSubmit.disabled=false;bookingSubmit.classList.remove("availability-locked");bookingSubmit.textContent=primeTranslate("Send Booking Request")}
-function clearStay(render=true){
-selectedStart="";selectedEnd="";previewEnd="";
-if(checkinInput)checkinInput.value="";if(checkoutInput)checkoutInput.value="";
-if(selectedStay)selectedStay.classList.remove("visible");
-updatePriceBanner();lockSubmit();if(render)renderCalendar();
+function clearCalendarMessage(){
+
+if(!calendarMessage){
+return;
 }
+
+calendarMessage.className=
+"calendar-message";
+
+calendarMessage.textContent=
+"";
+
+}
+
+function showCalendarMessage(
+text,
+type="info"
+){
+
+if(!calendarMessage){
+return;
+}
+
+calendarMessage.textContent=
+primeTranslate(text);
+
+calendarMessage.className=
+`calendar-message visible ${type}`;
+
+}
+
+function lockSubmit(
+text="Select Your Stay"
+){
+
+if(!bookingSubmit){
+return;
+}
+
+bookingSubmit.disabled=
+true;
+
+bookingSubmit.classList.add(
+"availability-locked"
+);
+
+bookingSubmit.textContent=
+primeTranslate(text);
+
+}
+
+function unlockSubmit(){
+
+if(!bookingSubmit){
+return;
+}
+
+bookingSubmit.disabled=
+false;
+
+bookingSubmit.classList.remove(
+"availability-locked"
+);
+
+bookingSubmit.textContent=
+primeTranslate(
+"Send Booking Request"
+);
+
+}
+
+function clearStay(
+render=true
+){
+
+selectedStart="";
+selectedEnd="";
+previewEnd="";
+
+if(checkinInput){
+checkinInput.value="";
+}
+
+if(checkoutInput){
+checkoutInput.value="";
+}
+
+if(selectedStay){
+
+selectedStay.classList.remove(
+"visible"
+);
+
+}
+
+updatePriceBanner();
+
+lockSubmit();
+
+if(render){
+renderCalendar();
+}
+
+}
+
 function updateSelectedStay(){
-if(!selectedStart||!selectedEnd||!validCheckout(selectedStart,selectedEnd)){if(selectedStay)selectedStay.classList.remove("visible");lockSubmit();return}
-if(checkinInput)checkinInput.value=selectedStart;if(checkoutInput)checkoutInput.value=selectedEnd;
-if(selectedStayResidence)selectedStayResidence.textContent=residenceInput?residenceInput.value:"";
-if(selectedStayCheckin)selectedStayCheckin.textContent=prettyDate(selectedStart);
-if(selectedStayCheckout)selectedStayCheckout.textContent=prettyDate(selectedEnd);
-if(selectedStayNights)selectedStayNights.textContent=String(nightsBetween(selectedStart,selectedEnd));
-if(selectedStay)selectedStay.classList.add("visible");
-updatePriceBanner();unlockSubmit();
+
+if(
+!selectedStart||
+!selectedEnd||
+!validCheckout(
+selectedStart,
+selectedEnd
+)
+){
+
+if(selectedStay){
+
+selectedStay.classList.remove(
+"visible"
+);
+
 }
-function selectionBounds(){if(selectedStart&&selectedEnd)return[selectedStart,selectedEnd];if(selectedStart&&previewEnd)return[selectedStart,previewEnd];return[selectedStart,""]}
+
+lockSubmit();
+
+return;
+
+}
+
+if(checkinInput){
+checkinInput.value=
+selectedStart;
+}
+
+if(checkoutInput){
+checkoutInput.value=
+selectedEnd;
+}
+
+if(selectedStayResidence){
+
+selectedStayResidence.textContent=
+residenceInput
+?residenceInput.value
+:"";
+
+}
+
+if(selectedStayCheckin){
+
+selectedStayCheckin.textContent=
+prettyDate(
+selectedStart
+);
+
+}
+
+if(selectedStayCheckout){
+
+selectedStayCheckout.textContent=
+prettyDate(
+selectedEnd
+);
+
+}
+
+if(selectedStayNights){
+
+selectedStayNights.textContent=
+String(
+nightsBetween(
+selectedStart,
+selectedEnd
+)
+);
+
+}
+
+if(selectedStay){
+
+selectedStay.classList.add(
+"visible"
+);
+
+}
+
+updatePriceBanner();
+
+unlockSubmit();
+
+}
+
+function selectionBounds(){
+
+if(
+selectedStart&&
+selectedEnd
+){
+
+return[
+selectedStart,
+selectedEnd
+];
+
+}
+
+if(
+selectedStart&&
+previewEnd
+){
+
+return[
+selectedStart,
+previewEnd
+];
+
+}
+
+return[
+selectedStart,
+""
+];
+
+}
+
 
 /* =========================================================
    13. RENDER CALENDAR
 ========================================================= */
 
 function renderCalendar(){
-if(!calendarGrid||!calendarMonthLabel)return;
-calendarGrid.innerHTML="";
-calendarMonthLabel.textContent=displayMonth.toLocaleDateString(primeLanguage==="it"?"it-IT":"en-GB",{month:"long",year:"numeric"});
-const year=displayMonth.getFullYear(),month=displayMonth.getMonth(),firstDay=new Date(year,month,1),daysInMonth=new Date(year,month+1,0).getDate(),leading=(firstDay.getDay()+6)%7;
-if(calendarPrev){const now=new Date(),currentMonth=new Date(now.getFullYear(),now.getMonth(),1);calendarPrev.disabled=displayMonth<=currentMonth}
-for(let i=0;i<leading;i++){const empty=document.createElement("div");empty.className="calendar-empty";calendarGrid.appendChild(empty)}
-const[rangeStart,rangeEnd]=selectionBounds();
-for(let day=1;day<=daysInMonth;day++){
-const iso=dateISO(new Date(year,month,day)),button=document.createElement("button"),booked=isBooked(iso),past=isPast(iso);
-button.type="button";button.className="booking-calendar-day";button.dataset.date=iso;button.textContent=String(day);
-if(past){button.disabled=true;button.classList.add("past")}else button.classList.add(booked?"booked":"available");
-if(iso===todayISO())button.classList.add("today");
-if(rangeStart&&iso===rangeStart)button.classList.add("checkin");
-if(rangeEnd&&iso===rangeEnd)button.classList.add("checkout");
-if(rangeStart&&rangeEnd&&iso>rangeStart&&iso<rangeEnd)button.classList.add("in-range");
-button.addEventListener("click",()=>handleDayClick(iso));calendarGrid.appendChild(button);
+
+if(
+!calendarGrid||
+!calendarMonthLabel
+){
+return;
 }
+
+calendarGrid.innerHTML=
+"";
+
+calendarMonthLabel.textContent=
+displayMonth.toLocaleDateString(
+primeLanguage==="it"
+?"it-IT"
+:"en-GB",
+{
+month:"long",
+year:"numeric"
 }
+);
+
+const year=
+displayMonth.getFullYear();
+
+const month=
+displayMonth.getMonth();
+
+const firstDay=
+new Date(
+year,
+month,
+1
+);
+
+const daysInMonth=
+new Date(
+year,
+month+1,
+0
+).getDate();
+
+const leading=
+(
+firstDay.getDay()+
+6
+)%7;
+
+if(calendarPrev){
+
+const now=
+new Date();
+
+const currentMonth=
+new Date(
+now.getFullYear(),
+now.getMonth(),
+1
+);
+
+calendarPrev.disabled=
+displayMonth<=
+currentMonth;
+
+}
+
+for(
+let i=0;
+i<leading;
+i++
+){
+
+const empty=
+document.createElement(
+"div"
+);
+
+empty.className=
+"calendar-empty";
+
+calendarGrid.appendChild(
+empty
+);
+
+}
+
+const[
+rangeStart,
+rangeEnd
+]=
+selectionBounds();
+
+for(
+let day=1;
+day<=daysInMonth;
+day++
+){
+
+const iso=
+dateISO(
+new Date(
+year,
+month,
+day
+)
+);
+
+const button=
+document.createElement(
+"button"
+);
+
+const booked=
+isBooked(iso);
+
+const past=
+isPast(iso);
+
+button.type=
+"button";
+
+button.className=
+"booking-calendar-day";
+
+button.dataset.date=
+iso;
+
+button.textContent=
+String(day);
+
+if(past){
+
+button.disabled=
+true;
+
+button.classList.add(
+"past"
+);
+
+}else{
+
+button.classList.add(
+booked
+?"booked"
+:"available"
+);
+
+}
+
+if(
+iso===
+todayISO()
+){
+
+button.classList.add(
+"today"
+);
+
+}
+
+if(
+rangeStart&&
+iso===rangeStart
+){
+
+button.classList.add(
+"checkin"
+);
+
+}
+
+if(
+rangeEnd&&
+iso===rangeEnd
+){
+
+button.classList.add(
+"checkout"
+);
+
+}
+
+if(
+rangeStart&&
+rangeEnd&&
+iso>rangeStart&&
+iso<rangeEnd
+){
+
+button.classList.add(
+"in-range"
+);
+
+}
+
+button.addEventListener(
+"click",
+()=>handleDayClick(
+iso
+)
+);
+
+calendarGrid.appendChild(
+button
+);
+
+}
+
+}
+
 
 /* =========================================================
    14. DAY CLICK
 ========================================================= */
 
 function handleDayClick(day){
-clearCalendarMessage();if(isPast(day))return;
-if(!selectedStart||selectedEnd){
-if(isBooked(day)){showCalendarMessage("This date is fully booked. Please choose an available check-in date.","info");return}
-selectedStart=day;selectedEnd="";if(checkinInput)checkinInput.value=day;if(checkoutInput)checkoutInput.value="";if(selectedStay)selectedStay.classList.remove("visible");updatePriceBanner();lockSubmit("Select Check-out");renderCalendar();return;
+
+clearCalendarMessage();
+
+if(isPast(day)){
+return;
 }
-if(day===selectedStart){clearStay();return}
-if(day<selectedStart){if(isBooked(day))return;selectedStart=day;renderCalendar();return}
-if(nightsBetween(selectedStart,day)<2){showCalendarMessage("Minimum stay is 2 nights.","info");return}
-if(!validCheckout(selectedStart,day)){showCalendarMessage("Your selected stay crosses a fully booked date. Please choose another check-out date.","error");return}
-selectedEnd=day;updateSelectedStay();renderCalendar();
+
+if(
+!selectedStart||
+selectedEnd
+){
+
+if(isBooked(day)){
+
+showCalendarMessage(
+"This date is fully booked. Please choose an available check-in date.",
+"info"
+);
+
+return;
+
 }
+
+selectedStart=
+day;
+
+selectedEnd=
+"";
+
+if(checkinInput){
+checkinInput.value=day;
+}
+
+if(checkoutInput){
+checkoutInput.value="";
+}
+
+if(selectedStay){
+
+selectedStay.classList.remove(
+"visible"
+);
+
+}
+
+updatePriceBanner();
+
+lockSubmit(
+"Select Check-out"
+);
+
+renderCalendar();
+
+return;
+
+}
+
+if(day===selectedStart){
+
+clearStay();
+
+return;
+
+}
+
+if(day<selectedStart){
+
+if(isBooked(day)){
+return;
+}
+
+selectedStart=
+day;
+
+renderCalendar();
+
+return;
+
+}
+
+if(
+nightsBetween(
+selectedStart,
+day
+)<2
+){
+
+showCalendarMessage(
+"Minimum stay is 2 nights.",
+"info"
+);
+
+return;
+
+}
+
+if(
+!validCheckout(
+selectedStart,
+day
+)
+){
+
+showCalendarMessage(
+"Your selected stay crosses a fully booked date. Please choose another check-out date.",
+"error"
+);
+
+return;
+
+}
+
+selectedEnd=
+day;
+
+updateSelectedStay();
+
+renderCalendar();
+
+}
+
 
 /* =========================================================
    15. LOAD CALENDAR
 ========================================================= */
 
-async function loadCalendar(calendarKey,residenceName){
-if(!primeCalendar)return;
-const requestId=++calendarRequestId;currentCalendarKey=calendarKey;calendarLoaded=false;calendarEvents=[];clearStay(false);clearCalendarMessage();primeCalendar.classList.remove("disabled");
-if(calendarResidenceTitle)calendarResidenceTitle.textContent=residenceName;
-if(calendarLiveText)calendarLiveText.textContent=primeTranslate("LOADING");
-if(calendarLiveStatus)calendarLiveStatus.classList.add("loading");
-if(calendarLoadingMessage)calendarLoadingMessage.classList.add("visible");
-lockSubmit("Loading Availability...");
-const now=new Date();displayMonth=new Date(now.getFullYear(),now.getMonth(),1);renderCalendar();
+async function loadCalendar(
+calendarKey,
+residenceName
+){
+
+if(!primeCalendar){
+return;
+}
+
+const requestId=
+++calendarRequestId;
+
+currentCalendarKey=
+calendarKey;
+
+calendarLoaded=false;
+
+calendarEvents=[];
+
+clearStay(
+false
+);
+
+clearCalendarMessage();
+
+primeCalendar.classList.remove(
+"disabled"
+);
+
+if(calendarResidenceTitle){
+
+calendarResidenceTitle.textContent=
+residenceName;
+
+}
+
+if(calendarLiveText){
+
+calendarLiveText.textContent=
+primeTranslate(
+"LOADING"
+);
+
+}
+
+if(calendarLiveStatus){
+
+calendarLiveStatus.classList.add(
+"loading"
+);
+
+}
+
+if(calendarLoadingMessage){
+
+calendarLoadingMessage.classList.add(
+"visible"
+);
+
+}
+
+lockSubmit(
+"Loading Availability..."
+);
+
+const now=
+new Date();
+
+displayMonth=
+new Date(
+now.getFullYear(),
+now.getMonth(),
+1
+);
+
+renderCalendar();
 
 try{
-const response=await fetch(`/api/availability?residence=${encodeURIComponent(calendarKey)}`,{cache:"no-store"}),result=await response.json();
-if(requestId!==calendarRequestId)return;
-if(!response.ok||!result.success)throw new Error("Unable to retrieve calendar.");
-calendarEvents=Array.isArray(result.events)?result.events.filter(event=>event.start&&event.end):[];calendarLoaded=true;
-if(calendarLiveText)calendarLiveText.textContent="LIVE";if(calendarLiveStatus)calendarLiveStatus.classList.remove("loading");if(calendarLoadingMessage)calendarLoadingMessage.classList.remove("visible");
-lockSubmit("Select Your Stay");renderCalendar();
+
+const response=
+await fetch(
+`/api/availability?residence=${encodeURIComponent(calendarKey)}`,
+{
+cache:"no-store"
+}
+);
+
+const result=
+await response.json();
+
+if(
+requestId!==
+calendarRequestId
+){
+return;
+}
+
+if(
+!response.ok||
+!result.success
+){
+
+throw new Error(
+"Unable to retrieve calendar."
+);
+
+}
+
+calendarEvents=
+Array.isArray(
+result.events
+)
+?result.events.filter(
+event=>
+event.start&&
+event.end
+)
+:[];
+
+calendarLoaded=
+true;
+
+if(calendarLiveText){
+
+calendarLiveText.textContent=
+"LIVE";
+
+}
+
+if(calendarLiveStatus){
+
+calendarLiveStatus.classList.remove(
+"loading"
+);
+
+}
+
+if(calendarLoadingMessage){
+
+calendarLoadingMessage.classList.remove(
+"visible"
+);
+
+}
+
+lockSubmit(
+"Select Your Stay"
+);
+
+renderCalendar();
+
 }catch(error){
-console.error("Availability error:",error);calendarLoaded=false;
-if(calendarLiveText)calendarLiveText.textContent=primeTranslate("UNAVAILABLE");if(calendarLiveStatus)calendarLiveStatus.classList.remove("loading");if(calendarLoadingMessage)calendarLoadingMessage.classList.remove("visible");
-showCalendarMessage("We could not load availability at the moment. Please try again shortly.","error");primeCalendar.classList.add("disabled");lockSubmit("Availability Unavailable");
+
+console.error(
+"Availability error:",
+error
+);
+
+calendarLoaded=false;
+
+if(calendarLiveText){
+
+calendarLiveText.textContent=
+primeTranslate(
+"UNAVAILABLE"
+);
+
 }
+
+if(calendarLiveStatus){
+
+calendarLiveStatus.classList.remove(
+"loading"
+);
+
 }
+
+if(calendarLoadingMessage){
+
+calendarLoadingMessage.classList.remove(
+"visible"
+);
+
+}
+
+showCalendarMessage(
+"We could not load availability at the moment. Please try again shortly.",
+"error"
+);
+
+primeCalendar.classList.add(
+"disabled"
+);
+
+lockSubmit(
+"Availability Unavailable"
+);
+
+}
+
+}
+
 
 /* =========================================================
    16. SELECT RESIDENCE
 ========================================================= */
 
 function selectResidence(card){
-bookingCards.forEach(item=>item.classList.remove("selected"));card.classList.add("selected");
-const residence=card.dataset.residence||"",calendar=card.dataset.calendar||"";
-if(residenceInput)residenceInput.value=residence;if(calendarResidence)calendarResidence.value=calendar;if(selectedResidenceText)selectedResidenceText.textContent=residence;
-loadCalendar(calendar,residence);
-if(bookingFormSection)bookingFormSection.scrollIntoView({behavior:"smooth",block:"start"});
+
+bookingCards.forEach(
+item=>
+item.classList.remove(
+"selected"
+)
+);
+
+card.classList.add(
+"selected"
+);
+
+const residence=
+card.dataset.residence||
+"";
+
+const calendar=
+card.dataset.calendar||
+"";
+
+if(residenceInput){
+
+residenceInput.value=
+residence;
+
 }
 
-bookingCards.forEach(card=>{
-card.addEventListener("click",()=>selectResidence(card));
-card.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();selectResidence(card)}});
+if(calendarResidence){
+
+calendarResidence.value=
+calendar;
+
+}
+
+if(selectedResidenceText){
+
+selectedResidenceText.textContent=
+residence;
+
+}
+
+loadCalendar(
+calendar,
+residence
+);
+
+if(bookingFormSection){
+
+bookingFormSection.scrollIntoView({
+behavior:"smooth",
+block:"start"
 });
+
+}
+
+}
+
+bookingCards.forEach(
+card=>{
+
+card.addEventListener(
+"click",
+()=>selectResidence(
+card
+)
+);
+
+card.addEventListener(
+"keydown",
+e=>{
+
+if(
+e.key==="Enter"||
+e.key===" "
+){
+
+e.preventDefault();
+
+selectResidence(
+card
+);
+
+}
+
+}
+);
+
+}
+);
+
 
 /* =========================================================
    17. GUESTS + BANNER
 ========================================================= */
 
-if(guestsInput)guestsInput.addEventListener("change",updatePriceBanner);
-if(requestBookingButton)requestBookingButton.addEventListener("click",()=>{const target=guestDetailsSection||bookingForm;if(target)premiumScrollTo(target,900)});
+if(guestsInput){
+
+guestsInput.addEventListener(
+"change",
+updatePriceBanner
+);
+
+}
+
+if(requestBookingButton){
+
+requestBookingButton.addEventListener(
+"click",
+()=>{
+
+const target=
+guestDetailsSection||
+bookingForm;
+
+if(target){
+
+premiumScrollTo(
+target,
+900
+);
+
+}
+
+}
+);
+
+}
+
 
 /* =========================================================
    18. MONTH NAVIGATION
 ========================================================= */
 
-if(calendarPrev)calendarPrev.addEventListener("click",()=>{const previous=new Date(displayMonth.getFullYear(),displayMonth.getMonth()-1,1),now=new Date(),currentMonth=new Date(now.getFullYear(),now.getMonth(),1);if(previous>=currentMonth){displayMonth=previous;renderCalendar()}});
-if(calendarNext)calendarNext.addEventListener("click",()=>{displayMonth=new Date(displayMonth.getFullYear(),displayMonth.getMonth()+1,1);renderCalendar()});
-if(selectedStayClear)selectedStayClear.addEventListener("click",()=>{clearStay();clearCalendarMessage()});
+if(calendarPrev){
+
+calendarPrev.addEventListener(
+"click",
+()=>{
+
+const previous=
+new Date(
+displayMonth.getFullYear(),
+displayMonth.getMonth()-1,
+1
+);
+
+const now=
+new Date();
+
+const currentMonth=
+new Date(
+now.getFullYear(),
+now.getMonth(),
+1
+);
+
+if(
+previous>=
+currentMonth
+){
+
+displayMonth=
+previous;
+
+renderCalendar();
+
+}
+
+}
+);
+
+}
+
+if(calendarNext){
+
+calendarNext.addEventListener(
+"click",
+()=>{
+
+displayMonth=
+new Date(
+displayMonth.getFullYear(),
+displayMonth.getMonth()+1,
+1
+);
+
+renderCalendar();
+
+}
+);
+
+}
+
+if(selectedStayClear){
+
+selectedStayClear.addEventListener(
+"click",
+()=>{
+
+clearStay();
+
+clearCalendarMessage();
+
+}
+);
+
+}
+
 
 /* =========================================================
    19. BOOKING FORM
 ========================================================= */
 
-function showMessage(text,type){if(!bookingMessage)return;bookingMessage.textContent=primeTranslate(text);bookingMessage.className=`booking-message ${type}`;bookingMessage.style.display="block"}
-function hideMessage(){if(bookingMessage)bookingMessage.style.display="none"}
+function showMessage(
+text,
+type
+){
+
+if(!bookingMessage){
+return;
+}
+
+bookingMessage.textContent=
+primeTranslate(text);
+
+bookingMessage.className=
+`booking-message ${type}`;
+
+bookingMessage.style.display=
+"block";
+
+}
+
+function hideMessage(){
+
+if(bookingMessage){
+
+bookingMessage.style.display=
+"none";
+
+}
+
+}
 
 async function verifyStayAgain(){
-if(!currentCalendarKey||!selectedStart||!selectedEnd)return false;
-const response=await fetch(`/api/availability?residence=${encodeURIComponent(currentCalendarKey)}&t=${Date.now()}`,{cache:"no-store"}),result=await response.json();
-if(!response.ok||!result.success)throw new Error("Unable to verify availability.");
-const events=Array.isArray(result.events)?result.events:[];
-for(const event of events){for(let day=selectedStart;day<selectedEnd;day=addDays(day,1)){if(day>=event.start&&day<event.end)return false}}
+
+if(
+!currentCalendarKey||
+!selectedStart||
+!selectedEnd
+){
+return false;
+}
+
+const response=
+await fetch(
+`/api/availability?residence=${encodeURIComponent(currentCalendarKey)}&t=${Date.now()}`,
+{
+cache:"no-store"
+}
+);
+
+const result=
+await response.json();
+
+if(
+!response.ok||
+!result.success
+){
+
+throw new Error(
+"Unable to verify availability."
+);
+
+}
+
+const events=
+Array.isArray(
+result.events
+)
+?result.events
+:[];
+
+for(const event of events){
+
+for(
+let day=selectedStart;
+day<selectedEnd;
+day=addDays(day,1)
+){
+
+if(
+day>=event.start&&
+day<event.end
+){
+
+return false;
+
+}
+
+}
+
+}
+
 return true;
+
 }
 
 if(bookingForm){
+
 lockSubmit();
 
-bookingForm.addEventListener("submit",async e=>{
+bookingForm.addEventListener(
+"submit",
+async e=>{
+
 e.preventDefault();
+
 hideMessage();
 
-if(!residenceInput||!residenceInput.value){showMessage("Please select a residence first.","error");return}
-if(!calendarLoaded){showMessage("Availability is not currently available. Please try again.","error");return}
-if(!selectedStart||!selectedEnd){showMessage("Please select your check-in and check-out dates from the calendar.","error");return}
-if(!validCheckout(selectedStart,selectedEnd)){showMessage("The selected stay is not available.","error");return}
-if(!guestsInput||!guestsInput.value){showMessage("Select guests to see the total price","error");return}
+if(
+!residenceInput||
+!residenceInput.value
+){
 
-const privacy=document.querySelector("#privacy");
+showMessage(
+"Please select a residence first.",
+"error"
+);
 
-if(privacy&&!privacy.checked){
-showMessage("Please accept the privacy policy.","error");
 return;
+
 }
 
-lockSubmit("Rechecking Availability...");
+if(!calendarLoaded){
+
+showMessage(
+"Availability is not currently available. Please try again.",
+"error"
+);
+
+return;
+
+}
+
+if(
+!selectedStart||
+!selectedEnd
+){
+
+showMessage(
+"Please select your check-in and check-out dates from the calendar.",
+"error"
+);
+
+return;
+
+}
+
+if(
+!validCheckout(
+selectedStart,
+selectedEnd
+)
+){
+
+showMessage(
+"The selected stay is not available.",
+"error"
+);
+
+return;
+
+}
+
+if(
+!guestsInput||
+!guestsInput.value
+){
+
+showMessage(
+"Select guests to see the total price",
+"error"
+);
+
+return;
+
+}
+
+const privacy=
+document.querySelector(
+"#privacy"
+);
+
+if(
+privacy&&
+!privacy.checked
+){
+
+showMessage(
+"Please accept the privacy policy.",
+"error"
+);
+
+return;
+
+}
+
+lockSubmit(
+"Rechecking Availability..."
+);
 
 try{
-const available=await verifyStayAgain();
+
+const available=
+await verifyStayAgain();
 
 if(!available){
-showMessage("Availability has changed and these dates are no longer available. Please select another stay.","error");
-await loadCalendar(calendarResidence.value,residenceInput.value);
+
+showMessage(
+"Availability has changed and these dates are no longer available. Please select another stay.",
+"error"
+);
+
+await loadCalendar(
+calendarResidence.value,
+residenceInput.value
+);
+
 return;
+
 }
 
 }catch(error){
-showMessage("We could not verify availability right now. Please try again in a moment.","error");
+
+showMessage(
+"We could not verify availability right now. Please try again in a moment.",
+"error"
+);
+
 unlockSubmit();
+
 return;
+
 }
 
-lockSubmit("Sending...");
+lockSubmit(
+"Sending..."
+);
 
-const data=Object.fromEntries(new FormData(bookingForm).entries());
-const price=calculateStayPrice();
+const data=
+Object.fromEntries(
+new FormData(
+bookingForm
+)
+.entries()
+);
+
+const price=
+calculateStayPrice();
 
 if(price){
-data.estimatedTotal=Math.round(price.price*100)/100;
+
+data.estimatedTotal=
+Math.round(
+price.price*100
+)/
+100;
+
 }
 
-data.lang=primeLanguage;
+data.lang=
+primeLanguage;
 
 try{
 
-const response=await fetch(
+const response=
+await fetch(
 "/api/booking-request",
 {
 method:"POST",
 headers:{
-"Content-Type":"application/json"
+"Content-Type":
+"application/json"
 },
-body:JSON.stringify(data)
+body:
+JSON.stringify(
+data
+)
 }
 );
 
-const result=await response.json();
+const result=
+await response.json();
 
 if(!response.ok){
-throw new Error(result.message||"Unable to send request.");
+
+throw new Error(
+result.message||
+"Unable to send request."
+);
+
 }
 
 showMessage(
@@ -1300,17 +4959,28 @@ result.message||
 "success"
 );
 
-const residence=residenceInput.value;
-const calendar=calendarResidence.value;
+const residence=
+residenceInput.value;
+
+const calendar=
+calendarResidence.value;
 
 bookingForm.reset();
 
-residenceInput.value=residence;
-calendarResidence.value=calendar;
+residenceInput.value=
+residence;
 
-clearStay(false);
+calendarResidence.value=
+calendar;
 
-await loadCalendar(calendar,residence);
+clearStay(
+false
+);
+
+await loadCalendar(
+calendar,
+residence
+);
 
 }catch(error){
 
@@ -1321,31 +4991,79 @@ error.message||
 );
 
 unlockSubmit();
+
 }
 
-});
 }
+);
+
+}
+
 
 /* =========================================================
-   20. PRIME ASSISTANT — AUTO PROMPT AFTER 3 SECONDS
+   20. PRIME ASSISTANT
 ========================================================= */
 
-const assistant=document.querySelector(".prime-assistant");
+const assistant=
+document.querySelector(
+".prime-assistant"
+);
 
 if(assistant){
 
-const page=assistant.dataset.assistantPage||"home";
+const page=
+assistant.dataset.assistantPage||
+"home";
 
-const launcher=assistant.querySelector(".prime-assistant-launcher");
-const chatWindow=assistant.querySelector(".prime-assistant-window");
-const closeChat=assistant.querySelector(".prime-assistant-close");
-const prompt=assistant.querySelector(".prime-assistant-prompt");
-const promptMain=assistant.querySelector(".assistant-prompt-main");
-const promptClose=assistant.querySelector(".assistant-prompt-close");
-const messages=assistant.querySelector(".prime-assistant-messages");
-const form=assistant.querySelector(".prime-assistant-form");
-const input=assistant.querySelector(".prime-assistant-input");
-const suggestionButtons=assistant.querySelectorAll(".assistant-suggestion");
+const launcher=
+assistant.querySelector(
+".prime-assistant-launcher"
+);
+
+const chatWindow=
+assistant.querySelector(
+".prime-assistant-window"
+);
+
+const closeChat=
+assistant.querySelector(
+".prime-assistant-close"
+);
+
+const prompt=
+assistant.querySelector(
+".prime-assistant-prompt"
+);
+
+const promptMain=
+assistant.querySelector(
+".assistant-prompt-main"
+);
+
+const promptClose=
+assistant.querySelector(
+".assistant-prompt-close"
+);
+
+const messages=
+assistant.querySelector(
+".prime-assistant-messages"
+);
+
+const form=
+assistant.querySelector(
+".prime-assistant-form"
+);
+
+const input=
+assistant.querySelector(
+".prime-assistant-input"
+);
+
+const suggestionButtons=
+assistant.querySelectorAll(
+".assistant-suggestion"
+);
 
 const residences={
 
@@ -1379,7 +5097,9 @@ if(primeLanguage==="it"){
 return true;
 }
 
-const q=String(text||"").toLowerCase();
+const q=
+String(text||"")
+.toLowerCase();
 
 return[
 "ciao",
@@ -1404,29 +5124,55 @@ return[
 "grazie",
 "contatt",
 "disponibil"
-].some(w=>q.includes(w));
+]
+.some(
+w=>
+q.includes(w)
+);
 
 }
 
 function scrollMessages(){
 
 if(messages){
+
 requestAnimationFrame(
-()=>messages.scrollTop=messages.scrollHeight
+()=>{
+
+messages.scrollTop=
+messages.scrollHeight;
+
+}
 );
-}
 
 }
 
-function addMessage(text,type="bot",actions=[]){
+}
+
+function addMessage(
+text,
+type="bot",
+actions=[]
+){
 
 if(!messages){
 return;
 }
 
-const wrap=document.createElement("div");
-const label=document.createElement("span");
-const p=document.createElement("p");
+const wrap=
+document.createElement(
+"div"
+);
+
+const label=
+document.createElement(
+"span"
+);
+
+const p=
+document.createElement(
+"p"
+);
 
 wrap.className=
 `assistant-message assistant-message-${type}`;
@@ -1439,32 +5185,48 @@ type==="user"
 ?"YOU"
 :"PRIME ASSISTANT";
 
-p.textContent=text;
+p.textContent=
+text;
 
 wrap.append(
 label,
 p
 );
 
-actions.forEach(action=>{
+actions.forEach(
+action=>{
 
-const a=document.createElement("a");
+const a=
+document.createElement(
+"a"
+);
 
-a.href=action.href;
-a.textContent=action.label;
+a.href=
+action.href;
+
+a.textContent=
+action.label;
 
 if(action.external){
 
-a.target="_blank";
-a.rel="noopener noreferrer";
+a.target=
+"_blank";
+
+a.rel=
+"noopener noreferrer";
 
 }
 
-wrap.appendChild(a);
+wrap.appendChild(
+a
+);
 
-});
+}
+);
 
-messages.appendChild(wrap);
+messages.appendChild(
+wrap
+);
 
 scrollMessages();
 
@@ -1476,8 +5238,14 @@ if(!prompt){
 return;
 }
 
-prompt.classList.remove("visible");
-prompt.setAttribute("aria-hidden","true");
+prompt.classList.remove(
+"visible"
+);
+
+prompt.setAttribute(
+"aria-hidden",
+"true"
+);
 
 }
 
@@ -1485,13 +5253,21 @@ function showPrompt(){
 
 if(
 !prompt||
-assistant.classList.contains("chat-open")
+assistant.classList.contains(
+"chat-open"
+)
 ){
 return;
 }
 
-prompt.classList.add("visible");
-prompt.setAttribute("aria-hidden","false");
+prompt.classList.add(
+"visible"
+);
+
+prompt.setAttribute(
+"aria-hidden",
+"false"
+);
 
 }
 
@@ -1503,12 +5279,26 @@ return;
 
 hidePrompt();
 
-assistant.classList.add("chat-open");
-chatWindow.classList.add("open");
-chatWindow.setAttribute("aria-hidden","false");
+assistant.classList.add(
+"chat-open"
+);
+
+chatWindow.classList.add(
+"open"
+);
+
+chatWindow.setAttribute(
+"aria-hidden",
+"false"
+);
 
 if(launcher){
-launcher.setAttribute("aria-expanded","true");
+
+launcher.setAttribute(
+"aria-expanded",
+"true"
+);
+
 }
 
 setTimeout(
@@ -1524,37 +5314,79 @@ if(!chatWindow){
 return;
 }
 
-assistant.classList.remove("chat-open");
-chatWindow.classList.remove("open");
-chatWindow.setAttribute("aria-hidden","true");
+assistant.classList.remove(
+"chat-open"
+);
+
+chatWindow.classList.remove(
+"open"
+);
+
+chatWindow.setAttribute(
+"aria-hidden",
+"true"
+);
 
 if(launcher){
-launcher.setAttribute("aria-expanded","false");
+
+launcher.setAttribute(
+"aria-expanded",
+"false"
+);
+
 }
 
 }
 
 if(launcher){
-launcher.addEventListener("click",openChat);
+
+launcher.addEventListener(
+"click",
+openChat
+);
+
 }
 
 if(closeChat){
-closeChat.addEventListener("click",closeAssistant);
+
+closeChat.addEventListener(
+"click",
+closeAssistant
+);
+
 }
 
 if(promptMain){
-promptMain.addEventListener("click",openChat);
+
+promptMain.addEventListener(
+"click",
+openChat
+);
+
 }
 
 if(promptClose){
-promptClose.addEventListener("click",e=>{
+
+promptClose.addEventListener(
+"click",
+e=>{
+
 e.stopPropagation();
+
 hidePrompt();
-});
+
+}
+);
+
 }
 
 if(prompt){
-setTimeout(showPrompt,3000);
+
+setTimeout(
+showPrompt,
+3000
+);
+
 }
 
 function getResponse(original){
@@ -1565,7 +5397,9 @@ String(original||"")
 .trim();
 
 const italian=
-isItalian(original);
+isItalian(
+original
+);
 
 const current=
 residences[page]||
@@ -1573,16 +5407,26 @@ null;
 
 const bookingAction=[
 {
-label:"BOOK YOUR STAY →",
-href:"booking.html"
+label:
+"BOOK YOUR STAY →",
+href:
+"booking.html"
 }
 ];
 
 if(
-question.includes("what is prime")||
-question.includes("about-prime")||
-question.includes("tell me about prime")||
-question.includes("cos'è prime")
+question.includes(
+"what is prime"
+)||
+question.includes(
+"about-prime"
+)||
+question.includes(
+"tell me about prime"
+)||
+question.includes(
+"cos'è prime"
+)
 ){
 
 return{
@@ -1594,8 +5438,10 @@ italian
 
 actions:[
 {
-label:"DISCOVER THE RESIDENCES →",
-href:"index.html#residences"
+label:
+"DISCOVER THE RESIDENCES →",
+href:
+"index.html#residences"
 }
 ]
 
@@ -1604,11 +5450,19 @@ href:"index.html#residences"
 }
 
 if(
-question.includes("which residences")||
-question.includes("residences")||
+question.includes(
+"which residences"
+)||
+question.includes(
+"residences"
+)||
 (
-question.includes("residence")&&
-question.includes("which")
+question.includes(
+"residence"
+)&&
+question.includes(
+"which"
+)
 )
 ){
 
@@ -1621,12 +5475,16 @@ italian
 
 actions:[
 {
-label:"GASTONE ROSSI 12 →",
-href:"gastone-rossi-12.html"
+label:
+"GASTONE ROSSI 12 →",
+href:
+"gastone-rossi-12.html"
 },
 {
-label:"BARONTINI 8 →",
-href:"barontini-8.html"
+label:
+"BARONTINI 8 →",
+href:
+"barontini-8.html"
 }
 ]
 
@@ -1635,9 +5493,15 @@ href:"barontini-8.html"
 }
 
 if(
-question.includes("this residence")||
-question.includes("residence-details")||
-question.includes("apartment")
+question.includes(
+"this residence"
+)||
+question.includes(
+"residence-details"
+)||
+question.includes(
+"apartment"
+)
 ){
 
 if(current){
@@ -1659,10 +5523,18 @@ bookingAction
 }
 
 if(
-question.includes("difference")||
-question.includes("compare")||
-question.includes("differenza")||
-question.includes("confront")
+question.includes(
+"difference"
+)||
+question.includes(
+"compare"
+)||
+question.includes(
+"differenza"
+)||
+question.includes(
+"confront"
+)
 ){
 
 return{
@@ -1674,8 +5546,10 @@ italian
 
 actions:[
 {
-label:"COMPARE RESIDENCES →",
-href:"index.html#residences"
+label:
+"COMPARE RESIDENCES →",
+href:
+"index.html#residences"
 }
 ]
 
@@ -1684,9 +5558,15 @@ href:"index.html#residences"
 }
 
 if(
-question.includes("booking")||
-question.includes("book")||
-question.includes("prenot")
+question.includes(
+"booking"
+)||
+question.includes(
+"book"
+)||
+question.includes(
+"prenot"
+)
 ){
 
 return{
@@ -1704,9 +5584,15 @@ bookingAction
 }
 
 if(
-question.includes("available")||
-question.includes("availability")||
-question.includes("disponibil")
+question.includes(
+"available"
+)||
+question.includes(
+"availability"
+)||
+question.includes(
+"disponibil"
+)
 ){
 
 return{
@@ -1718,8 +5604,10 @@ italian
 
 actions:[
 {
-label:"CHECK AVAILABILITY →",
-href:"booking.html"
+label:
+"CHECK AVAILABILITY →",
+href:
+"booking.html"
 }
 ]
 
@@ -1728,9 +5616,15 @@ href:"booking.html"
 }
 
 if(
-question.includes("check-in")||
-question.includes("checkin")||
-question.includes("arriv")
+question.includes(
+"check-in"
+)||
+question.includes(
+"checkin"
+)||
+question.includes(
+"arriv"
+)
 ){
 
 if(current){
@@ -1740,7 +5634,7 @@ return{
 text:
 italian
 ?`Per ${current.name}, il check-in è previsto ${current.checkin} e il check-out ${current.checkout}. Comunica in anticipo l'orario di arrivo.`
-:`At ${current.name}, check-in is ${current.checkin} and check-out is ${current.checkout}. Please communicate your arrival time in advance.`,
+:`At ${current.name}, check-in is ${current.checkin} and check-out ${current.checkout}. Please communicate your arrival time in advance.`,
 
 actions:
 bookingAction
@@ -1764,22 +5658,46 @@ bookingAction
 }
 
 if(
-question.includes("location")||
-question.includes("address")||
-question.includes("where")||
-question.includes("dove")||
-question.includes("indirizzo")
+question.includes(
+"location"
+)||
+question.includes(
+"address"
+)||
+question.includes(
+"where"
+)||
+question.includes(
+"dove"
+)||
+question.includes(
+"indirizzo"
+)
 ){
 
 let target=
 current;
 
-if(question.includes("gastone")){
-target=residences.gastone;
+if(
+question.includes(
+"gastone"
+)
+){
+
+target=
+residences.gastone;
+
 }
 
-if(question.includes("barontini")){
-target=residences.barontini;
+if(
+question.includes(
+"barontini"
+)
+){
+
+target=
+residences.barontini;
+
 }
 
 if(target){
@@ -1806,8 +5724,10 @@ italian
 
 actions:[
 {
-label:"DISCOVER THE RESIDENCES →",
-href:"index.html#residences"
+label:
+"DISCOVER THE RESIDENCES →",
+href:
+"index.html#residences"
 }
 ]
 
@@ -1816,10 +5736,18 @@ href:"index.html#residences"
 }
 
 if(
-question.includes("contact")||
-question.includes("whatsapp")||
-question.includes("email")||
-question.includes("contatt")
+question.includes(
+"contact"
+)||
+question.includes(
+"whatsapp"
+)||
+question.includes(
+"email"
+)||
+question.includes(
+"contatt"
+)
 ){
 
 return{
@@ -1831,13 +5759,17 @@ italian
 
 actions:[
 {
-label:"WHATSAPP ↗",
-href:"https://wa.me/393917055625",
+label:
+"WHATSAPP ↗",
+href:
+"https://wa.me/393917055625",
 external:true
 },
 {
-label:"EMAIL ↗",
-href:"mailto:vittoriolandi005@gmail.com"
+label:
+"EMAIL ↗",
+href:
+"mailto:vittoriolandi005@gmail.com"
 }
 ]
 
@@ -1876,7 +5808,9 @@ clean,
 );
 
 const response=
-getResponse(clean);
+getResponse(
+clean
+);
 
 setTimeout(
 ()=>addMessage(
@@ -1903,9 +5837,12 @@ e.preventDefault();
 const question=
 input.value;
 
-input.value="";
+input.value=
+"";
 
-processQuestion(question);
+processQuestion(
+question
+);
 
 }
 );
@@ -1913,7 +5850,8 @@ processQuestion(question);
 }
 
 suggestionButtons.forEach(
-button=>
+button=>{
+
 button.addEventListener(
 "click",
 ()=>{
@@ -1922,7 +5860,8 @@ const type=
 button.dataset.question||
 "";
 
-let question="";
+let question=
+"";
 
 switch(type){
 
@@ -1986,10 +5925,14 @@ type;
 
 }
 
-processQuestion(question);
+processQuestion(
+question
+);
 
 }
-)
+);
+
+}
 );
 
 document.addEventListener(
@@ -1998,7 +5941,9 @@ e=>{
 
 if(
 e.key==="Escape"&&
-assistant.classList.contains("chat-open")
+assistant.classList.contains(
+"chat-open"
+)
 ){
 
 closeAssistant();
@@ -2010,11 +5955,14 @@ closeAssistant();
 
 }
 
+
 /* =========================================================
    21. ESC
 ========================================================= */
 
-document.addEventListener("keydown",e=>{
+document.addEventListener(
+"keydown",
+e=>{
 
 if(e.key!=="Escape"){
 return;
@@ -2022,60 +5970,91 @@ return;
 
 if(
 mobileMenu&&
-mobileMenu.classList.contains("active")
+mobileMenu.classList.contains(
+"active"
+)
 ){
 
-mobileMenu.classList.remove("active");
+mobileMenu.classList.remove(
+"active"
+);
 
 if(menuToggle){
-menuToggle.classList.remove("active");
+
+menuToggle.classList.remove(
+"active"
+);
+
 }
 
-document.body.style.overflow="";
+document.body.style.overflow=
+"";
 
 }
 
 const openAssistant=
-document.querySelector(".prime-assistant.chat-open");
+document.querySelector(
+".prime-assistant.chat-open"
+);
 
 if(openAssistant){
 
 const win=
-openAssistant.querySelector(".prime-assistant-window");
+openAssistant.querySelector(
+".prime-assistant-window"
+);
 
 const launcher=
-openAssistant.querySelector(".prime-assistant-launcher");
+openAssistant.querySelector(
+".prime-assistant-launcher"
+);
 
-openAssistant.classList.remove("chat-open");
+openAssistant.classList.remove(
+"chat-open"
+);
 
 if(win){
 
-win.classList.remove("open");
-win.setAttribute("aria-hidden","true");
+win.classList.remove(
+"open"
+);
+
+win.setAttribute(
+"aria-hidden",
+"true"
+);
 
 }
 
 if(launcher){
 
-launcher.setAttribute("aria-expanded","false");
+launcher.setAttribute(
+"aria-expanded",
+"false"
+);
 
 }
 
 }
 
-});
+}
+);
+
 
 /* =========================================================
    22. YEAR
 ========================================================= */
 
 const year=
-document.querySelector("#year");
+document.querySelector(
+"#year"
+);
 
 if(year){
 
 year.textContent=
-new Date().getFullYear();
+new Date()
+.getFullYear();
 
 }
 
