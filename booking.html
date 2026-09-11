@@ -999,32 +999,45 @@
 
 
     /* =====================================================
-       SELECTED STAY â€” CALENDAR INSET OVERRIDE
+       SELECTED STAY â€” POSITION ABOVE CALENDAR
     ====================================================== */
 
     .booking-page .selected-stay{
-      margin-left:92px;
-      margin-right:92px
+      position:relative;
+      z-index:2;
+      margin-left:68px;
+      margin-right:68px
     }
 
     .booking-page .selected-stay.visible{
-      margin-left:92px;
-      margin-right:92px
+      margin-top:0;
+      margin-right:68px;
+      margin-bottom:34px;
+      margin-left:68px
+    }
+
+    .booking-page .prime-calendar{
+      position:relative;
+      z-index:1
     }
 
     @media(max-width:1024px){
       .booking-page .selected-stay,
       .booking-page .selected-stay.visible{
-        margin-left:56px;
-        margin-right:56px
+        margin-left:42px;
+        margin-right:42px
       }
     }
 
     @media(max-width:850px){
       .booking-page .selected-stay,
       .booking-page .selected-stay.visible{
-        margin-left:24px;
-        margin-right:24px
+        margin-left:18px;
+        margin-right:18px
+      }
+
+      .booking-page .selected-stay.visible{
+        margin-bottom:26px
       }
     }
 
