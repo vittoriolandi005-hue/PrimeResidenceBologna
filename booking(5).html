@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Book Your Stay | Prime Residence Bologna</title>
+<meta content="Book your stay at Prime Residence Bologna. Choose your residence, check real-time availability and submit your booking request." name="description"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&amp;family=Playfair+Display:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="style.css" rel="stylesheet"/>
+<style>
+
+    /* =====================================================
+       PRIME RESIDENCE
+       REAL-TIME AVAILABILITY CALENDAR
+    ====================================================== */
+
+    .prime-calendar-section{
+      margin-top:34px
+    }
+
+    .prime-calendar{
+      position:relative;
+      padding:38px;
+      border:1px solid rgba(23,22,20,.12);
+      background:#f3efe7
+    }
+
+    .prime-calendar.disabled{
+      opacity:.58;
+      pointer-events:none
+    }
+
+    .prime-calendar-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:30px;
+      margin-bottom:34px
+    }
+
+    .prime-calendar-heading{
+      max-width:560px
+    }
+
+    .prime-calendar-kicker{
+      display:block;
+      margin-bottom:11px;
+      color:#9b8155;
+      font-size:8px;
+      font-weight:600;
+      letter-spacing:2.3px;
+      text-transform:uppercase
+    }
+
+    .prime-calendar-heading h3{
+      margin:0;
+      font-family:"Playfair Display",serif;
+      font-size:31px;
+      font-weight:400;
+      line-height:1.15
+    }
+
+    .prime-calendar-heading p{
+      max-width:540px;
+      margin-top:11px;
+      color:#777067;
+      font-size:11px;
+      line-height:1.65
+    }
+
+    .calendar-live-status{
+      display:flex;
+      align-items:center;
+      gap:9px;
+      flex-shrink:0;
+      padding-top:4px;
+      color:#6d665d;
+      font-size:8px;
+      font-weight:600;
+      letter-spacing:1.7px;
+      text-transform:uppercase
+    }
+
+    .calendar-live-dot{
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:#b69b67;
+      box-shadow:0 0 0 4px rgba(182,155,103,.1)
+    }
+
+    .calendar-live-status.loading .calendar-live-dot{
+      animation:primeCalendarPulse 1s ease-in-out infinite
+    }
+
+    .calendar-navigation{
+      display:grid;
+      grid-template-columns:48px 1fr 48px;
+      align-items:center;
+      gap:20px;
+      margin-bottom:25px;
+      padding-bottom:22px;
+      border-bottom:1px solid rgba(23,22,20,.12)
+    }
+
+    .calendar-nav-button{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:48px;
+      height:48px;
+      border:1px solid rgba(23,22,20,.15);
+      color:#171614;
+      font-size:19px;
+      transition:
+        background .25s ease,
+        color .25s ease,
+        border-color .25s ease
+    }
+
+    .calendar-nav-button:hover:not(:disabled){
+      background:#171614;
+      border-color:#171614;
+      color:#f3efe7
+    }
+
+    .calendar-nav-button:disabled{
+      opacity:.25;
+      cursor:not-allowed
+    }
+
+    .calendar-month{
+      text-align:center;
+      font-family:"Playfair Display",serif;
+      font-size:27px;
+      font-weight:400;
+      text-transform:capitalize
+    }
+
+    .calendar-weekdays{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:8px;
+      margin-bottom:8px
+    }
+
+    .calendar-weekdays span{
+      padding:9px 0;
+      color:#938a7e;
+      text-align:center;
+      font-size:7px;
+      font-weight:600;
+      letter-spacing:1.4px;
+      text-transform:uppercase
+    }
+
+    .calendar-grid{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:8px
+    }
+
+    .calendar-empty{
+      aspect-ratio:1.18/1
+    }
+
+    .booking-calendar-day{
+      position:relative;
+      aspect-ratio:1.18/1;
+      min-width:0;
+      border:1px solid transparent;
+      outline:0;
+      font-family:"DM Sans",sans-serif;
+      font-size:13px;
+      font-weight:500;
+      transition:
+        transform .15s ease,
+        border-color .2s ease,
+        background .2s ease,
+        color .2s ease,
+        box-shadow .2s ease
+    }
+
+    .booking-calendar-day.available{
+      background:#e2e9df;
+      border-color:#b7c6b1;
+      color:#30422c
+    }
+
+    .booking-calendar-day.available:hover{
+      transform:translateY(-2px);
+      border-color:#63775d;
+      background:#d7e2d3
+    }
+
+    .booking-calendar-day.booked{
+      background:#eadeda;
+      border-color:#d1b2aa;
+      color:#795044
+    }
+
+    .booking-calendar-day.booked:hover{
+      border-color:#9d695b
+    }
+
+    .booking-calendar-day.past{
+      background:#ebe7df;
+      border-color:#dfd9ce;
+      color:#aaa298;
+      cursor:not-allowed;
+      opacity:.55
+    }
+
+    .booking-calendar-day.today::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      bottom:7px;
+      width:4px;
+      height:4px;
+      border-radius:50%;
+      background:#b69b67;
+      transform:translateX(-50%)
+    }
+
+    .booking-calendar-day.in-range{
+      background:#d4c4a3;
+      border-color:#b69b67;
+      color:#171614
+    }
+
+    .booking-calendar-day.checkin,
+    .booking-calendar-day.checkout{
+      z-index:2;
+      background:#b69b67;
+      border-color:#9b8155;
+      color:#fff;
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.3),
+        0 5px 18px rgba(86,69,38,.13)
+    }
+
+    .booking-calendar-day.booked.checkout{
+      background:#b69b67;
+      border-color:#9b8155;
+      color:#fff
+    }
+
+    .calendar-legend{
+      display:flex;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:24px;
+      margin-top:25px;
+      padding-top:21px;
+      border-top:1px solid rgba(23,22,20,.12)
+    }
+
+    .calendar-legend-item{
+      display:flex;
+      align-items:center;
+      gap:9px;
+      color:#696258;
+      font-size:8px;
+      font-weight:600;
+      letter-spacing:1.5px;
+      text-transform:uppercase
+    }
+
+    .calendar-legend-box{
+      width:14px;
+      height:14px;
+      border:1px solid
+    }
+
+    .calendar-legend-box.available{
+      background:#e2e9df;
+      border-color:#8ea087
+    }
+
+    .calendar-legend-box.booked{
+      background:#eadeda;
+      border-color:#b78174
+    }
+
+    .calendar-help{
+      margin-top:19px;
+      color:#8a8176;
+      font-size:10px;
+      line-height:1.65
+    }
+
+    .calendar-loading-message{
+      display:none;
+      margin-top:20px;
+      padding:15px 17px;
+      background:#ece5d8;
+      color:#76694f;
+      font-size:10px;
+      line-height:1.5
+    }
+
+    .calendar-loading-message.visible{
+      display:block
+    }
+
+    /* =====================================================
+       SELECTED STAY
+    ====================================================== */
+
+    .selected-stay{
+      display:none;
+      margin-top:24px;
+      padding:28px 30px;
+      background:#171614;
+      color:#f3efe7
+    }
+
+    .selected-stay.visible{
+      display:block
+    }
+
+    .selected-stay-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:30px
+    }
+
+    .selected-stay-label{
+      color:#b69b67;
+      font-size:8px;
+      font-weight:600;
+      letter-spacing:2px;
+      text-transform:uppercase
+    }
+
+    .selected-stay-status{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:#d7e4d1;
+      font-size:8px;
+      font-weight:600;
+      letter-spacing:1.6px;
+      text-transform:uppercase
+    }
+
+    .selected-stay-status::before{
+      content:"";
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:#7f9b74
+    }
+
+    .selected-stay-residence{
+      margin-top:16px;
+      font-family:"Playfair Display",serif;
+      font-size:27px
+    }
+
+    .selected-stay-details{
+      display:flex;
+      flex-wrap:wrap;
+      gap:18px 35px;
+      margin-top:18px;
+      padding-top:18px;
+      border-top:1px solid rgba(255,255,255,.12)
+    }
+
+    .selected-stay-item{
+      display:flex;
+      flex-direction:column;
+      gap:6px
+    }
+
+    .selected-stay-item span:first-child{
+      color:#8f8981;
+      font-size:7px;
+      font-weight:600;
+      letter-spacing:1.5px;
+      text-transform:uppercase
+    }
+
+    .selected-stay-item span:last-child{
+      font-family:"Playfair Display",serif;
+      font-size:18px
+    }
+
+    .selected-stay-clear{
+      margin-top:22px;
+      padding-bottom:5px;
+      border-bottom:1px solid rgba(255,255,255,.45);
+      color:#d1ccc4;
+      font-size:8px;
+      font-weight:600;
+      letter-spacing:1.6px;
+      text-transform:uppercase
+    }
+
+    /* =====================================================
+       CALENDAR ERRORS
+    ====================================================== */
+
+    .calendar-message{
+      display:none;
+      margin-top:20px;
+      padding:16px 18px;
+      font-size:10px;
+      line-height:1.6
+    }
+
+    .calendar-message.visible{
+      display:block
+    }
+
+    .calendar-message.error{
+      background:#f0dfda;
+      border:1px solid #d8b7af;
+      color:#743c32
+    }
+
+    .calendar-message.info{
+      background:#ece5d8;
+      border:1px solid #d8ccb4;
+      color:#756443
+    }
+
+    .booking-submit.availability-locked{
+      opacity:.45;
+      cursor:not-allowed
+    }
+
+    @keyframes primeCalendarPulse{
+      0%,100%{opacity:.35;transform:scale(.8)}
+      50%{opacity:1;transform:scale(1)}
+    }
+
+    /* =====================================================
+       TABLET
+    ====================================================== */
+
+    @media(max-width:850px){
+
+      .prime-calendar{
+        padding:28px 22px
+      }
+
+      .prime-calendar-top{
+        flex-direction:column;
+        gap:15px
+      }
+
+      .calendar-live-status{
+        padding-top:0
+      }
+
+      .booking-calendar-day{
+        font-size:12px
+      }
+
+    }
+
+    /* =====================================================
+       MOBILE
+    ====================================================== */
+
+    @media(max-width:600px){
+
+      .prime-calendar{
+        padding:24px 14px
+      }
+
+      .prime-calendar-heading h3{
+        font-size:27px
+      }
+
+      .calendar-navigation{
+        grid-template-columns:42px 1fr 42px;
+        gap:10px
+      }
+
+      .calendar-nav-button{
+        width:42px;
+        height:42px
+      }
+
+      .calendar-month{
+        font-size:21px
+      }
+
+      .calendar-grid,
+      .calendar-weekdays{
+        gap:4px
+      }
+
+      .calendar-weekdays span{
+        font-size:6px
+      }
+
+      .booking-calendar-day{
+        aspect-ratio:1/1;
+        font-size:11px
+      }
+
+      .calendar-legend{
+        gap:16px
+      }
+
+      .selected-stay{
+        padding:24px 20px
+      }
+
+      .selected-stay-top{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:8px
+      }
+
+    }
+
+
+    /* =====================================================
+       SELECTED STAY — PANEL ABOVE CALENDAR
+    ====================================================== */
+
+    .booking-page .prime-calendar-section{
+      position:relative
+    }
+
+    .booking-page .selected-stay{
+      display:block;
+      max-height:0;
+      margin:0;
+      padding:0 30px;
+      overflow:hidden;
+      visibility:hidden;
+      opacity:0;
+      transform:translateY(-16px);
+      pointer-events:none;
+      background:#171614;
+      color:#f3efe7;
+      box-shadow:0 18px 48px rgba(23,22,20,.12);
+      transition:
+        max-height .65s cubic-bezier(.22,.61,.36,1),
+        margin .55s cubic-bezier(.22,.61,.36,1),
+        padding .55s cubic-bezier(.22,.61,.36,1),
+        opacity .35s ease,
+        transform .55s cubic-bezier(.22,.61,.36,1),
+        visibility 0s linear .65s
+    }
+
+    .booking-page .selected-stay.visible{
+      max-height:560px;
+      margin:0 0 24px;
+      padding:27px 30px 30px;
+      overflow:hidden;
+      visibility:visible;
+      opacity:1;
+      transform:translateY(0);
+      pointer-events:auto;
+      transition-delay:0s
+    }
+
+    .booking-page .selected-stay-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:24px;
+      margin:0 0 19px
+    }
+
+    .booking-page .selected-stay-heading{
+      display:flex;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:16px
+    }
+
+    .booking-page .selected-stay-label{
+      color:#c2a66e;
+      font-size:8px;
+      font-weight:600;
+      letter-spacing:2.2px;
+      text-transform:uppercase
+    }
+
+    .booking-page .selected-stay-status{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:#d7e4d1;
+      font-size:8px;
+      font-weight:600;
+      letter-spacing:1.6px;
+      text-transform:uppercase
+    }
+
+    .booking-page .selected-stay-status::before{
+      content:"";
+      width:7px;
+      height:7px;
+      flex-shrink:0;
+      border-radius:50%;
+      background:#7f9b74
+    }
+
+    .booking-page .selected-stay-clear{
+      flex-shrink:0;
+      margin:0;
+      padding:0 0 5px;
+      border-bottom:1px solid rgba(255,255,255,.42);
+      color:#d1ccc4;
+      font-size:8px;
+      font-weight:600;
+      letter-spacing:1.6px;
+      text-transform:uppercase;
+      transition:color .25s ease,border-color .25s ease
+    }
+
+    .booking-page .selected-stay-clear:hover{
+      color:#fff;
+      border-color:#fff
+    }
+
+    .booking-page .selected-stay-grid{
+      display:grid;
+      grid-template-columns:minmax(0,1.3fr) minmax(175px,.45fr) minmax(390px,1fr);
+      align-items:stretch;
+      border-top:1px solid rgba(255,255,255,.12)
+    }
+
+    .booking-page .selected-stay-summary{
+      min-width:0;
+      padding:21px 28px 0 0
+    }
+
+    .booking-page .selected-stay-residence{
+      margin:0;
+      font-family:"Playfair Display",serif;
+      font-size:28px;
+      font-weight:400;
+      line-height:1.1
+    }
+
+    .booking-page .selected-stay-details{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:20px;
+      margin:18px 0 0;
+      padding:0;
+      border:0
+    }
+
+    .booking-page .selected-stay-item{
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+      min-width:0
+    }
+
+    .booking-page .selected-stay-item span:first-child,
+    .booking-page .selected-stay-guests label{
+      color:#8f8981;
+      font-size:7px;
+      font-weight:600;
+      letter-spacing:1.5px;
+      text-transform:uppercase
+    }
+
+    .booking-page .selected-stay-item span:last-child{
+      overflow:hidden;
+      font-family:"Playfair Display",serif;
+      font-size:17px;
+      white-space:nowrap;
+      text-overflow:ellipsis
+    }
+
+    .booking-page .selected-stay-guests{
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:9px;
+      min-width:0;
+      padding:21px 27px;
+      border-left:1px solid rgba(255,255,255,.12)
+    }
+
+    .booking-page .selected-stay-guests select{
+      width:100%;
+      min-width:0;
+      height:54px;
+      padding:0 42px 0 16px;
+      border:1px solid rgba(255,255,255,.46);
+      border-radius:0;
+      outline:0;
+      background:#171614;
+      color:#f3efe7;
+      font-size:12px;
+      appearance:auto;
+      transition:border-color .25s ease,background .25s ease
+    }
+
+    .booking-page .selected-stay-guests select:hover,
+    .booking-page .selected-stay-guests select:focus{
+      border-color:#b69b67;
+      background:#1d1b18
+    }
+
+    .booking-page .selected-stay-guests select option{
+      background:#171614;
+      color:#f3efe7
+    }
+
+    .booking-page .selected-stay .stay-price-banner,
+    .booking-page .selected-stay .stay-price-banner.visible{
+      display:grid!important;
+      grid-template-columns:minmax(115px,.65fr) minmax(185px,1fr);
+      align-items:center;
+      gap:22px;
+      min-width:0;
+      margin:0;
+      padding:21px 0 0 28px;
+      border:0;
+      border-left:1px solid rgba(255,255,255,.12);
+      background:transparent;
+      color:#f3efe7
+    }
+
+    .booking-page .selected-stay .stay-price-copy{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:0
+    }
+
+    .booking-page .selected-stay .stay-price-label{
+      color:#b69b67;
+      font-size:7px;
+      font-weight:600;
+      letter-spacing:1.8px;
+      text-transform:uppercase
+    }
+
+    .booking-page .selected-stay .stay-price-total{
+      color:#f3efe7;
+      font-family:"Playfair Display",serif;
+      font-size:37px;
+      font-weight:400;
+      line-height:1
+    }
+
+    .booking-page .selected-stay .stay-price-meta{
+      min-height:15px;
+      color:#a39c93;
+      font-size:9px;
+      line-height:1.45;
+      letter-spacing:.3px
+    }
+
+    .booking-page .selected-stay .stay-price-action{
+      width:100%;
+      min-height:54px;
+      padding:0 18px;
+      border:1px solid #b69b67;
+      background:#b69b67;
+      color:#171614;
+      font-size:8px;
+      font-weight:600;
+      letter-spacing:1.7px;
+      text-transform:uppercase;
+      transition:background .25s ease,border-color .25s ease,transform .25s ease,opacity .25s ease
+    }
+
+    .booking-page .selected-stay .stay-price-action:hover:not(:disabled){
+      background:#c7ad77;
+      border-color:#c7ad77;
+      transform:translateY(-2px)
+    }
+
+    .booking-page .selected-stay .stay-price-action:disabled{
+      opacity:.38;
+      cursor:not-allowed;
+      transform:none
+    }
+
+    @media(max-width:1100px){
+
+      .booking-page .selected-stay-grid{
+        grid-template-columns:minmax(0,1.35fr) minmax(175px,.65fr)
+      }
+
+      .booking-page .selected-stay .stay-price-banner,
+      .booking-page .selected-stay .stay-price-banner.visible{
+        grid-column:1/-1;
+        grid-template-columns:1fr minmax(210px,300px);
+        margin-top:20px;
+        padding:20px 0 0;
+        border-left:0;
+        border-top:1px solid rgba(255,255,255,.12)
+      }
+
+    }
+
+    @media(max-width:700px){
+
+      .booking-page .selected-stay{
+        padding:0 20px
+      }
+
+      .booking-page .selected-stay.visible{
+        max-height:900px;
+        margin-bottom:16px;
+        padding:22px 20px 24px
+      }
+
+      .booking-page .selected-stay-top{
+        align-items:flex-start;
+        flex-direction:row;
+        gap:14px;
+        margin-bottom:17px
+      }
+
+      .booking-page .selected-stay-heading{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:7px
+      }
+
+      .booking-page .selected-stay-grid{
+        grid-template-columns:1fr
+      }
+
+      .booking-page .selected-stay-summary{
+        padding:19px 0 21px
+      }
+
+      .booking-page .selected-stay-residence{
+        font-size:25px
+      }
+
+      .booking-page .selected-stay-details{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        gap:10px
+      }
+
+      .booking-page .selected-stay-item span:last-child{
+        font-size:14px;
+        white-space:normal
+      }
+
+      .booking-page .selected-stay-guests{
+        padding:20px 0;
+        border-top:1px solid rgba(255,255,255,.12);
+        border-left:0
+      }
+
+      .booking-page .selected-stay .stay-price-banner,
+      .booking-page .selected-stay .stay-price-banner.visible{
+        grid-template-columns:1fr;
+        gap:17px;
+        margin-top:0;
+        padding:20px 0 0
+      }
+
+      .booking-page .selected-stay .stay-price-action{
+        width:100%
+      }
+
+    }
+
+
+    /* =====================================================
+       SELECTED STAY — REVEAL ANIMATION
+       Smooth entrance after both dates are selected.
+    ====================================================== */
+
+    .booking-page .selected-stay{
+      position:relative;
+      transform-origin:50% 0;
+      will-change:max-height,opacity,transform
+    }
+
+    .booking-page .selected-stay::before{
+      content:"";
+      position:absolute;
+      top:0;
+      left:0;
+      z-index:2;
+      width:0;
+      height:2px;
+      background:linear-gradient(90deg,#b69b67,#d2bd91,#b69b67);
+      opacity:0;
+      pointer-events:none
+    }
+
+    .booking-page .selected-stay.visible{
+      animation:primeStayPanelReveal .72s cubic-bezier(.16,1,.3,1) both
+    }
+
+    .booking-page .selected-stay.visible::before{
+      animation:primeStayAccentReveal .82s .08s cubic-bezier(.16,1,.3,1) both
+    }
+
+    .booking-page .selected-stay .selected-stay-top,
+    .booking-page .selected-stay .selected-stay-summary,
+    .booking-page .selected-stay .selected-stay-guests,
+    .booking-page .selected-stay .stay-price-banner{
+      opacity:0;
+      transform:translateY(12px)
+    }
+
+    .booking-page .selected-stay.visible .selected-stay-top{
+      animation:primeStayContentReveal .46s .16s cubic-bezier(.16,1,.3,1) both
+    }
+
+    .booking-page .selected-stay.visible .selected-stay-summary{
+      animation:primeStayContentReveal .5s .23s cubic-bezier(.16,1,.3,1) both
+    }
+
+    .booking-page .selected-stay.visible .selected-stay-guests{
+      animation:primeStayContentReveal .5s .30s cubic-bezier(.16,1,.3,1) both
+    }
+
+    .booking-page .selected-stay.visible .stay-price-banner{
+      animation:primeStayContentReveal .5s .37s cubic-bezier(.16,1,.3,1) both
+    }
+
+    @keyframes primeStayPanelReveal{
+      0%{
+        opacity:0;
+        transform:translateY(-24px) scale(.985);
+        filter:blur(4px)
+      }
+      55%{
+        opacity:1;
+        transform:translateY(3px) scale(1);
+        filter:blur(0)
+      }
+      100%{
+        opacity:1;
+        transform:translateY(0) scale(1);
+        filter:blur(0)
+      }
+    }
+
+    @keyframes primeStayContentReveal{
+      from{
+        opacity:0;
+        transform:translateY(12px)
+      }
+      to{
+        opacity:1;
+        transform:translateY(0)
+      }
+    }
+
+    @keyframes primeStayAccentReveal{
+      0%{
+        width:0;
+        opacity:0
+      }
+      20%{
+        opacity:1
+      }
+      100%{
+        width:100%;
+        opacity:1
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      .booking-page .selected-stay,
+      .booking-page .selected-stay::before,
+      .booking-page .selected-stay .selected-stay-top,
+      .booking-page .selected-stay .selected-stay-summary,
+      .booking-page .selected-stay .selected-stay-guests,
+      .booking-page .selected-stay .stay-price-banner{
+        animation:none!important;
+        transition:none!important;
+        filter:none!important
+      }
+
+      .booking-page .selected-stay.visible .selected-stay-top,
+      .booking-page .selected-stay.visible .selected-stay-summary,
+      .booking-page .selected-stay.visible .selected-stay-guests,
+      .booking-page .selected-stay.visible .stay-price-banner{
+        opacity:1;
+        transform:none
+      }
+    }
+
+
+
+
+  </style>
+</head>
+<body class="booking-page">
+<!-- =====================================================
+       NAVIGATION
+  ====================================================== -->
+<header class="navbar booking-navbar">
+<div class="nav-container">
+<a class="logo logo-image-link" href="index.html" aria-label="Prime Residence Bologna home">
+<img class="site-brand-image site-brand-image-nav" src="images/prime-residence-logo.png" alt="Prime Residence Bologna"/>
+</a>
+<nav class="desktop-nav">
+<a href="index.html#residences">
+          Residences
+        </a>
+<a href="index.html#experience">
+          Experience
+        </a>
+<a href="index.html#bologna">
+          Bologna
+        </a>
+<a class="nav-book" href="booking.html">
+          Book Now
+        </a>
+</nav>
+<button aria-expanded="false" aria-label="Open menu" class="menu-toggle" type="button">
+<span></span>
+<span></span>
+</button>
+</div>
+</header>
+<!-- =====================================================
+       MOBILE MENU
+  ====================================================== -->
+<div class="mobile-menu">
+<div class="mobile-menu-inner">
+<a href="index.html#residences">
+        Residences
+      </a>
+<a href="index.html#experience">
+        Experience
+      </a>
+<a href="index.html#bologna">
+        Bologna
+      </a>
+<a class="mobile-book" href="booking.html">
+        Book Your Stay
+      </a>
+</div>
+</div>
+<!-- =====================================================
+       MAIN
+  ====================================================== -->
+<main>
+<!-- =====================================================
+         BOOKING HERO
+    ====================================================== -->
+<section class="booking-hero">
+<div class="container">
+<div class="booking-hero-inner">
+<span class="eyebrow">
+            PRIME RESIDENCE BOLOGNA
+          </span>
+<h1>
+            Book your stay.
+          </h1>
+<p class="booking-hero-description">
+
+            Choose your residence, explore real-time availability
+            and select your stay directly from the calendar.
+            Then send us your booking request.
+
+          </p>
+</div>
+</div>
+</section>
+<!-- =====================================================
+         RESIDENCE CHOICE
+    ====================================================== -->
+<section class="booking-choice">
+<div class="container">
+<div class="booking-section-heading">
+<span class="eyebrow">
+            01 — SELECT YOUR RESIDENCE
+          </span>
+<h2>
+            Choose where<br/>
+            you would like to stay.
+          </h2>
+</div>
+<div class="booking-residence-grid">
+<!-- GASTONE ROSSI -->
+<article aria-label="Select Gastone Rossi 12" class="booking-residence-card" data-calendar="gastone" data-residence="Gastone Rossi 12" role="button" tabindex="0">
+<div class="booking-card-image">
+<img alt="Gastone Rossi 12 — master bedroom" class="booking-residence-photo" decoding="async" loading="lazy" src="images/gastone-rossi-12/01.jpg"/>
+<span class="booking-card-number">
+                01
+              </span>
+</div>
+<div class="booking-card-overlay"></div>
+<div class="booking-card-content">
+<span class="booking-card-label">
+                PRIME RESIDENCE
+              </span>
+<h3>
+                Gastone Rossi 12
+              </h3>
+<div class="booking-card-details">
+<span>
+                  3 Bedrooms
+                </span>
+<span>
+                  2 Bathrooms
+                </span>
+<span>
+                  Up to 6 Guests
+                </span>
+</div>
+<span class="booking-card-arrow">
+                Select Residence →
+              </span>
+</div>
+</article>
+<!-- BARONTINI -->
+<article aria-label="Select Barontini 8" class="booking-residence-card" data-calendar="barontini" data-residence="Barontini 8" role="button" tabindex="0">
+<div class="booking-card-image">
+<img alt="Barontini 8 — kitchen and dining area" class="booking-residence-photo" decoding="async" loading="lazy" src="images/barontini-8/13.jpg"/>
+<span class="booking-card-number">
+                02
+              </span>
+</div>
+<div class="booking-card-overlay"></div>
+<div class="booking-card-content">
+<span class="booking-card-label">
+                PRIME RESIDENCE
+              </span>
+<h3>
+                Barontini 8
+              </h3>
+<div class="booking-card-details">
+<span>
+                  2 Bedrooms
+                </span>
+<span>
+                  1 Bathroom
+                </span>
+<span>
+                  Up to 6 Guests
+                </span>
+</div>
+<span class="booking-card-arrow">
+                Select Residence →
+              </span>
+</div>
+</article>
+</div>
+</div>
+</section>
+<!-- =====================================================
+         BOOKING FORM
+    ====================================================== -->
+<section class="booking-form-section" id="booking-form-section">
+<div class="container">
+<div class="booking-form-wrapper">
+<div class="booking-form-intro">
+<span class="eyebrow">
+              02 — YOUR STAY
+            </span>
+<h2>
+              Select your<br/>
+              stay.
+            </h2>
+<p class="selected-residence-display" id="selectedResidenceText">
+              Please select a residence above
+            </p>
+</div>
+<form class="booking-form" id="bookingRequestForm">
+<!-- =================================================
+                 HIDDEN BOOKING VALUES
+            ================================================== -->
+<input id="residence" name="residence" type="hidden" value=""/>
+<input id="calendarResidence" type="hidden" value=""/>
+<input id="checkin" name="checkin" type="hidden" value=""/>
+<input id="checkout" name="checkout" type="hidden" value=""/>
+<input id="estimatedTotal" name="estimatedTotal" type="hidden" value=""/>
+<!-- =================================================
+                 REAL-TIME AVAILABILITY
+            ================================================== -->
+<div class="form-section">
+<div class="form-section-title">
+                Real-time availability
+              </div>
+<div class="prime-calendar-section">
+<!-- =================================================
+                     SELECTED STAY / BOOKING SUMMARY
+                ================================================== -->
+<div class="selected-stay" id="selectedStay" aria-live="polite">
+<div class="selected-stay-top">
+<div class="selected-stay-heading">
+<span class="selected-stay-label">
+                      SELECTED STAY
+                    </span>
+<span class="selected-stay-status">
+                      AVAILABLE
+                    </span>
+</div>
+<button class="selected-stay-clear" id="selectedStayClear" type="button">
+                    Change dates
+                  </button>
+</div>
+<div class="selected-stay-grid">
+<div class="selected-stay-summary">
+<div class="selected-stay-residence" id="selectedStayResidence">
+                    —
+                  </div>
+<div class="selected-stay-details">
+<div class="selected-stay-item">
+<span>
+                        Check-in
+                      </span>
+<span id="selectedStayCheckin">
+                        —
+                      </span>
+</div>
+<div class="selected-stay-item">
+<span>
+                        Check-out
+                      </span>
+<span id="selectedStayCheckout">
+                        —
+                      </span>
+</div>
+<div class="selected-stay-item">
+<span>
+                        Nights
+                      </span>
+<span id="selectedStayNights">
+                        —
+                      </span>
+</div>
+</div>
+</div>
+<div class="selected-stay-guests">
+<label for="guests">
+                      Guests
+                    </label>
+<select id="guests" name="guests" required="">
+<option value="">
+                        Select
+                      </option>
+<option value="1">
+                        1 Guest
+                      </option>
+<option value="2">
+                        2 Guests
+                      </option>
+<option value="3">
+                        3 Guests
+                      </option>
+<option value="4">
+                        4 Guests
+                      </option>
+<option value="5">
+                        5 Guests
+                      </option>
+<option value="6">
+                        6 Guests
+                      </option>
+</select>
+</div>
+<div class="stay-price-banner" id="stayPriceBanner" aria-live="polite">
+<div class="stay-price-copy">
+<span class="stay-price-label">
+                      TOTAL STAY
+                    </span>
+<strong class="stay-price-total" id="stayPriceTotal">
+                      —
+                    </strong>
+<span class="stay-price-meta" id="stayPriceMeta">
+                      Select guests to see the total price
+                    </span>
+</div>
+<button class="stay-price-action" id="requestBookingButton" type="button" disabled="">
+                    REQUEST TO BOOK →
+                  </button>
+</div>
+</div>
+</div>
+<div class="prime-calendar disabled" id="primeCalendar">
+<div class="prime-calendar-top">
+<div class="prime-calendar-heading">
+<span class="prime-calendar-kicker">
+                        REAL-TIME AVAILABILITY
+                      </span>
+<h3 id="calendarResidenceTitle">
+                        Select a residence
+                      </h3>
+<p>
+
+                        Availability is based on the latest calendar data.
+                        Final confirmation follows your booking request.
+
+                      </p>
+</div>
+<div class="calendar-live-status" id="calendarLiveStatus">
+<span class="calendar-live-dot"></span>
+<span id="calendarLiveText">
+                        WAITING
+                      </span>
+</div>
+</div>
+<!-- MONTH NAVIGATION -->
+<div class="calendar-navigation">
+<button aria-label="Previous month" class="calendar-nav-button" id="calendarPrev" type="button">
+                      ←
+                    </button>
+<div class="calendar-month" id="calendarMonthLabel">
+                      —
+                    </div>
+<button aria-label="Next month" class="calendar-nav-button" id="calendarNext" type="button">
+                      →
+                    </button>
+</div>
+<!-- WEEKDAYS -->
+<div class="calendar-weekdays">
+<span>MON</span>
+<span>TUE</span>
+<span>WED</span>
+<span>THU</span>
+<span>FRI</span>
+<span>SAT</span>
+<span>SUN</span>
+</div>
+<!-- DAYS -->
+<div class="calendar-grid" id="calendarGrid"></div>
+<!-- LEGEND -->
+<div class="calendar-legend">
+<div class="calendar-legend-item">
+<span class="calendar-legend-box available"></span>
+<span>
+                        Available
+                      </span>
+</div>
+<div class="calendar-legend-item">
+<span class="calendar-legend-box booked"></span>
+<span>
+                        Fully booked
+                      </span>
+</div>
+</div>
+<p class="calendar-help">
+
+                    Click once to select your check-in and again
+                    to select your check-out. On desktop you can
+                    also click and drag across the calendar.
+
+                  </p>
+<div class="calendar-loading-message" id="calendarLoadingMessage">
+                    Loading current availability...
+                  </div>
+<div aria-live="polite" class="calendar-message" id="calendarMessage"></div>
+</div>
+</div>
+</div>
+<!-- =================================================
+                 PERSONAL DETAILS
+            ================================================== -->
+<div class="form-section" id="guest-details-section">
+<div class="form-section-title">
+                Guest details
+              </div>
+<div class="form-row">
+<div class="form-field">
+<label for="firstName">
+                    First name
+                  </label>
+<input autocomplete="given-name" id="firstName" name="firstName" placeholder="First name" required="" type="text"/>
+</div>
+<div class="form-field">
+<label for="lastName">
+                    Last name
+                  </label>
+<input autocomplete="family-name" id="lastName" name="lastName" placeholder="Last name" required="" type="text"/>
+</div>
+<div class="form-field">
+<label for="birthDate">
+                    Date of birth
+                  </label>
+<input id="birthDate" name="birthDate" required="" type="date"/>
+</div>
+<div class="form-field">
+<label for="email">
+                    Email
+                  </label>
+<input autocomplete="email" id="email" name="email" placeholder="your@email.com" required="" type="email"/>
+</div>
+<div class="form-field">
+<label for="phone">
+                    Phone
+                  </label>
+<input autocomplete="tel" id="phone" name="phone" placeholder="+39 ..." required="" type="tel"/>
+</div>
+<div class="form-field full-width">
+<label for="message">
+                    Notes
+                  </label>
+<textarea id="message" name="message" placeholder="Tell us anything we should know about your stay..."></textarea>
+</div>
+</div>
+</div>
+<!-- =================================================
+                 PRIVACY
+            ================================================== -->
+<div class="privacy-check">
+<input id="privacy" name="privacy" required="" type="checkbox" value="accepted"/>
+<label for="privacy">
+
+                I agree to the processing of my personal data
+                for the purpose of handling this booking request.
+
+              </label>
+</div>
+<!-- =================================================
+                 SUBMIT
+            ================================================== -->
+<div class="booking-submit-wrapper">
+<p class="booking-note">
+
+                Real-time availability is based on the latest
+                calendar information. Sending this form does not
+                constitute a confirmed reservation. We will contact
+                you to confirm your stay.
+
+              </p>
+<button class="booking-submit btn btn-primary availability-locked" disabled="" type="submit">
+                Select Your Stay
+              </button>
+</div>
+<div aria-live="polite" class="booking-message" id="bookingMessage"></div>
+</form>
+</div>
+</div>
+</section>
+</main>
+<!-- =====================================================
+       FOOTER
+  ====================================================== -->
+<footer class="footer">
+<div class="container">
+<div class="footer-top">
+<div class="footer-brand">
+<a class="logo logo-image-link" href="index.html" aria-label="Prime Residence Bologna home">
+<img class="site-brand-image site-brand-image-footer" src="images/prime-residence-logo.png" alt="Prime Residence Bologna"/>
+</a>
+<p>
+
+            Contemporary residences in Bologna,
+            designed for a refined and comfortable stay.
+
+          </p>
+</div>
+<div class="footer-column">
+<span class="footer-title">
+            Explore
+          </span>
+<a href="index.html#residences">
+            Residences
+          </a>
+<a href="index.html#experience">
+            Experience
+          </a>
+<a href="index.html#bologna">
+            Bologna
+          </a>
+</div>
+<div class="footer-column">
+<span class="footer-title">
+            Residences
+          </span>
+<a href="gastone-rossi-12.html">
+            Gastone Rossi 12
+          </a>
+<a href="barontini-8.html">
+            Barontini 8
+          </a>
+</div>
+<div class="footer-column">
+<span class="footer-title">
+            Contact
+          </span>
+<a href="booking.html">
+            Book Your Stay
+          </a>
+<a href="https://wa.me/393917055625" rel="noopener" target="_blank">
+            WhatsApp
+          </a>
+<a href="mailto:vittoriolandi005@gmail.com">
+            Email
+          </a>
+</div>
+</div>
+<div class="footer-bottom">
+<p>
+
+          © <span id="year"></span>
+          Prime Residence Bologna.
+          All rights reserved.
+
+        </p>
+<p>
+          Bologna · Italy
+        </p>
+</div>
+</div>
+</footer>
+<!-- =====================================================
+       WHATSAPP
+  ====================================================== -->
+<a aria-label="Contact Prime Residence Bologna on WhatsApp" class="whatsapp-button" href="https://wa.me/393917055625" rel="noopener" target="_blank">
+<span>
+      WhatsApp
+    </span>
+</a>
+<script src="script.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+  const priceBanner=document.querySelector("#stayPriceBanner");
+  const requestButton=document.querySelector("#requestBookingButton");
+  const total=document.querySelector("#stayPriceTotal");
+  const meta=document.querySelector("#stayPriceMeta");
+
+  if(!priceBanner||!requestButton)return;
+
+  const emptyPriceCopy=()=>
+    document.documentElement.lang==="it"
+      ?"Seleziona gli ospiti per vedere il prezzo totale"
+      :"Select guests to see the total price";
+
+  const syncRequestButton=()=>{
+    const priceReady=priceBanner.classList.contains("visible");
+    requestButton.disabled=!priceReady;
+
+    if(!priceReady){
+      if(total)total.textContent="—";
+      if(meta)meta.textContent=emptyPriceCopy();
+    }
+  };
+
+  const observer=new MutationObserver(syncRequestButton);
+  observer.observe(priceBanner,{
+    attributes:true,
+    attributeFilter:["class"]
+  });
+
+  window.addEventListener("primeLanguageChanged",syncRequestButton);
+  syncRequestButton();
+});
+</script>
+</body>
+</html>
