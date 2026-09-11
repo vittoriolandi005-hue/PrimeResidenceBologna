@@ -534,9 +534,10 @@
 
     .booking-page .selected-stay{
       position:absolute;
-      top:18px;
-      right:68px;
-      left:68px;
+      top:50%;
+      left:50%;
+      width:calc(100% - 136px);
+      max-width:1320px;
       z-index:8;
       display:block;
       max-height:0;
@@ -545,11 +546,11 @@
       overflow:hidden;
       visibility:hidden;
       opacity:0;
-      transform:translateY(-16px);
+      transform:translate(-50%,calc(-50% - 18px));
       pointer-events:none;
       background:#171614;
       color:#f3efe7;
-      box-shadow:0 18px 48px rgba(23,22,20,.16);
+      box-shadow:0 18px 48px rgba(23,22,20,.18);
       transition:
         max-height .65s cubic-bezier(.22,.61,.36,1),
         padding .55s cubic-bezier(.22,.61,.36,1),
@@ -565,7 +566,7 @@
       overflow:visible;
       visibility:visible;
       opacity:1;
-      transform:translateY(0);
+      transform:translate(-50%,-50%);
       pointer-events:auto;
       transition-delay:0s
     }
@@ -796,8 +797,7 @@
 
     @media(max-width:1150px){
       .booking-page .selected-stay{
-        right:42px;
-        left:42px
+        width:calc(100% - 84px)
       }
 
       .booking-page .selected-stay-grid{
@@ -809,12 +809,15 @@
       .booking-page .selected-stay{
         position:relative;
         top:auto;
-        right:auto;
-        left:auto
+        left:auto;
+        width:100%;
+        max-width:none;
+        transform:translateY(-16px)
       }
 
       .booking-page .selected-stay.visible{
-        margin:0 0 24px
+        margin:0 0 24px;
+        transform:translateY(0)
       }
 
       .booking-page .selected-stay-grid{
@@ -860,8 +863,7 @@
     ====================================================== */
 
     .booking-page .selected-stay{
-      position:relative;
-      transform-origin:50% 0;
+      transform-origin:50% 50%;
       will-change:max-height,opacity,transform
     }
 
@@ -913,17 +915,17 @@
     @keyframes primeStayPanelReveal{
       0%{
         opacity:0;
-        transform:translateY(-24px) scale(.985);
+        transform:translate(-50%,calc(-50% - 26px)) scale(.985);
         filter:blur(4px)
       }
       55%{
         opacity:1;
-        transform:translateY(3px) scale(1);
+        transform:translate(-50%,calc(-50% + 3px)) scale(1);
         filter:blur(0)
       }
       100%{
         opacity:1;
-        transform:translateY(0) scale(1);
+        transform:translate(-50%,-50%) scale(1);
         filter:blur(0)
       }
     }
