@@ -797,3 +797,394 @@
 }
 
 /* END HOME LOWER SECTIONS RESTORE */
+/* =========================================================
+   APARTMENT GALLERY — ALL PHOTOS SCREEN + PHOTO VIEWER
+   Only Gastone Rossi 12 and Barontini 8.
+========================================================= */
+
+/* SCREEN 1 — ALL PHOTOS */
+
+.gallery-album-overlay{
+  position:fixed;
+  inset:0;
+  z-index:6000;
+  overflow-x:hidden;
+  overflow-y:auto;
+  background:#fff;
+  color:#171614;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:
+    opacity .22s ease,
+    visibility .22s ease
+}
+
+.gallery-album-overlay.open{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto
+}
+
+.gallery-album-back{
+  position:fixed;
+  top:18px;
+  left:18px;
+  z-index:5;
+  width:46px;
+  height:46px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(23,22,20,.14);
+  border-radius:50%;
+  background:rgba(255,255,255,.94);
+  color:#171614;
+  box-shadow:0 4px 18px rgba(23,22,20,.08);
+  font-size:21px;
+  transition:
+    background .2s ease,
+    color .2s ease,
+    transform .2s ease
+}
+
+.gallery-album-back:hover{
+  background:#171614;
+  color:#fff;
+  transform:translateX(-2px)
+}
+
+.gallery-album-grid{
+  width:100%;
+  padding:7px 7px 30px;
+  columns:5 250px;
+  column-gap:8px
+}
+
+.gallery-album-item{
+  display:block;
+  width:100%;
+  margin:0 0 8px;
+  break-inside:avoid;
+  overflow:hidden;
+  border-radius:7px;
+  background:#f1eee9;
+  cursor:zoom-in
+}
+
+.gallery-album-item img{
+  display:block;
+  width:100%;
+  height:auto;
+  max-width:none;
+  transition:
+    transform .3s ease,
+    filter .3s ease
+}
+
+.gallery-album-item:hover img{
+  transform:scale(1.012);
+  filter:brightness(.96)
+}
+
+
+/* SCREEN 2 — SINGLE PHOTO VIEWER */
+
+.gallery-photo-viewer{
+  position:fixed;
+  inset:0;
+  z-index:6100;
+  overflow:hidden;
+  background:#fff;
+  color:#171614;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:
+    opacity .2s ease,
+    visibility .2s ease
+}
+
+.gallery-photo-viewer.open{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto
+}
+
+.gallery-viewer-back,
+.gallery-viewer-close{
+  position:absolute;
+  top:16px;
+  z-index:6;
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(23,22,20,.12);
+  border-radius:50%;
+  background:rgba(255,255,255,.94);
+  color:#171614;
+  font-size:20px;
+  transition:
+    background .2s ease,
+    color .2s ease
+}
+
+.gallery-viewer-back{
+  left:18px
+}
+
+.gallery-viewer-close{
+  right:18px;
+  font-size:24px
+}
+
+.gallery-viewer-back:hover,
+.gallery-viewer-close:hover{
+  background:#171614;
+  color:#fff
+}
+
+.gallery-viewer-main{
+  position:absolute;
+  top:38px;
+  left:90px;
+  right:90px;
+  bottom:118px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-width:0;
+  min-height:0
+}
+
+.gallery-viewer-image-wrap{
+  width:100%;
+  min-height:0;
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center
+}
+
+.gallery-viewer-image{
+  display:block;
+  width:auto;
+  height:auto;
+  max-width:min(1040px,76vw);
+  max-height:calc(100vh - 215px);
+  object-fit:contain;
+  border-radius:6px;
+  opacity:1;
+  transform:scale(1);
+  transition:
+    opacity .16s ease,
+    transform .16s ease
+}
+
+.gallery-viewer-image.is-changing{
+  opacity:.32;
+  transform:scale(.992)
+}
+
+.gallery-viewer-counter{
+  flex:0 0 auto;
+  margin-top:22px;
+  font-size:13px;
+  font-weight:400;
+  letter-spacing:.02em
+}
+
+.gallery-viewer-prev,
+.gallery-viewer-next{
+  position:absolute;
+  top:43%;
+  z-index:5;
+  width:54px;
+  height:70px;
+  display:grid;
+  place-items:center;
+  color:#171614;
+  background:transparent;
+  font-family:Arial,sans-serif;
+  font-size:40px;
+  font-weight:300;
+  line-height:1;
+  transform:translateY(-50%);
+  transition:
+    transform .2s ease,
+    opacity .2s ease
+}
+
+.gallery-viewer-prev{
+  left:10px
+}
+
+.gallery-viewer-next{
+  right:10px
+}
+
+.gallery-viewer-prev:hover{
+  transform:translate(-4px,-50%)
+}
+
+.gallery-viewer-next:hover{
+  transform:translate(4px,-50%)
+}
+
+.gallery-viewer-thumbnails{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:4;
+  height:100px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:10px 18px 14px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  background:#fff;
+  scrollbar-width:thin;
+  scroll-behavior:smooth
+}
+
+.gallery-viewer-thumb{
+  flex:0 0 auto;
+  width:74px;
+  height:74px;
+  padding:0;
+  overflow:hidden;
+  border:2px solid transparent;
+  border-radius:5px;
+  background:#eeeae4;
+  opacity:.62;
+  transition:
+    opacity .2s ease,
+    border-color .2s ease,
+    transform .2s ease
+}
+
+.gallery-viewer-thumb img{
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:none;
+  object-fit:cover
+}
+
+.gallery-viewer-thumb:hover{
+  opacity:.9;
+  transform:translateY(-1px)
+}
+
+.gallery-viewer-thumb.active{
+  border-color:#1677ff;
+  opacity:1
+}
+
+
+/* TABLET */
+
+@media(max-width:1000px){
+
+  .gallery-album-grid{
+    columns:4 220px
+  }
+
+  .gallery-viewer-main{
+    left:70px;
+    right:70px
+  }
+
+  .gallery-viewer-image{
+    max-width:82vw
+  }
+}
+
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+  .gallery-album-grid{
+    padding:5px 5px 25px;
+    columns:2 150px;
+    column-gap:5px
+  }
+
+  .gallery-album-item{
+    margin-bottom:5px;
+    border-radius:5px
+  }
+
+  .gallery-album-back{
+    top:10px;
+    left:10px;
+    width:42px;
+    height:42px
+  }
+
+  .gallery-viewer-back,
+  .gallery-viewer-close{
+    top:10px;
+    width:40px;
+    height:40px
+  }
+
+  .gallery-viewer-back{
+    left:10px
+  }
+
+  .gallery-viewer-close{
+    right:10px
+  }
+
+  .gallery-viewer-main{
+    top:52px;
+    left:45px;
+    right:45px;
+    bottom:102px
+  }
+
+  .gallery-viewer-image{
+    max-width:100%;
+    max-height:calc(100svh - 195px);
+    border-radius:4px
+  }
+
+  .gallery-viewer-counter{
+    margin-top:14px;
+    font-size:12px
+  }
+
+  .gallery-viewer-prev,
+  .gallery-viewer-next{
+    top:44%;
+    width:42px;
+    height:64px;
+    font-size:34px
+  }
+
+  .gallery-viewer-prev{
+    left:0
+  }
+
+  .gallery-viewer-next{
+    right:0
+  }
+
+  .gallery-viewer-thumbnails{
+    height:88px;
+    gap:5px;
+    padding:8px 8px 10px
+  }
+
+  .gallery-viewer-thumb{
+    width:64px;
+    height:64px
+  }
+}
+
+/* END APARTMENT GALLERY VIEWER */
