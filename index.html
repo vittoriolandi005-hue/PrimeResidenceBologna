@@ -224,7 +224,7 @@
       width:100%;
       height:100%;
       transform:translate3d(0,0,0);
-      transition:transform 1.85s cubic-bezier(.22,.61,.36,1);
+      transition:transform 1.5s cubic-bezier(.4,0,.2,1);
       will-change:transform
     }
 
@@ -249,12 +249,26 @@
       object-fit:cover;
       object-position:center;
       filter:saturate(.88) brightness(.72);
-      transform:scale(1.02);
-      transition:transform 7s cubic-bezier(.22,.61,.36,1)
+      transform:scale(1.01);
+      transition:none
     }
 
-    .prime-hero-gallery-panel.is-current img{
-      transform:scale(1.005) translateX(-.35%)
+    /* Side masks keep the previous/next carousel photos completely hidden
+       outside the two visible gallery positions. */
+    .prime-hero-gallery::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:2;
+      pointer-events:none;
+      background:linear-gradient(90deg,
+        #171614 0,
+        #171614 6vw,
+        transparent 6vw,
+        transparent calc(100% - 6vw),
+        #171614 calc(100% - 6vw),
+        #171614 100%
+      )
     }
 
     .prime-hero-gallery::after{
@@ -281,6 +295,17 @@
         padding:96px 28px 52px
       }
 
+      .prime-hero-gallery::before{
+        background:linear-gradient(90deg,
+          #171614 0,
+          #171614 28px,
+          transparent 28px,
+          transparent calc(100% - 28px),
+          #171614 calc(100% - 28px),
+          #171614 100%
+        )
+      }
+
       .prime-hero-gallery-track{
         gap:10px
       }
@@ -293,6 +318,10 @@
     @media(max-width:700px){
       .prime-hero-gallery{
         padding:0
+      }
+
+      .prime-hero-gallery::before{
+        display:none
       }
 
       .prime-hero-gallery-track{
@@ -975,7 +1004,7 @@
   let moving=false;
 
   const INTERVAL=5200;
-  const SLIDE_DURATION=1850;
+  const SLIDE_DURATION=1500;
 
   function stepSize(){
     const panels=track.querySelectorAll('.prime-hero-gallery-panel');
@@ -994,6 +1023,21 @@
     track.style.transform=`translate3d(${-index*stepSize()}px,0,0)`;
   }
 
+  function finishMove(){
+    if(!moving)return;
+
+    if(index>=originals.length){
+      index=0;
+      markCurrent();
+      setPosition(false);
+      // Commit the invisible reset before re-enabling the 1.5 s transition.
+      track.getBoundingClientRect();
+      requestAnimationFrame(()=>track.classList.remove('no-transition'));
+    }
+
+    moving=false;
+  }
+
   function next(){
     if(moving)return;
     moving=true;
@@ -1001,18 +1045,15 @@
     markCurrent();
     setPosition(true);
 
-    window.setTimeout(()=>{
-      if(index>=originals.length){
-        index=0;
-        markCurrent();
-        setPosition(false);
-        // Force the no-transition reset to be committed before restoring animation.
-        track.getBoundingClientRect();
-        track.classList.remove('no-transition');
-      }
-      moving=false;
-    },SLIDE_DURATION+60);
+    // Fallback only: transitionend below is the normal completion path.
+    window.setTimeout(finishMove,SLIDE_DURATION+120);
   }
+
+  track.addEventListener('transitionend',event=>{
+    if(event.propertyName==='transform'){
+      finishMove();
+    }
+  });
 
   function start(){
     stop();
