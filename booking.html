@@ -1020,7 +1020,7 @@
 <!-- =====================================================
        NAVIGATION
   ====================================================== -->
-<header class="navbar booking-navbar">
+<header class="navbar booking-navbar" data-adaptive-nav>
 <div class="nav-container">
 <a class="logo logo-image-link" href="index.html" aria-label="Prime Residence Bologna home">
 <img class="site-brand-image site-brand-image-nav" src="images/prime-residence-logo.png" alt="Prime Residence Bologna"/>
@@ -1071,7 +1071,7 @@
 <!-- =====================================================
          BOOKING HERO
     ====================================================== -->
-<section class="booking-hero">
+<section class="booking-hero" data-logo-scheme="light">
 <div class="container">
 <div class="booking-hero-inner">
 <span class="eyebrow">
@@ -1093,7 +1093,7 @@
 <!-- =====================================================
          RESIDENCE CHOICE
     ====================================================== -->
-<section class="booking-choice">
+<section class="booking-choice" data-logo-scheme="light">
 <div class="container">
 <div class="booking-section-heading">
 <span class="eyebrow">
@@ -1175,7 +1175,7 @@
 <!-- =====================================================
          BOOKING FORM
     ====================================================== -->
-<section class="booking-form-section" id="booking-form-section">
+<section class="booking-form-section" id="booking-form-section" data-logo-scheme="light">
 <div class="container">
 <div class="booking-form-wrapper">
 <div class="booking-form-intro">
@@ -1530,6 +1530,63 @@
 </div>
 </div>
 </footer>
+<!-- =====================================================
+       PRIME ASSISTANT â€” BOOKING
+  ====================================================== -->
+<div class="prime-assistant" data-assistant-page="booking" data-assistant-residence="Prime Residence Bologna">
+<div aria-hidden="true" class="prime-assistant-prompt">
+<button aria-label="Ask about booking at Prime Residence Bologna" class="assistant-prompt-main" type="button">
+<span class="assistant-prompt-dot"></span>
+<span class="assistant-prompt-content">
+<span class="assistant-prompt-label">PRIME ASSISTANT</span>
+<strong>Need help with your booking?</strong>
+<small>Ask about availability, the residences, check-in or your stay.</small>
+</span>
+<span class="assistant-prompt-arrow">â†’</span>
+</button>
+<button aria-label="Close assistant suggestion" class="assistant-prompt-close" type="button">Ã—</button>
+</div>
+<button aria-expanded="false" aria-label="Open Prime Residence Assistant" class="prime-assistant-launcher" type="button">
+<span class="assistant-launcher-dot"></span>
+<span class="assistant-launcher-text">PRIME ASSISTANT</span>
+</button>
+<section aria-hidden="true" aria-label="Prime Residence virtual assistant" class="prime-assistant-window">
+<div class="prime-assistant-header">
+<div class="prime-assistant-identity">
+<span class="assistant-status-dot"></span>
+<div>
+<span class="assistant-name">PRIME ASSISTANT</span>
+<span class="assistant-status">BOOK YOUR STAY</span>
+</div>
+</div>
+<button aria-label="Close Prime Residence Assistant" class="prime-assistant-close" type="button">Ã—</button>
+</div>
+<div aria-live="polite" class="prime-assistant-messages">
+<div class="assistant-message assistant-message-bot">
+<span class="assistant-message-label">PRIME ASSISTANT</span>
+<p>Welcome. I can help you with availability, the residences, booking and check-in.</p>
+</div>
+</div>
+<div class="prime-assistant-suggestions">
+<button class="assistant-suggestion" data-question="residences" type="button">THE RESIDENCES</button>
+<button class="assistant-suggestion" data-question="booking" type="button">BOOKING</button>
+<button class="assistant-suggestion" data-question="location" type="button">LOCATION</button>
+<button class="assistant-suggestion" data-question="checkin" type="button">CHECK-IN</button>
+</div>
+<form autocomplete="off" class="prime-assistant-form">
+<label class="assistant-visually-hidden" for="primeAssistantInputBooking">Ask Prime Residence Assistant a question</label>
+<input class="prime-assistant-input" id="primeAssistantInputBooking" maxlength="250" placeholder="Ask about your stay..." type="text"/>
+<button aria-label="Send message" class="prime-assistant-send" type="submit">â†’</button>
+</form>
+<div class="prime-assistant-contact">
+<span>NEED PERSONAL ASSISTANCE?</span>
+<div>
+<a href="https://wa.me/393917055625" rel="noopener noreferrer" target="_blank">WHATSAPP â†—</a>
+<a href="mailto:vittoriolandi005@gmail.com">EMAIL â†—</a>
+</div>
+</div>
+</section>
+</div>
 <!-- =====================================================
        WHATSAPP
   ====================================================== -->
