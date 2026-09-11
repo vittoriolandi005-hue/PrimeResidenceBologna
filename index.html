@@ -201,7 +201,7 @@
 
 
     /* =====================================================
-       HERO BACKGROUND GALLERY â€” AUTOMATIC
+       HERO BACKGROUND GALLERY â€” INFINITE CAROUSEL
     ====================================================== */
 
     .hero{
@@ -213,33 +213,30 @@
       inset:0;
       z-index:0;
       overflow:hidden;
+      padding:112px 6vw 7vh;
       background:#171614;
       pointer-events:none
     }
 
-    .prime-hero-gallery-frame{
-      position:absolute;
-      inset:0;
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
+    .prime-hero-gallery-track{
+      display:flex;
       gap:18px;
-      padding:112px 6vw 7vh;
-      opacity:0;
-      transform:scale(1.018);
-      transition:
-        opacity 1.35s ease,
-        transform 6.8s cubic-bezier(.22,.61,.36,1);
-      will-change:opacity,transform
+      width:100%;
+      height:100%;
+      transform:translate3d(0,0,0);
+      transition:transform 1.85s cubic-bezier(.22,.61,.36,1);
+      will-change:transform
     }
 
-    .prime-hero-gallery-frame.is-active{
-      opacity:1;
-      transform:scale(1)
+    .prime-hero-gallery-track.no-transition{
+      transition:none
     }
 
     .prime-hero-gallery-panel{
       position:relative;
+      flex:0 0 calc((100% - 18px)/2);
       min-width:0;
+      height:100%;
       overflow:hidden;
       border-radius:2px;
       background:#28241f;
@@ -252,16 +249,12 @@
       object-fit:cover;
       object-position:center;
       filter:saturate(.88) brightness(.72);
-      transform:scale(1.035);
+      transform:scale(1.02);
       transition:transform 7s cubic-bezier(.22,.61,.36,1)
     }
 
-    .prime-hero-gallery-frame.is-active .prime-hero-gallery-panel:first-child img{
-      transform:scale(1.005) translateX(-.4%)
-    }
-
-    .prime-hero-gallery-frame.is-active .prime-hero-gallery-panel:last-child img{
-      transform:scale(1.005) translateX(.4%)
+    .prime-hero-gallery-panel.is-current img{
+      transform:scale(1.005) translateX(-.35%)
     }
 
     .prime-hero-gallery::after{
@@ -269,6 +262,7 @@
       position:absolute;
       inset:0;
       z-index:3;
+      pointer-events:none;
       background:
         linear-gradient(90deg,rgba(10,9,8,.62) 0%,rgba(10,9,8,.34) 44%,rgba(10,9,8,.24) 72%,rgba(10,9,8,.42) 100%),
         linear-gradient(180deg,rgba(12,11,10,.34) 0%,rgba(12,11,10,.04) 36%,rgba(12,11,10,.24) 100%)
@@ -283,24 +277,30 @@
     .hero>.hero-scroll{z-index:5}
 
     @media(max-width:900px){
-      .prime-hero-gallery-frame{
-        gap:10px;
+      .prime-hero-gallery{
         padding:96px 28px 52px
+      }
+
+      .prime-hero-gallery-track{
+        gap:10px
+      }
+
+      .prime-hero-gallery-panel{
+        flex-basis:calc((100% - 10px)/2)
       }
     }
 
     @media(max-width:700px){
-      .prime-hero-gallery-frame{
-        grid-template-columns:1fr;
-        gap:0;
+      .prime-hero-gallery{
         padding:0
       }
 
-      .prime-hero-gallery-panel:last-child{
-        display:none
+      .prime-hero-gallery-track{
+        gap:0
       }
 
       .prime-hero-gallery-panel{
+        flex-basis:100%;
         border-radius:0;
         box-shadow:none
       }
@@ -389,15 +389,11 @@
     ====================================================== -->
 <section class="hero">
 <div class="prime-hero-gallery" id="primeHeroGallery" aria-hidden="true">
-  <div class="prime-hero-gallery-frame is-active">
-    <div class="prime-hero-gallery-panel"><img src="images/gastone-rossi-12/30.jpg" alt="" decoding="async" fetchpriority="high"/></div>
+  <div class="prime-hero-gallery-track">
+    <div class="prime-hero-gallery-panel is-current"><img src="images/gastone-rossi-12/30.jpg" alt="" decoding="async" fetchpriority="high"/></div>
     <div class="prime-hero-gallery-panel"><img src="images/barontini-8/13.jpg" alt="" decoding="async" fetchpriority="high"/></div>
-  </div>
-  <div class="prime-hero-gallery-frame">
     <div class="prime-hero-gallery-panel"><img src="images/gastone-rossi-12/01.jpg" alt="" decoding="async" loading="lazy"/></div>
     <div class="prime-hero-gallery-panel"><img src="images/barontini-8/01.jpg" alt="" decoding="async" loading="lazy"/></div>
-  </div>
-  <div class="prime-hero-gallery-frame">
     <div class="prime-hero-gallery-panel"><img src="images/gastone-rossi-12/22.jpg" alt="" decoding="async" loading="lazy"/></div>
     <div class="prime-hero-gallery-panel"><img src="images/barontini-8/19.jpg" alt="" decoding="async" loading="lazy"/></div>
   </div>
@@ -959,20 +955,63 @@
   const gallery=document.querySelector('#primeHeroGallery');
   if(!gallery)return;
 
-  const frames=Array.from(gallery.querySelectorAll('.prime-hero-gallery-frame'));
-  if(frames.length<2)return;
+  const track=gallery.querySelector('.prime-hero-gallery-track');
+  if(!track)return;
 
-  let current=0;
+  const originals=Array.from(track.querySelectorAll('.prime-hero-gallery-panel'));
+  if(originals.length<3)return;
+
+  // Two cloned panels allow the last original image to slide naturally
+  // while the next images enter from the right, then the track resets invisibly.
+  originals.slice(0,2).forEach(panel=>{
+    const clone=panel.cloneNode(true);
+    clone.classList.remove('is-current');
+    clone.setAttribute('data-carousel-clone','true');
+    track.appendChild(clone);
+  });
+
+  let index=0;
   let timer=null;
-  const INTERVAL=4800;
+  let moving=false;
 
-  function show(index){
-    frames.forEach((frame,i)=>frame.classList.toggle('is-active',i===index));
-    current=index;
+  const INTERVAL=5200;
+  const SLIDE_DURATION=1850;
+
+  function stepSize(){
+    const panels=track.querySelectorAll('.prime-hero-gallery-panel');
+    if(panels.length<2)return gallery.clientWidth;
+    return panels[1].offsetLeft-panels[0].offsetLeft;
+  }
+
+  function markCurrent(){
+    const panels=Array.from(track.querySelectorAll('.prime-hero-gallery-panel'));
+    panels.forEach(panel=>panel.classList.remove('is-current'));
+    if(panels[index])panels[index].classList.add('is-current');
+  }
+
+  function setPosition(animate=true){
+    track.classList.toggle('no-transition',!animate);
+    track.style.transform=`translate3d(${-index*stepSize()}px,0,0)`;
   }
 
   function next(){
-    show((current+1)%frames.length);
+    if(moving)return;
+    moving=true;
+    index+=1;
+    markCurrent();
+    setPosition(true);
+
+    window.setTimeout(()=>{
+      if(index>=originals.length){
+        index=0;
+        markCurrent();
+        setPosition(false);
+        // Force the no-transition reset to be committed before restoring animation.
+        track.getBoundingClientRect();
+        track.classList.remove('no-transition');
+      }
+      moving=false;
+    },SLIDE_DURATION+60);
   }
 
   function start(){
@@ -987,12 +1026,19 @@
     }
   }
 
+  let resizeTimer=null;
+  window.addEventListener('resize',()=>{
+    window.clearTimeout(resizeTimer);
+    resizeTimer=window.setTimeout(()=>setPosition(false),100);
+  });
+
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden)stop();
     else start();
   });
 
-  show(0);
+  setPosition(false);
+  requestAnimationFrame(()=>track.classList.remove('no-transition'));
   start();
 })();
 </script>
