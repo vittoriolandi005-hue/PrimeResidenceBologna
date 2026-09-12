@@ -180,6 +180,7 @@ node.nodeValue=
 translated!==undefined
 ?original.replace(normalized,translated)
 :original;
+
 }
 
 function primeTranslateElement(el){
@@ -281,10 +282,12 @@ lang==="it"
 :"en";
 
 try{
+
 localStorage.setItem(
 PRIME_LANG_KEY,
 primeLanguage
 );
+
 }catch{}
 
 primeApplyLanguage();
@@ -696,6 +699,8 @@ passive:true
 
 /* =========================================================
    02B. ADAPTIVE LOGO CONTRAST
+   Automatically chooses a light or dark header logo according
+   to the real background directly behind the logo.
 ========================================================= */
 
 const adaptiveNavs=[
@@ -704,7 +709,29 @@ const adaptiveNavs=[
 )
 ];
 
-function luminanceFromColor(color){
+const adaptivePixelCanvas=
+document.createElement(
+"canvas"
+);
+
+adaptivePixelCanvas.width=
+1;
+
+adaptivePixelCanvas.height=
+1;
+
+const adaptivePixelContext=
+adaptivePixelCanvas.getContext(
+"2d",
+{
+willReadFrequently:true
+}
+);
+
+let adaptiveLogoFrame=0;
+let adaptiveLogoTimer=0;
+
+function adaptiveRgbFromColor(color){
 
 const match=
 String(color||"")
@@ -720,9 +747,9 @@ const parts=
 match[1]
 .split(",")
 .map(
-v=>
+value=>
 Number(
-v.trim()
+value.trim()
 )
 );
 
@@ -735,109 +762,472 @@ parts
 return null;
 }
 
+return{
+
+r:parts[0],
+
+g:parts[1],
+
+b:parts[2],
+
+a:
+parts.length>=4&&
+Number.isFinite(parts[3])
+?parts[3]
+:1
+
+};
+
+}
+
+function adaptiveLuminance(
+r,
+g,
+b
+){
+
 return(
-.2126*parts[0]+
-.7152*parts[1]+
-.0722*parts[2]
+.2126*r+
+.7152*g+
+.0722*b
 )/255;
 
 }
 
-function schemeUnderNav(nav){
+function adaptiveImageLuminance(
+img,
+clientX,
+clientY
+){
+
+if(
+!adaptivePixelContext||
+!img||
+!img.complete||
+!img.naturalWidth||
+!img.naturalHeight
+){
+return null;
+}
 
 const rect=
-nav.getBoundingClientRect();
+img.getBoundingClientRect();
 
-const x=
-Math.min(
-window.innerWidth-2,
-Math.max(
-2,
-rect.left+
-Math.min(
-rect.width*.18,
-180
-)
-)
+if(
+!rect.width||
+!rect.height||
+clientX<rect.left||
+clientX>rect.right||
+clientY<rect.top||
+clientY>rect.bottom
+){
+return null;
+}
+
+const style=
+getComputedStyle(
+img
 );
 
-const y=
-Math.min(
-window.innerHeight-2,
-Math.max(
-2,
-rect.bottom-8
+const fit=
+style.objectFit||
+"fill";
+
+const naturalWidth=
+img.naturalWidth;
+
+const naturalHeight=
+img.naturalHeight;
+
+let scaleX=
+rect.width/
+naturalWidth;
+
+let scaleY=
+rect.height/
+naturalHeight;
+
+let drawWidth=
+rect.width;
+
+let drawHeight=
+rect.height;
+
+let offsetX=0;
+let offsetY=0;
+
+if(
+fit==="cover"||
+fit==="contain"
+){
+
+const scale=
+fit==="cover"
+?Math.max(
+scaleX,
+scaleY
 )
+:Math.min(
+scaleX,
+scaleY
 );
+
+scaleX=
+scale;
+
+scaleY=
+scale;
+
+drawWidth=
+naturalWidth*
+scale;
+
+drawHeight=
+naturalHeight*
+scale;
+
+offsetX=
+(
+rect.width-
+drawWidth
+)/2;
+
+offsetY=
+(
+rect.height-
+drawHeight
+)/2;
+
+}
+
+const localX=
+clientX-
+rect.left-
+offsetX;
+
+const localY=
+clientY-
+rect.top-
+offsetY;
+
+const sourceX=
+localX/
+scaleX;
+
+const sourceY=
+localY/
+scaleY;
+
+if(
+sourceX<0||
+sourceY<0||
+sourceX>=naturalWidth||
+sourceY>=naturalHeight
+){
+return null;
+}
+
+try{
+
+adaptivePixelContext.clearRect(
+0,
+0,
+1,
+1
+);
+
+adaptivePixelContext.drawImage(
+img,
+
+Math.max(
+0,
+Math.min(
+naturalWidth-1,
+sourceX
+)
+),
+
+Math.max(
+0,
+Math.min(
+naturalHeight-1,
+sourceY
+)
+),
+
+1,
+1,
+0,
+0,
+1,
+1
+);
+
+const pixel=
+adaptivePixelContext
+.getImageData(
+0,
+0,
+1,
+1
+)
+.data;
+
+return adaptiveLuminance(
+pixel[0],
+pixel[1],
+pixel[2]
+);
+
+}catch{
+
+return null;
+
+}
+
+}
+
+function adaptivePointLuminance(
+nav,
+clientX,
+clientY
+){
 
 const stack=
 document.elementsFromPoint(
-x,
-y
+clientX,
+clientY
 );
 
-const target=
-stack.find(
-el=>
-!el.closest(
-".navbar,.apartment-nav,.mobile-menu,.prime-assistant"
+let imageCandidate=null;
+let imageSectionFound=false;
+
+for(
+const element
+of stack
+){
+
+if(
+!element||
+element===document.documentElement||
+element===document.body
+){
+continue;
+}
+
+if(
+element.closest(
+".navbar,.apartment-nav,.mobile-menu,.prime-assistant,.gallery-photo-viewer,.gallery-album-overlay"
 )
-);
+){
+continue;
+}
 
 const themed=
-target&&
-target.closest(
+element.closest(
 "[data-logo-scheme]"
 );
 
 if(themed){
 
-const s=
+const scheme=
 themed.dataset.logoScheme;
 
 if(
-s==="dark"||
-s==="image"
+scheme==="dark"
 ){
-return"dark";
+return .16;
 }
 
-if(s==="light"){
-return"light";
+if(
+scheme==="light"
+){
+return .88;
+}
+
+if(
+scheme==="image"
+){
+imageSectionFound=true;
 }
 
 }
 
-let el=
-target;
-
-while(
-el&&
-el!==document.documentElement
+if(
+!imageCandidate&&
+element.tagName==="IMG"
 ){
 
-const style=
-getComputedStyle(el);
+imageCandidate=
+element;
 
-const lum=
-luminanceFromColor(
-style.backgroundColor
+}
+
+const background=
+adaptiveRgbFromColor(
+getComputedStyle(
+element
+)
+.backgroundColor
 );
 
 if(
-lum!==null&&
-style.backgroundColor!==
-"rgba(0, 0, 0, 0)"
+background&&
+background.a>=.72
 ){
 
-return lum<.48
-?"dark"
-:"light";
+return adaptiveLuminance(
+background.r,
+background.g,
+background.b
+);
 
 }
 
-el=
-el.parentElement;
+}
+
+if(imageCandidate){
+
+const sampled=
+adaptiveImageLuminance(
+imageCandidate,
+clientX,
+clientY
+);
+
+if(
+sampled!==null
+){
+
+return Math.max(
+0,
+sampled-
+(
+imageSectionFound
+?.08
+:0
+)
+);
+
+}
+
+}
+
+if(imageSectionFound){
+return .28;
+}
+
+return null;
+
+}
+
+function adaptiveSchemeForNav(nav){
+
+if(
+nav.classList.contains(
+"scrolled"
+)
+){
+
+return"light";
+
+}
+
+const logo=
+nav.querySelector(
+".site-brand-image-nav"
+);
+
+if(!logo){
+return"light";
+}
+
+const rect=
+logo.getBoundingClientRect();
+
+if(
+rect.width<=0||
+rect.height<=0
+){
+return"light";
+}
+
+const sampleY=
+Math.max(
+2,
+Math.min(
+window.innerHeight-2,
+rect.top+
+rect.height*.55
+)
+);
+
+const sampleXs=[
+
+rect.left+
+rect.width*.18,
+
+rect.left+
+rect.width*.50,
+
+rect.left+
+rect.width*.82
+
+];
+
+const values=
+sampleXs
+.map(
+x=>
+adaptivePointLuminance(
+
+nav,
+
+Math.max(
+2,
+Math.min(
+window.innerWidth-2,
+x
+)
+),
+
+sampleY
+
+)
+)
+.filter(
+value=>
+typeof value==="number"&&
+Number.isFinite(value)
+);
+
+if(!values.length){
+
+const themed=
+document
+.elementFromPoint(
+
+Math.max(
+2,
+Math.min(
+window.innerWidth-2,
+rect.left+
+rect.width*.5
+)
+),
+
+sampleY
+
+)
+?.closest(
+"[data-logo-scheme]"
+);
+
+if(themed){
+
+return themed.dataset.logoScheme==="light"
+?"light"
+:"dark";
 
 }
 
@@ -849,16 +1239,42 @@ return document.body.classList.contains(
 
 }
 
+const average=
+values.reduce(
+(sum,value)=>
+sum+value,
+0
+)/
+values.length;
+
+const currentlyDark=
+nav.classList.contains(
+"nav-on-dark"
+);
+
+if(currentlyDark){
+
+return average>.62
+?"light"
+:"dark";
+
+}
+
+return average<.52
+?"dark"
+:"light";
+
+}
+
 function updateAdaptiveLogos(){
 
-adaptiveNavs.forEach(nav=>{
+adaptiveNavs.forEach(
+nav=>{
 
 const scheme=
-nav.classList.contains(
-"scrolled"
-)
-?"light"
-:schemeUnderNav(nav);
+adaptiveSchemeForNav(
+nav
+);
 
 nav.classList.toggle(
 "nav-on-dark",
@@ -867,14 +1283,15 @@ scheme==="dark"
 
 nav.classList.toggle(
 "nav-on-light",
-scheme!=="dark"
+scheme==="light"
 );
 
 nav
 .querySelectorAll(
-".site-brand-image"
+".site-brand-image-nav"
 )
-.forEach(img=>{
+.forEach(
+img=>{
 
 img.classList.toggle(
 "logo-contrast-light",
@@ -883,20 +1300,41 @@ scheme==="dark"
 
 img.classList.toggle(
 "logo-contrast-dark",
-scheme!=="dark"
+scheme==="light"
 );
 
-});
+}
+);
 
-});
+}
+);
 
 }
 
+function requestAdaptiveLogoUpdate(){
+
+if(adaptiveLogoFrame){
+return;
+}
+
+adaptiveLogoFrame=
+requestAnimationFrame(
+()=>{
+
+adaptiveLogoFrame=0;
+
 updateAdaptiveLogos();
+
+}
+);
+
+}
+
+requestAdaptiveLogoUpdate();
 
 window.addEventListener(
 "scroll",
-updateAdaptiveLogos,
+requestAdaptiveLogoUpdate,
 {
 passive:true
 }
@@ -904,7 +1342,64 @@ passive:true
 
 window.addEventListener(
 "resize",
-updateAdaptiveLogos
+requestAdaptiveLogoUpdate,
+{
+passive:true
+}
+);
+
+window.addEventListener(
+"load",
+requestAdaptiveLogoUpdate
+);
+
+document
+.querySelectorAll(
+"img"
+)
+.forEach(
+img=>{
+
+if(!img.complete){
+
+img.addEventListener(
+"load",
+requestAdaptiveLogoUpdate,
+{
+once:true
+}
+);
+
+}
+
+}
+);
+
+adaptiveLogoTimer=
+window.setInterval(
+()=>{
+
+if(!document.hidden){
+
+requestAdaptiveLogoUpdate();
+
+}
+
+},
+400
+);
+
+document.addEventListener(
+"visibilitychange",
+()=>{
+
+if(!document.hidden){
+
+requestAdaptiveLogoUpdate();
+
+}
+
+}
 );
 
 
@@ -931,9 +1426,11 @@ primeHeroGallery.querySelector(
 
 const originals=
 track
-?[...track.querySelectorAll(
+?[
+...track.querySelectorAll(
 ".prime-hero-gallery-panel"
-)]
+)
+]
 :[];
 
 if(
@@ -943,11 +1440,17 @@ originals.length>=3
 ){
 
 originals
-.slice(0,2)
-.forEach(panel=>{
+.slice(
+0,
+2
+)
+.forEach(
+panel=>{
 
 const clone=
-panel.cloneNode(true);
+panel.cloneNode(
+true
+);
 
 clone.setAttribute(
 "data-carousel-clone",
@@ -958,10 +1461,14 @@ track.appendChild(
 clone
 );
 
-});
+}
+);
 
-const SLIDE_MS=1500;
-const HOLD_MS=3600;
+const SLIDE_MS=
+1500;
+
+const HOLD_MS=
+3600;
 
 let index=0;
 let step=0;
@@ -984,7 +1491,9 @@ track.querySelectorAll(
 ".prime-hero-gallery-panel"
 );
 
-if(panels.length<2){
+if(
+panels.length<2
+){
 return;
 }
 
@@ -997,10 +1506,12 @@ panels[1]
 .getBoundingClientRect();
 
 step=
-b.left-a.left;
+b.left-
+a.left;
 
 offset=
-index*step;
+index*
+step;
 
 track.style.transform=
 `translate3d(${-offset}px,0,0)`;
@@ -1077,7 +1588,9 @@ startOffset+
 endOffset-
 startOffset
 )*
-ease(progress);
+ease(
+progress
+);
 
 track.style.transform=
 `translate3d(${-value}px,0,0)`;
@@ -1106,7 +1619,6 @@ originals.length
 ){
 
 index=0;
-
 offset=0;
 
 track.style.transform=
@@ -1130,22 +1642,29 @@ frame
 function preload(){
 
 return Promise.all(
+
 [
 ...track.querySelectorAll(
 "img"
 )
 ]
-.map(img=>{
+
+.map(
+img=>{
 
 if(img.complete){
 
 return img.decode
-?img.decode().catch(()=>{})
+?img.decode()
+.catch(
+()=>{}
+)
 :Promise.resolve();
 
 }
 
-return new Promise(resolve=>{
+return new Promise(
+resolve=>{
 
 img.addEventListener(
 "load",
@@ -1163,9 +1682,12 @@ once:true
 }
 );
 
-});
+}
+);
 
-})
+}
+)
+
 );
 
 }
@@ -1303,7 +1825,8 @@ mobileMenu
 .querySelectorAll(
 "a"
 )
-.forEach(link=>{
+.forEach(
+link=>{
 
 link.addEventListener(
 "click",
@@ -1328,7 +1851,8 @@ document.body.style.overflow=
 }
 );
 
-});
+}
+);
 
 }
 
@@ -1342,13 +1866,16 @@ document.querySelectorAll(
 ".reveal"
 );
 
-if(revealElements.length){
+if(
+revealElements.length
+){
 
 const observer=
 new IntersectionObserver(
 entries=>{
 
-entries.forEach(entry=>{
+entries.forEach(
+entry=>{
 
 if(
 entry.isIntersecting
@@ -1364,7 +1891,8 @@ entry.target
 
 }
 
-});
+}
+);
 
 },
 {
@@ -1374,7 +1902,9 @@ threshold:.12
 
 revealElements.forEach(
 el=>
-observer.observe(el)
+observer.observe(
+el
+)
 );
 
 }
@@ -1457,7 +1987,9 @@ window.scrollTo(
 0,
 startY+
 distance*
-premiumEase(progress)
+premiumEase(
+progress
+)
 );
 
 if(progress<1){
@@ -1493,7 +2025,8 @@ document
 .querySelectorAll(
 "[data-booking-gallery]"
 )
-.forEach(gallery=>{
+.forEach(
+gallery=>{
 
 const prefix=
 gallery.dataset.galleryPrefix||
@@ -1930,8 +2463,17 @@ renderViewer();
 function preloadViewerNeighbors(){
 
 const indexes=[
-(viewerIndex+1)%images.length,
-(viewerIndex-1+images.length)%images.length
+
+(viewerIndex+1)%
+images.length,
+
+(
+viewerIndex-
+1+
+images.length
+)%
+images.length
+
 ];
 
 indexes.forEach(
@@ -1951,10 +2493,14 @@ images[index];
 function syncActiveThumbnail(){
 
 thumbnailButtons.forEach(
-(button,index)=>{
+(
+button,
+index
+)=>{
 
 const active=
-index===viewerIndex;
+index===
+viewerIndex;
 
 button.classList.toggle(
 "active",
@@ -2461,12 +3007,6 @@ Math.abs(dx);
 const movedY=
 Math.abs(dy);
 
-/*
-A normal short click opens the ALL PHOTOS screen.
-We do this manually here because pointer capture can
-prevent the original button click from firing.
-*/
-
 if(
 movedX<12&&
 movedY<12
@@ -2498,10 +3038,6 @@ openAlbum();
 return;
 
 }
-
-/*
-A horizontal drag remains the original gallery swipe.
-*/
 
 if(
 movedX>=50&&
@@ -2589,7 +3125,8 @@ closeAlbum();
 
 render();
 
-});
+}
+);
 
 
 /* =========================================================
@@ -2799,7 +3336,9 @@ days
 )=>{
 
 const date=
-parseISO(value);
+parseISO(
+value
+);
 
 date.setDate(
 date.getDate()+
@@ -2864,8 +3403,12 @@ const setRate=(
 date,
 price
 )=>{
-BARONTINI_RATES[date]=
+
+BARONTINI_RATES[
+date
+]=
 price;
+
 };
 
 const setRange=(
@@ -2877,7 +3420,10 @@ price
 for(
 let date=start;
 date<=end;
-date=addDays(date,1)
+date=addDays(
+date,
+1
+)
 ){
 
 setRate(
@@ -3126,11 +3672,16 @@ setRate(
 for(
 let date="2027-02-01";
 date<="2027-02-28";
-date=addDays(date,1)
+date=addDays(
+date,
+1
+)
 ){
 
 const weekday=
-parseISO(date)
+parseISO(
+date
+)
 .getDay();
 
 setRate(
@@ -3154,8 +3705,12 @@ const setGastoneRate=(
 date,
 price
 )=>{
-GASTONE_RATES[date]=
+
+GASTONE_RATES[
+date
+]=
 price;
+
 };
 
 const setGastoneRange=(
@@ -3167,7 +3722,10 @@ price
 for(
 let date=start;
 date<=end;
-date=addDays(date,1)
+date=addDays(
+date,
+1
+)
 ){
 
 setGastoneRate(
@@ -3237,11 +3795,16 @@ setGastoneRate(
 for(
 let date="2026-12-01";
 date<="2026-12-31";
-date=addDays(date,1)
+date=addDays(
+date,
+1
+)
 ){
 
 const weekday=
-parseISO(date)
+parseISO(
+date
+)
 .getDay();
 
 setGastoneRate(
@@ -3467,7 +4030,10 @@ let basePrice=0;
 for(
 let day=selectedStart;
 day<selectedEnd;
-day=addDays(day,1)
+day=addDays(
+day,
+1
+)
 ){
 
 if(
@@ -3485,13 +4051,17 @@ rates[day];
 }
 
 return{
+
 price:
 basePrice*
-guestMultiplier(guests),
+guestMultiplier(
+guests
+),
 
 nights,
 
 guests
+
 };
 
 }
@@ -3506,13 +4076,17 @@ primeLanguage==="it"
 style:"currency",
 currency:"EUR",
 minimumFractionDigits:
-Number.isInteger(value)
+Number.isInteger(
+value
+)
 ?0
 :2,
 maximumFractionDigits:2
 }
 )
-.format(value);
+.format(
+value
+);
 
 }
 
@@ -3532,7 +4106,10 @@ stayPriceBanner.classList.remove(
 );
 
 if(estimatedTotalInput){
-estimatedTotalInput.value="";
+
+estimatedTotalInput.value=
+"";
+
 }
 
 return;
@@ -3575,7 +4152,8 @@ if(estimatedTotalInput){
 estimatedTotalInput.value=
 String(
 Math.round(
-result.price*100
+result.price*
+100
 )/
 100
 );
@@ -3591,7 +4169,11 @@ result.price*100
 
 function isBooked(day){
 
-if(isRateBlocked(day)){
+if(
+isRateBlocked(
+day
+)
+){
 return true;
 }
 
@@ -3628,10 +4210,17 @@ return true;
 for(
 let day=start;
 day<end;
-day=addDays(day,1)
+day=addDays(
+day,
+1
+)
 ){
 
-if(isBooked(day)){
+if(
+isBooked(
+day
+)
+){
 return true;
 }
 
@@ -3691,7 +4280,9 @@ return;
 }
 
 calendarMessage.textContent=
-primeTranslate(text);
+primeTranslate(
+text
+);
 
 calendarMessage.className=
 `calendar-message visible ${type}`;
@@ -3714,7 +4305,9 @@ bookingSubmit.classList.add(
 );
 
 bookingSubmit.textContent=
-primeTranslate(text);
+primeTranslate(
+text
+);
 
 }
 
@@ -3747,11 +4340,17 @@ selectedEnd="";
 previewEnd="";
 
 if(checkinInput){
-checkinInput.value="";
+
+checkinInput.value=
+"";
+
 }
 
 if(checkoutInput){
-checkoutInput.value="";
+
+checkoutInput.value=
+"";
+
 }
 
 if(selectedStay){
@@ -3767,7 +4366,9 @@ updatePriceBanner();
 lockSubmit();
 
 if(render){
+
 renderCalendar();
+
 }
 
 }
@@ -3798,13 +4399,17 @@ return;
 }
 
 if(checkinInput){
+
 checkinInput.value=
 selectedStart;
+
 }
 
 if(checkoutInput){
+
 checkoutInput.value=
 selectedEnd;
+
 }
 
 if(selectedStayResidence){
@@ -3939,13 +4544,15 @@ new Date(
 year,
 month+1,
 0
-).getDate();
+)
+.getDate();
 
 const leading=
 (
 firstDay.getDay()+
 6
-)%7;
+)%
+7;
 
 if(calendarPrev){
 
@@ -4012,10 +4619,14 @@ document.createElement(
 );
 
 const booked=
-isBooked(iso);
+isBooked(
+iso
+);
 
 const past=
-isPast(iso);
+isPast(
+iso
+);
 
 button.type=
 "button";
@@ -4027,7 +4638,9 @@ button.dataset.date=
 iso;
 
 button.textContent=
-String(day);
+String(
+day
+);
 
 if(past){
 
@@ -4118,7 +4731,11 @@ function handleDayClick(day){
 
 clearCalendarMessage();
 
-if(isPast(day)){
+if(
+isPast(
+day
+)
+){
 return;
 }
 
@@ -4127,7 +4744,11 @@ if(
 selectedEnd
 ){
 
-if(isBooked(day)){
+if(
+isBooked(
+day
+)
+){
 
 showCalendarMessage(
 "This date is fully booked. Please choose an available check-in date.",
@@ -4145,11 +4766,17 @@ selectedEnd=
 "";
 
 if(checkinInput){
-checkinInput.value=day;
+
+checkinInput.value=
+day;
+
 }
 
 if(checkoutInput){
-checkoutInput.value="";
+
+checkoutInput.value=
+"";
+
 }
 
 if(selectedStay){
@@ -4172,7 +4799,10 @@ return;
 
 }
 
-if(day===selectedStart){
+if(
+day===
+selectedStart
+){
 
 clearStay();
 
@@ -4180,9 +4810,16 @@ return;
 
 }
 
-if(day<selectedStart){
+if(
+day<
+selectedStart
+){
 
-if(isBooked(day)){
+if(
+isBooked(
+day
+)
+){
 return;
 }
 
@@ -4256,9 +4893,11 @@ const requestId=
 currentCalendarKey=
 calendarKey;
 
-calendarLoaded=false;
+calendarLoaded=
+false;
 
-calendarEvents=[];
+calendarEvents=
+[];
 
 clearStay(
 false
@@ -4399,7 +5038,8 @@ console.error(
 error
 );
 
-calendarLoaded=false;
+calendarLoaded=
+false;
 
 if(calendarLiveText){
 
@@ -4451,10 +5091,13 @@ lockSubmit(
 function selectResidence(card){
 
 bookingCards.forEach(
-item=>
+item=>{
+
 item.classList.remove(
 "selected"
-)
+);
+
+}
 );
 
 card.classList.add(
@@ -4672,7 +5315,9 @@ return;
 }
 
 bookingMessage.textContent=
-primeTranslate(text);
+primeTranslate(
+text
+);
 
 bookingMessage.className=
 `booking-message ${type}`;
@@ -4732,12 +5377,18 @@ result.events
 ?result.events
 :[];
 
-for(const event of events){
+for(
+const event
+of events
+){
 
 for(
 let day=selectedStart;
 day<selectedEnd;
-day=addDays(day,1)
+day=addDays(
+day,
+1
+)
 ){
 
 if(
@@ -4914,7 +5565,8 @@ if(price){
 
 data.estimatedTotal=
 Math.round(
-price.price*100
+price.price*
+100
 )/
 100;
 
@@ -5001,7 +5653,7 @@ unlockSubmit();
 
 
 /* =========================================================
-   20. PRIME ASSISTANT
+   20. PRIME ASSISTANT — AUTO PROMPT AFTER 3 SECONDS
 ========================================================= */
 
 const assistant=
@@ -5093,12 +5745,18 @@ checkout:"00:00–11:00"
 
 function isItalian(text){
 
-if(primeLanguage==="it"){
+if(
+primeLanguage===
+"it"
+){
 return true;
 }
 
 const q=
-String(text||"")
+String(
+text||
+""
+)
 .toLowerCase();
 
 return[
@@ -5127,7 +5785,9 @@ return[
 ]
 .some(
 w=>
-q.includes(w)
+q.includes(
+w
+)
 );
 
 }
@@ -5392,7 +6052,10 @@ showPrompt,
 function getResponse(original){
 
 const question=
-String(original||"")
+String(
+original||
+""
+)
 .toLowerCase()
 .trim();
 
@@ -5402,15 +6065,15 @@ original
 );
 
 const current=
-residences[page]||
+residences[
+page
+]||
 null;
 
 const bookingAction=[
 {
-label:
-"BOOK YOUR STAY →",
-href:
-"booking.html"
+label:"BOOK YOUR STAY →",
+href:"booking.html"
 }
 ];
 
@@ -5438,10 +6101,8 @@ italian
 
 actions:[
 {
-label:
-"DISCOVER THE RESIDENCES →",
-href:
-"index.html#residences"
+label:"DISCOVER THE RESIDENCES →",
+href:"index.html#residences"
 }
 ]
 
@@ -5475,16 +6136,12 @@ italian
 
 actions:[
 {
-label:
-"GASTONE ROSSI 12 →",
-href:
-"gastone-rossi-12.html"
+label:"GASTONE ROSSI 12 →",
+href:"gastone-rossi-12.html"
 },
 {
-label:
-"BARONTINI 8 →",
-href:
-"barontini-8.html"
+label:"BARONTINI 8 →",
+href:"barontini-8.html"
 }
 ]
 
@@ -5546,10 +6203,8 @@ italian
 
 actions:[
 {
-label:
-"COMPARE RESIDENCES →",
-href:
-"index.html#residences"
+label:"COMPARE RESIDENCES →",
+href:"index.html#residences"
 }
 ]
 
@@ -5604,10 +6259,8 @@ italian
 
 actions:[
 {
-label:
-"CHECK AVAILABILITY →",
-href:
-"booking.html"
+label:"CHECK AVAILABILITY →",
+href:"booking.html"
 }
 ]
 
@@ -5634,7 +6287,7 @@ return{
 text:
 italian
 ?`Per ${current.name}, il check-in è previsto ${current.checkin} e il check-out ${current.checkout}. Comunica in anticipo l'orario di arrivo.`
-:`At ${current.name}, check-in is ${current.checkin} and check-out ${current.checkout}. Please communicate your arrival time in advance.`,
+:`At ${current.name}, check-in is ${current.checkin} and check-out is ${current.checkout}. Please communicate your arrival time in advance.`,
 
 actions:
 bookingAction
@@ -5724,10 +6377,8 @@ italian
 
 actions:[
 {
-label:
-"DISCOVER THE RESIDENCES →",
-href:
-"index.html#residences"
+label:"DISCOVER THE RESIDENCES →",
+href:"index.html#residences"
 }
 ]
 
@@ -5759,17 +6410,13 @@ italian
 
 actions:[
 {
-label:
-"WHATSAPP ↗",
-href:
-"https://wa.me/393917055625",
+label:"WHATSAPP ↗",
+href:"https://wa.me/393917055625",
 external:true
 },
 {
-label:
-"EMAIL ↗",
-href:
-"mailto:vittoriolandi005@gmail.com"
+label:"EMAIL ↗",
+href:"mailto:vittoriolandi005@gmail.com"
 }
 ]
 
@@ -5964,7 +6611,9 @@ document.addEventListener(
 "keydown",
 e=>{
 
-if(e.key!=="Escape"){
+if(
+e.key!=="Escape"
+){
 return;
 }
 
