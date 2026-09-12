@@ -1188,373 +1188,46 @@
 }
 
 /* END APARTMENT GALLERY VIEWER */
+
+
 /* =========================================================
-   APARTMENT LOCATION MAP — RESTORED
-   Scoped only to the two apartment location sections.
+   ADAPTIVE HEADER LOGO
+   Only changes the visual contrast of the navigation logo.
 ========================================================= */
 
-.apartment-page .map-location-section{
-  padding:115px 0;
-  background:#f3efe7
+.site-brand-image-nav{
+  transition:
+    filter .32s ease,
+    opacity .32s ease;
+  will-change:filter
 }
 
-.apartment-page .map-location-section .residence-location-heading{
-  display:grid;
-  grid-template-columns:180px minmax(0,1fr);
-  gap:70px;
-  align-items:end;
-  margin-bottom:58px
+.navbar:not(.scrolled).nav-on-dark .site-brand-image-nav,
+.apartment-nav:not(.scrolled).nav-on-dark .site-brand-image-nav,
+.site-brand-image-nav.logo-contrast-light{
+  filter:
+    brightness(0)
+    invert(1)
+    drop-shadow(0 1px 3px rgba(0,0,0,.38));
+  opacity:.98
 }
 
-.apartment-page .map-location-section .apartment-section-label{
-  color:#9b8155;
-  font-size:8px;
-  font-weight:600;
-  letter-spacing:.22em;
-  text-transform:uppercase
+.navbar:not(.scrolled).nav-on-light .site-brand-image-nav,
+.apartment-nav:not(.scrolled).nav-on-light .site-brand-image-nav,
+.site-brand-image-nav.logo-contrast-dark{
+  filter:
+    brightness(0)
+    saturate(100%)
+    drop-shadow(0 1px 2px rgba(255,255,255,.42));
+  opacity:.94
 }
 
-.apartment-page .map-location-section .residence-location-heading-main{
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap:50px
+.navbar.scrolled .site-brand-image-nav{
+  filter:
+    brightness(0)
+    saturate(100%)
+    drop-shadow(0 1px 2px rgba(255,255,255,.3));
+  opacity:.94
 }
 
-.apartment-page .map-location-section .residence-location-heading-main h2{
-  margin:0
-}
-
-.apartment-page .map-location-section .residence-location-heading-main h2 em{
-  color:#8e7448
-}
-
-.apartment-page .map-location-section .residence-location-heading-main p{
-  padding-bottom:8px;
-  color:#70685e;
-  font-size:10px;
-  font-weight:500;
-  line-height:1.8;
-  letter-spacing:.16em;
-  text-transform:uppercase
-}
-
-.apartment-page .map-location-section .residence-location-grid{
-  width:min(1280px,100%);
-  margin-inline:auto;
-  display:grid;
-  grid-template-columns:minmax(0,1.18fr) minmax(360px,.82fr);
-  gap:58px;
-  align-items:start
-}
-
-.apartment-page .map-location-section .residence-map-column{
-  min-width:0
-}
-
-.apartment-page .map-location-section .residence-real-map{
-  width:100%;
-  height:570px;
-  overflow:hidden;
-  border:1px solid rgba(23,22,20,.12);
-  background:#d8d1c5
-}
-
-.apartment-page .map-location-section .residence-real-map .leaflet-tile-pane{
-  filter:grayscale(1) sepia(.28) saturate(.55) brightness(1.08) contrast(.82)
-}
-
-.apartment-page .map-location-section .residence-real-map .leaflet-overlay-pane,
-.apartment-page .map-location-section .residence-real-map .leaflet-marker-pane,
-.apartment-page .map-location-section .residence-real-map .leaflet-popup-pane{
-  filter:none
-}
-
-.apartment-page .map-location-section .residence-real-map .leaflet-control-zoom{
-  border:0!important;
-  box-shadow:none!important;
-  margin:0 18px 18px 0!important
-}
-
-.apartment-page .map-location-section .residence-real-map .leaflet-control-zoom a{
-  width:36px;
-  height:36px;
-  line-height:34px;
-  border:0!important;
-  border-bottom:1px solid rgba(23,22,20,.1)!important;
-  border-radius:0!important;
-  background:rgba(243,239,231,.92)!important;
-  color:#171614!important;
-  font-family:"DM Sans",sans-serif;
-  font-weight:300
-}
-
-.apartment-page .map-location-section .residence-real-map .leaflet-control-attribution{
-  background:rgba(243,239,231,.78)!important;
-  color:#756d63!important;
-  font-size:8px!important
-}
-
-.apartment-page .map-location-section .residence-real-map .leaflet-control-attribution a{
-  color:#756d63!important
-}
-
-.apartment-page .map-location-section .prime-leaflet-pin{
-  background:transparent!important;
-  border:0!important
-}
-
-.apartment-page .map-location-section .prime-leaflet-pin-outer{
-  width:48px;
-  height:48px;
-  border:1px solid rgba(142,116,72,.52);
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(243,239,231,.76);
-  box-shadow:0 10px 30px rgba(23,22,20,.17)
-}
-
-.apartment-page .map-location-section .prime-leaflet-pin-inner{
-  width:12px;
-  height:12px;
-  border-radius:50%;
-  background:#9b8155;
-  box-shadow:0 0 0 6px rgba(155,129,85,.15)
-}
-
-.apartment-page .map-location-section .leaflet-popup-content-wrapper{
-  border-radius:0!important;
-  background:#f3efe7!important;
-  color:#171614!important;
-  box-shadow:0 12px 35px rgba(23,22,20,.18)!important
-}
-
-.apartment-page .map-location-section .leaflet-popup-tip{
-  background:#f3efe7!important
-}
-
-.apartment-page .map-location-section .leaflet-popup-content{
-  margin:16px 19px!important
-}
-
-.apartment-page .map-location-section .prime-map-popup{
-  display:flex;
-  flex-direction:column;
-  min-width:155px
-}
-
-.apartment-page .map-location-section .prime-map-popup span{
-  color:#9b8155;
-  font-size:6px;
-  font-weight:600;
-  letter-spacing:.22em
-}
-
-.apartment-page .map-location-section .prime-map-popup strong{
-  margin-top:6px;
-  font-family:"Playfair Display",serif;
-  font-size:18px;
-  font-weight:400
-}
-
-.apartment-page .map-location-section .prime-map-popup small{
-  margin-top:4px;
-  color:#6d665d;
-  font-size:9px
-}
-
-.apartment-page .map-location-section .map-expand-link{
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap:12px;
-  width:100%;
-  padding-top:19px;
-  color:#8e7448;
-  font-size:8px;
-  font-weight:600;
-  letter-spacing:.24em;
-  text-transform:uppercase
-}
-
-.apartment-page .map-location-section .map-expand-link span:last-child{
-  font-size:12px;
-  transition:transform .25s ease
-}
-
-.apartment-page .map-location-section .map-expand-link:hover span:last-child{
-  transform:translate(3px,-3px)
-}
-
-.apartment-page .map-location-section .residence-nearby{
-  min-width:0
-}
-
-.apartment-page .map-location-section .nearby-header{
-  padding-bottom:31px;
-  border-bottom:1px solid rgba(23,22,20,.17)
-}
-
-.apartment-page .map-location-section .nearby-kicker{
-  display:block;
-  margin-bottom:18px;
-  color:#9b8155;
-  font-size:7px;
-  font-weight:600;
-  letter-spacing:.26em;
-  text-transform:uppercase
-}
-
-.apartment-page .map-location-section .nearby-header h3{
-  font-size:clamp(38px,4vw,58px);
-  line-height:.98
-}
-
-.apartment-page .map-location-section .nearby-header h3 em{
-  color:#8e7448
-}
-
-.apartment-page .map-location-section .nearby-list{
-  border-bottom:1px solid rgba(23,22,20,.17)
-}
-
-.apartment-page .map-location-section .nearby-item{
-  min-height:76px;
-  display:grid;
-  grid-template-columns:35px minmax(0,1fr) auto;
-  align-items:center;
-  gap:15px;
-  border-bottom:1px solid rgba(23,22,20,.12);
-  transition:padding .3s ease,color .3s ease
-}
-
-.apartment-page .map-location-section .nearby-item:last-child{
-  border-bottom:0
-}
-
-.apartment-page .map-location-section .nearby-item:hover{
-  padding-left:7px;
-  color:#8e7448
-}
-
-.apartment-page .map-location-section .nearby-index{
-  color:#9b8155;
-  font-size:7px;
-  font-weight:600;
-  letter-spacing:.12em
-}
-
-.apartment-page .map-location-section .nearby-place{
-  min-width:0;
-  display:flex;
-  flex-direction:column;
-  gap:5px
-}
-
-.apartment-page .map-location-section .nearby-place strong{
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  font-family:"Playfair Display",serif;
-  font-size:17px;
-  font-weight:400
-}
-
-.apartment-page .map-location-section .nearby-place small{
-  color:#827a70;
-  font-size:6px;
-  font-weight:600;
-  letter-spacing:.18em
-}
-
-.apartment-page .map-location-section .nearby-distance{
-  color:#8e7448;
-  font-size:8px;
-  font-weight:600;
-  letter-spacing:.08em;
-  white-space:nowrap
-}
-
-.apartment-page .map-location-section .nearby-note{
-  margin-top:18px;
-  color:#91887d;
-  font-size:6px;
-  font-weight:600;
-  letter-spacing:.18em;
-  text-transform:uppercase
-}
-
-@media(max-width:900px){
-  .apartment-page .map-location-section .residence-location-heading{
-    grid-template-columns:1fr;
-    gap:35px
-  }
-
-  .apartment-page .map-location-section .residence-location-grid{
-    grid-template-columns:1fr;
-    gap:55px
-  }
-
-  .apartment-page .map-location-section .residence-real-map{
-    height:560px
-  }
-}
-
-@media(max-width:700px){
-  .apartment-page .map-location-section{
-    padding:90px 20px
-  }
-
-  .apartment-page .map-location-section .residence-location-heading{
-    margin-bottom:42px
-  }
-
-  .apartment-page .map-location-section .residence-location-heading-main{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:20px
-  }
-
-  .apartment-page .map-location-section .residence-location-heading-main p{
-    padding-bottom:0
-  }
-
-  .apartment-page .map-location-section .residence-location-grid{
-    gap:50px
-  }
-
-  .apartment-page .map-location-section .residence-real-map{
-    height:430px
-  }
-
-  .apartment-page .map-location-section .map-expand-link{
-    justify-content:center;
-    padding-top:17px
-  }
-
-  .apartment-page .map-location-section .nearby-header{
-    padding-bottom:25px
-  }
-
-  .apartment-page .map-location-section .nearby-item{
-    min-height:72px;
-    grid-template-columns:28px minmax(0,1fr) auto;
-    gap:10px
-  }
-
-  .apartment-page .map-location-section .nearby-place strong{
-    font-size:15px
-  }
-
-  .apartment-page .map-location-section .nearby-place small{
-    font-size:5.5px
-  }
-
-  .apartment-page .map-location-section .nearby-distance{
-    font-size:7px
-  }
-}
-
-/* END APARTMENT LOCATION MAP RESTORE */
+/* END ADAPTIVE HEADER LOGO */
